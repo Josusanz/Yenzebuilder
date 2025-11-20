@@ -599,6 +599,11 @@
                 <button class="btn btn-secondary" id="previewBtn">Preview</button>
                 <button class="btn btn-primary" id="publishBtn">Publish</button>
 
+                <!-- Dashboard Button (shown when logged in) -->
+                <button class="btn btn-secondary" id="dashboardBtn" style="display: none;" onclick="window.location.href='/dashboard.html'">
+                    📊 Dashboard
+                </button>
+
                 <!-- User Profile (shown when logged in) -->
                 <div id="userProfileContainer" style="display: none;"></div>
             </div>
@@ -762,31 +767,37 @@
         function updateUserUI(user) {
             const userContainer = document.getElementById('userProfileContainer');
             const publishBtn = document.getElementById('publishBtn');
+            const dashboardBtn = document.getElementById('dashboardBtn');
 
             if (user) {
-                // User is logged in - show profile
+                // User is logged in - show profile and dashboard button
+                dashboardBtn.style.display = 'block';
                 userContainer.style.display = 'block';
                 userContainer.innerHTML = `
-                    <div class="user-profile" onclick="toggleUserDropdown()">
+                    <div class="user-profile" onclick="toggleUserDropdown(event)">
                         <div class="user-avatar">${user.email.charAt(0).toUpperCase()}</div>
                         <span class="user-email">${user.email}</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="margin-left: 4px;">
+                            <path d="M6 8L2 4h8z"/>
+                        </svg>
                     </div>
                     <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">📊 Dashboard</div>
-                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html#projects'">📁 My Projects</div>
-                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html#billing'">💳 Billing</div>
-                        <div class="user-dropdown-item danger" onclick="handleLogout()">Logout</div>
+                        <div class="user-dropdown-item" onclick="handleLogout()">Logout</div>
                     </div>
                 `;
             } else {
                 // User is not logged in
+                dashboardBtn.style.display = 'none';
                 userContainer.style.display = 'none';
             }
         }
 
-        function toggleUserDropdown() {
+        function toggleUserDropdown(event) {
+            event.stopPropagation();
             const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('active');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
         }
 
         async function handleLogout() {
