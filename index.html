@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YENZE Builder - Visual HTML Editor</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0A0A0A;
+            --bg-darker: #050505;
+            --bg-card: #1A1A1A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0A0A0;
+            --accent-blue: #00FFFF;
+            --accent-purple: #8A2BE2;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* App Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* Top Bar */
+        .topbar {
+            grid-column: 1 / -1;
+            background: var(--bg-darker);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 1000;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .project-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .project-name input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .project-name input:focus {
+            outline: none;
+            background: var(--bg-card);
+        }
+
+        .topbar-center {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .device-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .device-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .device-btn.active {
+            background: var(--accent-blue);
+            color: var(--bg-dark);
+        }
+
+        .topbar-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #2A2A2A;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Left Sidebar - Layers & Assets */
+        .left-sidebar {
+            background: var(--bg-darker);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-tab {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .sidebar-tab.active {
+            color: var(--accent-blue);
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .sidebar-content {
+            padding: 1rem;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* HTML Import */
+        .import-area {
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .import-area:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .import-area.dragover {
+            border-color: var(--accent-purple);
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .import-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .import-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .import-btn {
+            background: var(--accent-blue);
+            color: var(--bg-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Layers Tree */
+        .layers-tree {
+            list-style: none;
+        }
+
+        .layer-item {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .layer-item:hover {
+            background: var(--bg-card);
+        }
+
+        .layer-item.selected {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--accent-blue);
+        }
+
+        .layer-icon {
+            opacity: 0.6;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            position: relative;
+        }
+
+        .canvas-wrapper {
+            background: white;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .canvas-wrapper.desktop {
+            width: 1440px;
+            min-height: 900px;
+        }
+
+        .canvas-wrapper.tablet {
+            width: 768px;
+            min-height: 1024px;
+        }
+
+        .canvas-wrapper.mobile {
+            width: 375px;
+            min-height: 667px;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Right Sidebar - Properties */
+        .right-sidebar {
+            background: var(--bg-darker);
+            border-left: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .properties-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .properties-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .properties-content {
+            padding: 1rem;
+        }
+
+        .property-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .property-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .property-input {
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .property-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .property-input textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .color-input {
+            flex: 1;
+        }
+
+        /* Code Editor */
+        .code-editor {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 280px;
+            right: 320px;
+            bottom: 0;
+            background: var(--bg-darker);
+            z-index: 100;
+        }
+
+        .code-editor.active {
+            display: block;
+        }
+
+        .code-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #codeContent {
+            width: 100%;
+            height: calc(100% - 60px);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            padding: 1rem;
+            border: none;
+            outline: none;
+            resize: none;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--error);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-darker);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-card);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2A2A2A;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="logo">⚡ YENZE</div>
+                <div class="project-name">
+                    <input type="text" id="projectName" placeholder="Untitled Project" value="My Website">
+                </div>
+            </div>
+
+            <div class="topbar-center">
+                <div class="device-toggle">
+                    <button class="device-btn" data-device="mobile">📱 Mobile</button>
+                    <button class="device-btn" data-device="tablet">📱 Tablet</button>
+                    <button class="device-btn active" data-device="desktop">🖥️ Desktop</button>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="btn btn-secondary" id="codeViewBtn">
+                    &lt;/&gt; Code
+                </button>
+                <button class="btn btn-secondary" id="previewBtn">
+                    👁️ Preview
+                </button>
+                <button class="btn btn-primary" id="publishBtn">
+                    🚀 Publish
+                </button>
+            </div>
+        </div>
+
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-tab="import">Import</button>
+                <button class="sidebar-tab" data-tab="layers">Layers</button>
+                <button class="sidebar-tab" data-tab="assets">Assets</button>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Import Tab -->
+                <div class="tab-panel active" id="importPanel">
+                    <div class="section-title">Import HTML</div>
+                    <div class="import-area" id="importArea">
+                        <div class="import-icon">📄</div>
+                        <div class="import-text">
+                            Drag & drop your HTML file here<br>
+                            or click to browse
+                        </div>
+                        <button class="import-btn">Choose File</button>
+                    </div>
+                    <input type="file" id="fileInput" accept=".html" style="display: none;">
+
+                    <div class="section-title" style="margin-top: 2rem;">Or Paste HTML</div>
+                    <textarea 
+                        class="property-input" 
+                        id="htmlPaste" 
+                        placeholder="Paste your HTML code here..."
+                        style="min-height: 150px; font-family: monospace; font-size: 0.85rem;"
+                    ></textarea>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" id="loadHtmlBtn">
+                        Load HTML
+                    </button>
+                </div>
+
+                <!-- Layers Tab -->
+                <div class="tab-panel" id="layersPanel">
+                    <div class="section-title">Document Structure</div>
+                    <ul class="layers-tree" id="layersTree">
+                        <li class="layer-item">
+                            <span class="layer-icon">📄</span>
+                            <span>No document loaded</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Assets Tab -->
+                <div class="tab-panel" id="assetsPanel">
+                    <div class="section-title">Media Library</div>
+                    <div class="import-area" style="padding: 1.5rem;">
+                        <div class="import-icon" style="font-size: 2rem;">🖼️</div>
+                        <div class="import-text">Upload images</div>
+                        <input type="file" id="assetUpload" accept="image/*" multiple style="display: none;">
+                        <button class="import-btn" onclick="document.getElementById('assetUpload').click()">
+                            Choose Files
+                        </button>
+                    </div>
+                    <div id="assetsList" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <div class="canvas-area">
+            <div class="canvas-wrapper desktop" id="canvasWrapper">
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">🎨</div>
+                    <h2>Welcome to YENZE Builder</h2>
+                    <p>Import your HTML to start editing</p>
+                </div>
+                <iframe id="canvas" style="display: none;"></iframe>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="properties-header">
+                <div class="properties-title">PROPERTIES</div>
+            </div>
+            <div class="properties-content" id="propertiesPanel">
+                <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding: 2rem;">
+                    Select an element to edit its properties
+                </p>
+            </div>
+        </div>
+
+        <!-- Code Editor (Hidden by default) -->
+        <div class="code-editor" id="codeEditor">
+            <div class="code-editor-header">
+                <h3>HTML Code Editor</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" id="applyCodeBtn">Apply Changes</button>
+                    <button class="btn btn-secondary" id="closeCodeBtn">Close</button>
+                </div>
+            </div>
+            <textarea id="codeContent"></textarea>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
