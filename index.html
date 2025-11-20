@@ -17,17 +17,21 @@
         }
 
         :root {
-            --bg-dark: #0A0A0A;
-            --bg-darker: #050505;
-            --bg-card: #1A1A1A;
+            --bg-dark: #0F0F23;
+            --bg-darker: #0A0A15;
+            --bg-card: #1A1A2E;
             --text-primary: #FFFFFF;
-            --text-secondary: #A0A0A0;
-            --accent-blue: #00FFFF;
-            --accent-purple: #8A2BE2;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --text-secondary: #94A3B8;
+            --accent-blue: #3B82F6;
+            --accent-cyan: #06B6D4;
+            --accent-purple: #A855F7;
+            --accent-pink: #EC4899;
+            --border-color: rgba(148, 163, 184, 0.1);
             --success: #10B981;
             --warning: #F59E0B;
             --error: #EF4444;
+            --glow-blue: rgba(59, 130, 246, 0.3);
+            --glow-purple: rgba(168, 85, 247, 0.3);
         }
 
         body {
@@ -68,9 +72,18 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 40px var(--glow-blue);
+        }
+
+        .logo::before {
+            content: '⚡';
+            filter: drop-shadow(0 0 8px var(--accent-blue));
         }
 
         .project-name {
@@ -117,8 +130,9 @@
         }
 
         .device-btn.active {
-            background: var(--accent-blue);
-            color: var(--bg-dark);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
+            box-shadow: 0 4px 12px var(--glow-blue);
         }
 
         .topbar-right {
@@ -147,13 +161,30 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--glow-purple);
         }
 
         /* Left Sidebar - Layers & Assets */
@@ -183,6 +214,7 @@
         .sidebar-tab.active {
             color: var(--accent-blue);
             border-bottom: 2px solid var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
         }
 
         .sidebar-content {
@@ -219,12 +251,14 @@
 
         .import-area:hover {
             border-color: var(--accent-blue);
-            background: rgba(0, 255, 255, 0.05);
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-2px);
         }
 
         .import-area.dragover {
             border-color: var(--accent-purple);
-            background: rgba(138, 43, 226, 0.1);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+            box-shadow: 0 8px 32px var(--glow-purple);
         }
 
         .import-icon {
@@ -239,14 +273,21 @@
         }
 
         .import-btn {
-            background: var(--accent-blue);
-            color: var(--bg-dark);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: white;
             padding: 0.5rem 1.5rem;
             border-radius: 6px;
             border: none;
             cursor: pointer;
             font-weight: 600;
             margin-top: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .import-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--glow-blue);
         }
 
         /* Layers Tree */
@@ -271,8 +312,10 @@
         }
 
         .layer-item.selected {
-            background: rgba(0, 255, 255, 0.1);
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.05));
             color: var(--accent-blue);
+            border-left: 3px solid var(--accent-blue);
+            padding-left: calc(0.5rem - 3px);
         }
 
         .layer-icon {
@@ -281,7 +324,10 @@
 
         /* Canvas Area */
         .canvas-area {
-            background: var(--bg-dark);
+            background:
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                var(--bg-dark);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -289,40 +335,61 @@
             position: relative;
         }
 
+        .canvas-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
         .canvas-wrapper {
             background: white;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 60px rgba(0, 255, 255, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
             transition: all 0.3s;
             position: relative;
+            margin: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         .canvas-wrapper.desktop {
             width: 1440px;
-            height: auto;
             min-height: 900px;
         }
 
         .canvas-wrapper.tablet {
             width: 768px;
-            height: auto;
             min-height: 1024px;
         }
 
         .canvas-wrapper.mobile {
             width: 375px;
-            height: auto;
             min-height: 667px;
         }
 
         #canvas {
             width: 100%;
-            height: 100%;
             min-height: 900px;
             border: none;
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
+            background: white;
+        }
+
+        .canvas-wrapper.tablet #canvas {
+            min-height: 1024px;
+        }
+
+        .canvas-wrapper.mobile #canvas {
+            min-height: 667px;
         }
 
         .empty-state {
