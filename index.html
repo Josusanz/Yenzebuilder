@@ -801,26 +801,41 @@
         }
 
         function toggleUserDropdown(event) {
-            event.stopPropagation();
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) {
+                const isCurrentlyActive = dropdown.classList.contains('active');
                 dropdown.classList.toggle('active');
+
+                console.log('Dropdown toggled:', !isCurrentlyActive);
             }
         }
 
         async function handleLogout() {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('active');
+            }
+
             await supabaseClient.signOut();
             updateUserUI(null);
             showToast('Logged out successfully', 'success');
         }
 
-
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('userDropdown');
-            const profile = document.querySelector('.user-profile');
-            if (dropdown && !profile?.contains(e.target)) {
-                dropdown.classList.remove('active');
+            const userContainer = document.getElementById('userProfileContainer');
+
+            if (dropdown && userContainer) {
+                // Check if click is outside the entire user profile container
+                if (!userContainer.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                }
             }
         });
     </script>
