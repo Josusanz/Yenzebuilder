@@ -287,20 +287,27 @@ body {
 .project-thumbnail {
     width: 100%;
     height: 180px;
-    background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+    background: #f9fafb;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #e5e7eb;
+    transition: transform 0.2s ease;
+}
+
+.project-thumbnail:hover {
+    transform: translateY(-2px);
 }
 
 .project-thumbnail iframe {
-    width: 100%;
-    height: 100%;
+    width: 333.33%;
+    height: 333.33%;
     border: none;
     pointer-events: none;
-    transform: scale(0.5);
-    transform-origin: top left;
+    transform: scale(0.3);
+    transform-origin: 0 0;
     position: absolute;
     top: 0;
     left: 0;

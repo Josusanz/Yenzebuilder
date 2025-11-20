@@ -209,10 +209,18 @@ class DashboardApp {
                 // Get analytics for this project
                 const stats = await this.getProjectStats(project.id);
 
+                // Create a data URL for the preview iframe
+                const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(project.html)}`;
+
                 return `
                     <div class="project-card">
-                        <div class="project-thumbnail">
-                            <div style="font-size: 48px; color: #667eea;">🌐</div>
+                        <div class="project-thumbnail" onclick="dashboardApp.viewProject('${project.id}')" style="cursor: pointer;">
+                            <iframe
+                                src="${previewDataUrl}"
+                                sandbox="allow-same-origin"
+                                scrolling="no"
+                                style="width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0; width: 333.33%; height: 333.33%;">
+                            </iframe>
                         </div>
                         <div class="project-info">
                             <h3>${project.name || 'Untitled Project'}</h3>
