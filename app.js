@@ -200,10 +200,8 @@ class YenzeBuilder {
 
             // Single click to select
             el.addEventListener('click', (e) => {
-                // Don't prevent default on links
-                if (e.target.tagName !== 'A') {
-                    e.preventDefault();
-                }
+                // Prevent default for all elements in edit mode
+                e.preventDefault();
                 e.stopPropagation();
                 this.selectElement(e.target);
             });
@@ -215,7 +213,7 @@ class YenzeBuilder {
 
                 console.log('Double click detected on:', e.target.tagName);
 
-                // Enable inline editing for text elements
+                // Enable inline editing for text elements (includes buttons, links, headings)
                 if (this.isTextElement(e.target)) {
                     console.log('Enabling inline text edit');
                     this.enableInlineTextEdit(e.target);
@@ -231,8 +229,21 @@ class YenzeBuilder {
     }
 
     isTextElement(element) {
-        const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SPAN', 'A', 'BUTTON', 'LI', 'TD', 'TH', 'LABEL'];
-        return textTags.includes(element.tagName) && element.children.length === 0;
+        const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SPAN', 'A', 'BUTTON', 'LI', 'TD', 'TH', 'LABEL', 'DIV'];
+
+        // Allow elements with no children OR only inline children (span, strong, em, etc)
+        if (!textTags.includes(element.tagName)) return false;
+
+        // If no children, it's editable
+        if (element.children.length === 0) return true;
+
+        // If has children, check if they're all inline elements
+        const inlineTags = ['SPAN', 'STRONG', 'EM', 'B', 'I', 'U', 'A', 'CODE', 'MARK', 'SMALL'];
+        const allInline = Array.from(element.children).every(child =>
+            inlineTags.includes(child.tagName)
+        );
+
+        return allInline;
     }
 
     enableInlineTextEdit(element) {
