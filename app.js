@@ -200,6 +200,10 @@ class YenzeBuilder {
 
             // Single click to select
             el.addEventListener('click', (e) => {
+                // Don't prevent default on links
+                if (e.target.tagName !== 'A') {
+                    e.preventDefault();
+                }
                 e.stopPropagation();
                 this.selectElement(e.target);
             });
@@ -209,13 +213,17 @@ class YenzeBuilder {
                 e.preventDefault();
                 e.stopPropagation();
 
+                console.log('Double click detected on:', e.target.tagName);
+
                 // Enable inline editing for text elements
                 if (this.isTextElement(e.target)) {
+                    console.log('Enabling inline text edit');
                     this.enableInlineTextEdit(e.target);
                 }
 
                 // Enable image replacement for images
                 if (e.target.tagName === 'IMG') {
+                    console.log('Enabling image edit');
                     this.enableImageEdit(e.target);
                 }
             });
@@ -228,37 +236,51 @@ class YenzeBuilder {
     }
 
     enableInlineTextEdit(element) {
+        console.log('enableInlineTextEdit called for', element);
+
+        // Visual feedback - editing mode
+        element.style.outline = '2px solid #10B981';
+        element.style.outlineOffset = '2px';
+        element.style.boxShadow = '0 0 0 4px rgba(16, 185, 129, 0.15)';
+
         // Make element editable
         element.contentEditable = 'true';
         element.style.cursor = 'text';
 
-        // Focus and select
+        // Focus and select after a small delay
         setTimeout(() => {
-            element.focus();
-
-            // Select all text
             try {
+                element.focus();
+                console.log('Element focused');
+
+                // Select all text
                 const range = element.ownerDocument.createRange();
                 range.selectNodeContents(element);
                 const sel = element.ownerDocument.getSelection();
                 sel.removeAllRanges();
                 sel.addRange(range);
+                console.log('Text selected');
             } catch (e) {
-                console.log('Selection failed', e);
+                console.error('Selection failed', e);
             }
-        }, 0);
+        }, 100);
 
         // Save on blur
         const saveText = () => {
+            console.log('Saving text changes');
             element.contentEditable = 'false';
             element.style.cursor = 'pointer';
+            // Restore selection style
+            element.style.outline = '2px solid #0066FF';
+            element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
+
             this.updateHTML();
             this.showToast('✅ Text updated', 'success');
         };
 
         element.addEventListener('blur', saveText, { once: true });
 
-        // Save on Enter key (except for multi-line elements)
+        // Save on Enter key
         const handleKeydown = (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -615,8 +637,20 @@ ${publishedUrl}
     // Utility functions
     rgbToHex(rgb) {
         if (rgb.startsWith('#')) return rgb;
-        const values = rgb.match(/\d+/g);
-        if (!values) return '#000000';
+
+        // Check for transparent
+        if (rgb === 'transparent' || rgb === 'rgba(0, 0, 0, 0)') {
+            return '#ffffff';  // Default to white for transparent
+        }
+
+        const values = rgb.match(/[\d.]+/g);
+        if (!values) return '#ffffff';
+
+        // Check if alpha channel is 0 (transparent)
+        if (values.length === 4 && parseFloat(values[3]) === 0) {
+            return '#ffffff';  // Transparent, return white
+        }
+
         return '#' + values.slice(0, 3).map(x => {
             const hex = parseInt(x).toString(16);
             return hex.length === 1 ? '0' + hex : hex;
