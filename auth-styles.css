@@ -416,6 +416,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
+    z-index: 99998;
 }
 
 .user-profile:hover {
@@ -455,7 +456,7 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     min-width: 200px;
     display: none;
-    z-index: 1000;
+    z-index: 99999;
     animation: slideDown 0.2s;
 }
 
