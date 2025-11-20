@@ -1498,15 +1498,8 @@ class YenzeBuilder {
                     status: 'ready'
                 });
 
-            // Show success message
-            const message = `🚀 Published Successfully!
-
-Your website is now live at:
-${publishedUrl}
-
-${plan === 'free' ? '✨ Upgrade to PRO to use a custom domain and remove the YENZE badge!' : ''}`;
-
-            alert(message);
+            // Show professional popup with the URL
+            showPublishPopup(publishedUrl, plan);
             this.showToast('🚀 Website published!', 'success');
 
         } catch (error) {

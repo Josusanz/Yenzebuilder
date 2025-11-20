@@ -571,6 +571,203 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #CCCCCC;
         }
+
+        /* Publication Success Popup */
+        .publish-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s;
+        }
+
+        .publish-popup-overlay.active {
+            display: flex;
+        }
+
+        .publish-popup {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUpModal 0.3s;
+            overflow: hidden;
+        }
+
+        .publish-popup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .publish-popup-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .publish-popup-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .publish-popup-body {
+            padding: 30px;
+        }
+
+        .publish-url-container {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .publish-url-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .publish-url-link {
+            font-size: 15px;
+            color: #667eea;
+            word-break: break-all;
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .publish-url-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .publish-url-actions button {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .publish-btn-copy {
+            background: #667eea;
+            color: white;
+        }
+
+        .publish-btn-copy:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .publish-btn-visit {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .publish-btn-visit:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .publish-upgrade-box {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .publish-upgrade-box h3 {
+            font-size: 16px;
+            color: #92400e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .publish-upgrade-box p {
+            font-size: 14px;
+            color: #78350f;
+            margin-bottom: 15px;
+        }
+
+        .publish-upgrade-box button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .publish-upgrade-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .publish-popup-footer {
+            display: flex;
+            gap: 12px;
+            padding: 0 30px 30px;
+        }
+
+        .publish-popup-footer button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .publish-btn-dashboard {
+            background: #667eea;
+            color: white;
+        }
+
+        .publish-btn-dashboard:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .publish-btn-close {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .publish-btn-close:hover {
+            background: #e5e7eb;
+        }
     </style>
 </head>
 <body>
@@ -764,33 +961,33 @@
             const publishBtn = document.getElementById('publishBtn');
 
             if (user) {
-                // User is logged in - show profile with dropdown
+                // User is logged in - show profile with dropdown (same method as dashboard)
                 userContainer.style.display = 'block';
                 userContainer.innerHTML = `
-                    <div class="user-profile" onclick="toggleUserDropdown(event)">
+                    <div class="user-profile" onclick="this.querySelector('.user-dropdown').classList.toggle('active'); event.stopPropagation();">
                         <div class="user-avatar">${user.email.charAt(0).toUpperCase()}</div>
                         <span class="user-email">${user.email}</span>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="margin-left: 4px;">
                             <path d="M6 8L2 4h8z"/>
                         </svg>
-                    </div>
-                    <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
-                                <rect x="3" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="14" width="7" height="7"></rect>
-                                <rect x="3" y="14" width="7" height="7"></rect>
-                            </svg>
-                            Dashboard
-                        </div>
-                        <div class="user-dropdown-item danger" onclick="handleLogout()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                <polyline points="16 17 21 12 16 7"></polyline>
-                                <line x1="21" y1="12" x2="9" y2="12"></line>
-                            </svg>
-                            Logout
+                        <div class="user-dropdown">
+                            <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'; event.stopPropagation();">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                Dashboard
+                            </div>
+                            <div class="user-dropdown-item danger" onclick="handleLogout(); event.stopPropagation();">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                Logout
+                            </div>
                         </div>
                     </div>
                 `;
@@ -800,27 +997,7 @@
             }
         }
 
-        function toggleUserDropdown(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown) {
-                const isCurrentlyActive = dropdown.classList.contains('active');
-                dropdown.classList.toggle('active');
-
-                console.log('Dropdown toggled:', !isCurrentlyActive);
-            }
-        }
-
         async function handleLogout() {
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown) {
-                dropdown.classList.remove('active');
-            }
-
             await supabaseClient.signOut();
             updateUserUI(null);
             showToast('Logged out successfully', 'success');
@@ -828,16 +1005,127 @@
 
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('userDropdown');
-            const userContainer = document.getElementById('userProfileContainer');
-
-            if (dropdown && userContainer) {
-                // Check if click is outside the entire user profile container
-                if (!userContainer.contains(e.target)) {
+            const dropdowns = document.querySelectorAll('.user-dropdown.active');
+            dropdowns.forEach(dropdown => {
+                const userProfile = dropdown.closest('.user-profile');
+                if (userProfile && !userProfile.contains(e.target)) {
                     dropdown.classList.remove('active');
                 }
-            }
+            });
         });
+
+        // Publication Success Popup Functions
+        function showPublishPopup(url, plan) {
+            const overlay = document.getElementById('publishPopupOverlay');
+            const urlLink = document.getElementById('publishUrlLink');
+            const upgradeBox = document.getElementById('publishUpgradeBox');
+
+            urlLink.textContent = url;
+            urlLink.href = url;
+
+            // Show upgrade box only for free plan
+            if (plan === 'free' && upgradeBox) {
+                upgradeBox.style.display = 'block';
+            } else if (upgradeBox) {
+                upgradeBox.style.display = 'none';
+            }
+
+            overlay.classList.add('active');
+        }
+
+        function closePublishPopup() {
+            const overlay = document.getElementById('publishPopupOverlay');
+            overlay.classList.remove('active');
+        }
+
+        function copyPublishUrl() {
+            const urlLink = document.getElementById('publishUrlLink');
+            const copyBtn = document.querySelector('.publish-btn-copy');
+
+            navigator.clipboard.writeText(urlLink.textContent).then(() => {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy URL. Please copy it manually.');
+            });
+        }
+
+        function visitPublishUrl() {
+            const urlLink = document.getElementById('publishUrlLink');
+            window.open(urlLink.href, '_blank');
+        }
+
+        function goToDashboardFromPopup() {
+            window.location.href = '/dashboard.html';
+        }
     </script>
+
+    <!-- Publication Success Popup -->
+    <div id="publishPopupOverlay" class="publish-popup-overlay">
+        <div class="publish-popup">
+            <div class="publish-popup-header">
+                <h2>🚀 Published Successfully!</h2>
+                <p>Your website is now live and ready to share</p>
+            </div>
+
+            <div class="publish-popup-body">
+                <div class="publish-url-container">
+                    <div class="publish-url-label">Your Live URL</div>
+                    <a id="publishUrlLink" href="#" target="_blank" class="publish-url-link"></a>
+
+                    <div class="publish-url-actions">
+                        <button class="publish-btn-copy" onclick="copyPublishUrl()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copy URL
+                        </button>
+                        <button class="publish-btn-visit" onclick="visitPublishUrl()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Visit Site
+                        </button>
+                    </div>
+                </div>
+
+                <div id="publishUpgradeBox" class="publish-upgrade-box" style="display: none;">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                        Upgrade to PRO
+                    </h3>
+                    <p>Remove the YENZE badge and use your own custom domain!</p>
+                    <button onclick="authUI.showPlanModal(); closePublishPopup();">
+                        View Pro Plans
+                    </button>
+                </div>
+            </div>
+
+            <div class="publish-popup-footer">
+                <button class="publish-btn-dashboard" onclick="goToDashboardFromPopup()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Go to Dashboard
+                </button>
+                <button class="publish-btn-close" onclick="closePublishPopup()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
