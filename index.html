@@ -599,11 +599,6 @@
                 <button class="btn btn-secondary" id="previewBtn">Preview</button>
                 <button class="btn btn-primary" id="publishBtn">Publish</button>
 
-                <!-- Dashboard Button (shown when logged in) -->
-                <button class="btn btn-secondary" id="dashboardBtn" style="display: none;" onclick="window.location.href='/dashboard.html'">
-                    📊 Dashboard
-                </button>
-
                 <!-- User Profile (shown when logged in) -->
                 <div id="userProfileContainer" style="display: none;"></div>
             </div>
@@ -767,11 +762,9 @@
         function updateUserUI(user) {
             const userContainer = document.getElementById('userProfileContainer');
             const publishBtn = document.getElementById('publishBtn');
-            const dashboardBtn = document.getElementById('dashboardBtn');
 
             if (user) {
-                // User is logged in - show profile and dashboard button
-                dashboardBtn.style.display = 'block';
+                // User is logged in - show profile with dropdown
                 userContainer.style.display = 'block';
                 userContainer.innerHTML = `
                     <div class="user-profile" onclick="toggleUserDropdown(event)">
@@ -782,12 +775,27 @@
                         </svg>
                     </div>
                     <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item" onclick="handleLogout()">Logout</div>
+                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Dashboard
+                        </div>
+                        <div class="user-dropdown-item danger" onclick="handleLogout()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Logout
+                        </div>
                     </div>
                 `;
             } else {
                 // User is not logged in
-                dashboardBtn.style.display = 'none';
                 userContainer.style.display = 'none';
             }
         }

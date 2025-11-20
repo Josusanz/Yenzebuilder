@@ -481,6 +481,8 @@
     cursor: pointer;
     transition: all 0.2s;
     border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
 }
 
 .user-dropdown-item:last-child {
@@ -490,6 +492,10 @@
 .user-dropdown-item:hover {
     background: #f9fafb;
     color: #667eea;
+}
+
+.user-dropdown-item svg {
+    flex-shrink: 0;
 }
 
 .user-dropdown-item.danger {
