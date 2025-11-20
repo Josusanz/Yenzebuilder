@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Test - YENZE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .success {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        .info {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .code {
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Supabase Storage Diagnostic Test</h1>
+    <p>This page will test if your Supabase Storage bucket is configured correctly.</p>
+
+    <button onclick="runTests()">Run All Tests</button>
+    <button onclick="testBucketExists()">Test 1: Bucket Exists</button>
+    <button onclick="testUpload()">Test 2: Upload File</button>
+    <button onclick="testPublicAccess()">Test 3: Public Access</button>
+
+    <div id="results"></div>
+
+    <hr style="margin: 40px 0;">
+
+    <h2>📋 Setup Checklist</h2>
+    <div class="test-result info">
+        <h3>Step 1: Create Bucket</h3>
+        <ol>
+            <li>Go to <a href="https://supabase.com/dashboard/project/xssdcphepracobbsvqmg/storage/buckets" target="_blank">Supabase Storage</a></li>
+            <li>Click "New bucket"</li>
+            <li>Name: <span class="code">published-sites</span></li>
+            <li><strong>✅ Check "Public bucket"</strong></li>
+            <li>Click "Create bucket"</li>
+        </ol>
+
+        <h3>Step 2: Configure Policies</h3>
+        <ol>
+            <li>Go to <a href="https://supabase.com/dashboard/project/xssdcphepracobbsvqmg/sql/new" target="_blank">SQL Editor</a></li>
+            <li>Copy the SQL from <code>supabase-storage-setup.sql</code></li>
+            <li>Paste and run it</li>
+        </ol>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="supabase-client.js"></script>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(title, message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+            resultsDiv.appendChild(div);
+        }
+
+        function addCode(code) {
+            const pre = document.createElement('pre');
+            pre.textContent = JSON.stringify(code, null, 2);
+            resultsDiv.appendChild(pre);
+        }
+
+        async function runTests() {
+            resultsDiv.innerHTML = '';
+            addResult('🔄 Running Tests', 'Initializing Supabase client...', 'info');
+
+            await supabaseClient.init();
+
+            if (!supabaseClient.currentUser) {
+                addResult('⚠️ Not Logged In', 'Please log in first to test uploads.', 'error');
+                return;
+            }
+
+            await testBucketExists();
+            await testUpload();
+            await testPublicAccess();
+        }
+
+        async function testBucketExists() {
+            addResult('Test 1: Checking Bucket', 'Checking if published-sites bucket exists...', 'info');
+
+            try {
+                const { data: buckets, error } = await supabaseClient.client.storage.listBuckets();
+
+                if (error) {
+                    addResult('❌ Error', error.message, 'error');
+                    addCode(error);
+                    return false;
+                }
+
+                const bucket = buckets.find(b => b.id === 'published-sites');
+
+                if (bucket) {
+                    addResult('✅ Bucket Exists', `Bucket found! Public: ${bucket.public}`, 'success');
+                    addCode(bucket);
+
+                    if (!bucket.public) {
+                        addResult('⚠️ Warning', 'Bucket exists but is NOT public. You need to make it public!', 'error');
+                    }
+
+                    return true;
+                } else {
+                    addResult('❌ Bucket Not Found', 'The "published-sites" bucket does not exist. Please create it first.', 'error');
+                    return false;
+                }
+            } catch (error) {
+                addResult('❌ Test Failed', error.message, 'error');
+                addCode(error);
+                return false;
+            }
+        }
+
+        async function testUpload() {
+            addResult('Test 2: Upload Test', 'Attempting to upload a test file...', 'info');
+
+            if (!supabaseClient.currentUser) {
+                addResult('⚠️ Skipped', 'Must be logged in to test upload', 'error');
+                return;
+            }
+
+            try {
+                const testHTML = '<html><body><h1>Test from YENZE</h1></body></html>';
+                const userId = supabaseClient.currentUser.id;
+                const filePath = `${userId}/test/index.html`;
+
+                const { data, error } = await supabaseClient.client.storage
+                    .from('published-sites')
+                    .upload(filePath, new Blob([testHTML], { type: 'text/html' }), {
+                        contentType: 'text/html',
+                        upsert: true
+                    });
+
+                if (error) {
+                    addResult('❌ Upload Failed', error.message, 'error');
+                    addCode(error);
+                    return false;
+                }
+
+                addResult('✅ Upload Success', `File uploaded to: ${filePath}`, 'success');
+                addCode(data);
+                return true;
+            } catch (error) {
+                addResult('❌ Test Failed', error.message, 'error');
+                addCode(error);
+                return false;
+            }
+        }
+
+        async function testPublicAccess() {
+            addResult('Test 3: Public Access', 'Testing if uploaded files are publicly accessible...', 'info');
+
+            if (!supabaseClient.currentUser) {
+                addResult('⚠️ Skipped', 'Must be logged in and have uploaded a file first', 'error');
+                return;
+            }
+
+            try {
+                const userId = supabaseClient.currentUser.id;
+                const filePath = `${userId}/test/index.html`;
+
+                const { data } = supabaseClient.client.storage
+                    .from('published-sites')
+                    .getPublicUrl(filePath);
+
+                const publicUrl = data.publicUrl;
+
+                addResult('🔗 Public URL Generated', `URL: <a href="${publicUrl}" target="_blank">${publicUrl}</a>`, 'info');
+
+                // Try to fetch it
+                const response = await fetch(publicUrl);
+
+                if (response.ok) {
+                    const content = await response.text();
+                    addResult('✅ Public Access Works!', `Successfully fetched file. Status: ${response.status}`, 'success');
+                    addResult('📄 File Content', `<pre>${content}</pre>`, 'success');
+                    return true;
+                } else {
+                    addResult('❌ Public Access Failed', `Could not access file. Status: ${response.status}`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                addResult('❌ Test Failed', error.message, 'error');
+                addCode(error);
+                return false;
+            }
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await supabaseClient.init();
+
+            if (supabaseClient.currentUser) {
+                addResult('✅ Logged In', `User: ${supabaseClient.currentUser.email}`, 'success');
+            } else {
+                addResult('⚠️ Not Logged In', 'Please log in from the main page first, then come back here to run tests.', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

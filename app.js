@@ -1477,6 +1477,13 @@ class YenzeBuilder {
                     });
 
                 if (uploadError) {
+                    console.error('Storage upload error:', uploadError);
+
+                    // Provide helpful error message
+                    if (uploadError.message.includes('Bucket not found')) {
+                        throw new Error('Storage bucket not configured. Please create the "published-sites" bucket in Supabase Storage with public access enabled. See SETUP-STORAGE.md for instructions.');
+                    }
+
                     throw new Error('Failed to upload to storage: ' + uploadError.message);
                 }
 
@@ -1501,6 +1508,13 @@ class YenzeBuilder {
                     });
 
                 if (uploadError) {
+                    console.error('Storage upload error:', uploadError);
+
+                    // Provide helpful error message
+                    if (uploadError.message.includes('Bucket not found')) {
+                        throw new Error('Storage bucket not configured. Please create the "published-sites" bucket in Supabase Storage with public access enabled. See SETUP-STORAGE.md for instructions.');
+                    }
+
                     throw new Error('Failed to upload to storage: ' + uploadError.message);
                 }
 
