@@ -175,40 +175,127 @@ class YenzeBuilder {
     makeEditable(doc) {
         // Add click handlers to all elements
         const allElements = doc.querySelectorAll('body *');
-        
+
         allElements.forEach(el => {
             // Skip script and style tags
             if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
 
             el.style.cursor = 'pointer';
-            el.style.transition = 'outline 0.2s';
+            el.style.transition = 'outline 0.15s, box-shadow 0.15s';
 
+            // Hover effect
             el.addEventListener('mouseenter', (e) => {
                 e.stopPropagation();
-                e.target.style.outline = '2px dashed #00FFFF';
+                if (el !== this.selectedElement) {
+                    e.target.style.outline = '1px solid #0066FF';
+                    e.target.style.outlineOffset = '2px';
+                }
             });
 
             el.addEventListener('mouseleave', (e) => {
-                e.target.style.outline = 'none';
+                if (el !== this.selectedElement) {
+                    e.target.style.outline = 'none';
+                }
             });
 
+            // Click to select and edit
             el.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.selectElement(e.target);
+
+                // Enable inline editing for text elements
+                if (this.isTextElement(e.target)) {
+                    this.enableInlineTextEdit(e.target);
+                }
+
+                // Enable image replacement for images
+                if (e.target.tagName === 'IMG') {
+                    this.enableImageEdit(e.target);
+                }
             });
         });
+    }
+
+    isTextElement(element) {
+        const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SPAN', 'A', 'BUTTON', 'LI', 'TD', 'TH', 'LABEL'];
+        return textTags.includes(element.tagName) && element.children.length === 0;
+    }
+
+    enableInlineTextEdit(element) {
+        // Make element editable
+        element.contentEditable = true;
+        element.focus();
+
+        // Select all text
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const sel = element.ownerDocument.defaultView.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+
+        // Save on blur
+        const saveText = () => {
+            element.contentEditable = false;
+            this.updateHTML();
+            this.showToast('✅ Text updated', 'success');
+        };
+
+        element.addEventListener('blur', saveText, { once: true });
+
+        // Save on Enter key
+        element.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                element.blur();
+            }
+        }, { once: true });
+    }
+
+    enableImageEdit(imgElement) {
+        // Create file input
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.style.display = 'none';
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imgElement.src = event.target.result;
+                    this.updateHTML();
+                    this.showToast('✅ Image updated', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Trigger file selection
+        input.click();
+    }
+
+    updateHTML() {
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+        this.currentHTML = iframeDoc.documentElement.outerHTML;
+        this.projectData.html = this.currentHTML;
+        this.saveProject();
     }
 
     selectElement(element) {
         // Remove previous selection
         if (this.selectedElement) {
             this.selectedElement.style.outline = 'none';
+            this.selectedElement.style.boxShadow = 'none';
         }
 
-        // Highlight selected element
+        // Highlight selected element with Framer-style selection
         this.selectedElement = element;
-        element.style.outline = '3px solid #8A2BE2';
+        element.style.outline = '2px solid #0066FF';
+        element.style.outlineOffset = '2px';
+        element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
 
         // Show properties
         this.showProperties(element);
