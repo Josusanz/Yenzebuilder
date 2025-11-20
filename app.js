@@ -6,13 +6,33 @@ class YenzeBuilder {
         this.currentHTML = '';
         this.selectedElement = null;
         this.currentDevice = 'desktop';
+        this.isDragging = false;
+        this.dragOffset = { x: 0, y: 0 };
+        this.draggedElement = null;
+        this.draggedLayerElement = null;
+        this.dropIndicator = null;
+
+        // History system for undo/redo
+        this.history = [];
+        this.historyIndex = -1;
+        this.maxHistory = 50;
+
         this.projectData = {
             name: 'My Website',
             html: '',
             assets: [],
             publishedUrl: null
         };
-        
+
+        // Popular Google Fonts
+        this.googleFonts = [
+            'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins',
+            'Raleway', 'Nunito', 'Playfair Display', 'Merriweather',
+            'PT Sans', 'Ubuntu', 'Oswald', 'Work Sans', 'Bebas Neue',
+            'Crimson Text', 'Space Grotesk', 'DM Sans', 'Outfit', 'Manrope',
+            'Plus Jakarta Sans', 'Sora', 'Lexend', 'Mulish', 'Quicksand'
+        ];
+
         this.init();
     }
 
@@ -22,9 +42,14 @@ class YenzeBuilder {
     }
 
     setupEventListeners() {
-        // Sidebar tabs
-        document.querySelectorAll('.sidebar-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+        // Left Sidebar tabs
+        document.querySelectorAll('.left-sidebar .sidebar-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab, 'left'));
+        });
+
+        // Right Sidebar tabs
+        document.querySelectorAll('.right-sidebar .sidebar-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab, 'right'));
         });
 
         // Device toggle
@@ -86,6 +111,26 @@ class YenzeBuilder {
             this.toggleCodeEditor();
         });
 
+        // Undo/Redo
+        document.getElementById('undoBtn').addEventListener('click', () => {
+            this.undo();
+        });
+
+        document.getElementById('redoBtn').addEventListener('click', () => {
+            this.redo();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                this.undo();
+            } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+                e.preventDefault();
+                this.redo();
+            }
+        });
+
         // Preview
         document.getElementById('previewBtn').addEventListener('click', () => {
             this.preview();
@@ -106,20 +151,27 @@ class YenzeBuilder {
         document.getElementById('assetUpload').addEventListener('change', (e) => {
             this.handleAssetUpload(e.target.files);
         });
+
+        // Layers action buttons - Always available
+        document.getElementById('addSectionBtn')?.addEventListener('click', () => this.addElement('section'));
+        document.getElementById('addDivBtn')?.addEventListener('click', () => this.addElement('div'));
+        document.getElementById('addColumnsBtn')?.addEventListener('click', () => this.addColumns());
     }
 
-    switchTab(tabName) {
-        // Update active tab
-        document.querySelectorAll('.sidebar-tab').forEach(tab => {
+    switchTab(tabName, sidebar = 'left') {
+        const sidebarClass = sidebar === 'left' ? '.left-sidebar' : '.right-sidebar';
+
+        // Update active tab in the specific sidebar
+        document.querySelectorAll(`${sidebarClass} .sidebar-tab`).forEach(tab => {
             tab.classList.remove('active');
         });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.querySelector(`${sidebarClass} [data-tab="${tabName}"]`).classList.add('active');
 
-        // Update active panel
-        document.querySelectorAll('.tab-panel').forEach(panel => {
+        // Update active panel in the specific sidebar
+        document.querySelectorAll(`${sidebarClass} .tab-panel`).forEach(panel => {
             panel.classList.remove('active');
         });
-        document.getElementById(`${tabName}Panel`).classList.add('active');
+        document.querySelector(`${sidebarClass} #${tabName}Panel`).classList.add('active');
     }
 
     switchDevice(device) {
@@ -145,17 +197,22 @@ class YenzeBuilder {
         reader.readAsText(file);
     }
 
-    loadHTML(html) {
+    loadHTML(html, addToHistory = true) {
         this.currentHTML = html;
         this.projectData.html = html;
-        
+
+        // Add to history only if requested
+        if (addToHistory) {
+            this.addToHistory(html, 'Import HTML');
+        }
+
         // Hide empty state
         document.getElementById('emptyState').style.display = 'none';
-        
+
         // Show canvas
         const canvas = document.getElementById('canvas');
         canvas.style.display = 'block';
-        
+
         // Write HTML to iframe
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
         iframeDoc.open();
@@ -177,16 +234,21 @@ class YenzeBuilder {
         const allElements = doc.querySelectorAll('body *');
 
         allElements.forEach(el => {
-            // Skip script and style tags
-            if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+            this.makeElementEditable(el, doc);
+        });
+    }
 
-            el.style.cursor = 'pointer';
+    makeElementEditable(el, doc) {
+        // Skip script and style tags
+        if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+
+            el.style.cursor = 'grab';
             el.style.transition = 'outline 0.15s, box-shadow 0.15s';
 
             // Hover effect
             el.addEventListener('mouseenter', (e) => {
                 e.stopPropagation();
-                if (el !== this.selectedElement) {
+                if (el !== this.selectedElement && !this.isDragging) {
                     e.target.style.outline = '1px solid #0066FF';
                     e.target.style.outlineOffset = '2px';
                 }
@@ -203,7 +265,9 @@ class YenzeBuilder {
                 // Prevent default for all elements in edit mode
                 e.preventDefault();
                 e.stopPropagation();
-                this.selectElement(e.target);
+                if (!this.isDragging) {
+                    this.selectElement(e.target);
+                }
             });
 
             // Double click to edit
@@ -226,11 +290,120 @@ class YenzeBuilder {
                 // If not editable, show message
                 this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
             });
-        });
+
+            // Drag and drop to reorder elements (Framer-style)
+            el.setAttribute('draggable', 'true');
+
+            el.addEventListener('dragstart', (e) => {
+                // Don't drag if in edit mode
+                if (e.target.contentEditable === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+
+                this.draggedElement = e.target;
+                e.target.style.opacity = '0.5';
+                e.target.style.cursor = 'grabbing';
+
+                // Create drop indicator
+                if (!this.dropIndicator) {
+                    this.dropIndicator = doc.createElement('div');
+                    this.dropIndicator.style.cssText = `
+                        height: 3px;
+                        background: #0066FF;
+                        margin: 4px 0;
+                        border-radius: 2px;
+                        pointer-events: none;
+                        box-shadow: 0 0 8px rgba(0, 102, 255, 0.5);
+                    `;
+                }
+
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            el.addEventListener('dragend', (e) => {
+                e.target.style.opacity = '';
+                e.target.style.cursor = 'grab';
+                if (this.dropIndicator && this.dropIndicator.parentNode) {
+                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+                }
+                this.draggedElement = null;
+            });
+
+            el.addEventListener('dragover', (e) => {
+                if (!this.draggedElement || this.draggedElement === e.target) return;
+
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+
+                const parent = e.target.parentNode;
+                const draggedParent = this.draggedElement.parentNode;
+
+                // Only allow reordering within same parent or into container elements
+                if (parent === draggedParent || this.isContainer(e.target)) {
+                    const rect = e.target.getBoundingClientRect();
+                    const midpoint = rect.top + rect.height / 2;
+
+                    if (this.isContainer(e.target)) {
+                        // Drop inside container
+                        if (e.target.children.length === 0) {
+                            e.target.appendChild(this.dropIndicator);
+                        } else {
+                            e.target.insertBefore(this.dropIndicator, e.target.firstChild);
+                        }
+                    } else if (e.clientY < midpoint) {
+                        // Drop before element
+                        parent.insertBefore(this.dropIndicator, e.target);
+                    } else {
+                        // Drop after element
+                        parent.insertBefore(this.dropIndicator, e.target.nextSibling);
+                    }
+                }
+            });
+
+            el.addEventListener('drop', (e) => {
+                if (!this.draggedElement) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                const parent = e.target.parentNode;
+                const draggedParent = this.draggedElement.parentNode;
+
+                // Perform the move
+                if (this.dropIndicator && this.dropIndicator.parentNode) {
+                    const dropParent = this.dropIndicator.parentNode;
+                    const nextSibling = this.dropIndicator.nextSibling;
+
+                    // Remove drop indicator
+                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+
+                    // Insert element at new position
+                    if (nextSibling) {
+                        dropParent.insertBefore(this.draggedElement, nextSibling);
+                    } else {
+                        dropParent.appendChild(this.draggedElement);
+                    }
+
+                    this.updateHTML('Reorder element');
+                    this.buildLayersTree(doc); // Update layers tree
+                    this.showToast('✅ Element repositioned', 'success');
+                }
+            });
+    }
+
+    isContainer(element) {
+        // Container elements that can receive other elements
+        const containerTags = ['DIV', 'SECTION', 'ARTICLE', 'ASIDE', 'NAV', 'HEADER', 'FOOTER', 'MAIN', 'UL', 'OL', 'FORM'];
+        return containerTags.includes(element.tagName);
     }
 
     isTextElement(element) {
-        const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SPAN', 'A', 'BUTTON', 'LI', 'TD', 'TH', 'LABEL', 'DIV'];
+        // Headings are always editable
+        const headingTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+        if (headingTags.includes(element.tagName)) return true;
+
+        const textTags = ['P', 'SPAN', 'A', 'BUTTON', 'LI', 'TD', 'TH', 'LABEL', 'DIV'];
 
         // Allow elements with no children OR only inline children (span, strong, em, etc)
         if (!textTags.includes(element.tagName)) return false;
@@ -285,7 +458,7 @@ class YenzeBuilder {
             element.style.outline = '2px solid #0066FF';
             element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
 
-            this.updateHTML();
+            this.updateHTML('Edit text');
             this.showToast('✅ Text updated successfully', 'success');
         };
 
@@ -318,7 +491,14 @@ class YenzeBuilder {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     imgElement.src = event.target.result;
-                    this.updateHTML();
+
+                    // Update the propImgSrc field if it exists (prevents disappearing when changing other properties)
+                    const propImgSrc = document.getElementById('propImgSrc');
+                    if (propImgSrc) {
+                        propImgSrc.value = event.target.result;
+                    }
+
+                    this.updateHTML('Change image');
                     this.showToast('✅ Image updated', 'success');
                 };
                 reader.readAsDataURL(file);
@@ -329,12 +509,107 @@ class YenzeBuilder {
         input.click();
     }
 
-    updateHTML() {
+    updateHTML(action = 'Change') {
         const canvas = document.getElementById('canvas');
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-        this.currentHTML = iframeDoc.documentElement.outerHTML;
-        this.projectData.html = this.currentHTML;
-        this.saveProject();
+        const newHTML = iframeDoc.documentElement.outerHTML;
+
+        // Only add to history if HTML actually changed
+        if (newHTML !== this.currentHTML) {
+            this.addToHistory(newHTML, action);
+            this.currentHTML = newHTML;
+            this.projectData.html = this.currentHTML;
+            this.saveProject();
+        }
+    }
+
+    addToHistory(html, action) {
+        // Remove any future history if we're not at the end
+        if (this.historyIndex < this.history.length - 1) {
+            this.history = this.history.slice(0, this.historyIndex + 1);
+        }
+
+        // Add new state
+        this.history.push({
+            html: html,
+            action: action,
+            timestamp: new Date().toLocaleTimeString()
+        });
+
+        // Limit history size
+        if (this.history.length > this.maxHistory) {
+            this.history.shift();
+        } else {
+            this.historyIndex++;
+        }
+
+        this.updateHistoryUI();
+        this.updateUndoRedoButtons();
+    }
+
+    undo() {
+        if (this.historyIndex > 0) {
+            this.historyIndex--;
+            this.restoreFromHistory();
+            this.showToast('↶ Undone', 'success');
+        }
+    }
+
+    redo() {
+        if (this.historyIndex < this.history.length - 1) {
+            this.historyIndex++;
+            this.restoreFromHistory();
+            this.showToast('↷ Redone', 'success');
+        }
+    }
+
+    restoreFromHistory() {
+        const state = this.history[this.historyIndex];
+        if (state) {
+            this.currentHTML = state.html;
+            this.projectData.html = state.html;
+            this.loadHTML(state.html, false); // false = don't add to history
+            this.updateHistoryUI();
+            this.updateUndoRedoButtons();
+        }
+    }
+
+    updateUndoRedoButtons() {
+        const undoBtn = document.getElementById('undoBtn');
+        const redoBtn = document.getElementById('redoBtn');
+
+        undoBtn.disabled = this.historyIndex <= 0;
+        redoBtn.disabled = this.historyIndex >= this.history.length - 1;
+    }
+
+    updateHistoryUI() {
+        const historyList = document.getElementById('historyList');
+        if (this.history.length === 0) {
+            historyList.innerHTML = '<div style="color: var(--text-secondary); padding: 1rem; text-align: center;">No changes yet</div>';
+            return;
+        }
+
+        historyList.innerHTML = this.history.map((item, index) => {
+            const isCurrent = index === this.historyIndex;
+            return `
+                <div style="padding: 0.75rem; margin-bottom: 0.25rem; background: ${isCurrent ? 'var(--accent)' : 'var(--bg)'};
+                     color: ${isCurrent ? 'white' : 'var(--text)'}; border-radius: 6px; cursor: pointer;
+                     border: 1px solid ${isCurrent ? 'var(--accent)' : 'var(--border)'}; transition: all 0.15s;"
+                     onmouseover="if(!${isCurrent}) this.style.background='var(--bg-secondary)'"
+                     onmouseout="if(!${isCurrent}) this.style.background='var(--bg)'"
+                     onclick="app.jumpToHistory(${index})">
+                    <div style="font-weight: 500; margin-bottom: 0.25rem;">${item.action}</div>
+                    <div style="font-size: 0.75rem; opacity: ${isCurrent ? '0.9' : '0.6'};">${item.timestamp}</div>
+                </div>
+            `;
+        }).reverse().join('');
+    }
+
+    jumpToHistory(index) {
+        if (index >= 0 && index < this.history.length) {
+            this.historyIndex = index;
+            this.restoreFromHistory();
+        }
     }
 
     selectElement(element) {
@@ -350,8 +625,36 @@ class YenzeBuilder {
         element.style.outlineOffset = '2px';
         element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
 
+        // Scroll element into view in the canvas
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+        });
+
+        // Highlight in layers panel
+        this.highlightInLayers(element);
+
         // Show properties
         this.showProperties(element);
+    }
+
+    highlightInLayers(element) {
+        const elementId = this.generateElementId(element);
+
+        // Remove previous layer selection
+        document.querySelectorAll('.layer-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        // Find and highlight the corresponding layer item
+        const layerItem = document.querySelector(`[data-element-id="${elementId}"]`);
+        if (layerItem) {
+            layerItem.classList.add('selected');
+
+            // Scroll into view if needed
+            layerItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     }
 
     showProperties(element) {
@@ -359,7 +662,6 @@ class YenzeBuilder {
 
         const tagName = element.tagName.toLowerCase();
         const currentText = element.textContent || '';
-        const currentHTML = element.innerHTML || '';
 
         // Get computed styles from iframe window
         const iframeWindow = element.ownerDocument.defaultView;
@@ -367,8 +669,8 @@ class YenzeBuilder {
 
         // Get actual background (check parent if transparent)
         let bgColor = styles.backgroundColor;
+        let hasInlineBackground = element.style.backgroundColor !== '';
         if (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') {
-            // Try to get parent background
             let parent = element.parentElement;
             while (parent && (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent')) {
                 const parentStyles = iframeWindow.getComputedStyle(parent);
@@ -379,14 +681,37 @@ class YenzeBuilder {
         bgColor = this.rgbToHex(bgColor);
 
         const textColor = this.rgbToHex(styles.color);
-        const fontSize = styles.fontSize;
+        const hasInlineTextColor = element.style.color !== '';
+        const fontSize = parseInt(styles.fontSize);
+        const fontFamily = styles.fontFamily.split(',')[0].replace(/['"]/g, '');
+
+        // Position & Size
+        const position = element.style.position || styles.position || 'static';
+        const width = element.style.width || '';
+        const height = element.style.height || '';
+        const top = element.style.top || '';
+        const left = element.style.left || '';
 
         const isTextEl = this.isTextElement(element);
         const isImage = element.tagName === 'IMG';
+        const isLink = element.tagName === 'A';
+
+        const linkHref = isLink ? (element.getAttribute('href') || '') : '';
+        const imgSrc = isImage ? (element.getAttribute('src') || '') : '';
+        const imgAlt = isImage ? (element.getAttribute('alt') || '') : '';
+        const imgObjectFit = isImage ? (element.style.objectFit || 'fill') : '';
+
+        // Store original values to detect changes
+        this.originalValues = {
+            bgColor: bgColor,
+            textColor: textColor,
+            hasInlineBackground: hasInlineBackground,
+            hasInlineTextColor: hasInlineTextColor
+        };
 
         panel.innerHTML = `
             <div style="background: #F5F9FF; border: 1px solid #E5E5E5; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8125rem; color: #666;">
-                💡 ${isTextEl ? 'Double-click text to edit inline' : isImage ? 'Double-click image to replace' : 'Double-click to edit inline'}
+                💡 ${isTextEl ? 'Double-click to edit inline' : isImage ? 'Double-click to replace' : 'Drag to reorder within parent'}
             </div>
 
             <div class="property-group">
@@ -394,12 +719,85 @@ class YenzeBuilder {
                 <input type="text" class="property-input" value="${tagName}" readonly style="background: var(--bg);">
             </div>
 
+            ${isLink ? `
+            <div class="property-group">
+                <label class="property-label">🔗 Link URL</label>
+                <input type="text" class="property-input" id="propLinkHref" value="${linkHref}" placeholder="https://example.com">
+            </div>
+            ` : ''}
+
+            ${isImage ? `
+            <div class="property-group">
+                <label class="property-label">🖼️ Image</label>
+                <button class="btn btn-secondary" id="uploadImgBtn" style="width: 100%; margin-bottom: 0.5rem;">
+                    📤 Upload New Image
+                </button>
+                <input type="text" class="property-input" id="propImgSrc" value="${imgSrc}" placeholder="https://...">
+            </div>
+            <div class="property-group">
+                <label class="property-label">Alt Text</label>
+                <input type="text" class="property-input" id="propImgAlt" value="${imgAlt}" placeholder="Image description">
+            </div>
+            <div class="property-group">
+                <label class="property-label">Image Fit</label>
+                <select class="property-input" id="propImgObjectFit">
+                    <option value="fill" ${imgObjectFit === 'fill' ? 'selected' : ''}>Fill</option>
+                    <option value="contain" ${imgObjectFit === 'contain' ? 'selected' : ''}>Fit</option>
+                    <option value="cover" ${imgObjectFit === 'cover' ? 'selected' : ''}>Cover</option>
+                    <option value="none" ${imgObjectFit === 'none' ? 'selected' : ''}>None</option>
+                    <option value="scale-down" ${imgObjectFit === 'scale-down' ? 'selected' : ''}>Scale Down</option>
+                </select>
+            </div>
+            ` : ''}
+
             ${isTextEl ? `
             <div class="property-group">
                 <label class="property-label">Text Content</label>
-                <textarea class="property-input" id="propText" style="min-height: 80px;">${currentText.trim()}</textarea>
+                <textarea class="property-input" id="propText" style="min-height: 60px;">${currentText.trim()}</textarea>
             </div>
             ` : ''}
+
+            <div class="property-group">
+                <label class="property-label">Position</label>
+                <select class="property-input" id="propPosition">
+                    <option value="static" ${position === 'static' ? 'selected' : ''}>Static</option>
+                    <option value="relative" ${position === 'relative' ? 'selected' : ''}>Relative</option>
+                    <option value="absolute" ${position === 'absolute' ? 'selected' : ''}>Absolute</option>
+                    <option value="fixed" ${position === 'fixed' ? 'selected' : ''}>Fixed</option>
+                    <option value="sticky" ${position === 'sticky' ? 'selected' : ''}>Sticky</option>
+                </select>
+            </div>
+
+            <div class="property-group">
+                <label class="property-label">Size</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <input type="text" class="property-input" id="propWidth" value="${width}" placeholder="auto" style="font-size: 0.8125rem;">
+                    <input type="text" class="property-input" id="propHeight" value="${height}" placeholder="auto" style="font-size: 0.8125rem;">
+                </div>
+            </div>
+
+            ${position !== 'static' ? `
+            <div class="property-group">
+                <label class="property-label">Position Offset</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <input type="text" class="property-input" id="propTop" value="${top}" placeholder="top" style="font-size: 0.8125rem;">
+                    <input type="text" class="property-input" id="propLeft" value="${left}" placeholder="left" style="font-size: 0.8125rem;">
+                </div>
+            </div>
+            ` : ''}
+
+            <div class="property-group">
+                <label class="property-label">Font Family</label>
+                <div style="position: relative;">
+                    <input type="text" class="property-input" id="propFontSearch" value="${fontFamily}" placeholder="Search fonts...">
+                    <div id="fontDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 6px; max-height: 200px; overflow-y: auto; margin-top: 4px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
+                </div>
+            </div>
+
+            <div class="property-group">
+                <label class="property-label">Font Size</label>
+                <input type="number" class="property-input" id="propFontSize" value="${fontSize}" min="8" max="200">
+            </div>
 
             <div class="property-group">
                 <label class="property-label">Background</label>
@@ -418,54 +816,291 @@ class YenzeBuilder {
             </div>
 
             <div class="property-group">
-                <label class="property-label">Font Size</label>
-                <input type="text" class="property-input" id="propFontSize" value="${fontSize}">
-            </div>
-
-            <div class="property-group">
                 <button class="btn btn-primary" style="width: 100%;" id="applyPropsBtn">
                     Apply Changes
                 </button>
             </div>
+
+            <div class="property-group">
+                <button class="btn btn-secondary" style="width: 100%; background: #EF4444; color: white; border-color: #DC2626;" id="deleteElementBtn">
+                    🗑️ Delete Element
+                </button>
+            </div>
         `;
 
-        // Setup property change handlers
+        // Setup font search
+        this.setupFontSearch(element);
+
+        // Setup image upload button
+        if (isImage) {
+            document.getElementById('uploadImgBtn')?.addEventListener('click', () => {
+                this.enableImageEdit(element);
+            });
+        }
+
+        // Setup LIVE property change handlers
         document.getElementById('applyPropsBtn').addEventListener('click', () => {
-            this.applyProperties(element);
+            this.applyProperties(element, true); // true = save to history
         });
 
-        // Sync color pickers
+        // Setup delete button
+        document.getElementById('deleteElementBtn')?.addEventListener('click', () => {
+            this.deleteElement(element);
+        });
+
+        // Live updates for all properties
+        const applyLive = () => this.applyProperties(element, false); // false = don't save to history yet
+
+        // Text content
+        if (isTextEl) {
+            document.getElementById('propText')?.addEventListener('input', applyLive);
+        }
+
+        // Font size - live update
+        document.getElementById('propFontSize')?.addEventListener('input', applyLive);
+
+        // Position
+        document.getElementById('propPosition')?.addEventListener('change', applyLive);
+
+        // Size fields
+        document.getElementById('propWidth')?.addEventListener('input', applyLive);
+        document.getElementById('propHeight')?.addEventListener('input', applyLive);
+        document.getElementById('propTop')?.addEventListener('input', applyLive);
+        document.getElementById('propLeft')?.addEventListener('input', applyLive);
+
+        // Link URL
+        document.getElementById('propLinkHref')?.addEventListener('input', applyLive);
+
+        // Image properties
+        document.getElementById('propImgSrc')?.addEventListener('input', applyLive);
+        document.getElementById('propImgAlt')?.addEventListener('input', applyLive);
+        document.getElementById('propImgObjectFit')?.addEventListener('change', applyLive);
+
+        // Color pickers - sync and apply live
         document.getElementById('propBgColor').addEventListener('input', (e) => {
             document.getElementById('propBgColorText').value = e.target.value;
+            applyLive();
         });
 
         document.getElementById('propTextColor').addEventListener('input', (e) => {
             document.getElementById('propTextColorText').value = e.target.value;
+            applyLive();
+        });
+
+        document.getElementById('propBgColorText')?.addEventListener('input', (e) => {
+            document.getElementById('propBgColor').value = e.target.value;
+            applyLive();
+        });
+
+        document.getElementById('propTextColorText')?.addEventListener('input', (e) => {
+            document.getElementById('propTextColor').value = e.target.value;
+            applyLive();
         });
     }
 
-    applyProperties(element) {
-        const newText = document.getElementById('propText').value;
+    setupFontSearch(element) {
+        const searchInput = document.getElementById('propFontSearch');
+        const dropdown = document.getElementById('fontDropdown');
+
+        searchInput.addEventListener('focus', () => {
+            this.showFontDropdown('', element);
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            this.showFontDropdown(e.target.value, element);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+
+    showFontDropdown(query, element) {
+        const dropdown = document.getElementById('fontDropdown');
+        const filtered = this.googleFonts.filter(font =>
+            font.toLowerCase().includes(query.toLowerCase())
+        );
+
+        dropdown.innerHTML = filtered.map(font => `
+            <div style="padding: 0.5rem 0.75rem; cursor: pointer; font-family: '${font}', sans-serif; transition: background 0.15s;"
+                 onmouseover="this.style.background='var(--bg)'"
+                 onmouseout="this.style.background='white'"
+                 onclick="document.getElementById('propFontSearch').value='${font}'; document.getElementById('fontDropdown').style.display='none'; app.applyProperties(app.selectedElement, false);">
+                ${font}
+            </div>
+        `).join('');
+
+        dropdown.style.display = filtered.length > 0 ? 'block' : 'none';
+    }
+
+    loadGoogleFont(fontName) {
+        const formattedName = fontName.replace(/ /g, '+');
+
+        // Load in main document
+        const link = document.getElementById('dynamicFonts');
+        const currentFonts = link.href ? link.href.split('family=')[1]?.split('&')[0] || '' : '';
+        const fontsArray = currentFonts ? currentFonts.split('|') : [];
+
+        if (!fontsArray.includes(formattedName)) {
+            fontsArray.push(formattedName);
+            const fontUrl = `https://fonts.googleapis.com/css2?${fontsArray.map(f => `family=${f}:wght@300;400;500;600;700`).join('&')}&display=swap`;
+            link.href = fontUrl;
+
+            // Also load in iframe
+            const canvas = document.getElementById('canvas');
+            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+            if (iframeDoc) {
+                let iframeLink = iframeDoc.getElementById('dynamicFonts');
+                if (!iframeLink) {
+                    iframeLink = iframeDoc.createElement('link');
+                    iframeLink.id = 'dynamicFonts';
+                    iframeLink.rel = 'stylesheet';
+                    iframeDoc.head.appendChild(iframeLink);
+                }
+                iframeLink.href = fontUrl;
+            }
+        }
+    }
+
+    applyProperties(element, saveToHistory = true) {
+        const newText = document.getElementById('propText')?.value;
         const bgColor = document.getElementById('propBgColor').value;
         const textColor = document.getElementById('propTextColor').value;
         const fontSize = document.getElementById('propFontSize').value;
+        const fontFamily = document.getElementById('propFontSearch')?.value;
+        const position = document.getElementById('propPosition')?.value;
+        const width = document.getElementById('propWidth')?.value;
+        const height = document.getElementById('propHeight')?.value;
+        const top = document.getElementById('propTop')?.value;
+        const left = document.getElementById('propLeft')?.value;
 
-        // Apply changes
-        if (element.children.length === 0) {
+        // Apply text changes
+        if (newText !== undefined && element.children.length === 0) {
             element.textContent = newText;
         }
-        element.style.backgroundColor = bgColor;
-        element.style.color = textColor;
-        element.style.fontSize = fontSize;
 
-        // Update stored HTML
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-        this.currentHTML = iframeDoc.documentElement.outerHTML;
-        this.projectData.html = this.currentHTML;
+        // Only apply background if it was changed or already had inline style
+        if (this.originalValues.hasInlineBackground || bgColor !== this.originalValues.bgColor) {
+            element.style.backgroundColor = bgColor;
+        }
 
-        this.saveProject();
-        this.showToast('✅ Properties updated!', 'success');
+        // Only apply text color if it was changed or already had inline style
+        if (this.originalValues.hasInlineTextColor || textColor !== this.originalValues.textColor) {
+            element.style.color = textColor;
+        }
+
+        // Apply font size (always apply because it's a number input)
+        if (fontSize) {
+            element.style.fontSize = fontSize + 'px';
+        }
+
+        // Apply font family
+        if (fontFamily) {
+            this.loadGoogleFont(fontFamily);
+            element.style.fontFamily = `'${fontFamily}', sans-serif`;
+        }
+
+        // Apply position & size
+        if (position !== undefined && position !== null) {
+            element.style.position = position;
+        }
+
+        if (width !== undefined && width !== null) {
+            element.style.width = width || '';
+        }
+
+        if (height !== undefined && height !== null) {
+            element.style.height = height || '';
+        }
+
+        if (top !== undefined && top !== null) {
+            element.style.top = top || '';
+        }
+
+        if (left !== undefined && left !== null) {
+            element.style.left = left || '';
+        }
+
+        // Apply link href
+        if (element.tagName === 'A') {
+            const newHref = document.getElementById('propLinkHref')?.value;
+            if (newHref !== undefined) {
+                element.setAttribute('href', newHref);
+            }
+        }
+
+        // Apply image src, alt, and object-fit
+        if (element.tagName === 'IMG') {
+            const newSrc = document.getElementById('propImgSrc')?.value;
+            const newAlt = document.getElementById('propImgAlt')?.value;
+            const objectFit = document.getElementById('propImgObjectFit')?.value;
+
+            if (newSrc !== undefined) {
+                element.setAttribute('src', newSrc);
+            }
+            if (newAlt !== undefined) {
+                element.setAttribute('alt', newAlt);
+            }
+            if (objectFit !== undefined) {
+                element.style.objectFit = objectFit;
+                // Ensure image has width/height for object-fit to work
+                if (!element.style.width && !element.style.height) {
+                    element.style.width = '100%';
+                    element.style.height = 'auto';
+                }
+            }
+        }
+
+        // Only update HTML and show toast if saving to history
+        if (saveToHistory) {
+            this.updateHTML('Update properties');
+            this.showToast('✅ Properties updated!', 'success');
+        } else {
+            // For live updates, just update the current HTML without adding to history
+            const canvas = document.getElementById('canvas');
+            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+            const newHTML = iframeDoc.documentElement.outerHTML;
+            this.currentHTML = newHTML;
+            this.projectData.html = this.currentHTML;
+            this.saveProject();
+        }
+    }
+
+    deleteElement(element) {
+        // Don't allow deleting the body element
+        if (element.tagName === 'BODY') {
+            this.showToast('❌ Cannot delete body element', 'error');
+            return;
+        }
+
+        const parent = element.parentNode;
+        if (parent) {
+            parent.removeChild(element);
+
+            // Clear selection
+            this.selectedElement = null;
+
+            // Get iframe doc
+            const canvas = document.getElementById('canvas');
+            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+            // Update HTML and layers
+            this.updateHTML('Delete element');
+            this.buildLayersTree(iframeDoc);
+
+            // Clear properties panel
+            const panel = document.getElementById('propertiesPanel');
+            panel.innerHTML = `
+                <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; padding: 2rem 1rem;">
+                    Select an element to edit
+                </p>
+            `;
+
+            this.showToast('✅ Element deleted', 'success');
+        }
     }
 
     buildLayersTree(doc) {
@@ -474,29 +1109,154 @@ class YenzeBuilder {
 
         const buildNode = (element, level = 0) => {
             const tagName = element.tagName.toLowerCase();
-            
+
             // Skip script and style tags
             if (tagName === 'script' || tagName === 'style') return;
 
             const li = document.createElement('li');
             li.className = 'layer-item';
             li.style.paddingLeft = `${level * 1.5}rem`;
-            
+            li.draggable = true;
+            li.dataset.elementId = this.generateElementId(element);
+
             const icon = this.getElementIcon(tagName);
             li.innerHTML = `
                 <span class="layer-icon">${icon}</span>
                 <span>${tagName}</span>
             `;
 
+            // Click to select
             li.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.selectElement(element);
-                
+
                 // Highlight in tree
                 document.querySelectorAll('.layer-item').forEach(item => {
                     item.classList.remove('selected');
                 });
                 li.classList.add('selected');
+            });
+
+            // Drag and drop in layers
+            li.addEventListener('dragstart', (e) => {
+                e.stopPropagation();
+                this.draggedLayerElement = element;
+                li.style.opacity = '0.5';
+            });
+
+            li.addEventListener('dragend', (e) => {
+                li.style.opacity = '1';
+                this.draggedLayerElement = null;
+
+                // Clean up all drop indicators
+                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+                document.querySelectorAll('.layer-item').forEach(item => {
+                    item.style.background = '';
+                });
+            });
+
+            li.addEventListener('dragover', (e) => {
+                if (!this.draggedLayerElement) return;
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Remove any existing drop indicators
+                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+
+                // Determine drop position based on mouse Y position
+                const rect = li.getBoundingClientRect();
+                const midpoint = rect.top + rect.height / 2;
+                const isContainer = this.isContainer(element);
+
+                // Create drop indicator line
+                const dropLine = document.createElement('div');
+                dropLine.className = 'layer-drop-indicator';
+                dropLine.style.cssText = `
+                    height: 2px;
+                    background: #0EA5E9;
+                    position: absolute;
+                    left: ${level * 1.5}rem;
+                    right: 0;
+                    pointer-events: none;
+                    z-index: 1000;
+                    box-shadow: 0 0 4px rgba(14, 165, 233, 0.5);
+                `;
+
+                if (isContainer && e.clientY > midpoint) {
+                    // Drop inside container (indent the line more)
+                    dropLine.style.left = `${(level + 1) * 1.5}rem`;
+                    dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
+                    this.dropPosition = 'inside';
+                    li.style.background = 'rgba(14, 165, 233, 0.05)';
+                } else if (e.clientY < midpoint) {
+                    // Drop before element
+                    dropLine.style.top = `${rect.top - li.parentElement.getBoundingClientRect().top}px`;
+                    this.dropPosition = 'before';
+                } else {
+                    // Drop after element
+                    dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
+                    this.dropPosition = 'after';
+                }
+
+                li.parentElement.appendChild(dropLine);
+            });
+
+            li.addEventListener('dragleave', (e) => {
+                // Only remove if actually leaving (not entering child)
+                const relatedTarget = e.relatedTarget;
+                if (!li.contains(relatedTarget)) {
+                    li.style.background = '';
+                }
+            });
+
+            li.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Clean up visual indicators
+                li.style.background = '';
+                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+
+                if (this.draggedLayerElement && this.draggedLayerElement !== element) {
+                    // Don't allow element to be dropped into itself or its children
+                    let checkParent = element;
+                    while (checkParent) {
+                        if (checkParent === this.draggedLayerElement) {
+                            this.showToast('❌ Cannot drop element into itself', 'error');
+                            return;
+                        }
+                        checkParent = checkParent.parentNode;
+                    }
+
+                    const parent = element.parentNode;
+                    if (!parent) return;
+
+                    // Execute the drop based on the determined position
+                    if (this.dropPosition === 'inside' && this.isContainer(element)) {
+                        // Drop inside container as first child
+                        element.insertBefore(this.draggedLayerElement, element.firstChild);
+                    } else if (this.dropPosition === 'before') {
+                        // Drop before element
+                        parent.insertBefore(this.draggedLayerElement, element);
+                    } else {
+                        // Drop after element
+                        parent.insertBefore(this.draggedLayerElement, element.nextSibling);
+                    }
+
+                    // Get the iframe doc for rebuilding layers
+                    const canvas = document.getElementById('canvas');
+                    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+                    this.updateHTML('Reorder in layers');
+                    this.buildLayersTree(iframeDoc); // Rebuild layers to show new order
+
+                    // Re-highlight the moved element
+                    if (this.selectedElement) {
+                        this.highlightInLayers(this.selectedElement);
+                    }
+
+                    this.showToast('✅ Element reordered', 'success');
+                }
             });
 
             tree.appendChild(li);
@@ -510,6 +1270,119 @@ class YenzeBuilder {
         if (doc.body) {
             buildNode(doc.body);
         }
+    }
+
+    generateElementId(element) {
+        if (!element._yenzeId) {
+            element._yenzeId = 'el_' + Math.random().toString(36).substr(2, 9);
+        }
+        return element._yenzeId;
+    }
+
+    addElement(type) {
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        const newElement = iframeDoc.createElement(type);
+        newElement.textContent = `New ${type}`;
+        newElement.style.padding = '1rem';
+        newElement.style.margin = '0.5rem 0';
+        newElement.style.background = '#f0f0f0';
+        newElement.style.borderRadius = '4px';
+        newElement.style.minHeight = '50px'; // Ensure it's visible and can receive drops
+        newElement.style.border = '1px dashed #ccc'; // Visual indicator that it's empty
+
+        // Insert based on selected element
+        if (this.selectedElement) {
+            // If selected element is a container, add inside it
+            if (this.isContainer(this.selectedElement)) {
+                this.selectedElement.appendChild(newElement);
+            } else {
+                // Otherwise, add after the selected element (as sibling)
+                const parent = this.selectedElement.parentNode;
+                if (parent) {
+                    parent.insertBefore(newElement, this.selectedElement.nextSibling);
+                } else {
+                    iframeDoc.body.appendChild(newElement);
+                }
+            }
+        } else {
+            // No selection, add to body
+            iframeDoc.body.appendChild(newElement);
+        }
+
+        // Make the new element editable
+        this.makeElementEditable(newElement, iframeDoc);
+
+        this.updateHTML(`Add ${type}`);
+        this.buildLayersTree(iframeDoc); // Rebuild layers to show new element
+
+        // Select the new element
+        this.selectElement(newElement);
+
+        this.showToast(`✅ ${type} added`, 'success');
+    }
+
+    addColumns() {
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        const row = iframeDoc.createElement('div');
+        row.style.display = 'flex';
+        row.style.gap = '1rem';
+        row.style.margin = '1rem 0';
+        row.style.minHeight = '100px'; // Ensure visible
+
+        const col1 = iframeDoc.createElement('div');
+        col1.style.flex = '1';
+        col1.style.padding = '1rem';
+        col1.style.minHeight = '80px'; // Ensure can receive drops
+        col1.style.border = '1px dashed #ccc';
+        // No text content - empty column
+        // No background - inherits from parent
+
+        const col2 = iframeDoc.createElement('div');
+        col2.style.flex = '1';
+        col2.style.padding = '1rem';
+        col2.style.minHeight = '80px'; // Ensure can receive drops
+        col2.style.border = '1px dashed #ccc';
+        // No text content - empty column
+        // No background - inherits from parent
+
+        row.appendChild(col1);
+        row.appendChild(col2);
+
+        // Insert based on selected element
+        if (this.selectedElement) {
+            // If selected element is a container, add inside it
+            if (this.isContainer(this.selectedElement)) {
+                this.selectedElement.appendChild(row);
+            } else {
+                // Otherwise, add after the selected element (as sibling)
+                const parent = this.selectedElement.parentNode;
+                if (parent) {
+                    parent.insertBefore(row, this.selectedElement.nextSibling);
+                } else {
+                    iframeDoc.body.appendChild(row);
+                }
+            }
+        } else {
+            // No selection, add to body
+            iframeDoc.body.appendChild(row);
+        }
+
+        // Make the new elements editable
+        this.makeElementEditable(row, iframeDoc);
+        this.makeElementEditable(col1, iframeDoc);
+        this.makeElementEditable(col2, iframeDoc);
+
+        this.updateHTML('Add columns');
+        this.buildLayersTree(iframeDoc); // Rebuild layers to show new elements
+
+        // Select the row
+        this.selectElement(row);
+
+        this.showToast('✅ 2 columns added', 'success');
     }
 
     getElementIcon(tagName) {
@@ -554,32 +1427,92 @@ class YenzeBuilder {
         this.showToast('👁️ Preview opened in new window', 'success');
     }
 
-    publish() {
+    async publish() {
         if (!this.currentHTML) {
             this.showToast('⚠️ No content to publish', 'error');
             return;
         }
 
-        // Generate a unique URL (in production, this would be a real deployment)
-        const projectSlug = this.projectData.name.toLowerCase().replace(/\s+/g, '-');
-        const uniqueId = Date.now().toString(36);
-        const publishedUrl = `https://${projectSlug}-${uniqueId}.yenze.io`;
-        
-        this.projectData.publishedUrl = publishedUrl;
-        this.saveProject();
+        // Check if user is authenticated
+        if (!supabaseClient.isAuthenticated()) {
+            // Show auth modal first
+            authUI.showAuthModal('login');
+            this.showToast('Please log in to publish your website', 'info');
+            return;
+        }
 
-        // Show success modal (simplified version)
-        const message = `
-🚀 Published Successfully!
+        // User is authenticated - show plan selection modal
+        authUI.showPlanModal();
+    }
+
+    async publishWithPlan(plan) {
+        try {
+            this.showToast('Publishing your website...', 'info');
+
+            // Save project to database first
+            const { data: project, error: saveError } = await supabaseClient.saveProject({
+                name: this.projectData.name,
+                html: this.currentHTML,
+                plan: plan
+            });
+
+            if (saveError) {
+                throw new Error('Failed to save project: ' + saveError.message);
+            }
+
+            // Generate deployment URL based on plan
+            let publishedUrl;
+            if (plan === 'free') {
+                // FREE tier: Use view.html with project ID
+                const baseUrl = window.location.origin;
+                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
+
+                // TODO: In production, deploy to Vercel with subdomain
+                // await this.deployToVercel(project.id, publishedUrl, true); // true = add badge
+            } else {
+                // PRO/BUSINESS tier: custom domain
+                // This will be handled after Stripe checkout
+                publishedUrl = `https://custom-domain-pending.yenze.app`;
+            }
+
+            // Update project with published URL
+            const { error: updateError } = await supabaseClient.updateProjectUrl(
+                project.id,
+                publishedUrl
+            );
+
+            if (updateError) {
+                throw new Error('Failed to update project URL: ' + updateError.message);
+            }
+
+            this.projectData.publishedUrl = publishedUrl;
+            this.saveProject(); // Save to localStorage as well
+
+            // Create deployment record
+            await supabaseClient.client
+                .from('deployments')
+                .insert({
+                    project_id: project.id,
+                    user_id: supabaseClient.currentUser.id,
+                    deployment_url: publishedUrl,
+                    status: 'ready'
+                });
+
+            // Show success message
+            const message = `🚀 Published Successfully!
 
 Your website is now live at:
 ${publishedUrl}
 
-(In production, this would deploy to a real URL)
-        `;
-        
-        alert(message);
-        this.showToast('🚀 Website published!', 'success');
+${plan === 'free' ? '✨ Upgrade to PRO to use a custom domain and remove the YENZE badge!' : ''}`;
+
+            alert(message);
+            this.showToast('🚀 Website published!', 'success');
+
+        } catch (error) {
+            console.error('Publish error:', error);
+            this.showToast('❌ Failed to publish: ' + error.message, 'error');
+        }
     }
 
     handleAssetUpload(files) {
@@ -699,4 +1632,6 @@ ${publishedUrl}
 }
 
 // Initialize app
+// Make app globally accessible for auth-ui integration
 const app = new YenzeBuilder();
+window.app = app;

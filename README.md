@@ -106,6 +106,74 @@ Copia y pega este código en el área "OR PASTE HTML":
 - CSS3
 - Vanilla JavaScript
 - LocalStorage para persistencia
+- **Supabase** - Autenticación y base de datos
+- **Stripe** - Sistema de pagos y suscripciones
+- **PostgreSQL** - Base de datos con Row Level Security
+
+## 💎 Planes y Monetización
+
+YENZE Builder utiliza un modelo **Freemium** con 3 niveles:
+
+### 🆓 FREE (Gratis)
+- ✅ Edición ilimitada sin login
+- ✅ Publicación en subdominio YENZE
+- ✅ Incluye badge "Made with YENZE"
+- ❌ Sin dominio personalizado
+
+### ⭐ PRO ($9.99/mes)
+- ✅ Todo lo de FREE
+- ✅ Dominio personalizado
+- ✅ Descargar HTML/ZIP
+- ✅ Remover badge de YENZE
+- ✅ Hasta 5 proyectos
+- ✅ Panel de analytics
+- ✅ Soporte prioritario
+
+### 🚀 BUSINESS ($29.99/mes)
+- ✅ Todo lo de PRO
+- ✅ Proyectos ilimitados
+- ✅ White label completo
+- ✅ Múltiples dominios personalizados
+- ✅ Inyección de código personalizado
+- ✅ Analytics avanzados
+- ✅ Acceso a API
+- ✅ Colaboración en equipo
+- ✅ Soporte 24/7
+
+## 🔐 Sistema de Autenticación
+
+El proyecto ahora incluye un sistema completo de autenticación y gestión de usuarios:
+
+- **Login/Signup** con email y contraseña
+- **OAuth** con Google y GitHub
+- **Recuperación de contraseña**
+- **Gestión de sesiones**
+- **Base de datos PostgreSQL** con Row Level Security
+- **Sistema de suscripciones** con Stripe
+
+### 📋 Configuración Requerida
+
+Para activar todas las funcionalidades, necesitas configurar:
+
+1. **Supabase** (autenticación y base de datos)
+2. **Stripe** (pagos y suscripciones)
+3. **Variables de entorno**
+
+**👉 Ver guía completa**: [SETUP-GUIDE.md](SETUP-GUIDE.md)
+**📊 Resumen técnico**: [AUTHENTICATION-SUMMARY.md](AUTHENTICATION-SUMMARY.md)
+
+### ⚡ Inicio Rápido (Solo Autenticación)
+
+1. Crea un proyecto en [Supabase](https://supabase.com)
+2. Ejecuta el schema SQL: `supabase-schema.sql`
+3. Actualiza `config.js` con tus credenciales:
+   ```javascript
+   const SUPABASE_CONFIG = {
+       url: 'TU_SUPABASE_URL',
+       anonKey: 'TU_SUPABASE_ANON_KEY'
+   };
+   ```
+4. ¡Listo! Ya puedes probar login/signup y publicar en modo FREE
 
 ## 📦 Deployment
 
@@ -118,3 +186,21 @@ git add .
 git commit -m "Descripción del cambio"
 vercel --prod
 \`\`\`
+
+## 📁 Estructura del Proyecto
+
+```
+yenzehtml/
+├── index.html                    # Interfaz principal
+├── app.js                        # Lógica de la aplicación
+├── config.js                     # Configuración (Supabase, Stripe, Planes)
+├── supabase-client.js            # Cliente de Supabase (auth y DB)
+├── auth-ui.js                    # Componentes de autenticación (modales)
+├── auth-styles.css               # Estilos para auth
+├── stripe-integration.js         # Integración con Stripe
+├── supabase-schema.sql           # Schema de base de datos
+├── example.html                  # HTML de ejemplo para probar
+├── SETUP-GUIDE.md               # Guía completa de configuración
+├── AUTHENTICATION-SUMMARY.md    # Resumen técnico de implementación
+└── README.md                    # Este archivo
+```
