@@ -211,19 +211,20 @@ class YenzeBuilder {
                 e.preventDefault();
                 e.stopPropagation();
 
-                console.log('Double click detected on:', e.target.tagName);
-
                 // Enable inline editing for text elements (includes buttons, links, headings)
                 if (this.isTextElement(e.target)) {
-                    console.log('Enabling inline text edit');
                     this.enableInlineTextEdit(e.target);
+                    return;
                 }
 
                 // Enable image replacement for images
                 if (e.target.tagName === 'IMG') {
-                    console.log('Enabling image edit');
                     this.enableImageEdit(e.target);
+                    return;
                 }
+
+                // If not editable, show message
+                this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
             });
         });
     }
@@ -247,9 +248,7 @@ class YenzeBuilder {
     }
 
     enableInlineTextEdit(element) {
-        console.log('enableInlineTextEdit called for', element);
-
-        // Visual feedback - editing mode
+        // Visual feedback - editing mode (green outline)
         element.style.outline = '2px solid #10B981';
         element.style.outlineOffset = '2px';
         element.style.boxShadow = '0 0 0 4px rgba(16, 185, 129, 0.15)';
@@ -258,51 +257,52 @@ class YenzeBuilder {
         element.contentEditable = 'true';
         element.style.cursor = 'text';
 
-        // Focus and select after a small delay
-        setTimeout(() => {
-            try {
-                element.focus();
-                console.log('Element focused');
+        // Notify user
+        this.showToast('Editing mode - Press Enter or click outside to save', 'success');
 
-                // Select all text
+        // Focus and select text
+        setTimeout(() => {
+            element.focus();
+
+            // Select all text content
+            try {
                 const range = element.ownerDocument.createRange();
                 range.selectNodeContents(element);
-                const sel = element.ownerDocument.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-                console.log('Text selected');
-            } catch (e) {
-                console.error('Selection failed', e);
+                const selection = element.ownerDocument.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (err) {
+                // Fallback: just focus
             }
-        }, 100);
+        }, 50);
 
-        // Save on blur
-        const saveText = () => {
-            console.log('Saving text changes');
+        // Save handler
+        const saveChanges = () => {
             element.contentEditable = 'false';
             element.style.cursor = 'pointer';
-            // Restore selection style
+
+            // Restore blue selection style
             element.style.outline = '2px solid #0066FF';
             element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
 
             this.updateHTML();
-            this.showToast('✅ Text updated', 'success');
+            this.showToast('✅ Text updated successfully', 'success');
         };
 
-        element.addEventListener('blur', saveText, { once: true });
+        // Save on blur (click outside)
+        element.addEventListener('blur', saveChanges, { once: true });
 
-        // Save on Enter key
-        const handleKeydown = (e) => {
+        // Save on Enter/Escape
+        const keyHandler = (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 element.blur();
-            }
-            if (e.key === 'Escape') {
+            } else if (e.key === 'Escape') {
                 element.blur();
             }
         };
 
-        element.addEventListener('keydown', handleKeydown, { once: true });
+        element.addEventListener('keydown', keyHandler, { once: true });
     }
 
     enableImageEdit(imgElement) {
@@ -364,7 +364,20 @@ class YenzeBuilder {
         // Get computed styles from iframe window
         const iframeWindow = element.ownerDocument.defaultView;
         const styles = iframeWindow.getComputedStyle(element);
-        const bgColor = this.rgbToHex(styles.backgroundColor);
+
+        // Get actual background (check parent if transparent)
+        let bgColor = styles.backgroundColor;
+        if (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') {
+            // Try to get parent background
+            let parent = element.parentElement;
+            while (parent && (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent')) {
+                const parentStyles = iframeWindow.getComputedStyle(parent);
+                bgColor = parentStyles.backgroundColor;
+                parent = parent.parentElement;
+            }
+        }
+        bgColor = this.rgbToHex(bgColor);
+
         const textColor = this.rgbToHex(styles.color);
         const fontSize = styles.fontSize;
 
