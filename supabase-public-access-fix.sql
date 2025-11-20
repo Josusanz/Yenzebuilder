@@ -5,7 +5,10 @@
 -- Run this in your Supabase SQL Editor
 -- =====================================================
 
--- Add a policy to allow ANYONE (including anonymous users) to view ANY project
+-- STEP 1: Drop the old restrictive policy
+DROP POLICY IF EXISTS "Users can view own projects" ON projects;
+
+-- STEP 2: Add a policy to allow ANYONE (including anonymous users) to view ANY project
 -- This is safe because:
 -- 1. Published URLs are UUID-based (hard to guess)
 -- 2. Users explicitly choose to publish their sites
@@ -16,6 +19,13 @@ CREATE POLICY "Anyone can view published projects"
     ON projects FOR SELECT
     TO anon, authenticated
     USING (true);
+
+-- STEP 3: Re-add a policy for authenticated users to view their own projects
+-- This is needed for the dashboard to work
+CREATE POLICY "Authenticated users can view own projects"
+    ON projects FOR SELECT
+    TO authenticated
+    USING (auth.uid() = user_id);
 
 -- =====================================================
 -- IMPORTANT NOTE
