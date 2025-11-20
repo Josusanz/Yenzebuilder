@@ -12,23 +12,33 @@ class DashboardApp {
     }
 
     async init() {
-        // Check authentication
-        await supabaseClient.init();
-        this.currentUser = supabaseClient.getUser();
+        try {
+            // Check authentication
+            await supabaseClient.init();
+            this.currentUser = supabaseClient.getUser();
 
-        if (!this.currentUser) {
-            // Redirect to home if not authenticated
-            window.location.href = '/';
-            return;
+            console.log('Dashboard: Current user:', this.currentUser);
+
+            if (!this.currentUser) {
+                // Redirect to home if not authenticated
+                console.log('Dashboard: No user found, redirecting to home');
+                alert('Por favor inicia sesión primero');
+                window.location.href = '/';
+                return;
+            }
+
+            // Initialize UI
+            this.setupEventListeners();
+            this.updateUserProfile();
+            this.loadCurrentPlan();
+
+            // Load initial section (projects)
+            this.switchSection('projects');
+
+        } catch (error) {
+            console.error('Dashboard initialization error:', error);
+            alert('Error al cargar el dashboard: ' + error.message);
         }
-
-        // Initialize UI
-        this.setupEventListeners();
-        this.updateUserProfile();
-        this.loadCurrentPlan();
-
-        // Load initial section (projects)
-        this.switchSection('projects');
     }
 
     setupEventListeners() {
