@@ -198,11 +198,16 @@ class YenzeBuilder {
                 }
             });
 
-            // Click to select and edit
+            // Single click to select
             el.addEventListener('click', (e) => {
-                e.preventDefault();
                 e.stopPropagation();
                 this.selectElement(e.target);
+            });
+
+            // Double click to edit
+            el.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
 
                 // Enable inline editing for text elements
                 if (this.isTextElement(e.target)) {
@@ -224,32 +229,47 @@ class YenzeBuilder {
 
     enableInlineTextEdit(element) {
         // Make element editable
-        element.contentEditable = true;
-        element.focus();
+        element.contentEditable = 'true';
+        element.style.cursor = 'text';
 
-        // Select all text
-        const range = document.createRange();
-        range.selectNodeContents(element);
-        const sel = element.ownerDocument.defaultView.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
+        // Focus and select
+        setTimeout(() => {
+            element.focus();
+
+            // Select all text
+            try {
+                const range = element.ownerDocument.createRange();
+                range.selectNodeContents(element);
+                const sel = element.ownerDocument.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } catch (e) {
+                console.log('Selection failed', e);
+            }
+        }, 0);
 
         // Save on blur
         const saveText = () => {
-            element.contentEditable = false;
+            element.contentEditable = 'false';
+            element.style.cursor = 'pointer';
             this.updateHTML();
             this.showToast('✅ Text updated', 'success');
         };
 
         element.addEventListener('blur', saveText, { once: true });
 
-        // Save on Enter key
-        element.addEventListener('keydown', (e) => {
+        // Save on Enter key (except for multi-line elements)
+        const handleKeydown = (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 element.blur();
             }
-        }, { once: true });
+            if (e.key === 'Escape') {
+                element.blur();
+            }
+        };
+
+        element.addEventListener('keydown', handleKeydown, { once: true });
     }
 
     enableImageEdit(imgElement) {
@@ -303,30 +323,40 @@ class YenzeBuilder {
 
     showProperties(element) {
         const panel = document.getElementById('propertiesPanel');
-        
+
         const tagName = element.tagName.toLowerCase();
         const currentText = element.textContent || '';
         const currentHTML = element.innerHTML || '';
-        
-        // Get computed styles
-        const styles = window.getComputedStyle(element);
+
+        // Get computed styles from iframe window
+        const iframeWindow = element.ownerDocument.defaultView;
+        const styles = iframeWindow.getComputedStyle(element);
         const bgColor = this.rgbToHex(styles.backgroundColor);
         const textColor = this.rgbToHex(styles.color);
         const fontSize = styles.fontSize;
 
+        const isTextEl = this.isTextElement(element);
+        const isImage = element.tagName === 'IMG';
+
         panel.innerHTML = `
+            <div style="background: #F5F9FF; border: 1px solid #E5E5E5; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8125rem; color: #666;">
+                💡 ${isTextEl ? 'Double-click text to edit inline' : isImage ? 'Double-click image to replace' : 'Double-click to edit inline'}
+            </div>
+
             <div class="property-group">
                 <label class="property-label">Element</label>
-                <input type="text" class="property-input" value="${tagName}" readonly>
+                <input type="text" class="property-input" value="${tagName}" readonly style="background: var(--bg);">
             </div>
 
+            ${isTextEl ? `
             <div class="property-group">
                 <label class="property-label">Text Content</label>
-                <textarea class="property-input" id="propText" style="min-height: 80px;">${currentText}</textarea>
+                <textarea class="property-input" id="propText" style="min-height: 80px;">${currentText.trim()}</textarea>
             </div>
+            ` : ''}
 
             <div class="property-group">
-                <label class="property-label">Background Color</label>
+                <label class="property-label">Background</label>
                 <div class="color-picker-wrapper">
                     <input type="color" class="color-preview" id="propBgColor" value="${bgColor}">
                     <input type="text" class="property-input color-input" id="propBgColorText" value="${bgColor}">
