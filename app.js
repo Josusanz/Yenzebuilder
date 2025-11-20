@@ -101,11 +101,6 @@ class YenzeBuilder {
             this.projectData.name = e.target.value;
             this.saveProject();
         });
-
-        // Asset upload
-        document.getElementById('assetUpload').addEventListener('change', (e) => {
-            this.handleAssetUpload(e.target.files);
-        });
     }
 
     switchTab(tabName) {
