@@ -1464,68 +1464,21 @@ class YenzeBuilder {
             let publishedUrl;
 
             if (plan === 'free') {
-                // FREE tier: Upload to Supabase Storage
-                const userId = supabaseClient.currentUser.id;
-                const filePath = `${userId}/${project.id}/index.html`;
+                // FREE tier: Use view.html to serve the project
+                // The HTML is already saved in the database by supabaseClient.saveProject()
+                const baseUrl = window.location.origin;
+                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
 
-                // Upload HTML to Supabase Storage
-                const { data: uploadData, error: uploadError } = await supabaseClient.client.storage
-                    .from('published-sites')
-                    .upload(filePath, new Blob([this.currentHTML], { type: 'text/html' }), {
-                        contentType: 'text/html',
-                        upsert: true // Allow overwriting if exists
-                    });
-
-                if (uploadError) {
-                    console.error('Storage upload error:', uploadError);
-
-                    // Provide helpful error message
-                    if (uploadError.message.includes('Bucket not found')) {
-                        throw new Error('Storage bucket not configured. Please create the "published-sites" bucket in Supabase Storage with public access enabled. See SETUP-STORAGE.md for instructions.');
-                    }
-
-                    throw new Error('Failed to upload to storage: ' + uploadError.message);
-                }
-
-                // Generate public URL for the uploaded file
-                const { data: { publicUrl } } = supabaseClient.client.storage
-                    .from('published-sites')
-                    .getPublicUrl(filePath);
-
-                publishedUrl = publicUrl;
+                // Note: We're NOT using Supabase Storage directly because browsers
+                // download HTML files instead of rendering them. view.html reads from
+                // the database and renders the HTML in an iframe, which works perfectly
+                // and still uses Supabase (database instead of storage)
 
             } else if (plan === 'one_time' || plan === 'pro') {
-                // PAID tier: custom domain (to be implemented with Netlify/Vercel)
-                // For now, also use Supabase Storage until custom domain is configured
-                const userId = supabaseClient.currentUser.id;
-                const filePath = `${userId}/${project.id}/index.html`;
-
-                const { data: uploadData, error: uploadError } = await supabaseClient.client.storage
-                    .from('published-sites')
-                    .upload(filePath, new Blob([this.currentHTML], { type: 'text/html' }), {
-                        contentType: 'text/html',
-                        upsert: true
-                    });
-
-                if (uploadError) {
-                    console.error('Storage upload error:', uploadError);
-
-                    // Provide helpful error message
-                    if (uploadError.message.includes('Bucket not found')) {
-                        throw new Error('Storage bucket not configured. Please create the "published-sites" bucket in Supabase Storage with public access enabled. See SETUP-STORAGE.md for instructions.');
-                    }
-
-                    throw new Error('Failed to upload to storage: ' + uploadError.message);
-                }
-
-                const { data: { publicUrl } } = supabaseClient.client.storage
-                    .from('published-sites')
-                    .getPublicUrl(filePath);
-
-                publishedUrl = publicUrl;
-
-                // TODO: Implement custom domain deployment for paid plans
-                // This will involve Netlify/Vercel API integration
+                // PAID tier: Use view.html for now (same as FREE but without badge)
+                // TODO: Implement custom domain deployment with Netlify/Vercel
+                const baseUrl = window.location.origin;
+                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
             }
 
             // Update project with published URL
