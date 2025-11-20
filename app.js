@@ -101,6 +101,11 @@ class YenzeBuilder {
             this.projectData.name = e.target.value;
             this.saveProject();
         });
+
+        // Asset upload
+        document.getElementById('assetUpload').addEventListener('change', (e) => {
+            this.handleAssetUpload(e.target.files);
+        });
     }
 
     switchTab(tabName) {
@@ -438,18 +443,29 @@ ${publishedUrl}
         this.projectData.assets.forEach((asset, index) => {
             const assetEl = document.createElement('div');
             assetEl.style.cssText = `
-                background: var(--bg-card);
-                border-radius: 8px;
+                background: var(--bg);
+                border: 1px solid var(--border);
+                border-radius: 6px;
                 padding: 0.5rem;
                 margin-bottom: 0.5rem;
                 cursor: pointer;
-                transition: background 0.2s;
+                transition: all 0.15s;
             `;
             assetEl.innerHTML = `
                 <img src="${asset.url}" style="width: 100%; border-radius: 4px; margin-bottom: 0.5rem;">
-                <div style="font-size: 0.8rem; color: var(--text-secondary);">${asset.name}</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${asset.name}</div>
             `;
-            
+
+            assetEl.addEventListener('mouseenter', () => {
+                assetEl.style.background = 'var(--bg-secondary)';
+                assetEl.style.borderColor = 'var(--accent)';
+            });
+
+            assetEl.addEventListener('mouseleave', () => {
+                assetEl.style.background = 'var(--bg)';
+                assetEl.style.borderColor = 'var(--border)';
+            });
+
             assetEl.addEventListener('click', () => {
                 navigator.clipboard.writeText(asset.url);
                 this.showToast('📋 Asset URL copied!', 'success');

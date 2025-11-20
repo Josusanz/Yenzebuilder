@@ -557,6 +557,7 @@
             <div class="sidebar-tabs">
                 <button class="sidebar-tab active" data-tab="import">Import</button>
                 <button class="sidebar-tab" data-tab="layers">Layers</button>
+                <button class="sidebar-tab" data-tab="assets">Assets</button>
             </div>
 
             <div class="sidebar-content">
@@ -593,6 +594,20 @@
                             <span>No document</span>
                         </li>
                     </ul>
+                </div>
+
+                <!-- Assets Tab -->
+                <div class="tab-panel" id="assetsPanel">
+                    <div class="section-title">Media Library</div>
+                    <div class="import-area" style="padding: 1.25rem;">
+                        <div class="import-icon" style="font-size: 1.75rem;">🖼️</div>
+                        <div class="import-text">Upload images</div>
+                        <input type="file" id="assetUpload" accept="image/*" multiple style="display: none;">
+                        <button class="import-btn" onclick="document.getElementById('assetUpload').click()">
+                            Choose Files
+                        </button>
+                    </div>
+                    <div id="assetsList" style="margin-top: 1rem;"></div>
                 </div>
             </div>
         </div>
