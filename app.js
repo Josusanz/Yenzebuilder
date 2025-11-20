@@ -1462,17 +1462,56 @@ class YenzeBuilder {
 
             // Generate deployment URL based on plan
             let publishedUrl;
-            if (plan === 'free') {
-                // FREE tier: Use view.html with project ID
-                const baseUrl = window.location.origin;
-                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
 
-                // TODO: In production, deploy to Vercel with subdomain
-                // await this.deployToVercel(project.id, publishedUrl, true); // true = add badge
-            } else {
-                // PRO/BUSINESS tier: custom domain
-                // This will be handled after Stripe checkout
-                publishedUrl = `https://custom-domain-pending.yenze.app`;
+            if (plan === 'free') {
+                // FREE tier: Upload to Supabase Storage
+                const userId = supabaseClient.currentUser.id;
+                const filePath = `${userId}/${project.id}/index.html`;
+
+                // Upload HTML to Supabase Storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.client.storage
+                    .from('published-sites')
+                    .upload(filePath, new Blob([this.currentHTML], { type: 'text/html' }), {
+                        contentType: 'text/html',
+                        upsert: true // Allow overwriting if exists
+                    });
+
+                if (uploadError) {
+                    throw new Error('Failed to upload to storage: ' + uploadError.message);
+                }
+
+                // Generate public URL for the uploaded file
+                const { data: { publicUrl } } = supabaseClient.client.storage
+                    .from('published-sites')
+                    .getPublicUrl(filePath);
+
+                publishedUrl = publicUrl;
+
+            } else if (plan === 'one_time' || plan === 'pro') {
+                // PAID tier: custom domain (to be implemented with Netlify/Vercel)
+                // For now, also use Supabase Storage until custom domain is configured
+                const userId = supabaseClient.currentUser.id;
+                const filePath = `${userId}/${project.id}/index.html`;
+
+                const { data: uploadData, error: uploadError } = await supabaseClient.client.storage
+                    .from('published-sites')
+                    .upload(filePath, new Blob([this.currentHTML], { type: 'text/html' }), {
+                        contentType: 'text/html',
+                        upsert: true
+                    });
+
+                if (uploadError) {
+                    throw new Error('Failed to upload to storage: ' + uploadError.message);
+                }
+
+                const { data: { publicUrl } } = supabaseClient.client.storage
+                    .from('published-sites')
+                    .getPublicUrl(filePath);
+
+                publishedUrl = publicUrl;
+
+                // TODO: Implement custom domain deployment for paid plans
+                // This will involve Netlify/Vercel API integration
             }
 
             // Update project with published URL
