@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS projects (
     name VARCHAR(255) NOT NULL DEFAULT 'Untitled Project',
     html TEXT NOT NULL,
     published_url TEXT,
-    plan VARCHAR(20) NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'business')),
+    plan VARCHAR(20) NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'one_time', 'pro')),
     custom_domain TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     stripe_customer_id TEXT NOT NULL UNIQUE,
-    stripe_subscription_id TEXT NOT NULL UNIQUE,
-    plan VARCHAR(20) NOT NULL CHECK (plan IN ('pro', 'business')),
+    stripe_subscription_id TEXT UNIQUE,
+    plan VARCHAR(20) NOT NULL CHECK (plan IN ('one_time', 'pro')),
     status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'canceled', 'past_due', 'incomplete', 'trialing')),
     current_period_start TIMESTAMP WITH TIME ZONE,
     current_period_end TIMESTAMP WITH TIME ZONE,
@@ -129,6 +129,52 @@ CREATE POLICY "Users can view own deployments"
 CREATE POLICY "Users can insert own deployments"
     ON deployments FOR INSERT
     WITH CHECK (auth.uid() = user_id);
+
+-- =====================================================
+-- ANALYTICS EVENTS TABLE
+-- Stores page views and events for analytics
+-- =====================================================
+CREATE TABLE IF NOT EXISTS analytics_events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    event_type VARCHAR(50) NOT NULL DEFAULT 'page_view' CHECK (event_type IN ('page_view', 'click', 'form_submit', 'custom')),
+    visitor_id TEXT NOT NULL,
+    session_id TEXT NOT NULL,
+    page_url TEXT,
+    referrer TEXT,
+    user_agent TEXT,
+    screen_width INTEGER,
+    screen_height INTEGER,
+    language TEXT,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Indexes for analytics queries
+CREATE INDEX IF NOT EXISTS idx_analytics_project_id ON analytics_events(project_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_visitor_id ON analytics_events(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_session_id ON analytics_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_event_type ON analytics_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_analytics_created_at ON analytics_events(created_at DESC);
+
+-- Row Level Security (RLS) Policies for analytics_events
+ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to insert analytics (for tracking on published sites)
+CREATE POLICY "Anyone can insert analytics"
+    ON analytics_events FOR INSERT
+    WITH CHECK (true);
+
+-- Users can view analytics for their own projects
+CREATE POLICY "Users can view own project analytics"
+    ON analytics_events FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM projects
+            WHERE projects.id = analytics_events.project_id
+            AND projects.user_id = auth.uid()
+        )
+    );
 
 -- =====================================================
 -- USER PROFILES TABLE (Optional - for additional user data)

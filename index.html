@@ -772,9 +772,9 @@
                         <span class="user-email">${user.email}</span>
                     </div>
                     <div class="user-dropdown" id="userDropdown">
-                        <div class="user-dropdown-item" onclick="viewMyProjects()">My Projects</div>
-                        <div class="user-dropdown-item" onclick="viewSubscription()">Subscription</div>
-                        <div class="user-dropdown-item" onclick="viewProfile()">Profile</div>
+                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">📊 Dashboard</div>
+                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html#projects'">📁 My Projects</div>
+                        <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html#billing'">💳 Billing</div>
                         <div class="user-dropdown-item danger" onclick="handleLogout()">Logout</div>
                     </div>
                 `;
@@ -795,20 +795,6 @@
             showToast('Logged out successfully', 'success');
         }
 
-        function viewMyProjects() {
-            // TODO: Implement projects view
-            showToast('Projects view coming soon', 'info');
-        }
-
-        function viewSubscription() {
-            // TODO: Implement subscription view
-            showToast('Subscription management coming soon', 'info');
-        }
-
-        function viewProfile() {
-            // TODO: Implement profile view
-            showToast('Profile view coming soon', 'info');
-        }
 
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {

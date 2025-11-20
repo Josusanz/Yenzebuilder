@@ -112,14 +112,10 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script src="analytics.js"></script>
 
     <script>
-        // Initialize Supabase
-        const supabase = supabase.createClient(
-            SUPABASE_CONFIG.url,
-            SUPABASE_CONFIG.anonKey
-        );
-
         // Get project ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('id');
@@ -131,8 +127,11 @@
             }
 
             try {
+                // Initialize Supabase client
+                await supabaseClient.init();
+
                 // Fetch project from database
-                const { data: project, error } = await supabase
+                const { data: project, error } = await supabaseClient.client
                     .from('projects')
                     .select('*')
                     .eq('id', projectId)
@@ -141,6 +140,14 @@
                 if (error || !project) {
                     showError();
                     return;
+                }
+
+                // Track page view for analytics
+                try {
+                    await analyticsTracker.trackPageView(projectId);
+                } catch (analyticsError) {
+                    console.error('Analytics tracking failed:', analyticsError);
+                    // Don't block page load if analytics fails
                 }
 
                 // Display the HTML content

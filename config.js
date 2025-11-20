@@ -15,44 +15,52 @@ const PLANS = {
     FREE: {
         name: 'Free',
         price: 0,
+        period: null,
+        priceId: null,
         features: [
             'Unlimited editing',
-            'Deploy to yenze subdomain',
+            'Unlimited publishes',
+            'Deploy to yenze.app subdomain',
             'Includes "Made with YENZE" badge',
-            'Basic analytics'
+            'Basic analytics (views, visits)'
         ],
-        deploymentType: 'subdomain' // proyecto.yenze.app
+        deploymentType: 'subdomain', // proyecto.yenze.app
+        maxDomains: 0,
+        maxProjects: 999
+    },
+    ONE_TIME: {
+        name: 'Custom Domain',
+        price: 7.99,
+        period: 'one-time',
+        priceId: 'price_xxxxx', // Stripe Price ID (one-time payment)
+        features: [
+            '1 deploy with custom domain',
+            'Remove YENZE badge',
+            'Basic analytics',
+            'SSL certificate included',
+            'One-time payment'
+        ],
+        deploymentType: 'custom',
+        maxDomains: 1,
+        maxProjects: 1
     },
     PRO: {
         name: 'Pro',
-        price: 9.99,
-        priceId: 'price_xxxxx', // Stripe Price ID
+        price: 19.99,
+        period: 'year',
+        priceId: 'price_xxxxx', // Stripe Price ID (annual subscription)
         features: [
             'Everything in Free',
-            'Custom domain support',
-            'Download HTML/ZIP',
+            'Unlimited deploys',
+            'Up to 10 custom domains',
             'Remove YENZE badge',
-            '5 projects',
-            'Analytics dashboard',
-            'Priority support'
+            'Advanced analytics dashboard',
+            'Custom domain management',
+            'Priority support',
+            'SSL certificates for all domains'
         ],
-        deploymentType: 'custom' // user's domain
-    },
-    BUSINESS: {
-        name: 'Business',
-        price: 29.99,
-        priceId: 'price_xxxxx', // Stripe Price ID
-        features: [
-            'Everything in Pro',
-            'Unlimited projects',
-            'White label',
-            'Multiple custom domains',
-            'Custom code injection',
-            'Advanced analytics',
-            'API access',
-            'Team collaboration',
-            '24/7 priority support'
-        ],
-        deploymentType: 'custom'
+        deploymentType: 'custom',
+        maxDomains: 10,
+        maxProjects: 999
     }
 };
