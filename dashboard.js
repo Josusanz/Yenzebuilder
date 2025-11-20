@@ -676,8 +676,19 @@ class DashboardApp {
     }
 
     async manageBilling() {
-        // In production, this would redirect to Stripe Customer Portal
-        alert('This would redirect to Stripe Customer Portal to manage subscription, payment methods, and billing history.');
+        try {
+            // Initialize Stripe if not already
+            if (!stripeIntegration.initialized) {
+                await stripeIntegration.init();
+            }
+
+            // Redirect to Stripe Customer Portal
+            await stripeIntegration.createPortalSession();
+
+        } catch (error) {
+            console.error('Billing portal error:', error);
+            alert('Failed to open billing portal: ' + error.message);
+        }
     }
 }
 
