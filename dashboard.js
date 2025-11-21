@@ -473,7 +473,21 @@ class DashboardApp {
         }
     }
 
-    showAddDomainModal() {
+    async showAddDomainModal() {
+        // Check if user has a paid plan
+        const { data: subscription } = await supabaseClient.client
+            .from('subscriptions')
+            .select('*')
+            .eq('user_id', this.currentUser.id)
+            .eq('status', 'active')
+            .single();
+
+        // If no active subscription, show plan modal instead
+        if (!subscription || subscription.plan === 'free') {
+            authUI.showPlanModal();
+            return;
+        }
+
         // Populate project select
         const projectSelect = document.getElementById('domainProjectSelect');
         projectSelect.innerHTML = '<option value="">Choose a project...</option>';
