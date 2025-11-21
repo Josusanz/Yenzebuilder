@@ -509,26 +509,102 @@ class YenzeBuilder {
         // Add drag-and-drop listeners to iframe document
         console.log('🎯 Setting up drag-and-drop in iframe');
 
+        let dropIndicator = null;
+        let dropTarget = null;
+        let dropPosition = null;
+
+        // Create drop indicator element
+        const createDropIndicator = () => {
+            if (!dropIndicator) {
+                dropIndicator = doc.createElement('div');
+                dropIndicator.style.position = 'absolute';
+                dropIndicator.style.height = '3px';
+                dropIndicator.style.background = '#667eea';
+                dropIndicator.style.pointerEvents = 'none';
+                dropIndicator.style.zIndex = '99999';
+                dropIndicator.style.boxShadow = '0 0 8px rgba(102, 126, 234, 0.6)';
+                dropIndicator.style.borderRadius = '2px';
+            }
+            return dropIndicator;
+        };
+
+        const removeDropIndicator = () => {
+            if (dropIndicator && dropIndicator.parentNode) {
+                dropIndicator.parentNode.removeChild(dropIndicator);
+            }
+            dropTarget = null;
+            dropPosition = null;
+        };
+
         doc.body.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
-            doc.body.style.outline = '3px dashed rgba(102, 126, 234, 0.5)';
-            console.log('🎯 Dragging over iframe body');
+
+            // Get the element being dragged over
+            let target = e.target;
+
+            // Skip if target is the drop indicator itself
+            if (target === dropIndicator) return;
+
+            // Find the closest element that's not body
+            while (target && target !== doc.body && target.tagName === 'HTML') {
+                target = target.parentElement;
+            }
+
+            if (!target || target === doc.body) {
+                target = doc.body;
+            }
+
+            // Calculate if we should insert before or after
+            const rect = target.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            const position = e.clientY < midpoint ? 'before' : 'after';
+
+            // Store drop target and position
+            dropTarget = target;
+            dropPosition = position;
+
+            // Show drop indicator
+            const indicator = createDropIndicator();
+
+            if (target === doc.body) {
+                // Insert at the end of body
+                indicator.style.left = '20px';
+                indicator.style.right = '20px';
+                indicator.style.width = 'calc(100% - 40px)';
+                indicator.style.top = (doc.body.scrollHeight - 3) + 'px';
+            } else {
+                indicator.style.left = rect.left + 'px';
+                indicator.style.width = rect.width + 'px';
+
+                if (position === 'before') {
+                    indicator.style.top = (rect.top - 2) + 'px';
+                } else {
+                    indicator.style.top = (rect.bottom - 2) + 'px';
+                }
+            }
+
+            if (!indicator.parentNode) {
+                doc.body.appendChild(indicator);
+            }
         });
 
         doc.body.addEventListener('dragleave', (e) => {
-            if (e.target === doc.body) {
-                doc.body.style.outline = '';
+            // Only remove if we're leaving the body completely
+            if (e.target === doc.body && !doc.body.contains(e.relatedTarget)) {
+                removeDropIndicator();
             }
         });
 
         doc.body.addEventListener('drop', (e) => {
             e.preventDefault();
-            doc.body.style.outline = '';
+            removeDropIndicator();
+
             const elementType = e.dataTransfer.getData('text/plain');
-            console.log('🎯 Drop received in iframe:', elementType);
+            console.log('🎯 Drop received at position:', dropPosition, 'target:', dropTarget?.tagName);
+
             if (elementType && ELEMENT_TEMPLATES[elementType]) {
-                this.insertElementTemplate(elementType);
+                this.insertElementTemplateAtPosition(elementType, dropTarget, dropPosition);
             }
         });
     }
@@ -1746,6 +1822,72 @@ class YenzeBuilder {
         } else {
             // No selection, add to body
             iframeDoc.body.appendChild(newElement);
+        }
+
+        // Make the new element and its children editable
+        this.makeElementEditable(newElement, iframeDoc);
+
+        // Make all descendant elements editable too
+        newElement.querySelectorAll('*').forEach(child => {
+            this.makeElementEditable(child, iframeDoc);
+        });
+
+        this.updateHTML(`Add ${elementType}`);
+        this.buildLayersTree(iframeDoc);
+
+        // Select the new element
+        this.selectElement(newElement);
+
+        // Switch to Layers tab to show the new element
+        this.switchTab('layers', 'left');
+
+        const elementNames = {
+            'contact-form': 'Contact Form',
+            'newsletter-form': 'Newsletter Form',
+            'navbar': 'Navigation Bar',
+            'footer': 'Footer',
+            'hero': 'Hero Section',
+            'card': 'Card Grid',
+            'cta': 'Call to Action',
+            'two-columns': '2 Columns',
+            'three-columns': '3 Columns'
+        };
+
+        this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+    }
+
+    insertElementTemplateAtPosition(elementType, targetElement, position) {
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        if (!iframeDoc || !iframeDoc.body) {
+            this.showToast('⚠️ Please import HTML first', 'error');
+            return;
+        }
+
+        const template = ELEMENT_TEMPLATES[elementType];
+        if (!template) {
+            this.showToast('⚠️ Template not found', 'error');
+            return;
+        }
+
+        // Create a temporary container to parse the HTML
+        const tempDiv = iframeDoc.createElement('div');
+        tempDiv.innerHTML = template.trim();
+        const newElement = tempDiv.firstElementChild;
+
+        // Insert at the specific position
+        if (!targetElement || targetElement === iframeDoc.body) {
+            // If no target or target is body, append to body
+            iframeDoc.body.appendChild(newElement);
+        } else {
+            const parent = targetElement.parentNode;
+            if (position === 'before') {
+                parent.insertBefore(newElement, targetElement);
+            } else {
+                // Insert after
+                parent.insertBefore(newElement, targetElement.nextSibling);
+            }
         }
 
         // Make the new element and its children editable
