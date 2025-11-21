@@ -314,35 +314,48 @@ class YenzeBuilder {
             this.handleAssetUpload(e.target.files);
         });
 
-        // Element cards drag-and-drop
-        document.querySelectorAll('.element-card').forEach(card => {
-            card.addEventListener('dragstart', (e) => {
-                const elementType = card.dataset.element;
+        // Element cards drag-and-drop - use event delegation since cards may not exist yet
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('element-card')) {
+                const elementType = e.target.dataset.element;
                 e.dataTransfer.setData('element-type', elementType);
                 e.dataTransfer.effectAllowed = 'copy';
-                card.style.opacity = '0.5';
-            });
+                e.target.style.opacity = '0.5';
+            }
+        });
 
-            card.addEventListener('dragend', () => {
-                card.style.opacity = '1';
-            });
+        document.addEventListener('dragend', (e) => {
+            if (e.target.classList.contains('element-card')) {
+                e.target.style.opacity = '1';
+            }
+        });
 
-            // Also allow click to insert
-            card.addEventListener('click', () => {
+        // Click to insert elements
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.element-card')) {
+                const card = e.target.closest('.element-card');
                 const elementType = card.dataset.element;
                 this.insertElementTemplate(elementType);
-            });
+            }
         });
 
-        // Canvas drop zone for elements
-        const canvasWrapper = document.getElementById('canvasWrapper');
-        canvasWrapper.addEventListener('dragover', (e) => {
+        // Canvas drop zone for elements - on the whole canvas area
+        const canvasArea = document.querySelector('.canvas-area');
+        canvasArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
+            canvasArea.style.background = 'rgba(102, 126, 234, 0.05)';
         });
 
-        canvasWrapper.addEventListener('drop', (e) => {
+        canvasArea.addEventListener('dragleave', (e) => {
+            if (e.target === canvasArea) {
+                canvasArea.style.background = '';
+            }
+        });
+
+        canvasArea.addEventListener('drop', (e) => {
             e.preventDefault();
+            canvasArea.style.background = '';
             const elementType = e.dataTransfer.getData('element-type');
             if (elementType && ELEMENT_TEMPLATES[elementType]) {
                 this.insertElementTemplate(elementType);
