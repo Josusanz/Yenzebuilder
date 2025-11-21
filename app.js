@@ -2550,8 +2550,11 @@ window.app = app;
 window.addEventListener('auth-change', (e) => {
     const { event } = e.detail;
 
+    console.log('[Auth Event]', event, 'pendingPublish:', app.pendingPublish);
+
     // If user just signed in and was trying to publish, show subdomain modal
     if (event === 'SIGNED_IN' && app.pendingPublish) {
+        console.log('[Auth Event] Showing subdomain modal after login');
         app.pendingPublish = false; // Reset flag
         // Small delay to let auth modal close
         setTimeout(() => {
