@@ -7,7 +7,7 @@ const SUPABASE_CONFIG = {
 
 // Stripe Configuration
 const STRIPE_CONFIG = {
-    publicKey: 'YOUR_STRIPE_PUBLIC_KEY'
+    publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK'
 };
 
 // Plans Configuration
@@ -32,7 +32,7 @@ const PLANS = {
         name: 'Custom Domain',
         price: 7.99,
         period: 'one-time',
-        priceId: 'price_xxxxx', // Stripe Price ID (one-time payment)
+        priceId: 'price_1SVheLIDLJ66zkJzd9xC2wlK',
         features: [
             '1 deploy with custom domain',
             'Remove YENZE badge',
@@ -48,7 +48,7 @@ const PLANS = {
         name: 'Pro',
         price: 19.99,
         period: 'year',
-        priceId: 'price_xxxxx', // Stripe Price ID (annual subscription)
+        priceId: 'price_1SVheoIDLJ66zkJzV3GkWvRr',
         features: [
             'Everything in Free',
             'Unlimited deploys',
