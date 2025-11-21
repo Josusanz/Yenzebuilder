@@ -1,6 +1,168 @@
 // YENZE Builder - Main Application Logic
 // Version 1.0.0
 
+// Element Templates
+const ELEMENT_TEMPLATES = {
+    'contact-form': `
+        <section style="padding: 4rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: #1a1a2e; font-weight: 700;">Get in Touch</h2>
+                <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
+                <form>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Name</label>
+                        <input type="text" placeholder="Your name" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Email</label>
+                        <input type="email" placeholder="your@email.com" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Message</label>
+                        <textarea placeholder="Your message..." rows="4" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                    </div>
+                    <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Send Message</button>
+                </form>
+            </div>
+        </section>
+    `,
+    'newsletter-form': `
+        <section style="padding: 3rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center;">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h3 style="font-size: 1.75rem; color: white; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
+                <p style="color: rgba(255,255,255,0.9); margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+                <form style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" placeholder="Enter your email" style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 50px; font-size: 1rem; backdrop-filter: blur(10px);" onfocus="this.style.borderColor='white'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
+                    <button type="submit" style="padding: 1rem 2.5rem; background: white; color: #667eea; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Subscribe</button>
+                </form>
+            </div>
+        </section>
+    `,
+    'navbar': `
+        <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 3rem; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
+            <div style="font-size: 1.5rem; font-weight: 700; color: #667eea;">YENZE</div>
+            <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; align-items: center;">
+                <li><a href="#home" style="color: #374151; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Home</a></li>
+                <li><a href="#about" style="color: #374151; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">About</a></li>
+                <li><a href="#services" style="color: #374151; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Services</a></li>
+                <li><a href="#contact" style="padding: 0.625rem 1.5rem; background: #667eea; color: white; text-decoration: none; border-radius: 50px; font-weight: 500; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Contact</a></li>
+            </ul>
+        </nav>
+    `,
+    'footer': `
+        <footer style="background: #1a1a2e; color: white; padding: 4rem 3rem 2rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+                <div>
+                    <h4 style="font-size: 1.25rem; margin: 0 0 1rem; font-weight: 700;">Company</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="#about" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">About Us</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#careers" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Careers</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#blog" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-size: 1.25rem; margin: 0 0 1rem; font-weight: 700;">Support</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="#help" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Help Center</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#contact" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Contact Us</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#faq" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-size: 1.25rem; margin: 0 0 1rem; font-weight: 700;">Legal</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 0.75rem;"><a href="#privacy" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Privacy Policy</a></li>
+                        <li style="margin-bottom: 0.75rem;"><a href="#terms" style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; text-align: center; color: rgba(255,255,255,0.6);">
+                <p style="margin: 0;">&copy; 2024 YENZE. All rights reserved.</p>
+            </div>
+        </footer>
+    `,
+    'hero': `
+        <section style="padding: 6rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center; color: white;">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <h1 style="font-size: 3.5rem; margin: 0 0 1rem; font-weight: 800; line-height: 1.1;">Build Beautiful Websites in Minutes</h1>
+                <p style="font-size: 1.25rem; margin: 0 0 2.5rem; opacity: 0.95;">Create stunning, responsive websites without writing code. Start building your dream site today.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button style="padding: 1rem 2.5rem; background: white; color: #667eea; border: none; border-radius: 50px; font-size: 1.125rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">Get Started</button>
+                    <button style="padding: 1rem 2.5rem; background: transparent; color: white; border: 2px solid white; border-radius: 50px; font-size: 1.125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='white'; this.style.color='#667eea'" onmouseout="this.style.background='transparent'; this.style.color='white'">Learn More</button>
+                </div>
+            </div>
+        </section>
+    `,
+    'card': `
+        <section style="padding: 4rem 2rem; background: #f9fafb;">
+            <div style="max-width: 1200px; margin: 0 auto;">
+                <h2 style="font-size: 2.5rem; text-align: center; margin: 0 0 3rem; color: #1a1a2e; font-weight: 700;">Our Services</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem;">🚀</div>
+                        <h3 style="font-size: 1.5rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">Fast Performance</h3>
+                        <p style="color: #6b7280; line-height: 1.6; margin: 0;">Lightning-fast load times and optimized performance for the best user experience.</p>
+                    </div>
+                    <div style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem;">📱</div>
+                        <h3 style="font-size: 1.5rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">Responsive Design</h3>
+                        <p style="color: #6b7280; line-height: 1.6; margin: 0;">Beautiful layouts that look perfect on all devices, from mobile to desktop.</p>
+                    </div>
+                    <div style="background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem;">🎨</div>
+                        <h3 style="font-size: 1.5rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">Beautiful UI</h3>
+                        <p style="color: #6b7280; line-height: 1.6; margin: 0;">Modern, clean design with attention to detail and stunning visual appeal.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `,
+    'cta': `
+        <section style="padding: 5rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); text-align: center; color: white;">
+            <div style="max-width: 700px; margin: 0 auto;">
+                <h2 style="font-size: 2.75rem; margin: 0 0 1rem; font-weight: 700;">Ready to Get Started?</h2>
+                <p style="font-size: 1.125rem; margin: 0 0 2.5rem; opacity: 0.95;">Join thousands of users who are already building amazing websites with YENZE.</p>
+                <button style="padding: 1.25rem 3rem; background: white; color: #667eea; border: none; border-radius: 50px; font-size: 1.125rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-3px) scale(1.05)'; this.style.boxShadow='0 15px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.2)'">Start Building Now</button>
+            </div>
+        </section>
+    `,
+    'two-columns': `
+        <section style="padding: 4rem 2rem;">
+            <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+                <div>
+                    <h2 style="font-size: 2.5rem; margin: 0 0 1rem; color: #1a1a2e; font-weight: 700;">Column One</h2>
+                    <p style="color: #6b7280; line-height: 1.8; margin: 0;">This is the first column. Add your content here. You can include text, images, or any other elements.</p>
+                </div>
+                <div>
+                    <h2 style="font-size: 2.5rem; margin: 0 0 1rem; color: #1a1a2e; font-weight: 700;">Column Two</h2>
+                    <p style="color: #6b7280; line-height: 1.8; margin: 0;">This is the second column. Add your content here. Perfect for side-by-side layouts and comparisons.</p>
+                </div>
+            </div>
+        </section>
+    `,
+    'three-columns': `
+        <section style="padding: 4rem 2rem; background: #f9fafb;">
+            <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem;">
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">1</div>
+                    <h3 style="font-size: 1.25rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">First Step</h3>
+                    <p style="color: #6b7280; line-height: 1.6; margin: 0;">Description for the first step or feature goes here.</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">2</div>
+                    <h3 style="font-size: 1.25rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">Second Step</h3>
+                    <p style="color: #6b7280; line-height: 1.6; margin: 0;">Description for the second step or feature goes here.</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">3</div>
+                    <h3 style="font-size: 1.25rem; margin: 0 0 0.75rem; color: #1a1a2e; font-weight: 600;">Third Step</h3>
+                    <p style="color: #6b7280; line-height: 1.6; margin: 0;">Description for the third step or feature goes here.</p>
+                </div>
+            </div>
+        </section>
+    `
+};
+
 class YenzeBuilder {
     constructor() {
         this.currentHTML = '';
@@ -147,9 +309,49 @@ class YenzeBuilder {
             this.saveProject();
         });
 
-        // Asset upload
-        document.getElementById('assetUpload').addEventListener('change', (e) => {
+        // Asset upload (kept for backwards compatibility, but now hidden)
+        document.getElementById('assetUpload')?.addEventListener('change', (e) => {
             this.handleAssetUpload(e.target.files);
+        });
+
+        // Element cards drag-and-drop
+        document.querySelectorAll('.element-card').forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                const elementType = card.dataset.element;
+                e.dataTransfer.setData('element-type', elementType);
+                e.dataTransfer.effectAllowed = 'copy';
+                card.style.opacity = '0.5';
+            });
+
+            card.addEventListener('dragend', () => {
+                card.style.opacity = '1';
+            });
+
+            // Also allow click to insert
+            card.addEventListener('click', () => {
+                const elementType = card.dataset.element;
+                this.insertElementTemplate(elementType);
+            });
+        });
+
+        // Canvas drop zone for elements
+        const canvasWrapper = document.getElementById('canvasWrapper');
+        canvasWrapper.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        canvasWrapper.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const elementType = e.dataTransfer.getData('element-type');
+            if (elementType && ELEMENT_TEMPLATES[elementType]) {
+                this.insertElementTemplate(elementType);
+            }
+        });
+
+        // Element search
+        document.getElementById('elementSearch')?.addEventListener('input', (e) => {
+            this.filterElements(e.target.value);
         });
 
         // Layers action buttons - Always available
@@ -1383,6 +1585,106 @@ class YenzeBuilder {
         this.selectElement(row);
 
         this.showToast('✅ 2 columns added', 'success');
+    }
+
+    insertElementTemplate(elementType) {
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        if (!iframeDoc || !iframeDoc.body) {
+            this.showToast('⚠️ Please import HTML first', 'error');
+            return;
+        }
+
+        const template = ELEMENT_TEMPLATES[elementType];
+        if (!template) {
+            this.showToast('⚠️ Template not found', 'error');
+            return;
+        }
+
+        // Create a temporary container to parse the HTML
+        const tempDiv = iframeDoc.createElement('div');
+        tempDiv.innerHTML = template.trim();
+        const newElement = tempDiv.firstElementChild;
+
+        // Insert based on selected element
+        if (this.selectedElement) {
+            // If selected element is a container, add inside it
+            if (this.isContainer(this.selectedElement)) {
+                this.selectedElement.appendChild(newElement);
+            } else {
+                // Otherwise, add after the selected element (as sibling)
+                const parent = this.selectedElement.parentNode;
+                if (parent) {
+                    parent.insertBefore(newElement, this.selectedElement.nextSibling);
+                } else {
+                    iframeDoc.body.appendChild(newElement);
+                }
+            }
+        } else {
+            // No selection, add to body
+            iframeDoc.body.appendChild(newElement);
+        }
+
+        // Make the new element and its children editable
+        this.makeElementEditable(newElement, iframeDoc);
+
+        // Make all descendant elements editable too
+        newElement.querySelectorAll('*').forEach(child => {
+            this.makeElementEditable(child, iframeDoc);
+        });
+
+        this.updateHTML(`Add ${elementType}`);
+        this.buildLayersTree(iframeDoc);
+
+        // Select the new element
+        this.selectElement(newElement);
+
+        // Switch to Layers tab to show the new element
+        this.switchTab('layers', 'left');
+
+        const elementNames = {
+            'contact-form': 'Contact Form',
+            'newsletter-form': 'Newsletter Form',
+            'navbar': 'Navigation Bar',
+            'footer': 'Footer',
+            'hero': 'Hero Section',
+            'card': 'Card Grid',
+            'cta': 'Call to Action',
+            'two-columns': '2 Columns',
+            'three-columns': '3 Columns'
+        };
+
+        this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+    }
+
+    filterElements(searchTerm) {
+        const term = searchTerm.toLowerCase().trim();
+        const categories = document.querySelectorAll('.element-category');
+
+        categories.forEach(category => {
+            const cards = category.querySelectorAll('.element-card');
+            let visibleCards = 0;
+
+            cards.forEach(card => {
+                const elementName = card.querySelector('.element-name').textContent.toLowerCase();
+                const elementType = card.dataset.element.toLowerCase();
+
+                if (elementName.includes(term) || elementType.includes(term)) {
+                    card.style.display = 'flex';
+                    visibleCards++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Hide category if no visible cards
+            if (visibleCards === 0 && term !== '') {
+                category.style.display = 'none';
+            } else {
+                category.style.display = 'flex';
+            }
+        });
     }
 
     getElementIcon(tagName) {
