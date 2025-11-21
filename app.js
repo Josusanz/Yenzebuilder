@@ -2058,12 +2058,182 @@ class YenzeBuilder {
 
     async publishFree() {
         this.closePublishOptionsModal();
-        await this.publishWithPlan('free');
+        // Show subdomain selection modal for free plan
+        this.showSubdomainModal('free');
     }
 
     selectPaidPlan(plan) {
         this.closePublishOptionsModal();
         authUI.selectPlan(plan);
+    }
+
+    showSubdomainModal(plan) {
+        const modal = document.getElementById('subdomainModal');
+        if (!modal) {
+            console.error('Subdomain modal not found');
+            return;
+        }
+
+        // Generate default subdomain from project name
+        const defaultSlug = this.generateSubdomainSlug(this.projectData.name);
+        const subdomainInput = document.getElementById('subdomainInput');
+        if (subdomainInput) {
+            subdomainInput.value = defaultSlug;
+            // Update preview
+            this.updateSubdomainPreview();
+        }
+
+        // Store the plan for later
+        this.pendingPublishPlan = plan;
+
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            subdomainInput?.focus();
+            subdomainInput?.select();
+        }, 100);
+    }
+
+    closeSubdomainModal() {
+        const modal = document.getElementById('subdomainModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    updateSubdomainPreview() {
+        const input = document.getElementById('subdomainInput');
+        const preview = document.getElementById('subdomainLivePreview');
+        if (input && preview) {
+            const slug = input.value || 'your-project';
+            preview.textContent = `${slug}.yenze.io`;
+        }
+    }
+
+    async checkSubdomainAvailability() {
+        const input = document.getElementById('subdomainInput');
+        const availabilityMessage = document.getElementById('availabilityMessage');
+        const publishButton = document.getElementById('confirmPublishBtn');
+
+        if (!input || !availabilityMessage || !publishButton) return;
+
+        const slug = input.value.trim();
+
+        // Validate slug format
+        if (!slug) {
+            availabilityMessage.textContent = '⚠️ Please enter a subdomain name';
+            availabilityMessage.className = 'availability-message warning';
+            publishButton.disabled = true;
+            return;
+        }
+
+        if (!/^[a-z0-9-]+$/.test(slug)) {
+            availabilityMessage.textContent = '⚠️ Only lowercase letters, numbers, and hyphens allowed';
+            availabilityMessage.className = 'availability-message warning';
+            publishButton.disabled = true;
+            return;
+        }
+
+        if (slug.length < 3) {
+            availabilityMessage.textContent = '⚠️ Subdomain must be at least 3 characters';
+            availabilityMessage.className = 'availability-message warning';
+            publishButton.disabled = true;
+            return;
+        }
+
+        // Check availability in database
+        availabilityMessage.textContent = '🔍 Checking availability...';
+        availabilityMessage.className = 'availability-message checking';
+
+        try {
+            const { data: existing } = await supabaseClient.client
+                .from('projects')
+                .select('id')
+                .eq('subdomain_slug', slug)
+                .neq('id', this.projectData.id || 'none')
+                .single();
+
+            if (existing) {
+                availabilityMessage.textContent = '❌ This subdomain is already taken. Try another name.';
+                availabilityMessage.className = 'availability-message error';
+                publishButton.disabled = true;
+            } else {
+                availabilityMessage.textContent = '✅ Available! This subdomain is ready to use.';
+                availabilityMessage.className = 'availability-message success';
+                publishButton.disabled = false;
+            }
+        } catch (error) {
+            // If no existing found, it's available
+            availabilityMessage.textContent = '✅ Available! This subdomain is ready to use.';
+            availabilityMessage.className = 'availability-message success';
+            publishButton.disabled = false;
+        }
+    }
+
+    async confirmPublish() {
+        const input = document.getElementById('subdomainInput');
+        const slug = input?.value.trim();
+
+        if (!slug) {
+            this.showToast('Please enter a subdomain name', 'error');
+            return;
+        }
+
+        // Close modal and publish with the chosen slug
+        this.closeSubdomainModal();
+        await this.publishWithSubdomain(this.pendingPublishPlan, slug);
+    }
+
+    async publishWithSubdomain(plan, subdomain) {
+        try {
+            this.showToast('Publishing your website...', 'info');
+
+            // Save project to database with subdomain_slug
+            const { data: project, error: saveError } = await supabaseClient.saveProject({
+                name: this.projectData.name,
+                html: this.currentHTML,
+                plan: plan,
+                subdomain_slug: subdomain
+            });
+
+            if (saveError) {
+                throw new Error('Failed to save project: ' + saveError.message);
+            }
+
+            // Generate deployment URL
+            let publishedUrl = `https://${subdomain}.yenze.io`;
+
+            // Update project with published URL
+            const { error: updateError } = await supabaseClient.updateProjectUrl(
+                project.id,
+                publishedUrl
+            );
+
+            if (updateError) {
+                throw new Error('Failed to update project URL: ' + updateError.message);
+            }
+
+            this.projectData.publishedUrl = publishedUrl;
+            this.projectData.subdomainSlug = subdomain;
+            this.saveProject(); // Save to localStorage as well
+
+            // Create deployment record
+            await supabaseClient.client
+                .from('deployments')
+                .insert({
+                    project_id: project.id,
+                    user_id: supabaseClient.currentUser.id,
+                    deployment_url: publishedUrl,
+                    status: 'ready'
+                });
+
+            // Show professional popup with the URL
+            showPublishPopup(publishedUrl, plan);
+            this.showToast('🚀 Website published!', 'success');
+
+        } catch (error) {
+            console.error('Publish error:', error);
+            this.showToast('❌ Failed to publish: ' + error.message, 'error');
+        }
     }
 
     async publishWithPlan(plan) {
