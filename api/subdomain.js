@@ -94,7 +94,7 @@ export default async function handler(req, res) {
       // Fetch project data
       const projectResponse = await supabase
         .from('projects')
-        .select('id, name, html_content, user_id, subdomain_slug, published_url')
+        .select('id, name, html, user_id, subdomain_slug, published_url')
         .eq('id', customDomain.project_id)
         .single();
 
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
       // Find project with this subdomain slug
       const projectResponse = await supabase
         .from('projects')
-        .select('id, name, html_content, user_id, subdomain_slug, published_url')
+        .select('id, name, html, user_id, subdomain_slug, published_url')
         .eq('subdomain_slug', subdomain)
         .single();
 
@@ -195,7 +195,7 @@ export default async function handler(req, res) {
     const showBadge = plan === 'free'; // Only show badge for FREE plan
 
     // Inject badge if needed
-    let html = project.html_content || '<h1>Empty Project</h1>';
+    let html = project.html || '<h1>Empty Project</h1>';
 
     if (showBadge) {
       // Add "Powered by YENZE" badge

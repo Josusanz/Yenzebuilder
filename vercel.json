@@ -1,4 +1,16 @@
 {
   "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/subdomain.js",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?<subdomain>[^.]+)\\.yenze\\.io"
+        }
+      ]
+    }
+  ]
 }
