@@ -54,6 +54,10 @@ class SupabaseClient {
 
     handleAuthChange(event, session) {
         switch (event) {
+            case 'INITIAL_SESSION':
+                // Don't trigger events for initial session load
+                console.log('Initial session loaded');
+                break;
             case 'SIGNED_IN':
                 console.log('User signed in:', session.user.email);
                 // Trigger UI update if needed
