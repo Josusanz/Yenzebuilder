@@ -284,12 +284,30 @@ class YenzeBuilder {
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            // Undo
             if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
                 e.preventDefault();
                 this.undo();
-            } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+            }
+            // Redo
+            else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
                 e.preventDefault();
                 this.redo();
+            }
+            // Delete selected element with Backspace or Delete key
+            else if ((e.key === 'Backspace' || e.key === 'Delete') && this.selectedElement) {
+                // Don't delete if user is typing in an input/textarea
+                const activeElement = document.activeElement;
+                const isTyping = activeElement && (
+                    activeElement.tagName === 'INPUT' ||
+                    activeElement.tagName === 'TEXTAREA' ||
+                    activeElement.isContentEditable
+                );
+
+                if (!isTyping) {
+                    e.preventDefault();
+                    this.deleteSelectedElement();
+                }
             }
         });
 
@@ -1322,6 +1340,26 @@ class YenzeBuilder {
 
             this.showToast('✅ Element deleted', 'success');
         }
+    }
+
+    deleteSelectedElement() {
+        if (!this.selectedElement) {
+            return;
+        }
+
+        // Don't allow deleting the body element
+        if (this.selectedElement.tagName === 'BODY') {
+            this.showToast('❌ Cannot delete body element', 'error');
+            return;
+        }
+
+        // Store element info for the toast message
+        const elementName = this.selectedElement.tagName.toLowerCase();
+
+        // Delete the element
+        this.deleteElement(this.selectedElement);
+
+        console.log('🗑️ Deleted element:', elementName);
     }
 
     buildLayersTree(doc) {
