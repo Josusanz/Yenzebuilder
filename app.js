@@ -2020,8 +2020,9 @@ class YenzeBuilder {
             return;
         }
 
-        // Check if user is authenticated
-        if (!supabaseClient.isAuthenticated()) {
+        // Check if user is authenticated (with session refresh)
+        const isAuth = await this.checkAuthentication();
+        if (!isAuth) {
             // Show auth modal first
             authUI.showAuthModal('login');
             this.showToast('Please log in to publish your website', 'info');
@@ -2030,6 +2031,26 @@ class YenzeBuilder {
 
         // User is authenticated - show publication options modal
         this.showPublishOptionsModal();
+    }
+
+    async checkAuthentication() {
+        // First check if we have a cached user
+        if (supabaseClient.isAuthenticated()) {
+            return true;
+        }
+
+        // If not, try to refresh the session
+        try {
+            const { data: { session } } = await supabaseClient.client.auth.getSession();
+            if (session && session.user) {
+                supabaseClient.currentUser = session.user;
+                return true;
+            }
+        } catch (error) {
+            console.error('Error checking authentication:', error);
+        }
+
+        return false;
     }
 
     showPublishOptionsModal() {
