@@ -2087,9 +2087,24 @@ class YenzeBuilder {
         this.showSubdomainModal('free');
     }
 
-    selectPaidPlan(plan) {
+    async selectPaidPlan(plan) {
         this.closePublishOptionsModal();
-        authUI.selectPlan(plan);
+
+        // Initialize Stripe if not already done
+        if (!stripeIntegration.initialized) {
+            await stripeIntegration.init();
+        }
+
+        // Show loading message
+        this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
+
+        try {
+            // Create checkout session and redirect to Stripe
+            await stripeIntegration.createCheckoutSession(plan);
+        } catch (error) {
+            console.error('Failed to start checkout:', error);
+            this.showToast('❌ Failed to start checkout. Please try again.', 'error');
+        }
     }
 
     showSubdomainModal(plan) {
