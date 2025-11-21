@@ -6,34 +6,50 @@ class SupabaseClient {
         this.client = null;
         this.currentUser = null;
         this.initialized = false;
+        this.initPromise = null;
     }
 
     async init() {
-        if (this.initialized) return;
-
-        try {
-            // Initialize Supabase client using CDN
-            this.client = supabase.createClient(
-                SUPABASE_CONFIG.url,
-                SUPABASE_CONFIG.anonKey
-            );
-
-            // Check if user is already logged in
-            const { data: { session } } = await this.client.auth.getSession();
-            if (session) {
-                this.currentUser = session.user;
-            }
-
-            // Listen for auth changes
-            this.client.auth.onAuthStateChange((event, session) => {
-                this.currentUser = session?.user || null;
-                this.handleAuthChange(event, session);
-            });
-
-            this.initialized = true;
-        } catch (error) {
-            console.error('Failed to initialize Supabase:', error);
+        // Return existing promise if initialization is in progress
+        if (this.initPromise) {
+            return this.initPromise;
         }
+
+        // Return immediately if already initialized
+        if (this.initialized) {
+            return Promise.resolve();
+        }
+
+        // Create and store the initialization promise
+        this.initPromise = (async () => {
+            try {
+                // Initialize Supabase client using CDN
+                this.client = supabase.createClient(
+                    SUPABASE_CONFIG.url,
+                    SUPABASE_CONFIG.anonKey
+                );
+
+                // Check if user is already logged in
+                const { data: { session } } = await this.client.auth.getSession();
+                if (session) {
+                    this.currentUser = session.user;
+                    console.log('User session loaded:', session.user.email);
+                }
+
+                // Listen for auth changes
+                this.client.auth.onAuthStateChange((event, session) => {
+                    this.currentUser = session?.user || null;
+                    this.handleAuthChange(event, session);
+                });
+
+                this.initialized = true;
+            } catch (error) {
+                console.error('Failed to initialize Supabase:', error);
+                throw error;
+            }
+        })();
+
+        return this.initPromise;
     }
 
     handleAuthChange(event, session) {

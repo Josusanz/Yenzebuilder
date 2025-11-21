@@ -2034,16 +2034,20 @@ class YenzeBuilder {
     }
 
     async checkAuthentication() {
-        // First check if we have a cached user
-        if (supabaseClient.isAuthenticated()) {
-            return true;
-        }
-
-        // If not, try to refresh the session
         try {
+            // First, ensure Supabase is fully initialized
+            await supabaseClient.init();
+
+            // Check if we have a cached user
+            if (supabaseClient.isAuthenticated()) {
+                return true;
+            }
+
+            // If not, try to refresh the session
             const { data: { session } } = await supabaseClient.client.auth.getSession();
             if (session && session.user) {
                 supabaseClient.currentUser = session.user;
+                console.log('Session refreshed for user:', session.user.email);
                 return true;
             }
         } catch (error) {
