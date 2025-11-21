@@ -179,6 +179,7 @@ class SupabaseClient {
                     name: projectData.name || 'Untitled Project',
                     html: projectData.html,
                     plan: projectData.plan || 'free',
+                    subdomain_slug: projectData.subdomain_slug || null,
                     updated_at: new Date().toISOString()
                 })
                 .select()

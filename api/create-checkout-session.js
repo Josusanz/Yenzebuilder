@@ -12,7 +12,7 @@ const supabase = createClient(
 
 // Price IDs for each plan (you'll get these from Stripe Dashboard)
 const PRICE_IDS = {
-    one_time: process.env.STRIPE_PRICE_ONE_TIME,
+    starter: process.env.STRIPE_PRICE_STARTER,
     pro: process.env.STRIPE_PRICE_PRO
 };
 
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
                     quantity: 1,
                 },
             ],
-            mode: plan === 'one_time' ? 'payment' : 'subscription',
+            mode: 'subscription',
             success_url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/dashboard.html?canceled=true`,
             metadata: {

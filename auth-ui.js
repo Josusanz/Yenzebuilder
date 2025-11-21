@@ -172,24 +172,26 @@ class AuthUI {
                             </button>
                         </div>
 
-                        <!-- ONE-TIME Plan -->
+                        <!-- STARTER Plan -->
                         <div class="plan-card">
                             <div class="plan-header">
-                                <h3>Custom Domain</h3>
+                                <h3>Starter</h3>
                                 <div class="plan-price">
-                                    <span class="price">$7.99</span>
-                                    <span class="period">/one-time</span>
+                                    <span class="price">$12</span>
+                                    <span class="period">/year</span>
                                 </div>
                             </div>
                             <ul class="plan-features">
-                                <li>✓ 1 deploy with custom domain</li>
+                                <li>✓ Everything in Free</li>
+                                <li>✓ 1 custom domain (midominio.com)</li>
                                 <li>✓ Remove YENZE badge</li>
-                                <li>✓ Basic analytics</li>
+                                <li>✓ Automatic DNS configuration</li>
+                                <li>✓ Basic analytics dashboard</li>
                                 <li>✓ SSL certificate included</li>
-                                <li>✓ One-time payment</li>
+                                <li>✓ Email support</li>
                             </ul>
-                            <button class="plan-btn secondary" onclick="authUI.selectPlan('one_time')">
-                                Get Custom Domain
+                            <button class="plan-btn secondary" onclick="authUI.selectPlan('starter')">
+                                Get Starter
                             </button>
                         </div>
 
@@ -199,19 +201,19 @@ class AuthUI {
                             <div class="plan-header">
                                 <h3>Pro</h3>
                                 <div class="plan-price">
-                                    <span class="price">$19.99</span>
+                                    <span class="price">$49</span>
                                     <span class="period">/year</span>
                                 </div>
                             </div>
                             <ul class="plan-features">
-                                <li>✓ Everything in Free</li>
-                                <li>✓ Unlimited deploys</li>
-                                <li>✓ Up to 10 custom domains</li>
-                                <li>✓ Remove YENZE badge</li>
+                                <li>✓ Everything in Starter</li>
+                                <li>✓ Up to 10 custom domains (midominio.com)</li>
+                                <li>✓ Automatic DNS configuration</li>
+                                <li>✓ Unlimited projects</li>
                                 <li>✓ Advanced analytics dashboard</li>
                                 <li>✓ Custom domain management</li>
                                 <li>✓ Priority support</li>
-                                <li>✓ SSL certificates for all domains</li>
+                                <li>✓ White-label (no YENZE branding)</li>
                             </ul>
                             <button class="plan-btn primary" onclick="authUI.selectPlan('pro')">
                                 Upgrade to Pro

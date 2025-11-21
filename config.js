@@ -18,49 +18,54 @@ const PLANS = {
         period: null,
         priceId: null,
         features: [
-            'Unlimited editing',
-            'Unlimited publishes',
-            'Deploy to yenze.app subdomain',
-            'Includes "Made with YENZE" badge',
+            'Unlimited projects',
+            'Deploy to usuario.yenze.io subdomain',
+            'SSL certificate included',
+            'Includes "Powered by YENZE" badge',
             'Basic analytics (views, visits)'
         ],
-        deploymentType: 'subdomain', // proyecto.yenze.app
+        deploymentType: 'subdomain', // usuario.yenze.io
         maxDomains: 0,
-        maxProjects: 999
+        maxProjects: 999,
+        badge: true
     },
-    ONE_TIME: {
-        name: 'Custom Domain',
-        price: 7.99,
-        period: 'one-time',
-        priceId: 'price_1SVheLIDLJ66zkJzd9xC2wlK',
+    STARTER: {
+        name: 'Starter',
+        price: 12.00,
+        period: 'year',
+        priceId: 'price_1SVkywIDLJ66zkJzfqKZBxhz',
         features: [
-            '1 deploy with custom domain',
+            'Everything in Free',
+            '1 custom domain (midominio.com)',
             'Remove YENZE badge',
-            'Basic analytics',
+            'Automatic DNS configuration',
+            'Basic analytics dashboard',
             'SSL certificate included',
-            'One-time payment'
+            'Email support'
         ],
-        deploymentType: 'custom',
+        deploymentType: 'custom', // midominio.com
         maxDomains: 1,
-        maxProjects: 1
+        maxProjects: 999,
+        badge: false
     },
     PRO: {
         name: 'Pro',
-        price: 19.99,
+        price: 49.00,
         period: 'year',
-        priceId: 'price_1SVheoIDLJ66zkJzV3GkWvRr',
+        priceId: 'price_1SVl01IDLJ66zkJzDjhViJZA',
         features: [
-            'Everything in Free',
-            'Unlimited deploys',
-            'Up to 10 custom domains',
-            'Remove YENZE badge',
+            'Everything in Starter',
+            'Up to 10 custom domains (midominio.com)',
+            'Automatic DNS configuration',
+            'Unlimited projects',
             'Advanced analytics dashboard',
             'Custom domain management',
             'Priority support',
-            'SSL certificates for all domains'
+            'White-label (no YENZE branding)'
         ],
-        deploymentType: 'custom',
+        deploymentType: 'custom', // midominio.com
         maxDomains: 10,
-        maxProjects: 999
+        maxProjects: 999,
+        badge: false
     }
 };

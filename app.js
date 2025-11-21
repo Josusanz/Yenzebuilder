@@ -2036,11 +2036,16 @@ class YenzeBuilder {
         try {
             this.showToast('Publishing your website...', 'info');
 
-            // Save project to database first
+            // Generate subdomain slug from project name
+            // Generate unique subdomain slug
+            const subdomainSlug = await this.generateUniqueSubdomainSlug(this.projectData.name);
+
+            // Save project to database with subdomain_slug
             const { data: project, error: saveError } = await supabaseClient.saveProject({
                 name: this.projectData.name,
                 html: this.currentHTML,
-                plan: plan
+                plan: plan,
+                subdomain_slug: subdomainSlug
             });
 
             if (saveError) {
@@ -2050,22 +2055,12 @@ class YenzeBuilder {
             // Generate deployment URL based on plan
             let publishedUrl;
 
-            if (plan === 'free') {
-                // FREE tier: Use view.html to serve the project
-                // The HTML is already saved in the database by supabaseClient.saveProject()
-                const baseUrl = window.location.origin;
-                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
-
-                // Note: We're NOT using Supabase Storage directly because browsers
-                // download HTML files instead of rendering them. view.html reads from
-                // the database and renders the HTML in an iframe, which works perfectly
-                // and still uses Supabase (database instead of storage)
-
-            } else if (plan === 'one_time' || plan === 'pro') {
-                // PAID tier: Use view.html for now (same as FREE but without badge)
-                // TODO: Implement custom domain deployment with Netlify/Vercel
-                const baseUrl = window.location.origin;
-                publishedUrl = `${baseUrl}/view.html?id=${project.id}`;
+            if (plan === 'free' || plan === 'starter') {
+                // FREE & STARTER: Use subdomain
+                publishedUrl = `https://${subdomainSlug}.yenze.io`;
+            } else if (plan === 'pro') {
+                // PRO: Can use custom domain (to be implemented) or subdomain for now
+                publishedUrl = `https://${subdomainSlug}.yenze.io`;
             }
 
             // Update project with published URL
@@ -2079,6 +2074,7 @@ class YenzeBuilder {
             }
 
             this.projectData.publishedUrl = publishedUrl;
+            this.projectData.subdomainSlug = subdomainSlug;
             this.saveProject(); // Save to localStorage as well
 
             // Create deployment record
@@ -2099,6 +2095,67 @@ class YenzeBuilder {
             console.error('Publish error:', error);
             this.showToast('❌ Failed to publish: ' + error.message, 'error');
         }
+    }
+
+    generateSubdomainSlug(projectName) {
+        // Convert project name to valid subdomain slug
+        // Examples:
+        // "My Portfolio" → "my-portfolio"
+        // "Empresa XYZ!" → "empresa-xyz"
+        // "José's Site" → "joses-site"
+
+        return projectName
+            .toLowerCase()
+            .normalize('NFD') // Normalize accents
+            .replace(/[\u0300-\u036f]/g, '') // Remove accents
+            .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
+            .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+            .substring(0, 63); // Max length for subdomain
+    }
+
+    async generateUniqueSubdomainSlug(projectName) {
+        // Generate base slug from project name
+        let baseSlug = this.generateSubdomainSlug(projectName);
+
+        // If slug is empty (project name had no valid chars), use default
+        if (!baseSlug) {
+            baseSlug = 'project';
+        }
+
+        let uniqueSlug = baseSlug;
+        let attempt = 1;
+        const maxAttempts = 100;
+
+        // Keep trying until we find a unique slug
+        while (attempt < maxAttempts) {
+            // Check if this slug is available
+            const { data: existing } = await supabaseClient.client
+                .from('projects')
+                .select('id')
+                .eq('subdomain_slug', uniqueSlug)
+                .neq('id', this.projectData.id || 'none')
+                .single();
+
+            if (!existing) {
+                // Slug is available!
+                if (attempt > 1) {
+                    // Show message that we auto-generated a unique slug
+                    this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
+                }
+                return uniqueSlug;
+            }
+
+            // Slug is taken, try adding a number
+            attempt++;
+            uniqueSlug = `${baseSlug}-${attempt}`;
+        }
+
+        // If we couldn't find a unique slug after 100 attempts, use timestamp
+        const timestamp = Date.now().toString().slice(-6);
+        uniqueSlug = `${baseSlug}-${timestamp}`;
+        this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
+
+        return uniqueSlug;
     }
 
     handleAssetUpload(files) {

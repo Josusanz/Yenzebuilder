@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .loader {
+            color: white;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">Loading your website...</div>
+    <script>
+        // Fetch project content from API
+        (async () => {
+            try {
+                const response = await fetch('/api/subdomain');
+                if (response.ok) {
+                    const html = await response.text();
+                    document.open();
+                    document.write(html);
+                    document.close();
+                } else {
+                    // Show error page
+                    document.body.innerHTML = `
+                        <div style="text-align: center; color: white;">
+                            <h1 style="font-size: 4rem; margin: 0 0 1rem 0;">404</h1>
+                            <p style="font-size: 1.25rem; margin: 0 0 2rem 0;">This site hasn't been published yet.</p>
+                            <a href="https://yenze.io" style="display: inline-block; padding: 0.75rem 2rem; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600;">Create Your Own Website</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading website:', error);
+                document.body.innerHTML = `
+                    <div style="text-align: center; color: white;">
+                        <h1>Error</h1>
+                        <p>Failed to load website. Please try again later.</p>
+                    </div>
+                `;
+            }
+        })();
+    </script>
+</body>
+</html>
