@@ -296,6 +296,8 @@ class YenzeBuilder {
             }
             // Delete selected element with Backspace or Delete key
             else if ((e.key === 'Backspace' || e.key === 'Delete') && this.selectedElement) {
+                console.log('🗑️ Delete key pressed. Selected element:', this.selectedElement);
+
                 // Don't delete if user is typing in an input/textarea
                 const activeElement = document.activeElement;
                 const isTyping = activeElement && (
@@ -303,6 +305,8 @@ class YenzeBuilder {
                     activeElement.tagName === 'TEXTAREA' ||
                     activeElement.isContentEditable
                 );
+
+                console.log('Active element:', activeElement, 'Is typing:', isTyping);
 
                 if (!isTyping) {
                     e.preventDefault();
@@ -364,10 +368,19 @@ class YenzeBuilder {
 
         // Canvas drop zone for elements - on the whole canvas area
         const canvasArea = document.querySelector('.canvas-area');
+
+        if (!canvasArea) {
+            console.error('❌ Canvas area not found!');
+            return;
+        }
+
+        console.log('✅ Canvas area found, adding drag-drop listeners');
+
         canvasArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy';
             canvasArea.style.background = 'rgba(102, 126, 234, 0.05)';
+            console.log('🎯 Dragging over canvas area');
         });
 
         canvasArea.addEventListener('dragleave', (e) => {
@@ -462,10 +475,36 @@ class YenzeBuilder {
         setTimeout(() => {
             this.makeEditable(iframeDoc);
             this.buildLayersTree(iframeDoc);
+            this.setupIframeKeyboardShortcuts(iframeDoc);
         }, 500);
 
         this.showToast('✅ HTML loaded successfully!', 'success');
         this.saveProject();
+    }
+
+    setupIframeKeyboardShortcuts(doc) {
+        // Add keyboard shortcuts to iframe document
+        doc.addEventListener('keydown', (e) => {
+            console.log('🎹 Key pressed in iframe:', e.key);
+
+            // Delete selected element with Backspace or Delete key
+            if ((e.key === 'Backspace' || e.key === 'Delete') && this.selectedElement) {
+                console.log('🗑️ Delete key in iframe. Selected element:', this.selectedElement);
+
+                // Don't delete if user is typing in an input/textarea within the iframe
+                const activeElement = doc.activeElement;
+                const isTyping = activeElement && (
+                    activeElement.tagName === 'INPUT' ||
+                    activeElement.tagName === 'TEXTAREA' ||
+                    activeElement.isContentEditable
+                );
+
+                if (!isTyping) {
+                    e.preventDefault();
+                    this.deleteSelectedElement();
+                }
+            }
+        });
     }
 
     makeEditable(doc) {
