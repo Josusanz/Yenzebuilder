@@ -434,8 +434,8 @@ class AuthUI {
     // Callback for successful authentication
     onAuthSuccess(user) {
         console.log('User authenticated:', user.email);
-        // Show plan modal after successful login
-        this.showPlanModal();
+        // Don't show plan modal automatically - let the user's action flow continue
+        // If they were publishing, they'll see the subdomain modal instead
     }
 }
 

@@ -173,6 +173,7 @@ class YenzeBuilder {
         this.draggedElement = null;
         this.draggedLayerElement = null;
         this.dropIndicator = null;
+        this.pendingPublish = false; // Flag to track if user was trying to publish
 
         // History system for undo/redo
         this.history = [];
@@ -2023,6 +2024,8 @@ class YenzeBuilder {
         // Check if user is authenticated (with session refresh)
         const isAuth = await this.checkAuthentication();
         if (!isAuth) {
+            // Set flag so we know to show subdomain modal after login
+            this.pendingPublish = true;
             // Show auth modal first
             authUI.showAuthModal('login');
             this.showToast('Please log in to publish your website', 'info');
@@ -2542,3 +2545,17 @@ class YenzeBuilder {
 // Make app globally accessible for auth-ui integration
 const app = new YenzeBuilder();
 window.app = app;
+
+// Listen for authentication events
+window.addEventListener('auth-change', (e) => {
+    const { event } = e.detail;
+
+    // If user just signed in and was trying to publish, show subdomain modal
+    if (event === 'SIGNED_IN' && app.pendingPublish) {
+        app.pendingPublish = false; // Reset flag
+        // Small delay to let auth modal close
+        setTimeout(() => {
+            app.showSubdomainModal('free');
+        }, 300);
+    }
+});
