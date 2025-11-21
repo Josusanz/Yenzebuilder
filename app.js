@@ -505,6 +505,32 @@ class YenzeBuilder {
                 }
             }
         });
+
+        // Add drag-and-drop listeners to iframe document
+        console.log('🎯 Setting up drag-and-drop in iframe');
+
+        doc.body.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            doc.body.style.outline = '3px dashed rgba(102, 126, 234, 0.5)';
+            console.log('🎯 Dragging over iframe body');
+        });
+
+        doc.body.addEventListener('dragleave', (e) => {
+            if (e.target === doc.body) {
+                doc.body.style.outline = '';
+            }
+        });
+
+        doc.body.addEventListener('drop', (e) => {
+            e.preventDefault();
+            doc.body.style.outline = '';
+            const elementType = e.dataTransfer.getData('text/plain');
+            console.log('🎯 Drop received in iframe:', elementType);
+            if (elementType && ELEMENT_TEMPLATES[elementType]) {
+                this.insertElementTemplate(elementType);
+            }
+        });
     }
 
     makeEditable(doc) {
