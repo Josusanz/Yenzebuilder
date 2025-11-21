@@ -2029,8 +2029,8 @@ class YenzeBuilder {
             return;
         }
 
-        // User is authenticated - show publication options modal
-        this.showPublishOptionsModal();
+        // User is authenticated - show subdomain selection modal directly
+        this.showSubdomainModal('free');
     }
 
     async checkAuthentication() {
@@ -2089,6 +2089,26 @@ class YenzeBuilder {
 
     async selectPaidPlan(plan) {
         this.closePublishOptionsModal();
+
+        // Initialize Stripe if not already done
+        if (!stripeIntegration.initialized) {
+            await stripeIntegration.init();
+        }
+
+        // Show loading message
+        this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
+
+        try {
+            // Create checkout session and redirect to Stripe
+            await stripeIntegration.createCheckoutSession(plan);
+        } catch (error) {
+            console.error('Failed to start checkout:', error);
+            this.showToast('❌ Failed to start checkout. Please try again.', 'error');
+        }
+    }
+
+    async upgradeFromModal(plan) {
+        this.closeSubdomainModal();
 
         // Initialize Stripe if not already done
         if (!stripeIntegration.initialized) {
