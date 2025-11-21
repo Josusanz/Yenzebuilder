@@ -534,6 +534,7 @@
             align-items: center;
             gap: 0.5rem;
             user-select: none;
+            -webkit-user-drag: element;
         }
 
         .element-card:hover {
@@ -557,6 +558,7 @@
             background: white;
             border-radius: var(--radius);
             border: 1px solid var(--border);
+            pointer-events: none;
         }
 
         .element-card:hover .element-icon {
@@ -568,6 +570,11 @@
             font-weight: 600;
             color: var(--text);
             text-align: center;
+            pointer-events: none;
+        }
+
+        .element-icon svg {
+            pointer-events: none;
         }
 
         /* Canvas */

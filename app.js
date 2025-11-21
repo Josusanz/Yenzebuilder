@@ -316,24 +316,29 @@ class YenzeBuilder {
 
         // Element cards drag-and-drop - use event delegation since cards may not exist yet
         document.addEventListener('dragstart', (e) => {
-            if (e.target.classList.contains('element-card')) {
-                const elementType = e.target.dataset.element;
-                e.dataTransfer.setData('element-type', elementType);
+            const card = e.target.closest('.element-card');
+            if (card) {
+                const elementType = card.dataset.element;
+                console.log('🎯 Drag started:', elementType);
+                e.dataTransfer.setData('text/plain', elementType); // Use text/plain for better compatibility
                 e.dataTransfer.effectAllowed = 'copy';
-                e.target.style.opacity = '0.5';
+                card.style.opacity = '0.5';
+                card.classList.add('dragging');
             }
         });
 
         document.addEventListener('dragend', (e) => {
-            if (e.target.classList.contains('element-card')) {
-                e.target.style.opacity = '1';
+            const card = e.target.closest('.element-card');
+            if (card) {
+                card.style.opacity = '1';
+                card.classList.remove('dragging');
             }
         });
 
-        // Click to insert elements
+        // Click to insert elements (but not if we're dragging)
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.element-card')) {
-                const card = e.target.closest('.element-card');
+            const card = e.target.closest('.element-card');
+            if (card && !card.classList.contains('dragging')) {
                 const elementType = card.dataset.element;
                 this.insertElementTemplate(elementType);
             }
@@ -356,7 +361,8 @@ class YenzeBuilder {
         canvasArea.addEventListener('drop', (e) => {
             e.preventDefault();
             canvasArea.style.background = '';
-            const elementType = e.dataTransfer.getData('element-type');
+            const elementType = e.dataTransfer.getData('text/plain');
+            console.log('🎯 Drop received:', elementType);
             if (elementType && ELEMENT_TEMPLATES[elementType]) {
                 this.insertElementTemplate(elementType);
             }
