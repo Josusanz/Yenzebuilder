@@ -371,36 +371,132 @@
         .layers-tree {
             list-style: none;
             position: relative;
+            padding: 0;
+            margin: 0;
         }
 
         .layer-item {
-            padding: 0.625rem 0.75rem;
-            margin: 0.25rem 0;
-            border-radius: var(--radius-sm);
+            padding: 0.5rem 0.625rem;
+            margin: 2px 0;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.625rem;
+            gap: 0.5rem;
             font-size: 0.8125rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.15s ease;
             font-weight: 500;
             color: var(--text);
+            position: relative;
+            user-select: none;
         }
 
         .layer-item:hover {
-            background: var(--bg-tertiary);
-            transform: translateX(2px);
+            background: rgba(102, 126, 234, 0.08);
         }
 
         .layer-item.selected {
-            background: var(--accent-light);
-            color: var(--accent);
+            background: var(--accent);
+            color: white;
             font-weight: 600;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.25);
+        }
+
+        .layer-item.selected .layer-icon {
+            opacity: 1;
+        }
+
+        .layer-toggle {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: transform 0.2s ease;
+            flex-shrink: 0;
+            opacity: 0.6;
+        }
+
+        .layer-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+            opacity: 1;
+        }
+
+        .layer-toggle.collapsed {
+            transform: rotate(-90deg);
         }
 
         .layer-icon {
-            opacity: 0.6;
-            font-size: 0.9375rem;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .layer-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.8125rem;
+            letter-spacing: -0.01em;
+        }
+
+        .layer-actions {
+            display: none;
+            gap: 0.25rem;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .layer-item:hover .layer-actions {
+            display: flex;
+            opacity: 1;
+        }
+
+        .layer-item.selected .layer-actions {
+            display: flex;
+            opacity: 1;
+        }
+
+        .layer-action-btn {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+            padding: 0;
+            color: currentColor;
+        }
+
+        .layer-action-btn:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .layer-item.selected .layer-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .layer-children {
+            margin-left: 1.25rem;
+            padding-left: 0.5rem;
+            border-left: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .layer-item.nested {
+            margin-left: 0;
         }
 
         /* Canvas */
