@@ -532,8 +532,7 @@ class YenzeBuilder {
             if (dropIndicator && dropIndicator.parentNode) {
                 dropIndicator.parentNode.removeChild(dropIndicator);
             }
-            dropTarget = null;
-            dropPosition = null;
+            // Don't reset dropTarget and dropPosition here - we need them for the drop event!
         };
 
         doc.body.addEventListener('dragover', (e) => {
@@ -545,6 +544,11 @@ class YenzeBuilder {
 
             // Skip if target is the drop indicator itself
             if (target === dropIndicator) return;
+
+            // Skip script and style tags
+            if (target.tagName === 'SCRIPT' || target.tagName === 'STYLE') {
+                target = target.parentElement;
+            }
 
             // Find the closest element that's not body
             while (target && target !== doc.body && target.tagName === 'HTML') {
@@ -563,6 +567,8 @@ class YenzeBuilder {
             // Store drop target and position
             dropTarget = target;
             dropPosition = position;
+
+            console.log('📍 Drag position:', position, 'over:', target.tagName);
 
             // Show drop indicator
             const indicator = createDropIndicator();
@@ -598,14 +604,29 @@ class YenzeBuilder {
 
         doc.body.addEventListener('drop', (e) => {
             e.preventDefault();
-            removeDropIndicator();
 
             const elementType = e.dataTransfer.getData('text/plain');
-            console.log('🎯 Drop received at position:', dropPosition, 'target:', dropTarget?.tagName);
+
+            // Save the drop target and position before removing indicator
+            const savedTarget = dropTarget;
+            const savedPosition = dropPosition;
+
+            console.log('🎯 Drop received:', {
+                elementType,
+                position: savedPosition,
+                targetTag: savedTarget?.tagName,
+                targetText: savedTarget?.textContent?.substring(0, 30)
+            });
+
+            removeDropIndicator();
 
             if (elementType && ELEMENT_TEMPLATES[elementType]) {
-                this.insertElementTemplateAtPosition(elementType, dropTarget, dropPosition);
+                this.insertElementTemplateAtPosition(elementType, savedTarget, savedPosition);
             }
+
+            // Reset after insertion
+            dropTarget = null;
+            dropPosition = null;
         });
     }
 
