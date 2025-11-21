@@ -828,6 +828,266 @@
             background: #CCCCCC;
         }
 
+        /* Publish Options Modal */
+        .publish-options-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .publish-options-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px;
+            position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .publish-options-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .publish-options-header h2 {
+            color: #1a1a1a;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+
+        .publish-options-header p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #999;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .publish-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .publish-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 30px 24px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .publish-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .free-option:hover {
+            border-color: #667eea;
+        }
+
+        .starter-option:hover {
+            border-color: #f59e0b;
+        }
+
+        .pro-option:hover {
+            border-color: #10b981;
+        }
+
+        .option-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .free-badge {
+            background: #e0e7ff;
+            color: #667eea;
+        }
+
+        .starter-badge {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .pro-badge {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .publish-option h3 {
+            color: #1a1a1a;
+            font-size: 22px;
+            margin: 0 0 16px 0;
+        }
+
+        .option-domain-preview {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .domain-preview-text {
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .option-price {
+            margin-bottom: 20px;
+        }
+
+        .price-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .price-period {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .option-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            text-align: left;
+        }
+
+        .option-features li {
+            padding: 8px 0;
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .free-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .free-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .starter-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .starter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .pro-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .pro-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .publish-options-footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-note {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .publish-options-content {
+                padding: 24px;
+            }
+
+            .publish-options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .publish-options-header h2 {
+                font-size: 24px;
+            }
+        }
+
         /* Publication Success Popup */
         .publish-popup-overlay {
             display: none;
@@ -1446,6 +1706,84 @@
             window.location.href = '/dashboard.html';
         }
     </script>
+
+    <!-- Publish Options Modal -->
+    <div id="publishOptionsModal" class="publish-options-modal" style="display: none;">
+        <div class="publish-options-content">
+            <div class="publish-options-header">
+                <h2>🚀 Where do you want to publish?</h2>
+                <p>Choose how your website will be accessible</p>
+                <button class="modal-close-btn" onclick="app.closePublishOptionsModal()">×</button>
+            </div>
+
+            <div class="publish-options-grid">
+                <!-- FREE Option - Subdomain -->
+                <div class="publish-option free-option">
+                    <div class="option-badge free-badge">FREE</div>
+                    <div class="option-icon">🌐</div>
+                    <h3>YENZE Subdomain</h3>
+                    <div class="option-domain-preview">
+                        <span id="subdomainPreview" class="domain-preview-text">project-name.yenze.io</span>
+                    </div>
+                    <ul class="option-features">
+                        <li>✓ Publish instantly</li>
+                        <li>✓ SSL certificate included</li>
+                        <li>✓ Basic analytics</li>
+                        <li>⚠️ Includes "Powered by YENZE" badge</li>
+                    </ul>
+                    <button class="option-btn free-btn" onclick="app.publishFree()">
+                        Publish Free
+                    </button>
+                </div>
+
+                <!-- STARTER Plan - Custom Domain -->
+                <div class="publish-option starter-option">
+                    <div class="option-badge starter-badge">STARTER</div>
+                    <div class="option-icon">⭐</div>
+                    <h3>Custom Domain</h3>
+                    <div class="option-price">
+                        <span class="price-amount">$12</span>
+                        <span class="price-period">/year</span>
+                    </div>
+                    <ul class="option-features">
+                        <li>✓ Use your own domain (midominio.com)</li>
+                        <li>✓ Remove YENZE badge</li>
+                        <li>✓ Automatic DNS configuration</li>
+                        <li>✓ SSL certificate included</li>
+                        <li>✓ Email support</li>
+                    </ul>
+                    <button class="option-btn starter-btn" onclick="app.selectPaidPlan('starter')">
+                        Get Starter Plan
+                    </button>
+                </div>
+
+                <!-- PRO Plan - Multiple Domains -->
+                <div class="publish-option pro-option">
+                    <div class="option-badge pro-badge">PRO</div>
+                    <div class="option-icon">🚀</div>
+                    <h3>Multiple Domains</h3>
+                    <div class="option-price">
+                        <span class="price-amount">$49</span>
+                        <span class="price-period">/year</span>
+                    </div>
+                    <ul class="option-features">
+                        <li>✓ Up to 10 custom domains</li>
+                        <li>✓ Remove YENZE badge</li>
+                        <li>✓ Advanced analytics</li>
+                        <li>✓ Priority support</li>
+                        <li>✓ White-label experience</li>
+                    </ul>
+                    <button class="option-btn pro-btn" onclick="app.selectPaidPlan('pro')">
+                        Get Pro Plan
+                    </button>
+                </div>
+            </div>
+
+            <div class="publish-options-footer">
+                <p class="footer-note">You can upgrade or change plans anytime from your dashboard</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Publication Success Popup -->
     <div id="publishPopupOverlay" class="publish-popup-overlay">

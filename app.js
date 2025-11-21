@@ -2028,8 +2028,42 @@ class YenzeBuilder {
             return;
         }
 
-        // User is authenticated - show plan selection modal
-        authUI.showPlanModal();
+        // User is authenticated - show publication options modal
+        this.showPublishOptionsModal();
+    }
+
+    showPublishOptionsModal() {
+        const modal = document.getElementById('publishOptionsModal');
+        if (!modal) {
+            console.error('Publish options modal not found');
+            return;
+        }
+
+        // Generate subdomain preview
+        const subdomainSlug = this.generateSubdomainSlug(this.projectData.name);
+        const subdomainPreview = document.getElementById('subdomainPreview');
+        if (subdomainPreview) {
+            subdomainPreview.textContent = `${subdomainSlug}.yenze.io`;
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    closePublishOptionsModal() {
+        const modal = document.getElementById('publishOptionsModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    async publishFree() {
+        this.closePublishOptionsModal();
+        await this.publishWithPlan('free');
+    }
+
+    selectPaidPlan(plan) {
+        this.closePublishOptionsModal();
+        authUI.selectPlan(plan);
     }
 
     async publishWithPlan(plan) {

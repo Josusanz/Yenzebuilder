@@ -25,13 +25,24 @@ export default async function handler(req, res) {
     try {
         const { plan, userId, email } = req.body;
 
+        console.log('[Checkout] Request received:', { plan, userId, email });
+
         // Validate input
         if (!plan || !userId || !email) {
+            console.error('[Checkout] Missing required fields:', { plan, userId, email });
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        console.log('[Checkout] Available price IDs:', PRICE_IDS);
+        console.log('[Checkout] Looking for plan:', plan);
+
         if (!PRICE_IDS[plan]) {
-            return res.status(400).json({ error: 'Invalid plan' });
+            console.error('[Checkout] Invalid plan:', plan);
+            return res.status(400).json({
+                error: 'Invalid plan',
+                availablePlans: Object.keys(PRICE_IDS),
+                requestedPlan: plan
+            });
         }
 
         // Check if user already has an active subscription
@@ -67,6 +78,12 @@ export default async function handler(req, res) {
         }
 
         // Create checkout session
+        console.log('[Checkout] Creating Stripe session with:', {
+            customerId,
+            priceId: PRICE_IDS[plan],
+            plan
+        });
+
         const session = await stripe.checkout.sessions.create({
             customer: customerId,
             payment_method_types: ['card'],
@@ -86,6 +103,7 @@ export default async function handler(req, res) {
             allow_promotion_codes: true,
         });
 
+        console.log('[Checkout] Session created successfully:', session.id);
         res.status(200).json({ sessionId: session.id });
 
     } catch (error) {
