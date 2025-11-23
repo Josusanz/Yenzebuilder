@@ -1,12 +1,12 @@
 // YENZE Pricing Plans Configuration
-// Ultra-competitive pricing for maximum conversions
+// Ultra-competitive pricing with Framer-style design
 
 const PRICING_PLANS = {
     free: {
         id: 'free',
-        name: 'FREE',
+        name: 'Free',
         price: 0,
-        priceId: null, // No Stripe price ID needed
+        priceId: null,
         interval: 'forever',
         features: {
             pages: 1,
@@ -14,7 +14,7 @@ const PRICING_PLANS = {
             customDomain: false,
             monthlyViews: 1000,
             storage: 10, // MB
-            branding: true, // Shows "Built with YENZE"
+            branding: true,
             integrations: ['basic'],
             support: 'community',
             projects: 1
@@ -28,15 +28,21 @@ const PRICING_PLANS = {
             removeBranding: false,
             advancedIntegrations: false
         },
-        description: 'Perfect for personal portfolios and testing',
+        description: 'For hobby projects',
         popular: false,
-        cta: 'Get Started Free'
+        cta: 'Get Started',
+        displayFeatures: [
+            '1 Website',
+            'yenze.io subdomain',
+            '1K visitors/mo',
+            '10MB storage'
+        ]
     },
     starter: {
         id: 'starter',
-        name: 'STARTER',
-        price: 2.99,
-        priceId: 'price_starter_monthly', // Will create in Stripe
+        name: 'Starter',
+        price: 3,
+        priceId: process.env.STRIPE_PRICE_STARTER || 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
         interval: 'month',
         features: {
             pages: 3,
@@ -44,7 +50,7 @@ const PRICING_PLANS = {
             customDomain: false,
             monthlyViews: 5000,
             storage: 50, // MB
-            branding: false, // No YENZE branding
+            branding: false,
             integrations: ['basic', 'forms', 'newsletter'],
             support: 'email',
             projects: 3
@@ -58,16 +64,22 @@ const PRICING_PLANS = {
             removeBranding: true,
             advancedIntegrations: false
         },
-        description: 'For freelancers and small businesses',
+        description: 'For personal sites',
         popular: true,
         cta: 'Start Building',
-        badge: 'Most Popular'
+        badge: 'POPULAR',
+        displayFeatures: [
+            '3 Websites',
+            '5K visitors/mo',
+            '50MB storage',
+            'Remove Branding'
+        ]
     },
     pro: {
         id: 'pro',
-        name: 'PRO',
-        price: 6.99,
-        priceId: 'price_pro_monthly', // Will create in Stripe
+        name: 'Pro',
+        price: 7,
+        priceId: process.env.STRIPE_PRICE_PRO || 'price_1SWiCYIDLJ66zkJzlw0IY25L',
         interval: 'month',
         features: {
             pages: 'unlimited',
@@ -91,206 +103,93 @@ const PRICING_PLANS = {
             advancedIntegrations: true,
             analytics: true
         },
-        description: 'For growing businesses and professionals',
+        description: 'For professionals',
         popular: false,
-        cta: 'Go Pro'
+        cta: 'Go Pro',
+        displayFeatures: [
+            '10 Websites',
+            'Custom Domain',
+            '25K visitors/mo',
+            'Analytics'
+        ]
     },
     business: {
         id: 'business',
-        name: 'BUSINESS',
-        price: 14.99,
-        priceId: 'price_business_monthly', // Will create in Stripe
+        name: 'Business',
+        price: 15,
+        priceId: process.env.STRIPE_PRICE_BUSINESS || 'price_1SWiDFIDLJ66zkJzyNmDga03',
         interval: 'month',
         features: {
             pages: 'unlimited',
             subdomain: true,
-            customDomain: 'multiple',
+            customDomain: true,
             monthlyViews: 100000,
-            storage: 2000, // MB (2GB)
+            storage: 2048, // 2GB
             branding: false,
             integrations: ['all'],
             support: 'priority',
-            projects: 'unlimited',
+            projects: -1, // unlimited
             analytics: true,
-            whitelabel: true,
-            api: true
+            whiteLabel: true
         },
         limits: {
-            maxPages: -1,
+            maxPages: -1, // unlimited
             maxProjects: -1, // unlimited
             maxViews: 100000,
-            maxStorage: 2097152000, // 2GB in bytes
+            maxStorage: 2147483648, // 2GB in bytes
             customDomain: true,
-            multipleCustomDomains: true,
             removeBranding: true,
             advancedIntegrations: true,
             analytics: true,
-            whitelabel: true,
-            apiAccess: true
+            whiteLabel: true
         },
-        description: 'For agencies and power users',
+        description: 'For agencies & teams',
         popular: false,
         cta: 'Scale Up',
-        badge: 'Best Value'
+        displayFeatures: [
+            'Unlimited Sites',
+            'Multiple Domains',
+            '100K visitors/mo',
+            'White-label'
+        ]
     }
 };
 
-// Feature descriptions for UI
-const FEATURE_DESCRIPTIONS = {
-    pages: {
-        icon: '📄',
-        name: 'Pages per Project',
-        tooltip: 'Number of individual pages you can create in each project'
-    },
-    subdomain: {
-        icon: '🌐',
-        name: 'Free Subdomain',
-        tooltip: 'Get a free yourname.yenze.io subdomain'
-    },
-    customDomain: {
-        icon: '🔗',
-        name: 'Custom Domain',
-        tooltip: 'Connect your own domain (yourbrand.com)'
-    },
-    monthlyViews: {
-        icon: '👁️',
-        name: 'Monthly Page Views',
-        tooltip: 'Number of times your pages can be viewed per month'
-    },
-    storage: {
-        icon: '💾',
-        name: 'Storage',
-        tooltip: 'Total storage for images and assets'
-    },
-    branding: {
-        icon: '✨',
-        name: 'YENZE Branding',
-        tooltip: 'Small "Built with YENZE" badge on your site'
-    },
-    integrations: {
-        icon: '🔌',
-        name: 'Integrations',
-        tooltip: 'Connect forms, newsletters, analytics and more'
-    },
-    support: {
-        icon: '💬',
-        name: 'Support',
-        tooltip: 'How quickly we respond to your questions'
-    },
-    projects: {
-        icon: '📁',
-        name: 'Projects',
-        tooltip: 'Number of separate websites you can create'
-    },
-    analytics: {
-        icon: '📊',
-        name: 'Analytics',
-        tooltip: 'Track visitors and page performance'
-    },
-    whitelabel: {
-        icon: '🏷️',
-        name: 'White Label',
-        tooltip: 'Complete removal of YENZE branding, even in editor'
-    },
-    api: {
-        icon: '⚡',
-        name: 'API Access',
-        tooltip: 'Programmatic access to manage your sites'
-    }
-};
-
-// Helper functions
-function getPlanById(planId) {
+// Helper function to get plan details
+function getPlanDetails(planId) {
     return PRICING_PLANS[planId] || PRICING_PLANS.free;
 }
 
-function canUserPerformAction(userPlan, action, currentUsage) {
-    const plan = getPlanById(userPlan);
+// Helper function to check if user can perform action based on plan
+function canPerformAction(userPlan, action) {
+    const plan = getPlanDetails(userPlan);
 
     switch(action) {
-        case 'create_page':
-            if (plan.limits.maxPages === -1) return true;
-            return currentUsage.pages < plan.limits.maxPages;
-
-        case 'create_project':
-            if (plan.limits.maxProjects === -1) return true;
-            return currentUsage.projects < plan.limits.maxProjects;
-
-        case 'add_custom_domain':
-            return plan.limits.customDomain === true;
-
+        case 'custom_domain':
+            return plan.limits.customDomain;
         case 'remove_branding':
-            return plan.limits.removeBranding === true;
-
-        case 'use_advanced_integrations':
-            return plan.limits.advancedIntegrations === true;
-
-        case 'view_analytics':
-            return plan.limits.analytics === true;
-
-        case 'api_access':
-            return plan.limits.apiAccess === true;
-
+            return plan.limits.removeBranding;
+        case 'analytics':
+            return plan.limits.analytics;
+        case 'white_label':
+            return plan.limits.whiteLabel;
         default:
             return false;
     }
 }
 
-function getUpgradeMessage(userPlan, action) {
-    const messages = {
-        create_page: {
-            free: 'Upgrade to STARTER ($2.99/mo) to create up to 3 pages!',
-            starter: 'Upgrade to PRO ($6.99/mo) for unlimited pages!',
-            pro: 'You already have unlimited pages!'
-        },
-        create_project: {
-            free: 'Upgrade to STARTER ($2.99/mo) to create up to 3 projects!',
-            starter: 'Upgrade to PRO ($6.99/mo) for 10 projects!',
-            pro: 'Upgrade to BUSINESS ($14.99/mo) for unlimited projects!'
-        },
-        add_custom_domain: {
-            free: 'Upgrade to PRO ($6.99/mo) to use your custom domain!',
-            starter: 'Upgrade to PRO ($6.99/mo) to use your custom domain!'
-        },
-        remove_branding: {
-            free: 'Upgrade to STARTER ($2.99/mo) to remove YENZE branding!'
-        },
-        use_advanced_integrations: {
-            free: 'Upgrade to PRO ($6.99/mo) for advanced integrations!',
-            starter: 'Upgrade to PRO ($6.99/mo) for advanced integrations!'
-        }
+// Helper function to get readable limits
+function getReadableLimits(planId) {
+    const plan = getPlanDetails(planId);
+    return {
+        projects: plan.limits.maxProjects === -1 ? 'Unlimited' : plan.limits.maxProjects,
+        pages: plan.limits.maxPages === -1 ? 'Unlimited' : plan.limits.maxPages,
+        views: plan.limits.maxViews.toLocaleString(),
+        storage: `${plan.features.storage >= 1024 ? (plan.features.storage / 1024).toFixed(0) + 'GB' : plan.features.storage + 'MB'}`
     };
-
-    return messages[action]?.[userPlan] || 'Upgrade to unlock this feature!';
 }
 
-// Calculate cost per client for internal use
-function calculateCostPerClient(planId, clientCount) {
-    const vercelCostPerMonth = 20; // Vercel Pro
-    const bandwidthIncluded = 100 * 1024 * 1024 * 1024; // 100GB in bytes
-
-    const plan = getPlanById(planId);
-    const avgPageSize = 500 * 1024; // 500KB per page
-    const bandwidthPerClient = plan.limits.maxViews * avgPageSize;
-
-    const totalBandwidth = bandwidthPerClient * clientCount;
-
-    if (totalBandwidth <= bandwidthIncluded) {
-        return {
-            costPerClient: vercelCostPerMonth / clientCount,
-            totalCost: vercelCostPerMonth,
-            withinLimit: true
-        };
-    } else {
-        const extraGB = (totalBandwidth - bandwidthIncluded) / (1024 * 1024 * 1024);
-        const extraCost = extraGB * 0.15; // $0.15 per GB
-        const totalCost = vercelCostPerMonth + extraCost;
-
-        return {
-            costPerClient: totalCost / clientCount,
-            totalCost: totalCost,
-            withinLimit: false,
-            extraBandwidth: extraGB
-        };
-    }
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { PRICING_PLANS, getPlanDetails, canPerformAction, getReadableLimits };
 }

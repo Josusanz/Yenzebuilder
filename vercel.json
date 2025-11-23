@@ -1,7 +1,6 @@
 {
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": ".",
-  "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
     {
@@ -18,33 +17,6 @@
     {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
-    },
-    {
-      "source": "/",
-      "destination": "/public/index.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/:path*",
-      "destination": "/public/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/public/:path*",
-      "destination": "https://builder.yenze.io/:path*",
-      "permanent": true
     }
   ]
 }
