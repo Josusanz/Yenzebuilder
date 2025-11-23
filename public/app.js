@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.0.4
+// Version 1.0.5 - Cache Bust: 2025-11-23-14:05
 
 // Element Templates
 const ELEMENT_TEMPLATES = {

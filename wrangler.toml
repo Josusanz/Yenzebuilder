@@ -13,11 +13,20 @@ node_compat = true
 workers_dev = false
 
 # Rutas para manejar en yenze.io
+# Temporarily disabled to allow Vercel to serve directly
+# routes = [
+#   { pattern = "yenze.io/s/*", zone_name = "yenze.io" },
+#   { pattern = "yenze.io/api/*", zone_name = "yenze.io" },
+#   { pattern = "yenze.io/*", zone_name = "yenze.io" },
+#   { pattern = "www.yenze.io/s/*", zone_name = "yenze.io" },
+#   { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" },
+#   { pattern = "www.yenze.io/*", zone_name = "yenze.io" }
+# ]
+
+# Only handle /s/* and /api/* routes
 routes = [
   { pattern = "yenze.io/s/*", zone_name = "yenze.io" },
   { pattern = "yenze.io/api/*", zone_name = "yenze.io" },
-  { pattern = "yenze.io/*", zone_name = "yenze.io" },
   { pattern = "www.yenze.io/s/*", zone_name = "yenze.io" },
-  { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" },
-  { pattern = "www.yenze.io/*", zone_name = "yenze.io" }
+  { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" }
 ]
