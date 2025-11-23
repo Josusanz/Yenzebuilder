@@ -43,6 +43,36 @@
     {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/public/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "builder.yenze.io"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "destination": "/landing/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "yenze.io"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "destination": "/landing/index.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yenze.io"
+        }
+      ]
     }
   ]
 }
