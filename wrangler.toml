@@ -23,10 +23,11 @@ workers_dev = false
 #   { pattern = "www.yenze.io/*", zone_name = "yenze.io" }
 # ]
 
+# Temporarily disable ALL routes to allow Vercel to serve directly and bypass cache
 # Only handle /s/* and /api/* routes
-routes = [
-  { pattern = "yenze.io/s/*", zone_name = "yenze.io" },
-  { pattern = "yenze.io/api/*", zone_name = "yenze.io" },
-  { pattern = "www.yenze.io/s/*", zone_name = "yenze.io" },
-  { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" }
-]
+# routes = [
+#   { pattern = "yenze.io/s/*", zone_name = "yenze.io" },
+#   { pattern = "yenze.io/api/*", zone_name = "yenze.io" },
+#   { pattern = "www.yenze.io/s/*", zone_name = "yenze.io" },
+#   { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" }
+# ]
