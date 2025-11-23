@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.1.0 - Ultra-competitive pricing system with usage tracking and plan limits
+// Version 1.1.1 - Cache bust deployment with all pricing features
 
 // Element Templates
 const ELEMENT_TEMPLATES = {
