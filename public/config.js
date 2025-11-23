@@ -48,9 +48,9 @@ const PLANS = {
         name: 'Starter',
         price: 35.88, // $2.99/mo × 12
         period: 'year',
-        priceId: 'price_starter_yearly', // TODO: Create in Stripe
+        priceId: 'price_starter_yearly', // TODO: Create yearly price in Stripe
         monthlyPrice: 2.99,
-        monthlyPriceId: 'price_starter_monthly', // TODO: Create in Stripe
+        monthlyPriceId: 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
         features: [
             '3 websites/projects',
             'Multipage support (unlimited pages per site)',
@@ -83,9 +83,9 @@ const PLANS = {
         name: 'Pro',
         price: 83.88, // $6.99/mo × 12
         period: 'year',
-        priceId: 'price_pro_yearly', // TODO: Create in Stripe
+        priceId: 'price_pro_yearly', // TODO: Create yearly price in Stripe
         monthlyPrice: 6.99,
-        monthlyPriceId: 'price_pro_monthly', // TODO: Create in Stripe
+        monthlyPriceId: 'price_1SWiCYIDLJ66zkJzlw0IY25L',
         features: [
             '10 websites/projects',
             'Multipage support (unlimited pages per site)',
@@ -118,9 +118,9 @@ const PLANS = {
         name: 'Business',
         price: 179.88, // $14.99/mo × 12
         period: 'year',
-        priceId: 'price_business_yearly', // TODO: Create in Stripe
+        priceId: 'price_business_yearly', // TODO: Create yearly price in Stripe
         monthlyPrice: 14.99,
-        monthlyPriceId: 'price_business_monthly', // TODO: Create in Stripe
+        monthlyPriceId: 'price_1SWiDFIDLJ66zkJzyNmDga03',
         features: [
             'Unlimited websites/projects',
             'Multipage support (unlimited pages per site)',

@@ -10,10 +10,11 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Price IDs for each plan (you'll get these from Stripe Dashboard)
+// Price IDs for each plan
 const PRICE_IDS = {
-    starter: process.env.STRIPE_PRICE_STARTER,
-    pro: process.env.STRIPE_PRICE_PRO
+    starter: process.env.STRIPE_PRICE_STARTER || 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
+    pro: process.env.STRIPE_PRICE_PRO || 'price_1SWiCYIDLJ66zkJzlw0IY25L',
+    business: process.env.STRIPE_PRICE_BUSINESS || 'price_1SWiDFIDLJ66zkJzyNmDga03'
 };
 
 export default async function handler(req, res) {
