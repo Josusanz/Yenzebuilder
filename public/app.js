@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.0.6 - Improved adaptive form styles
+// Version 1.0.7 - Fixed Web3Forms with vanilla JS implementation
 
 // Element Templates
 const ELEMENT_TEMPLATES = {
@@ -2490,16 +2490,15 @@ class YenzeBuilder {
         } = pageStyles;
 
         if (elementType === 'contact-form') {
+            const formId = 'contactForm-' + Math.random().toString(36).substr(2, 9);
+            const messageId = 'formMessage-' + Math.random().toString(36).substr(2, 9);
+
             return `
         <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily}; font-size: ${fontSize};">
             <div style="max-width: 600px; margin: 0 auto; background: ${inputBackground}; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid ${inputBorder};">
                 <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700; font-family: ${fontFamily};">Get in Touch</h2>
                 <p style="color: ${lightTextColor}; margin: 0 0 ${spacing}; font-family: ${fontFamily};">We'd love to hear from you. Send us a message!</p>
-                <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
-                    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
-                    <input type="hidden" name="subject" value="New Contact Form Submission">
-                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
-
+                <form id="${formId}">
                     <div style="margin-bottom: ${spacing};">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem; font-family: ${fontFamily};">Name</label>
                         <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
@@ -2512,10 +2511,60 @@ class YenzeBuilder {
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem; font-family: ${fontFamily};">Message</label>
                         <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'"></textarea>
                     </div>
-                    <div class="h-captcha" data-captcha="true"></div>
+                    <div id="${messageId}" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: ${borderRadius}; display: none; font-family: ${fontFamily};"></div>
                     <button type="submit" style="width: 100%; padding: ${buttonPadding}; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: ${fontSize}; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
                 </form>
-                <script src="https://web3forms.com/client/script.js" async defer></script>
+                <script>
+                    (function() {
+                        const form = document.getElementById('${formId}');
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        const messageDiv = document.getElementById('${messageId}');
+
+                        form.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+
+                            const formData = new FormData(form);
+                            formData.append("access_key", "YOUR_WEB3FORMS_KEY");
+
+                            const originalText = submitBtn.textContent;
+                            submitBtn.textContent = "Sending...";
+                            submitBtn.disabled = true;
+
+                            try {
+                                const response = await fetch("https://api.web3forms.com/submit", {
+                                    method: "POST",
+                                    body: formData
+                                });
+
+                                const data = await response.json();
+
+                                if (response.ok) {
+                                    messageDiv.style.display = 'block';
+                                    messageDiv.style.background = '#d1fae5';
+                                    messageDiv.style.color = '#065f46';
+                                    messageDiv.style.border = '1px solid #6ee7b7';
+                                    messageDiv.textContent = "✓ Success! Your message has been sent.";
+                                    form.reset();
+                                } else {
+                                    messageDiv.style.display = 'block';
+                                    messageDiv.style.background = '#fee2e2';
+                                    messageDiv.style.color = '#991b1b';
+                                    messageDiv.style.border = '1px solid #fca5a5';
+                                    messageDiv.textContent = "✕ Error: " + (data.message || "Please try again");
+                                }
+                            } catch (error) {
+                                messageDiv.style.display = 'block';
+                                messageDiv.style.background = '#fee2e2';
+                                messageDiv.style.color = '#991b1b';
+                                messageDiv.style.border = '1px solid #fca5a5';
+                                messageDiv.textContent = "✕ Something went wrong. Please try again.";
+                            } finally {
+                                submitBtn.textContent = originalText;
+                                submitBtn.disabled = false;
+                            }
+                        });
+                    })();
+                </script>
             </div>
         </section>
             `;
