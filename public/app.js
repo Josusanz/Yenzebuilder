@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.1.1 - Cache bust deployment with all pricing features
+// Version 1.1.2 - All features restored: collapsible layers, multipage, integrations + pricing system
 
 // Element Templates
 const ELEMENT_TEMPLATES = {
@@ -2319,362 +2319,131 @@ class YenzeBuilder {
 
     extractPageStyles(iframeDoc) {
         const styles = {
-            primaryColor: null,
-            secondaryColor: null,
-            textColor: null,
-            lightTextColor: null,
-            backgroundColor: null,
-            inputBackground: null,
-            inputBorder: null,
-            inputFocusBorder: null,
-            fontFamily: null,
-            fontSize: null,
-            borderRadius: null,
-            inputPadding: null,
-            buttonPadding: null,
-            spacing: null,
-            sectionBackground: null,
-            cardBackground: null
+            primaryColor: '#667eea',
+            textColor: '#1a1a2e',
+            backgroundColor: '#ffffff',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            borderRadius: '8px',
+            buttonStyle: 'solid'
         };
 
         try {
+            // Check body and common elements for colors and fonts
             const body = iframeDoc.body;
             const computedBody = iframeDoc.defaultView.getComputedStyle(body);
 
-            // Extract font family from body
-            if (computedBody.fontFamily && computedBody.fontFamily !== 'serif') {
-                styles.fontFamily = computedBody.fontFamily;
-            }
+            // Get font family
+            styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
 
-            // Extract font size
-            if (computedBody.fontSize) {
-                styles.fontSize = computedBody.fontSize;
-            }
-
-            // Extract background color from body
-            const bodyBg = computedBody.backgroundColor;
-            if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
-                styles.backgroundColor = bodyBg;
-            }
-
-            // Extract text color from body, paragraphs, or divs
-            if (computedBody.color) {
-                styles.textColor = computedBody.color;
-            }
-
-            const textElements = iframeDoc.querySelectorAll('p, div, span, h1, h2, h3');
-            if (textElements.length > 0) {
-                const textStyle = iframeDoc.defaultView.getComputedStyle(textElements[0]);
-                if (textStyle.color) {
-                    styles.textColor = textStyle.color;
-                }
-            }
-
-            // Extract button styles (primary color, border radius, padding)
-            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"], a[class*="btn"]');
+            // Find primary color from buttons, links, or headings
+            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"]');
             if (buttons.length > 0) {
                 const btnStyle = iframeDoc.defaultView.getComputedStyle(buttons[0]);
-
-                // Get button background color as primary color
-                const btnBg = btnStyle.backgroundColor;
-                if (btnBg && btnBg !== 'rgba(0, 0, 0, 0)' && btnBg !== 'transparent') {
-                    styles.primaryColor = btnBg;
+                const bgColor = btnStyle.backgroundColor;
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                    styles.primaryColor = bgColor;
                 }
-
-                // Get button border radius
-                if (btnStyle.borderRadius && btnStyle.borderRadius !== '0px') {
-                    styles.borderRadius = btnStyle.borderRadius;
-                }
-
-                // Get button padding
-                if (btnStyle.padding) {
-                    styles.buttonPadding = btnStyle.padding;
-                }
-
-                // Get button color as potential gradient or secondary color
-                if (btnStyle.backgroundImage && btnStyle.backgroundImage.includes('gradient')) {
-                    // Try to extract gradient colors
-                    const gradientMatch = btnStyle.backgroundImage.match(/rgba?\([^)]+\)|#[0-9a-f]{3,6}/gi);
-                    if (gradientMatch && gradientMatch.length > 1) {
-                        styles.secondaryColor = gradientMatch[1];
-                    }
-                }
+                styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
             }
 
-            // Extract input/textarea styles
-            const inputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], input[type="search"], textarea');
-            if (inputs.length > 0) {
-                const inputStyle = iframeDoc.defaultView.getComputedStyle(inputs[0]);
-
-                // Input border radius
-                if (inputStyle.borderRadius && inputStyle.borderRadius !== '0px') {
-                    styles.borderRadius = inputStyle.borderRadius;
-                }
-
-                // Input border color
-                if (inputStyle.borderColor) {
-                    styles.inputBorder = inputStyle.borderColor;
-                }
-
-                // Input background
-                const inputBg = inputStyle.backgroundColor;
-                if (inputBg && inputBg !== 'rgba(0, 0, 0, 0)') {
-                    styles.inputBackground = inputBg;
-                }
-
-                // Input padding
-                if (inputStyle.padding) {
-                    styles.inputPadding = inputStyle.padding;
-                }
-
-                // Try to find focused input to get focus border color
-                const focusedInput = iframeDoc.querySelector('input:focus, textarea:focus');
-                if (focusedInput) {
-                    const focusedStyle = iframeDoc.defaultView.getComputedStyle(focusedInput);
-                    if (focusedStyle.borderColor) {
-                        styles.inputFocusBorder = focusedStyle.borderColor;
-                    }
-                }
+            // Check for existing forms to match their style
+            const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
+            if (existingInputs.length > 0) {
+                const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
+                styles.borderRadius = inputStyle.borderRadius || styles.borderRadius;
             }
 
-            // Extract link color as alternative primary color
-            const links = iframeDoc.querySelectorAll('a:not(.btn):not([class*="button"])');
-            if (links.length > 0 && !buttons.length) {
-                const linkStyle = iframeDoc.defaultView.getComputedStyle(links[0]);
-                const linkColor = linkStyle.color;
-                if (linkColor && linkColor !== styles.textColor) {
-                    styles.primaryColor = linkColor;
-                }
+            // Get text color from paragraphs or body
+            const paragraphs = iframeDoc.querySelectorAll('p, div');
+            if (paragraphs.length > 0) {
+                const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
+                styles.textColor = pStyle.color || styles.textColor;
             }
 
-            // Extract heading colors
-            const headings = iframeDoc.querySelectorAll('h1, h2, h3');
-            if (headings.length > 0) {
-                const headingStyle = iframeDoc.defaultView.getComputedStyle(headings[0]);
-                if (headingStyle.color) {
-                    styles.textColor = headingStyle.color;
-                }
-            }
-
-            // Extract light text color from smaller text elements
-            const smallText = iframeDoc.querySelectorAll('.text-muted, .text-secondary, small, [class*="subtitle"], [class*="description"], p');
-            if (smallText.length > 0) {
-                const smallStyle = iframeDoc.defaultView.getComputedStyle(smallText[0]);
-                if (smallStyle.color && smallStyle.color !== styles.textColor) {
-                    styles.lightTextColor = smallStyle.color;
-                }
-            }
-
-            // Extract section/card backgrounds
-            const sections = iframeDoc.querySelectorAll('section, div[class*="section"], div[class*="container"]');
-            if (sections.length > 0) {
-                const sectionStyle = iframeDoc.defaultView.getComputedStyle(sections[0]);
-                const secBg = sectionStyle.backgroundColor;
-                if (secBg && secBg !== 'rgba(0, 0, 0, 0)' && secBg !== 'transparent') {
-                    styles.sectionBackground = secBg;
-                }
-            }
-
-            // Extract card backgrounds
-            const cards = iframeDoc.querySelectorAll('div[class*="card"], div[class*="box"], div[style*="border"]');
-            if (cards.length > 0) {
-                const cardStyle = iframeDoc.defaultView.getComputedStyle(cards[0]);
-                const cardBg = cardStyle.backgroundColor;
-                if (cardBg && cardBg !== 'rgba(0, 0, 0, 0)' && cardBg !== 'transparent') {
-                    styles.cardBackground = cardBg;
-                }
-            }
+            // Get background color
+            styles.backgroundColor = computedBody.backgroundColor || styles.backgroundColor;
 
         } catch (error) {
-            console.log('Could not extract all page styles, using defaults:', error);
+            console.log('Could not extract all page styles, using defaults');
         }
 
-        // Apply intelligent defaults for null values
-        const defaults = {
-            primaryColor: '#0066FF',
-            secondaryColor: '#764ba2',
-            textColor: '#ffffff',
-            lightTextColor: '#9ca3af',
-            backgroundColor: '#000000',
-            inputBackground: '#ffffff',
-            inputBorder: '#e5e7eb',
-            inputFocusBorder: '#0066FF',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            fontSize: '16px',
-            borderRadius: '12px',
-            inputPadding: '1rem 1.25rem',
-            buttonPadding: '1rem 2rem',
-            spacing: '1.5rem',
-            sectionBackground: '#000000',
-            cardBackground: '#ffffff'
-        };
-
-        // Fill in null values with defaults
-        for (const key in styles) {
-            if (styles[key] === null || styles[key] === undefined) {
-                styles[key] = defaults[key];
-            }
-        }
-
-        console.log('Extracted page styles:', styles);
         return styles;
     }
 
     adaptFormTemplate(elementType, pageStyles) {
-        const {
-            primaryColor,
-            secondaryColor,
-            textColor,
-            lightTextColor,
-            backgroundColor,
-            inputBackground,
-            inputBorder,
-            inputFocusBorder,
-            fontFamily,
-            fontSize,
-            borderRadius,
-            inputPadding,
-            buttonPadding,
-            spacing,
-            sectionBackground,
-            cardBackground
-        } = pageStyles;
-
-        // Determine contrasting colors for labels/text based on card background
-        const isCardDark = cardBackground && (cardBackground.includes('0, 0, 0') || cardBackground.includes('#000'));
-        const cardTextColor = isCardDark ? '#ffffff' : '#1a1a2e';
-        const cardLightText = isCardDark ? '#9ca3af' : '#6b7280';
+        const { primaryColor, textColor, backgroundColor, fontFamily, borderRadius } = pageStyles;
 
         if (elementType === 'contact-form') {
-            const formId = 'contactForm-' + Math.random().toString(36).substr(2, 9);
-            const messageId = 'formMessage-' + Math.random().toString(36).substr(2, 9);
-
             return `
-        <section style="padding: 4rem 2rem; background: ${sectionBackground}; font-family: ${fontFamily}; font-size: ${fontSize};">
-            <div style="max-width: 600px; margin: 0 auto; background: ${cardBackground}; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 2px solid ${inputBorder};">
-                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${cardTextColor}; font-weight: 700; font-family: ${fontFamily};">Get in Touch</h2>
-                <p style="color: ${cardLightText}; margin: 0 0 ${spacing}; font-family: ${fontFamily};">We'd love to hear from you. Send us a message!</p>
-                <form id="${formId}">
-                    <div style="margin-bottom: ${spacing};">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${cardTextColor}; font-size: 0.875rem; font-family: ${fontFamily};">Name</label>
-                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: #1a1a2e; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
+        <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily};">
+            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
+                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700;">Get in Touch</h2>
+                <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
+                <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
+                    <input type="hidden" name="subject" value="New Contact Form Submission">
+                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Name</label>
+                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
                     </div>
-                    <div style="margin-bottom: ${spacing};">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${cardTextColor}; font-size: 0.875rem; font-family: ${fontFamily};">Email</label>
-                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: #1a1a2e; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
                     </div>
-                    <div style="margin-bottom: ${spacing};">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${cardTextColor}; font-size: 0.875rem; font-family: ${fontFamily};">Message</label>
-                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: #1a1a2e; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'"></textarea>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Message</label>
+                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
                     </div>
-                    <div id="${messageId}" style="margin-bottom: 1rem; padding: 0.75rem; border-radius: ${borderRadius}; display: none; font-family: ${fontFamily};"></div>
-                    <button type="submit" style="width: 100%; padding: ${buttonPadding}; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: ${fontSize}; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
+                    <div class="h-captcha" data-captcha="true"></div>
+                    <button type="submit" style="width: 100%; padding: 1rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
                 </form>
-                <script>
-                    (function() {
-                        const form = document.getElementById('${formId}');
-                        const submitBtn = form.querySelector('button[type="submit"]');
-                        const messageDiv = document.getElementById('${messageId}');
-
-                        form.addEventListener('submit', async (e) => {
-                            e.preventDefault();
-
-                            const formData = new FormData(form);
-                            formData.append("access_key", "YOUR_WEB3FORMS_KEY");
-
-                            const originalText = submitBtn.textContent;
-                            submitBtn.textContent = "Sending...";
-                            submitBtn.disabled = true;
-
-                            try {
-                                const response = await fetch("https://api.web3forms.com/submit", {
-                                    method: "POST",
-                                    body: formData
-                                });
-
-                                const data = await response.json();
-
-                                if (response.ok) {
-                                    messageDiv.style.display = 'block';
-                                    messageDiv.style.background = '#d1fae5';
-                                    messageDiv.style.color = '#065f46';
-                                    messageDiv.style.border = '1px solid #6ee7b7';
-                                    messageDiv.textContent = "✓ Success! Your message has been sent.";
-                                    form.reset();
-                                } else {
-                                    messageDiv.style.display = 'block';
-                                    messageDiv.style.background = '#fee2e2';
-                                    messageDiv.style.color = '#991b1b';
-                                    messageDiv.style.border = '1px solid #fca5a5';
-                                    messageDiv.textContent = "✕ Error: " + (data.message || "Please try again");
-                                }
-                            } catch (error) {
-                                messageDiv.style.display = 'block';
-                                messageDiv.style.background = '#fee2e2';
-                                messageDiv.style.color = '#991b1b';
-                                messageDiv.style.border = '1px solid #fca5a5';
-                                messageDiv.textContent = "✕ Something went wrong. Please try again.";
-                            } finally {
-                                submitBtn.textContent = originalText;
-                                submitBtn.disabled = false;
-                            }
-                        });
-                    })();
-                </script>
+                <script src="https://web3forms.com/client/script.js" async defer></script>
             </div>
         </section>
             `;
         } else if (elementType === 'newsletter-form') {
-            const formId = 'newsletterForm-' + Math.random().toString(36).substr(2, 9);
-            const messageId = 'newsletterMessage-' + Math.random().toString(36).substr(2, 9);
-
             return `
-        <section style="padding: 3rem 2rem; background: ${sectionBackground}; text-align: center; font-family: ${fontFamily}; font-size: ${fontSize};">
-            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid ${inputBorder}; background: ${cardBackground};">
-                <h3 style="font-size: 1.75rem; color: ${cardTextColor}; margin: 0 0 0.5rem; font-weight: 700; font-family: ${fontFamily};">Subscribe to our Newsletter</h3>
-                <p style="color: ${cardLightText}; margin: 0 0 ${spacing}; font-family: ${fontFamily};">Get the latest updates delivered to your inbox.</p>
-                <form id="${formId}" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; align-items: stretch;">
-                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: #1a1a2e; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
-                    <button type="submit" style="padding: ${buttonPadding}; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: ${fontSize}; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
+        <section style="padding: 3rem 2rem; background: ${backgroundColor}; text-align: center; font-family: ${fontFamily};">
+            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid #e5e7eb;">
+                <h3 style="font-size: 1.75rem; color: ${textColor}; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
+                <p style="color: #6b7280; margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+                <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid #e5e7eb; background: white; color: ${textColor}; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <button type="submit" style="padding: 1rem 2.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
                 </form>
-                <div id="${messageId}" style="margin-top: 1rem; color: ${cardTextColor}; font-weight: 500; font-family: ${fontFamily};"></div>
+                <div id="newsletter-message" style="margin-top: 1rem; color: ${textColor}; font-weight: 500;"></div>
                 <script>
-                    (function() {
-                        const form = document.getElementById('${formId}');
-                        const messageDiv = document.getElementById('${messageId}');
-                        const button = form.querySelector('button[type="submit"]');
+                    document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const email = this.querySelector('[name="email"]').value;
+                        const messageDiv = document.getElementById('newsletter-message');
+                        const button = this.querySelector('button');
 
-                        form.addEventListener('submit', async function(e) {
-                            e.preventDefault();
-                            const email = form.querySelector('[name="email"]').value;
+                        button.disabled = true;
+                        button.textContent = 'Subscribing...';
 
-                            button.disabled = true;
-                            button.textContent = 'Subscribing...';
+                        try {
+                            const response = await fetch('https://app.loops.so/api/newsletter-form/YOUR_LOOPS_FORM_ID', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email })
+                            });
 
-                            try {
-                                const response = await fetch('https://app.loops.so/api/newsletter-form/YOUR_LOOPS_FORM_ID', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ email })
-                                });
-
-                                if (response.ok) {
-                                    messageDiv.textContent = '✓ Thanks for subscribing!';
-                                    messageDiv.style.color = '#10b981';
-                                    form.reset();
-                                } else {
-                                    messageDiv.textContent = '✗ Something went wrong. Please try again.';
-                                    messageDiv.style.color = '#ef4444';
-                                }
-                            } catch (error) {
+                            if (response.ok) {
+                                messageDiv.textContent = '✓ Thanks for subscribing!';
+                                this.reset();
+                            } else {
                                 messageDiv.textContent = '✗ Something went wrong. Please try again.';
-                                messageDiv.style.color = '#ef4444';
-                            } finally {
-                                button.disabled = false;
-                                button.textContent = 'Subscribe';
                             }
-                        });
-                    })();
+                        } catch (error) {
+                            messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                        } finally {
+                            button.disabled = false;
+                            button.textContent = 'Subscribe';
+                        }
+                    });
                 </script>
             </div>
         </section>
