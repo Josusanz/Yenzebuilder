@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.0.5 - Cache Bust: 2025-11-23-14:05
+// Version 1.0.6 - Improved adaptive form styles
 
 // Element Templates
 const ELEMENT_TEMPLATES = {
@@ -2320,84 +2320,200 @@ class YenzeBuilder {
     extractPageStyles(iframeDoc) {
         const styles = {
             primaryColor: '#667eea',
+            secondaryColor: '#764ba2',
             textColor: '#1a1a2e',
+            lightTextColor: '#6b7280',
             backgroundColor: '#ffffff',
+            inputBackground: '#ffffff',
+            inputBorder: '#e5e7eb',
+            inputFocusBorder: '#667eea',
             fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: '16px',
             borderRadius: '8px',
-            buttonStyle: 'solid'
+            inputPadding: '0.75rem 1rem',
+            buttonPadding: '1rem 2rem',
+            spacing: '1.5rem'
         };
 
         try {
-            // Check body and common elements for colors and fonts
             const body = iframeDoc.body;
             const computedBody = iframeDoc.defaultView.getComputedStyle(body);
 
-            // Get font family
-            styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
+            // Extract font family from body
+            if (computedBody.fontFamily && computedBody.fontFamily !== 'serif') {
+                styles.fontFamily = computedBody.fontFamily;
+            }
 
-            // Find primary color from buttons, links, or headings
-            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"]');
+            // Extract font size
+            if (computedBody.fontSize) {
+                styles.fontSize = computedBody.fontSize;
+            }
+
+            // Extract background color from body
+            const bodyBg = computedBody.backgroundColor;
+            if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
+                styles.backgroundColor = bodyBg;
+            }
+
+            // Extract text color from body, paragraphs, or divs
+            if (computedBody.color) {
+                styles.textColor = computedBody.color;
+            }
+
+            const textElements = iframeDoc.querySelectorAll('p, div, span, h1, h2, h3');
+            if (textElements.length > 0) {
+                const textStyle = iframeDoc.defaultView.getComputedStyle(textElements[0]);
+                if (textStyle.color) {
+                    styles.textColor = textStyle.color;
+                }
+            }
+
+            // Extract button styles (primary color, border radius, padding)
+            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"], a[class*="btn"]');
             if (buttons.length > 0) {
                 const btnStyle = iframeDoc.defaultView.getComputedStyle(buttons[0]);
-                const bgColor = btnStyle.backgroundColor;
-                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-                    styles.primaryColor = bgColor;
+
+                // Get button background color as primary color
+                const btnBg = btnStyle.backgroundColor;
+                if (btnBg && btnBg !== 'rgba(0, 0, 0, 0)' && btnBg !== 'transparent') {
+                    styles.primaryColor = btnBg;
                 }
-                styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
+
+                // Get button border radius
+                if (btnStyle.borderRadius && btnStyle.borderRadius !== '0px') {
+                    styles.borderRadius = btnStyle.borderRadius;
+                }
+
+                // Get button padding
+                if (btnStyle.padding) {
+                    styles.buttonPadding = btnStyle.padding;
+                }
+
+                // Get button color as potential gradient or secondary color
+                if (btnStyle.backgroundImage && btnStyle.backgroundImage.includes('gradient')) {
+                    // Try to extract gradient colors
+                    const gradientMatch = btnStyle.backgroundImage.match(/rgba?\([^)]+\)|#[0-9a-f]{3,6}/gi);
+                    if (gradientMatch && gradientMatch.length > 1) {
+                        styles.secondaryColor = gradientMatch[1];
+                    }
+                }
             }
 
-            // Check for existing forms to match their style
-            const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
-            if (existingInputs.length > 0) {
-                const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
-                styles.borderRadius = inputStyle.borderRadius || styles.borderRadius;
+            // Extract input/textarea styles
+            const inputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], input[type="search"], textarea');
+            if (inputs.length > 0) {
+                const inputStyle = iframeDoc.defaultView.getComputedStyle(inputs[0]);
+
+                // Input border radius
+                if (inputStyle.borderRadius && inputStyle.borderRadius !== '0px') {
+                    styles.borderRadius = inputStyle.borderRadius;
+                }
+
+                // Input border color
+                if (inputStyle.borderColor) {
+                    styles.inputBorder = inputStyle.borderColor;
+                }
+
+                // Input background
+                const inputBg = inputStyle.backgroundColor;
+                if (inputBg && inputBg !== 'rgba(0, 0, 0, 0)') {
+                    styles.inputBackground = inputBg;
+                }
+
+                // Input padding
+                if (inputStyle.padding) {
+                    styles.inputPadding = inputStyle.padding;
+                }
+
+                // Try to find focused input to get focus border color
+                const focusedInput = iframeDoc.querySelector('input:focus, textarea:focus');
+                if (focusedInput) {
+                    const focusedStyle = iframeDoc.defaultView.getComputedStyle(focusedInput);
+                    if (focusedStyle.borderColor) {
+                        styles.inputFocusBorder = focusedStyle.borderColor;
+                    }
+                }
             }
 
-            // Get text color from paragraphs or body
-            const paragraphs = iframeDoc.querySelectorAll('p, div');
-            if (paragraphs.length > 0) {
-                const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
-                styles.textColor = pStyle.color || styles.textColor;
+            // Extract link color as alternative primary color
+            const links = iframeDoc.querySelectorAll('a:not(.btn):not([class*="button"])');
+            if (links.length > 0 && !buttons.length) {
+                const linkStyle = iframeDoc.defaultView.getComputedStyle(links[0]);
+                const linkColor = linkStyle.color;
+                if (linkColor && linkColor !== styles.textColor) {
+                    styles.primaryColor = linkColor;
+                }
             }
 
-            // Get background color
-            styles.backgroundColor = computedBody.backgroundColor || styles.backgroundColor;
+            // Extract heading colors
+            const headings = iframeDoc.querySelectorAll('h1, h2, h3');
+            if (headings.length > 0) {
+                const headingStyle = iframeDoc.defaultView.getComputedStyle(headings[0]);
+                if (headingStyle.color) {
+                    styles.textColor = headingStyle.color;
+                }
+            }
+
+            // Extract light text color from smaller text elements
+            const smallText = iframeDoc.querySelectorAll('.text-muted, .text-secondary, small, [class*="subtitle"], [class*="description"]');
+            if (smallText.length > 0) {
+                const smallStyle = iframeDoc.defaultView.getComputedStyle(smallText[0]);
+                if (smallStyle.color && smallStyle.color !== styles.textColor) {
+                    styles.lightTextColor = smallStyle.color;
+                }
+            }
 
         } catch (error) {
-            console.log('Could not extract all page styles, using defaults');
+            console.log('Could not extract all page styles, using defaults:', error);
         }
 
+        console.log('Extracted page styles:', styles);
         return styles;
     }
 
     adaptFormTemplate(elementType, pageStyles) {
-        const { primaryColor, textColor, backgroundColor, fontFamily, borderRadius } = pageStyles;
+        const {
+            primaryColor,
+            secondaryColor,
+            textColor,
+            lightTextColor,
+            backgroundColor,
+            inputBackground,
+            inputBorder,
+            inputFocusBorder,
+            fontFamily,
+            fontSize,
+            borderRadius,
+            inputPadding,
+            buttonPadding,
+            spacing
+        } = pageStyles;
 
         if (elementType === 'contact-form') {
             return `
-        <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily};">
-            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
-                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700;">Get in Touch</h2>
-                <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
+        <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily}; font-size: ${fontSize};">
+            <div style="max-width: 600px; margin: 0 auto; background: ${inputBackground}; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid ${inputBorder};">
+                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700; font-family: ${fontFamily};">Get in Touch</h2>
+                <p style="color: ${lightTextColor}; margin: 0 0 ${spacing}; font-family: ${fontFamily};">We'd love to hear from you. Send us a message!</p>
                 <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
                     <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
                     <input type="hidden" name="subject" value="New Contact Form Submission">
                     <input type="hidden" name="redirect" value="https://web3forms.com/success">
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Name</label>
-                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <div style="margin-bottom: ${spacing};">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem; font-family: ${fontFamily};">Name</label>
+                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Email</label>
-                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <div style="margin-bottom: ${spacing};">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem; font-family: ${fontFamily};">Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Message</label>
-                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                    <div style="margin-bottom: ${spacing};">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem; font-family: ${fontFamily};">Message</label>
+                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'"></textarea>
                     </div>
                     <div class="h-captcha" data-captcha="true"></div>
-                    <button type="submit" style="width: 100%; padding: 1rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
+                    <button type="submit" style="width: 100%; padding: ${buttonPadding}; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: ${fontSize}; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
                 </form>
                 <script src="https://web3forms.com/client/script.js" async defer></script>
             </div>
@@ -2405,15 +2521,15 @@ class YenzeBuilder {
             `;
         } else if (elementType === 'newsletter-form') {
             return `
-        <section style="padding: 3rem 2rem; background: ${backgroundColor}; text-align: center; font-family: ${fontFamily};">
-            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid #e5e7eb;">
-                <h3 style="font-size: 1.75rem; color: ${textColor}; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
-                <p style="color: #6b7280; margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+        <section style="padding: 3rem 2rem; background: ${backgroundColor}; text-align: center; font-family: ${fontFamily}; font-size: ${fontSize};">
+            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid ${inputBorder}; background: ${inputBackground};">
+                <h3 style="font-size: 1.75rem; color: ${textColor}; margin: 0 0 0.5rem; font-weight: 700; font-family: ${fontFamily};">Subscribe to our Newsletter</h3>
+                <p style="color: ${lightTextColor}; margin: 0 0 ${spacing}; font-family: ${fontFamily};">Get the latest updates delivered to your inbox.</p>
                 <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
-                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid #e5e7eb; background: white; color: ${textColor}; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
-                    <button type="submit" style="padding: 1rem 2.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
+                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: ${inputPadding}; border: 2px solid ${inputBorder}; background: ${inputBackground}; color: ${textColor}; border-radius: ${borderRadius}; font-size: ${fontSize}; font-family: ${fontFamily}; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='${inputFocusBorder}'" onblur="this.style.borderColor='${inputBorder}'">
+                    <button type="submit" style="padding: ${buttonPadding}; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: ${fontSize}; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
                 </form>
-                <div id="newsletter-message" style="margin-top: 1rem; color: ${textColor}; font-weight: 500;"></div>
+                <div id="newsletter-message" style="margin-top: 1rem; color: ${textColor}; font-weight: 500; font-family: ${fontFamily};"></div>
                 <script>
                     document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
                         e.preventDefault();
