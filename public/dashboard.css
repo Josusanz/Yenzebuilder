@@ -801,7 +801,27 @@ body {
     font-size: 32px;
     font-weight: 800;
     color: #667eea;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
+}
+
+.plan-price span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+.plan-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+}
+
+.plan-note {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 10px 0 0 0;
+    font-style: italic;
 }
 
 .plan-option ul {

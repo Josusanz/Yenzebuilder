@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.0.8 - Improved adaptive styling with section/card backgrounds and proper text colors
+// Version 1.1.0 - Ultra-competitive pricing system with usage tracking and plan limits
 
 // Element Templates
 const ELEMENT_TEMPLATES = {

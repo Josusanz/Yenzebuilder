@@ -249,45 +249,87 @@
 
                 <!-- Upgrade Options -->
                 <div class="upgrade-options">
-                    <h3>Available Plans</h3>
+                    <h3>Choose Your Plan</h3>
+                    <p style="color: #6b7280; margin: 0.5rem 0 1.5rem; text-align: center;">Ultra-competitive pricing. Start free, upgrade anytime.</p>
+
                     <div class="plans-comparison">
                         <div class="plan-option">
                             <h4>Free</h4>
-                            <p class="plan-price">$0/forever</p>
+                            <p class="plan-price">$0<span>/forever</span></p>
+                            <p class="plan-subtitle">Perfect for testing & personal use</p>
                             <ul>
-                                <li>✓ Unlimited publishes</li>
-                                <li>✓ yenze.app subdomain</li>
-                                <li>✓ Basic analytics</li>
+                                <li>✓ 1 page per project</li>
+                                <li>✓ 1 project total</li>
+                                <li>✓ Free subdomain (you.yenze.io)</li>
+                                <li>✓ 1,000 monthly views</li>
+                                <li>✓ 10MB storage</li>
+                                <li>✓ Basic integrations</li>
+                                <li>⚠️ Includes "Built with YENZE" badge</li>
                             </ul>
                             <button class="btn-secondary" disabled>Current Plan</button>
                         </div>
 
-                        <div class="plan-option">
+                        <div class="plan-option featured">
+                            <div class="plan-badge">MOST POPULAR</div>
                             <h4>Starter</h4>
-                            <p class="plan-price">$12/year</p>
+                            <p class="plan-price">$2.99<span>/month</span></p>
+                            <p class="plan-subtitle">For freelancers & small businesses</p>
                             <ul>
-                                <li>✓ 1 custom domain (midominio.com)</li>
-                                <li>✓ Remove YENZE badge</li>
-                                <li>✓ Automatic DNS configuration</li>
-                                <li>✓ SSL certificate included</li>
+                                <li>✓ 3 pages per project</li>
+                                <li>✓ 3 projects total</li>
+                                <li>✓ Free subdomain (you.yenze.io)</li>
+                                <li>✓ 5,000 monthly views</li>
+                                <li>✓ 50MB storage</li>
+                                <li>✓ All integrations (forms, newsletter)</li>
+                                <li>✓ Remove YENZE branding</li>
                                 <li>✓ Email support</li>
                             </ul>
-                            <button class="btn-primary" onclick="authUI.selectPlan('starter')">Get Starter</button>
+                            <button class="btn-primary" onclick="authUI.selectPlan('starter')">Get Starter →</button>
+                            <p class="plan-note">or $35.88/year (save $0.10/mo)</p>
                         </div>
 
-                        <div class="plan-option featured">
-                            <div class="plan-badge">BEST VALUE</div>
+                        <div class="plan-option">
                             <h4>Pro</h4>
-                            <p class="plan-price">$49/year</p>
+                            <p class="plan-price">$6.99<span>/month</span></p>
+                            <p class="plan-subtitle">For professionals & businesses</p>
                             <ul>
-                                <li>✓ Up to 10 custom domains</li>
-                                <li>✓ Unlimited projects</li>
-                                <li>✓ Advanced analytics</li>
+                                <li>✓ Unlimited pages</li>
+                                <li>✓ 10 projects</li>
+                                <li>✓ 1 custom domain (yourbrand.com)</li>
+                                <li>✓ 25,000 monthly views</li>
+                                <li>✓ 500MB storage</li>
+                                <li>✓ All integrations + premium</li>
+                                <li>✓ Analytics dashboard</li>
                                 <li>✓ Priority support</li>
-                                <li>✓ White-label (no YENZE branding)</li>
+                                <li>✓ SSL certificates included</li>
                             </ul>
-                            <button class="btn-primary" onclick="authUI.selectPlan('pro')">Upgrade Now</button>
+                            <button class="btn-primary" onclick="authUI.selectPlan('pro')">Go Pro →</button>
+                            <p class="plan-note">or $83.88/year (save $1/mo)</p>
                         </div>
+
+                        <div class="plan-option">
+                            <div class="plan-badge">BEST VALUE</div>
+                            <h4>Business</h4>
+                            <p class="plan-price">$14.99<span>/month</span></p>
+                            <p class="plan-subtitle">For agencies & power users</p>
+                            <ul>
+                                <li>✓ Unlimited pages & projects</li>
+                                <li>✓ Multiple custom domains</li>
+                                <li>✓ 100,000 monthly views</li>
+                                <li>✓ 2GB storage</li>
+                                <li>✓ All integrations + API access</li>
+                                <li>✓ Advanced analytics</li>
+                                <li>✓ Priority support (24h response)</li>
+                                <li>✓ Complete white-label</li>
+                                <li>✓ Team collaboration (soon)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="authUI.selectPlan('business')">Scale Up →</button>
+                            <p class="plan-note">or $179.88/year (save $5/mo)</p>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: #f9fafb; border-radius: 12px;">
+                        <p style="color: #6b7280; margin: 0;"><strong>All plans include:</strong> SSL certificates, unlimited bandwidth within limits, automatic backups, and no setup fees.</p>
                     </div>
                 </div>
             </section>
@@ -422,6 +464,8 @@
     <script src="config.js"></script>
     <script src="supabase-client.js"></script>
     <script src="stripe-integration.js"></script>
+    <script src="pricing-plans.js"></script>
+    <script src="usage-tracker.js"></script>
     <script src="auth-ui.js"></script>
     <script src="analytics.js"></script>
     <script src="dashboard.js"></script>
