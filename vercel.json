@@ -1,36 +1,11 @@
 {
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
-      "source": "/public/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).html",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -43,46 +18,30 @@
     {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
-    },
+    }
+  ],
+  "redirects": [
     {
-      "source": "/",
-      "destination": "/public/index.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/:path*",
-      "destination": "/public/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "destination": "/landing/index.html",
+      "source": "/public/:path*",
       "has": [
         {
           "type": "host",
           "value": "yenze.io"
         }
-      ]
+      ],
+      "destination": "https://builder.yenze.io/public/:path*",
+      "permanent": false
     },
     {
-      "source": "/",
-      "destination": "/landing/index.html",
+      "source": "/public/:path*",
       "has": [
         {
           "type": "host",
           "value": "www.yenze.io"
         }
-      ]
+      ],
+      "destination": "https://builder.yenze.io/public/:path*",
+      "permanent": false
     }
   ]
 }
