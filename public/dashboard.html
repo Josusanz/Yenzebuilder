@@ -249,8 +249,21 @@
 
                 <!-- Upgrade Options -->
                 <div class="upgrade-options">
-                    <h3>Choose Your Plan</h3>
-                    <p style="color: #6b7280; margin: 0.5rem 0 1.5rem; text-align: center;">Ultra-competitive pricing. Start free, upgrade anytime.</p>
+                    <div style="text-align: center; margin-bottom: 3rem;">
+                        <h3 style="font-size: 32px; font-weight: 600; color: #000; margin-bottom: 0.5rem; letter-spacing: -0.5px;">Plans that scale with you</h3>
+                        <p style="color: #666666; margin: 0.5rem 0 1.5rem; font-size: 16px;">Choose the plan that fits your needs. Upgrade anytime.</p>
+
+                        <!-- Period Toggle -->
+                        <div style="display: inline-flex; background: #f5f5f5; border-radius: 10px; padding: 4px; margin-top: 1rem;">
+                            <button class="period-toggle active" data-period="annual" style="padding: 8px 20px; border: none; background: white; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; color: #000; transition: all 0.2s;">
+                                Annual
+                                <span style="display: inline-block; margin-left: 6px; padding: 2px 6px; background: #0099ff; color: white; border-radius: 4px; font-size: 11px; font-weight: 600;">SAVE 20%</span>
+                            </button>
+                            <button class="period-toggle" data-period="monthly" style="padding: 8px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; color: #666; transition: all 0.2s;">
+                                Monthly
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="plans-comparison">
                         <div class="plan-option">
@@ -470,5 +483,27 @@
     <script src="auth-ui.js"></script>
     <script src="analytics.js"></script>
     <script src="dashboard.js"></script>
+
+    <!-- Period Toggle Script -->
+    <script>
+        // Handle annual/monthly toggle
+        document.querySelectorAll('.period-toggle').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update button states
+                document.querySelectorAll('.period-toggle').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.background = 'transparent';
+                    b.style.color = '#666';
+                });
+                this.classList.add('active');
+                this.style.background = 'white';
+                this.style.color = '#000';
+
+                // TODO: Update plan prices based on period
+                const period = this.dataset.period;
+                console.log('Selected period:', period);
+            });
+        });
+    </script>
 </body>
 </html>
