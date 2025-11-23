@@ -20,17 +20,16 @@ const PLANS = {
         priceId: null,
         monthlyPrice: 0,
         features: [
-            '1 page per project',
-            '1 project total',
+            '1 website/project',
+            'Multipage support (unlimited pages in HTML)',
             'Free subdomain (you.yenze.io)',
-            '1,000 monthly page views',
-            '10MB storage',
+            '1,000 monthly visitors',
+            '10MB storage per site',
             'Basic integrations (forms, newsletter)',
             'Community support',
             'Includes "Built with YENZE" badge'
         ],
         limits: {
-            maxPages: 1,
             maxProjects: 1,
             maxViews: 1000,
             maxStorage: 10485760, // 10MB
@@ -53,18 +52,17 @@ const PLANS = {
         monthlyPrice: 2.99,
         monthlyPriceId: 'price_starter_monthly', // TODO: Create in Stripe
         features: [
-            '3 pages per project',
-            '3 projects total',
+            '3 websites/projects',
+            'Multipage support (unlimited pages per site)',
             'Free subdomain (you.yenze.io)',
-            '5,000 monthly page views',
-            '50MB storage',
+            '5,000 monthly visitors',
+            '50MB storage per site',
             'All integrations (Web3Forms, Loops.so)',
             'Email support',
             'Remove YENZE branding',
             'SSL certificate included'
         ],
         limits: {
-            maxPages: 3,
             maxProjects: 3,
             maxViews: 5000,
             maxStorage: 52428800, // 50MB
@@ -89,20 +87,18 @@ const PLANS = {
         monthlyPrice: 6.99,
         monthlyPriceId: 'price_pro_monthly', // TODO: Create in Stripe
         features: [
-            'Unlimited pages per project',
-            '10 projects total',
-            'Free subdomain + 1 custom domain',
-            '25,000 monthly page views',
-            '500MB storage',
+            '10 websites/projects',
+            'Multipage support (unlimited pages per site)',
+            '1 custom domain (yourbrand.com)',
+            '25,000 monthly visitors',
+            '500MB storage per site',
             'All integrations + premium',
             'Priority email support',
             'Remove all YENZE branding',
             'Analytics dashboard',
-            'Custom domain (yourbrand.com)',
             'Automatic SSL certificates'
         ],
         limits: {
-            maxPages: -1, // unlimited
             maxProjects: 10,
             maxViews: 25000,
             maxStorage: 524288000, // 500MB
@@ -126,11 +122,11 @@ const PLANS = {
         monthlyPrice: 14.99,
         monthlyPriceId: 'price_business_monthly', // TODO: Create in Stripe
         features: [
-            'Unlimited pages',
-            'Unlimited projects',
+            'Unlimited websites/projects',
+            'Multipage support (unlimited pages per site)',
             'Multiple custom domains',
-            '100,000 monthly page views',
-            '2GB storage',
+            '100,000 monthly visitors',
+            '2GB storage per site',
             'All integrations + API access',
             'Priority support (24h response)',
             'Complete white-label',
@@ -140,7 +136,6 @@ const PLANS = {
             'API access for automation'
         ],
         limits: {
-            maxPages: -1,
             maxProjects: -1, // unlimited
             maxViews: 100000,
             maxStorage: 2147483648, // 2GB
