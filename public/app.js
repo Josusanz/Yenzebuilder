@@ -1,5 +1,5 @@
 // YENZE Builder - Main Application Logic
-// Version 1.0.0
+// Version 1.0.4
 
 // Element Templates
 const ELEMENT_TEMPLATES = {
@@ -8,21 +8,27 @@ const ELEMENT_TEMPLATES = {
             <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
                 <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: #1a1a2e; font-weight: 700;">Get in Touch</h2>
                 <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
-                <form>
+                <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
+                    <input type="hidden" name="subject" value="New Contact Form Submission">
+                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
+
                     <div style="margin-bottom: 1.5rem;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Name</label>
-                        <input type="text" placeholder="Your name" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
                     </div>
                     <div style="margin-bottom: 1.5rem;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Email</label>
-                        <input type="email" placeholder="your@email.com" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
                     </div>
                     <div style="margin-bottom: 1.5rem;">
                         <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem;">Message</label>
-                        <textarea placeholder="Your message..." rows="4" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
                     </div>
+                    <div class="h-captcha" data-captcha="true"></div>
                     <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">Send Message</button>
                 </form>
+                <script src="https://web3forms.com/client/script.js" async defer></script>
             </div>
         </section>
     `,
@@ -31,10 +37,42 @@ const ELEMENT_TEMPLATES = {
             <div style="max-width: 600px; margin: 0 auto;">
                 <h3 style="font-size: 1.75rem; color: white; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
                 <p style="color: rgba(255,255,255,0.9); margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
-                <form style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
-                    <input type="email" placeholder="Enter your email" style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 50px; font-size: 1rem; backdrop-filter: blur(10px);" onfocus="this.style.borderColor='white'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
+                <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 50px; font-size: 1rem; backdrop-filter: blur(10px);" onfocus="this.style.borderColor='white'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
                     <button type="submit" style="padding: 1rem 2.5rem; background: white; color: #667eea; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Subscribe</button>
                 </form>
+                <div id="newsletter-message" style="margin-top: 1rem; color: white; font-weight: 500;"></div>
+                <script>
+                    document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const email = this.querySelector('[name="email"]').value;
+                        const messageDiv = document.getElementById('newsletter-message');
+                        const button = this.querySelector('button');
+
+                        button.disabled = true;
+                        button.textContent = 'Subscribing...';
+
+                        try {
+                            const response = await fetch('https://app.loops.so/api/newsletter-form/YOUR_LOOPS_FORM_ID', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email })
+                            });
+
+                            if (response.ok) {
+                                messageDiv.textContent = '✓ Thanks for subscribing!';
+                                this.reset();
+                            } else {
+                                messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                            }
+                        } catch (error) {
+                            messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                        } finally {
+                            button.disabled = false;
+                            button.textContent = 'Subscribe';
+                        }
+                    });
+                </script>
             </div>
         </section>
     `,
@@ -199,9 +237,9 @@ class YenzeBuilder {
         this.init();
     }
 
-    init() {
+    async init() {
         this.setupEventListeners();
-        this.loadProject();
+        await this.loadProject();
     }
 
     setupEventListeners() {
@@ -1073,6 +1111,9 @@ class YenzeBuilder {
     }
 
     selectElement(element) {
+        // First, ensure the element's page is visible (for multi-page SPAs)
+        this.ensureElementPageVisible(element);
+
         // Remove previous selection
         if (this.selectedElement) {
             this.selectedElement.style.outline = 'none';
@@ -1099,8 +1140,50 @@ class YenzeBuilder {
         this.showProperties(element);
     }
 
+    ensureElementPageVisible(element) {
+        // Check if element is inside a hidden page/section
+        let parent = element;
+        let hiddenPage = null;
+
+        while (parent && parent !== element.ownerDocument.body) {
+            // Check if this parent is a hidden page (common class names: .page, .section, etc.)
+            const computedStyle = element.ownerDocument.defaultView.getComputedStyle(parent);
+
+            if (computedStyle.display === 'none' && parent.classList.contains('page')) {
+                hiddenPage = parent;
+                break;
+            }
+
+            parent = parent.parentElement;
+        }
+
+        // If we found a hidden page, try to activate it
+        if (hiddenPage && hiddenPage.id) {
+            // Look for a switchPage function in the iframe
+            const iframeWindow = element.ownerDocument.defaultView;
+
+            if (typeof iframeWindow.switchPage === 'function') {
+                // Call the page's switchPage function
+                iframeWindow.switchPage(hiddenPage.id);
+
+                // Wait a bit for the transition
+                setTimeout(() => {
+                    // Re-scroll after page switch
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'center'
+                    });
+                }, 100);
+            }
+        }
+    }
+
     highlightInLayers(element) {
         const elementId = this.generateElementId(element);
+
+        // Auto-expand all parent elements
+        this.expandParentLayers(element);
 
         // Remove previous layer selection
         document.querySelectorAll('.layer-item').forEach(item => {
@@ -1115,6 +1198,74 @@ class YenzeBuilder {
             // Scroll into view if needed
             layerItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+    }
+
+    expandParentLayers(element) {
+        let parent = element.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            const parentId = this.generateElementId(parent);
+            if (!this.collapsedLayers) this.collapsedLayers = new Set();
+            this.collapsedLayers.delete(parentId);
+
+            // Update toggle icon
+            const toggle = document.querySelector(`.layer-toggle[data-element-id="${parentId}"]`);
+            if (toggle) {
+                toggle.textContent = '▼';
+            }
+
+            // Show children
+            this.updateLayerChildrenVisibility(parent);
+
+            parent = parent.parentElement;
+        }
+    }
+
+    toggleLayerCollapse(element) {
+        const elementId = this.generateElementId(element);
+
+        if (!this.collapsedLayers) {
+            this.collapsedLayers = new Set();
+        }
+
+        const isCollapsed = this.collapsedLayers.has(elementId);
+
+        if (isCollapsed) {
+            this.collapsedLayers.delete(elementId);
+        } else {
+            this.collapsedLayers.add(elementId);
+        }
+
+        // Update toggle icon
+        const toggle = document.querySelector(`.layer-toggle[data-element-id="${elementId}"]`);
+        if (toggle) {
+            toggle.textContent = isCollapsed ? '▼' : '▶';
+        }
+
+        // Update children visibility
+        this.updateLayerChildrenVisibility(element);
+    }
+
+    updateLayerChildrenVisibility(element) {
+        const elementId = this.generateElementId(element);
+        const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
+
+        // Find all child layer items
+        const layerItems = document.querySelectorAll('.layer-item');
+        const parentItem = document.querySelector(`[data-element-id="${elementId}"]`);
+
+        if (!parentItem) return;
+
+        // Get all descendants
+        Array.from(element.querySelectorAll('*')).forEach(child => {
+            if (child.tagName.toLowerCase() === 'script' || child.tagName.toLowerCase() === 'style') return;
+
+            const childId = this.generateElementId(child);
+            const childItem = document.querySelector(`[data-element-id="${childId}"]`);
+
+            if (childItem) {
+                childItem.style.display = isCollapsed ? 'none' : 'flex';
+            }
+        });
     }
 
     showProperties(element) {
@@ -1728,11 +1879,34 @@ class YenzeBuilder {
             li.draggable = true;
             li.dataset.elementId = this.generateElementId(element);
 
+            const hasChildren = Array.from(element.children).some(child =>
+                child.tagName && child.tagName.toLowerCase() !== 'script' && child.tagName.toLowerCase() !== 'style'
+            );
+
             const icon = this.getElementIcon(tagName);
+
+            // Add collapse/expand toggle if element has children
+            const collapseToggle = hasChildren ?
+                `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▼</span>` :
+                '<span class="layer-toggle-spacer"></span>';
+
             li.innerHTML = `
+                ${collapseToggle}
                 <span class="layer-icon">${icon}</span>
                 <span>${tagName}</span>
             `;
+
+            // Store element reference
+            li._element = element;
+
+            // Toggle collapse/expand
+            const toggle = li.querySelector('.layer-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleLayerCollapse(element);
+                });
+            }
 
             // Click to select
             li.addEventListener('click', (e) => {
@@ -2003,10 +2177,16 @@ class YenzeBuilder {
             return;
         }
 
-        const template = ELEMENT_TEMPLATES[elementType];
+        let template = ELEMENT_TEMPLATES[elementType];
         if (!template) {
             this.showToast('⚠️ Template not found', 'error');
             return;
+        }
+
+        // For form integrations, adapt to current page styles
+        if (elementType === 'contact-form' || elementType === 'newsletter-form') {
+            const pageStyles = this.extractPageStyles(iframeDoc);
+            template = this.adaptFormTemplate(elementType, pageStyles);
         }
 
         // Create a temporary container to parse the HTML
@@ -2074,10 +2254,16 @@ class YenzeBuilder {
             return;
         }
 
-        const template = ELEMENT_TEMPLATES[elementType];
+        let template = ELEMENT_TEMPLATES[elementType];
         if (!template) {
             this.showToast('⚠️ Template not found', 'error');
             return;
+        }
+
+        // For form integrations, adapt to current page styles
+        if (elementType === 'contact-form' || elementType === 'newsletter-form') {
+            const pageStyles = this.extractPageStyles(iframeDoc);
+            template = this.adaptFormTemplate(elementType, pageStyles);
         }
 
         // Create a temporary container to parse the HTML
@@ -2129,6 +2315,142 @@ class YenzeBuilder {
         };
 
         this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+    }
+
+    extractPageStyles(iframeDoc) {
+        const styles = {
+            primaryColor: '#667eea',
+            textColor: '#1a1a2e',
+            backgroundColor: '#ffffff',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            borderRadius: '8px',
+            buttonStyle: 'solid'
+        };
+
+        try {
+            // Check body and common elements for colors and fonts
+            const body = iframeDoc.body;
+            const computedBody = iframeDoc.defaultView.getComputedStyle(body);
+
+            // Get font family
+            styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
+
+            // Find primary color from buttons, links, or headings
+            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"]');
+            if (buttons.length > 0) {
+                const btnStyle = iframeDoc.defaultView.getComputedStyle(buttons[0]);
+                const bgColor = btnStyle.backgroundColor;
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+                    styles.primaryColor = bgColor;
+                }
+                styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
+            }
+
+            // Check for existing forms to match their style
+            const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
+            if (existingInputs.length > 0) {
+                const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
+                styles.borderRadius = inputStyle.borderRadius || styles.borderRadius;
+            }
+
+            // Get text color from paragraphs or body
+            const paragraphs = iframeDoc.querySelectorAll('p, div');
+            if (paragraphs.length > 0) {
+                const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
+                styles.textColor = pStyle.color || styles.textColor;
+            }
+
+            // Get background color
+            styles.backgroundColor = computedBody.backgroundColor || styles.backgroundColor;
+
+        } catch (error) {
+            console.log('Could not extract all page styles, using defaults');
+        }
+
+        return styles;
+    }
+
+    adaptFormTemplate(elementType, pageStyles) {
+        const { primaryColor, textColor, backgroundColor, fontFamily, borderRadius } = pageStyles;
+
+        if (elementType === 'contact-form') {
+            return `
+        <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily};">
+            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
+                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700;">Get in Touch</h2>
+                <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
+                <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
+                    <input type="hidden" name="subject" value="New Contact Form Submission">
+                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Name</label>
+                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Message</label>
+                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                    </div>
+                    <div class="h-captcha" data-captcha="true"></div>
+                    <button type="submit" style="width: 100%; padding: 1rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
+                </form>
+                <script src="https://web3forms.com/client/script.js" async defer></script>
+            </div>
+        </section>
+            `;
+        } else if (elementType === 'newsletter-form') {
+            return `
+        <section style="padding: 3rem 2rem; background: ${backgroundColor}; text-align: center; font-family: ${fontFamily};">
+            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid #e5e7eb;">
+                <h3 style="font-size: 1.75rem; color: ${textColor}; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
+                <p style="color: #6b7280; margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+                <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid #e5e7eb; background: white; color: ${textColor}; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <button type="submit" style="padding: 1rem 2.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
+                </form>
+                <div id="newsletter-message" style="margin-top: 1rem; color: ${textColor}; font-weight: 500;"></div>
+                <script>
+                    document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const email = this.querySelector('[name="email"]').value;
+                        const messageDiv = document.getElementById('newsletter-message');
+                        const button = this.querySelector('button');
+
+                        button.disabled = true;
+                        button.textContent = 'Subscribing...';
+
+                        try {
+                            const response = await fetch('https://app.loops.so/api/newsletter-form/YOUR_LOOPS_FORM_ID', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email })
+                            });
+
+                            if (response.ok) {
+                                messageDiv.textContent = '✓ Thanks for subscribing!';
+                                this.reset();
+                            } else {
+                                messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                            }
+                        } catch (error) {
+                            messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                        } finally {
+                            button.disabled = false;
+                            button.textContent = 'Subscribe';
+                        }
+                    });
+                </script>
+            </div>
+        </section>
+            `;
+        }
+
+        return ELEMENT_TEMPLATES[elementType];
     }
 
     filterElements(searchTerm) {
@@ -2219,9 +2541,13 @@ class YenzeBuilder {
             return;
         }
 
-        // Always show pricing modal first (regardless of current plan)
-        // This allows users to see all options and upgrade if needed
-        this.showPublishOptionsModal();
+        // If project already has an ID, it's been published before - just update it
+        if (this.projectData.id) {
+            await this.updateExistingProject();
+        } else {
+            // New project - show pricing modal to select plan
+            this.showPublishOptionsModal();
+        }
     }
 
     async checkAuthentication() {
@@ -2620,6 +2946,56 @@ class YenzeBuilder {
         }
     }
 
+    async updateExistingProject() {
+        try {
+            this.showToast('Updating your website...', 'info');
+
+            // Update the existing project in the database
+            const { error: updateError } = await supabaseClient.client
+                .from('projects')
+                .update({
+                    html: this.currentHTML,
+                    name: this.projectData.name,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', this.projectData.id)
+                .eq('user_id', supabaseClient.currentUser.id);
+
+            if (updateError) {
+                throw new Error('Failed to update project: ' + updateError.message);
+            }
+
+            // Save to localStorage
+            this.saveProject();
+
+            // Create a new deployment record
+            const { data: project } = await supabaseClient.client
+                .from('projects')
+                .select('published_url, plan, subdomain_slug')
+                .eq('id', this.projectData.id)
+                .single();
+
+            if (project) {
+                await supabaseClient.client
+                    .from('deployments')
+                    .insert({
+                        project_id: this.projectData.id,
+                        user_id: supabaseClient.currentUser.id,
+                        deployment_url: project.published_url,
+                        status: 'ready'
+                    });
+
+                // Show success popup with the URL
+                showPublishPopup(project.published_url, project.plan || 'free');
+                this.showToast('✅ Website updated successfully!', 'success');
+            }
+
+        } catch (error) {
+            console.error('Update error:', error);
+            this.showToast('❌ Failed to update: ' + error.message, 'error');
+        }
+    }
+
     async publishWithPlan(plan) {
         try {
             this.showToast('Publishing your website...', 'info');
@@ -2806,12 +3182,61 @@ class YenzeBuilder {
         localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
     }
 
-    loadProject() {
+    async loadProject() {
+        // Check if there's a project ID in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('project');
+
+        if (projectId) {
+            // Load project from database
+            try {
+                const { data: project, error } = await supabaseClient.client
+                    .from('projects')
+                    .select('*')
+                    .eq('id', projectId)
+                    .single();
+
+                if (error) throw error;
+
+                if (project) {
+                    this.projectData = {
+                        id: project.id,
+                        name: project.name || 'Untitled Project',
+                        html: project.html || '',
+                        assets: project.assets || []
+                    };
+
+                    document.getElementById('projectName').value = this.projectData.name;
+
+                    if (this.projectData.html) {
+                        this.loadHTML(this.projectData.html);
+                    }
+
+                    if (this.projectData.assets.length > 0) {
+                        this.renderAssets();
+                    }
+
+                    // Save to localStorage for future edits
+                    localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
+
+                    // Remove the query parameter from URL
+                    window.history.replaceState({}, document.title, '/');
+
+                    this.showToast('Project loaded successfully', 'success');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error loading project from database:', error);
+                this.showToast('Failed to load project', 'error');
+            }
+        }
+
+        // Fall back to loading from localStorage
         const saved = localStorage.getItem('yenzeProject');
         if (saved) {
             this.projectData = JSON.parse(saved);
             document.getElementById('projectName').value = this.projectData.name;
-            
+
             if (this.projectData.html) {
                 this.loadHTML(this.projectData.html);
             }

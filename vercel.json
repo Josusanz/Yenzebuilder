@@ -3,6 +3,10 @@
   "outputDirectory": ".",
   "rewrites": [
     {
+      "source": "/s/:slug",
+      "destination": "/api/view-project?slug=:slug"
+    },
+    {
       "source": "/(.*)",
       "destination": "/api/subdomain.js",
       "has": [

@@ -84,7 +84,8 @@ class SupabaseClient {
                 email,
                 password,
                 options: {
-                    data: metadata
+                    data: metadata,
+                    emailRedirectTo: 'https://yenze.io'
                 }
             });
 
@@ -128,7 +129,7 @@ class SupabaseClient {
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin
+                    redirectTo: 'https://yenze.io'
                 }
             });
 
@@ -145,7 +146,7 @@ class SupabaseClient {
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
-                    redirectTo: window.location.origin
+                    redirectTo: 'https://yenze.io'
                 }
             });
 
@@ -160,7 +161,7 @@ class SupabaseClient {
     async resetPassword(email) {
         try {
             const { data, error } = await this.client.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`
+                redirectTo: 'https://yenze.io/reset-password'
             });
 
             if (error) throw error;

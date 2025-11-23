@@ -112,7 +112,8 @@ class DashboardApp {
             'projects': 'projectsSection',
             'analytics': 'analyticsSection',
             'domains': 'domainsSection',
-            'billing': 'billingSection'
+            'billing': 'billingSection',
+            'integrations': 'integrationsSection'
         };
 
         const targetSection = document.getElementById(sectionMap[section]);
@@ -134,25 +135,41 @@ class DashboardApp {
             case 'billing':
                 this.loadBilling();
                 break;
+            case 'integrations':
+                this.loadIntegrations();
+                break;
         }
     }
 
     async loadCurrentPlan() {
         try {
-            const { data: subscription, error } = await supabaseClient.client
+            const { data: subscriptions, error } = await supabaseClient.client
                 .from('subscriptions')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .single();
+                .eq('status', 'active');
 
             let planName = 'Free';
             let planDescription = 'Unlimited publishes on yenze.app';
+            let subscriptionCount = 0;
 
-            if (subscription) {
-                const plan = subscription.plan.toUpperCase();
+            if (subscriptions && subscriptions.length > 0) {
+                // Get the highest tier plan
+                const planPriority = { 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
+                const highestPlan = subscriptions.reduce((highest, sub) => {
+                    const currentPriority = planPriority[sub.plan.toUpperCase()] || 0;
+                    const highestPriority = planPriority[highest.plan.toUpperCase()] || 0;
+                    return currentPriority > highestPriority ? sub : highest;
+                }, subscriptions[0]);
+
+                const plan = highestPlan.plan.toUpperCase();
+                subscriptionCount = subscriptions.filter(s => s.plan.toUpperCase() === plan).length;
+
                 if (PLANS[plan]) {
                     planName = PLANS[plan].name;
+                    if (subscriptionCount > 1) {
+                        planName += ` (${subscriptionCount}x)`;
+                    }
                     planDescription = `$${PLANS[plan].price}/${PLANS[plan].period}`;
                 }
             }
@@ -214,10 +231,27 @@ class DashboardApp {
                 return;
             }
 
+            // Get custom domains to determine which projects are on paid plans
+            const { data: customDomains } = await supabaseClient.client
+                .from('custom_domains')
+                .select('project_id, domain')
+                .eq('user_id', this.currentUser.id);
+
+            // Create a map of project_id -> custom domain
+            const domainMap = {};
+            if (customDomains) {
+                customDomains.forEach(cd => {
+                    domainMap[cd.project_id] = cd.domain;
+                });
+            }
+
             // Render projects
             const projectsHTML = await Promise.all(this.projects.map(async (project) => {
                 // Get analytics for this project
                 const stats = await this.getProjectStats(project.id);
+
+                // Determine project plan based on whether it has a custom domain
+                const projectPlan = domainMap[project.id] ? this.userPlan : 'free';
 
                 // Create a data URL for the preview iframe
                 const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(project.html)}`;
@@ -233,10 +267,10 @@ class DashboardApp {
                             </iframe>
                         </div>
                         <div class="project-info">
-                            <h3>${project.name || 'Untitled Project'}</h3>
+                            <h3 class="project-name" onclick="dashboardApp.showRenameModal('${project.id}', '${(project.name || 'Untitled Project').replace(/'/g, "\\'")}')" style="cursor: pointer;" title="Click to rename">${project.name || 'Untitled Project'}</h3>
                             <div class="project-meta">
                                 <span>📅 ${new Date(project.created_at).toLocaleDateString()}</span>
-                                <span>📦 ${this.userPlan}</span>
+                                <span>📦 ${projectPlan}</span>
                             </div>
                             ${project.published_url ? `
                                 <a href="${project.published_url}" target="_blank" class="project-url">
@@ -418,14 +452,27 @@ class DashboardApp {
 
         try {
             const { data: domains, error } = await supabaseClient.client
-                .from('projects')
-                .select('id, name, custom_domain, published_url')
-                .eq('user_id', this.currentUser.id)
-                .not('custom_domain', 'is', null);
+                .from('custom_domains')
+                .select(`
+                    id,
+                    domain,
+                    status,
+                    project_id,
+                    projects:project_id (
+                        name
+                    )
+                `)
+                .eq('user_id', this.currentUser.id);
 
             if (error) throw error;
 
-            this.domains = domains || [];
+            // Transform the data to match the expected format
+            this.domains = (domains || []).map(d => ({
+                id: d.project_id,
+                custom_domain: d.domain,
+                name: d.projects?.name || 'Untitled Project',
+                domain_id: d.id
+            }));
 
             if (this.domains.length === 0) {
                 listContainer.innerHTML = `
@@ -457,7 +504,7 @@ class DashboardApp {
                             </svg>
                             Edit
                         </button>
-                        <button class="btn-danger" onclick="dashboardApp.removeDomain('${domain.id}')">Remove</button>
+                        <button class="btn-danger" onclick="dashboardApp.removeDomain('${domain.domain_id}')">Remove</button>
                     </div>
                 </div>
             `).join('');
@@ -472,36 +519,52 @@ class DashboardApp {
 
     async checkCustomDomainAccess() {
         try {
-            const { data: subscription, error } = await supabaseClient.client
+            const { data: subscriptions, error } = await supabaseClient.client
                 .from('subscriptions')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .single();
+                .eq('status', 'active');
 
-            if (subscription) {
-                const plan = subscription.plan.toUpperCase();
-                return plan === 'ONE_TIME' || plan === 'PRO';
+            if (error) {
+                console.error('Error checking domain access:', error);
+                return false;
+            }
+
+            if (subscriptions && subscriptions.length > 0) {
+                // Check if any subscription is paid (not free)
+                return subscriptions.some(sub => {
+                    const plan = sub.plan.toUpperCase();
+                    return plan === 'STARTER' || plan === 'PRO' || plan === 'ONE_TIME';
+                });
             }
 
             return false;
         } catch (error) {
+            console.error('Error in checkCustomDomainAccess:', error);
             return false;
         }
     }
 
     async showAddDomainModal() {
         // Check if user has a paid plan
-        const { data: subscription } = await supabaseClient.client
+        const { data: subscriptions } = await supabaseClient.client
             .from('subscriptions')
             .select('*')
             .eq('user_id', this.currentUser.id)
-            .eq('status', 'active')
-            .single();
+            .eq('status', 'active');
 
         // If no active subscription, show plan modal instead
-        if (!subscription || subscription.plan === 'free') {
+        if (!subscriptions || subscriptions.length === 0) {
             authUI.showPlanModal();
+            return;
+        }
+
+        // Check if user has reached domain limit
+        const maxDomains = await this.getMaxDomains();
+        const currentDomains = this.domains.length;
+
+        if (currentDomains >= maxDomains) {
+            alert(`You've reached your domain limit (${currentDomains}/${maxDomains}). Please upgrade your plan to add more domains.`);
             return;
         }
 
@@ -531,17 +594,22 @@ class DashboardApp {
         const domainName = document.getElementById('domainName').value.trim();
 
         try {
-            // Update project with custom domain
+            // Insert into custom_domains table
             const { error } = await supabaseClient.client
-                .from('projects')
-                .update({ custom_domain: domainName })
-                .eq('id', projectId);
+                .from('custom_domains')
+                .insert({
+                    user_id: this.currentUser.id,
+                    project_id: projectId,
+                    domain: domainName,
+                    status: 'active'
+                });
 
             if (error) throw error;
 
             alert('Domain added successfully! Please configure your DNS settings as shown in the instructions.');
             this.closeAddDomainModal();
             this.loadDomains();
+            this.loadProjects(); // Refresh projects to update plan display
 
         } catch (error) {
             console.error('Error adding domain:', error);
@@ -549,25 +617,67 @@ class DashboardApp {
         }
     }
 
-    async removeDomain(projectId) {
+    async removeDomain(domainId) {
         if (!confirm('Are you sure you want to remove this custom domain?')) {
+            return;
+        }
+
+        try {
+            // Delete from custom_domains table
+            const { error } = await supabaseClient.client
+                .from('custom_domains')
+                .delete()
+                .eq('id', domainId);
+
+            if (error) throw error;
+
+            alert('Domain removed successfully');
+            this.loadDomains();
+            this.loadProjects(); // Refresh projects to update plan display
+
+        } catch (error) {
+            console.error('Error removing domain:', error);
+            alert('Failed to remove domain: ' + error.message);
+        }
+    }
+
+    showRenameModal(projectId, projectName) {
+        document.getElementById('renameProjectId').value = projectId;
+        document.getElementById('renameProjectName').value = projectName;
+        document.getElementById('renameProjectModal').style.display = 'flex';
+    }
+
+    closeRenameModal() {
+        document.getElementById('renameProjectModal').style.display = 'none';
+        document.getElementById('renameProjectForm').reset();
+    }
+
+    async handleRenameProject(event) {
+        event.preventDefault();
+
+        const projectId = document.getElementById('renameProjectId').value;
+        const newName = document.getElementById('renameProjectName').value.trim();
+
+        if (!newName) {
+            alert('Please enter a project name');
             return;
         }
 
         try {
             const { error } = await supabaseClient.client
                 .from('projects')
-                .update({ custom_domain: null })
+                .update({ name: newName })
                 .eq('id', projectId);
 
             if (error) throw error;
 
-            alert('Domain removed successfully');
-            this.loadDomains();
+            alert('Project renamed successfully!');
+            this.closeRenameModal();
+            this.loadProjects();
 
         } catch (error) {
-            console.error('Error removing domain:', error);
-            alert('Failed to remove domain: ' + error.message);
+            console.error('Error renaming project:', error);
+            alert('Failed to rename project: ' + error.message);
         }
     }
 
@@ -580,37 +690,81 @@ class DashboardApp {
 
         // Load payment history
         await this.loadPaymentHistory();
+
+        // Update available plans section to mark current plan
+        await this.updateAvailablePlans();
+    }
+
+    async updateAvailablePlans() {
+        try {
+            const { data: subscription } = await supabaseClient.client
+                .from('subscriptions')
+                .select('plan')
+                .eq('user_id', this.currentUser.id)
+                .eq('status', 'active')
+                .single();
+
+            const currentPlan = subscription?.plan || 'free';
+
+            // Update all plan buttons to show which is current
+            const planButtons = document.querySelectorAll('.plan-option button');
+            planButtons.forEach(button => {
+                const planDiv = button.closest('.plan-option');
+                const planTitle = planDiv.querySelector('h4').textContent.toLowerCase();
+
+                if (planTitle === currentPlan) {
+                    button.textContent = 'Current Plan';
+                    button.disabled = true;
+                    button.className = 'btn-secondary';
+                } else if (button.textContent === 'Current Plan') {
+                    // Reset other buttons
+                    button.textContent = planTitle === 'free' ? 'Current Plan' : `Get ${planDiv.querySelector('h4').textContent}`;
+                    button.disabled = planTitle === 'free' && currentPlan !== 'free';
+                    button.className = 'btn-primary';
+                }
+            });
+        } catch (error) {
+            console.error('Error updating available plans:', error);
+        }
     }
 
     async loadBillingPlanInfo() {
         const container = document.getElementById('billingPlanInfo');
 
         try {
-            const { data: subscription, error } = await supabaseClient.client
+            const { data: subscriptions, error } = await supabaseClient.client
                 .from('subscriptions')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .single();
+                .eq('status', 'active');
 
             let planHTML = '';
 
-            if (subscription) {
-                const plan = subscription.plan.toUpperCase();
+            if (subscriptions && subscriptions.length > 0) {
+                // Get the highest tier plan
+                const planPriority = { 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
+                const highestPlan = subscriptions.reduce((highest, sub) => {
+                    const currentPriority = planPriority[sub.plan.toUpperCase()] || 0;
+                    const highestPriority = planPriority[highest.plan.toUpperCase()] || 0;
+                    return currentPriority > highestPriority ? sub : highest;
+                }, subscriptions[0]);
+
+                const plan = highestPlan.plan.toUpperCase();
                 const planConfig = PLANS[plan];
+                const subscriptionCount = subscriptions.filter(s => s.plan.toUpperCase() === plan).length;
 
                 planHTML = `
                     <div style="margin-bottom: 15px;">
-                        <h4 style="font-size: 24px; color: #667eea; margin-bottom: 5px;">${planConfig.name}</h4>
+                        <h4 style="font-size: 24px; color: #667eea; margin-bottom: 5px;">${planConfig.name}${subscriptionCount > 1 ? ` (${subscriptionCount}x)` : ''}</h4>
                         <p style="color: #6b7280;">$${planConfig.price}/${planConfig.period}</p>
                     </div>
                     <div style="padding-top: 15px; border-top: 1px solid #f3f4f6;">
                         <p style="font-size: 14px; color: #6b7280; margin-bottom: 10px;">
-                            <strong>Status:</strong> ${subscription.status}
+                            <strong>Status:</strong> ${highestPlan.status}
                         </p>
-                        ${subscription.current_period_end ? `
+                        ${highestPlan.current_period_end ? `
                             <p style="font-size: 14px; color: #6b7280;">
-                                <strong>Renews:</strong> ${new Date(subscription.current_period_end).toLocaleDateString()}
+                                <strong>Renews:</strong> ${new Date(highestPlan.current_period_end).toLocaleDateString()}
                             </p>
                         ` : ''}
                     </div>
@@ -647,20 +801,26 @@ class DashboardApp {
 
     async getMaxDomains() {
         try {
-            const { data: subscription } = await supabaseClient.client
+            // Get ALL active subscriptions for this user
+            const { data: subscriptions } = await supabaseClient.client
                 .from('subscriptions')
                 .select('plan')
                 .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .single();
+                .eq('status', 'active');
 
-            if (subscription) {
-                const plan = subscription.plan.toUpperCase();
-                return PLANS[plan]?.maxDomains || 0;
+            if (!subscriptions || subscriptions.length === 0) {
+                return 0;
             }
 
-            return 0;
+            // Sum up maxDomains from all active subscriptions
+            const totalMaxDomains = subscriptions.reduce((total, subscription) => {
+                const plan = subscription.plan.toUpperCase();
+                return total + (PLANS[plan]?.maxDomains || 0);
+            }, 0);
+
+            return totalMaxDomains;
         } catch (error) {
+            console.error('Error getting max domains:', error);
             return 0;
         }
     }
@@ -719,6 +879,93 @@ class DashboardApp {
         } catch (error) {
             console.error('Billing portal error:', error);
             alert('Failed to open billing portal: ' + error.message);
+        }
+    }
+
+    // Integration methods
+    async saveWeb3FormsKey() {
+        const key = document.getElementById('web3formsKey').value.trim();
+
+        if (!key) {
+            alert('Please enter a Web3Forms API key');
+            return;
+        }
+
+        try {
+            // Save to user metadata
+            const { error } = await supabaseClient.client
+                .from('user_integrations')
+                .upsert({
+                    user_id: this.currentUser.id,
+                    service: 'web3forms',
+                    api_key: key,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,service'
+                });
+
+            if (error) throw error;
+
+            alert('Web3Forms key saved successfully!');
+        } catch (error) {
+            console.error('Error saving Web3Forms key:', error);
+            alert('Failed to save key: ' + error.message);
+        }
+    }
+
+    async saveLoopsFormId() {
+        const formId = document.getElementById('loopsFormId').value.trim();
+
+        if (!formId) {
+            alert('Please enter a Loops.so Form ID');
+            return;
+        }
+
+        try {
+            // Save to user metadata
+            const { error } = await supabaseClient.client
+                .from('user_integrations')
+                .upsert({
+                    user_id: this.currentUser.id,
+                    service: 'loops',
+                    api_key: formId,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,service'
+                });
+
+            if (error) throw error;
+
+            alert('Loops.so Form ID saved successfully!');
+        } catch (error) {
+            console.error('Error saving Loops Form ID:', error);
+            alert('Failed to save Form ID: ' + error.message);
+        }
+    }
+
+    async loadIntegrations() {
+        try {
+            const { data: integrations, error } = await supabaseClient.client
+                .from('user_integrations')
+                .select('*')
+                .eq('user_id', this.currentUser.id);
+
+            if (error) throw error;
+
+            // Load saved keys into inputs
+            if (integrations) {
+                integrations.forEach(integration => {
+                    if (integration.service === 'web3forms') {
+                        const input = document.getElementById('web3formsKey');
+                        if (input) input.value = integration.api_key;
+                    } else if (integration.service === 'loops') {
+                        const input = document.getElementById('loopsFormId');
+                        if (input) input.value = integration.api_key;
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error loading integrations:', error);
         }
     }
 }

@@ -418,14 +418,27 @@ class DashboardApp {
 
         try {
             const { data: domains, error } = await supabaseClient.client
-                .from('projects')
-                .select('id, name, custom_domain, published_url')
-                .eq('user_id', this.currentUser.id)
-                .not('custom_domain', 'is', null);
+                .from('custom_domains')
+                .select(`
+                    id,
+                    domain,
+                    status,
+                    project_id,
+                    projects:project_id (
+                        name
+                    )
+                `)
+                .eq('user_id', this.currentUser.id);
 
             if (error) throw error;
 
-            this.domains = domains || [];
+            // Transform the data to match the expected format
+            this.domains = (domains || []).map(d => ({
+                id: d.project_id,
+                custom_domain: d.domain,
+                name: d.projects?.name || 'Untitled Project',
+                domain_id: d.id
+            }));
 
             if (this.domains.length === 0) {
                 listContainer.innerHTML = `
@@ -481,7 +494,7 @@ class DashboardApp {
 
             if (subscription) {
                 const plan = subscription.plan.toUpperCase();
-                return plan === 'ONE_TIME' || plan === 'PRO';
+                return plan === 'STARTER' || plan === 'PRO' || plan === 'ONE_TIME';
             }
 
             return false;
@@ -580,6 +593,42 @@ class DashboardApp {
 
         // Load payment history
         await this.loadPaymentHistory();
+
+        // Update available plans section to mark current plan
+        await this.updateAvailablePlans();
+    }
+
+    async updateAvailablePlans() {
+        try {
+            const { data: subscription } = await supabaseClient.client
+                .from('subscriptions')
+                .select('plan')
+                .eq('user_id', this.currentUser.id)
+                .eq('status', 'active')
+                .single();
+
+            const currentPlan = subscription?.plan || 'free';
+
+            // Update all plan buttons to show which is current
+            const planButtons = document.querySelectorAll('.plan-option button');
+            planButtons.forEach(button => {
+                const planDiv = button.closest('.plan-option');
+                const planTitle = planDiv.querySelector('h4').textContent.toLowerCase();
+
+                if (planTitle === currentPlan) {
+                    button.textContent = 'Current Plan';
+                    button.disabled = true;
+                    button.className = 'btn-secondary';
+                } else if (button.textContent === 'Current Plan') {
+                    // Reset other buttons
+                    button.textContent = planTitle === 'free' ? 'Current Plan' : `Get ${planDiv.querySelector('h4').textContent}`;
+                    button.disabled = planTitle === 'free' && currentPlan !== 'free';
+                    button.className = 'btn-primary';
+                }
+            });
+        } catch (error) {
+            console.error('Error updating available plans:', error);
+        }
     }
 
     async loadBillingPlanInfo() {

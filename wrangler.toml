@@ -1,0 +1,23 @@
+name = "yenze-worker"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+# Variables de entorno
+[vars]
+NODE_ENV = "production"
+
+# Compatibilidad con Node.js APIs
+node_compat = true
+
+# Disable workers.dev subdomain
+workers_dev = false
+
+# Rutas para manejar en yenze.io
+routes = [
+  { pattern = "yenze.io/s/*", zone_name = "yenze.io" },
+  { pattern = "yenze.io/api/*", zone_name = "yenze.io" },
+  { pattern = "yenze.io/*", zone_name = "yenze.io" },
+  { pattern = "www.yenze.io/s/*", zone_name = "yenze.io" },
+  { pattern = "www.yenze.io/api/*", zone_name = "yenze.io" },
+  { pattern = "www.yenze.io/*", zone_name = "yenze.io" }
+]
