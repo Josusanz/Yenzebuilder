@@ -2375,45 +2375,85 @@ class YenzeBuilder {
 
         if (elementType === 'contact-form') {
             return `
-        <section style="padding: 4rem 2rem; background: ${backgroundColor}; font-family: ${fontFamily};">
-            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 3rem; border-radius: ${borderRadius}; box-shadow: 0 2px 20px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
-                <h2 style="font-size: 2rem; margin: 0 0 0.5rem; color: ${textColor}; font-weight: 700;">Get in Touch</h2>
-                <p style="color: #6b7280; margin: 0 0 2rem;">We'd love to hear from you. Send us a message!</p>
-                <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+        <div class="yenze-form-wrapper" style="font-family: inherit;">
+            <div class="yenze-form-container">
+                <h2 class="yenze-form-heading">Get in Touch</h2>
+                <p class="yenze-form-description">We'd love to hear from you. Send us a message!</p>
+                <form action="https://api.web3forms.com/submit" method="POST" class="yenze-contact-form">
                     <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY">
                     <input type="hidden" name="subject" value="New Contact Form Submission">
                     <input type="hidden" name="redirect" value="https://web3forms.com/success">
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Name</label>
-                        <input type="text" name="name" placeholder="Your name" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <div class="yenze-form-field">
+                        <label class="yenze-form-label">Name</label>
+                        <input type="text" name="name" placeholder="Your name" required class="yenze-form-input" data-primary-color="${primaryColor}">
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Email</label>
-                        <input type="email" name="email" placeholder="your@email.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
+                    <div class="yenze-form-field">
+                        <label class="yenze-form-label">Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required class="yenze-form-input" data-primary-color="${primaryColor}">
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: ${textColor}; font-size: 0.875rem;">Message</label>
-                        <textarea name="message" placeholder="Your message..." rows="4" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; resize: vertical; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                    <div class="yenze-form-field">
+                        <label class="yenze-form-label">Message</label>
+                        <textarea name="message" placeholder="Your message..." rows="4" required class="yenze-form-textarea" data-primary-color="${primaryColor}"></textarea>
                     </div>
                     <div class="h-captcha" data-captcha="true"></div>
-                    <button type="submit" style="width: 100%; padding: 1rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.opacity='0.9'; this.style.transform='translateY(-2px)'" onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)'">Send Message</button>
+                    <button type="submit" class="yenze-form-button" data-primary-color="${primaryColor}">Send Message</button>
                 </form>
                 <script src="https://web3forms.com/client/script.js" async defer></script>
             </div>
-        </section>
+            <style>
+                .yenze-form-wrapper { width: 100%; }
+                .yenze-form-container { width: 100%; max-width: 100%; }
+                .yenze-form-heading { font-size: inherit; margin: 0 0 0.5em; color: inherit; font-weight: inherit; }
+                .yenze-form-description { color: inherit; opacity: 0.7; margin: 0 0 1.5em; font-size: 0.9em; }
+                .yenze-form-field { margin-bottom: 1.25em; }
+                .yenze-form-label { display: block; font-weight: 500; margin-bottom: 0.5em; color: inherit; font-size: 0.9em; }
+                .yenze-form-input, .yenze-form-textarea {
+                    width: 100%;
+                    padding: 0.75em 1em;
+                    border: 1px solid currentColor;
+                    border-color: rgba(0,0,0,0.15);
+                    border-radius: inherit;
+                    font-size: inherit;
+                    font-family: inherit;
+                    background: inherit;
+                    color: inherit;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
+                }
+                .yenze-form-input:focus, .yenze-form-textarea:focus {
+                    outline: none;
+                    border-color: ${primaryColor};
+                }
+                .yenze-form-textarea { resize: vertical; min-height: 100px; }
+                .yenze-form-button {
+                    width: 100%;
+                    padding: 0.85em 1.5em;
+                    background: ${primaryColor};
+                    color: white;
+                    border: none;
+                    border-radius: inherit;
+                    font-size: inherit;
+                    font-weight: 600;
+                    font-family: inherit;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+                .yenze-form-button:hover { opacity: 0.9; transform: translateY(-1px); }
+            </style>
+        </div>
             `;
         } else if (elementType === 'newsletter-form') {
             return `
-        <section style="padding: 3rem 2rem; background: ${backgroundColor}; text-align: center; font-family: ${fontFamily};">
-            <div style="max-width: 600px; margin: 0 auto; padding: 2.5rem; border-radius: ${borderRadius}; border: 2px solid #e5e7eb;">
-                <h3 style="font-size: 1.75rem; color: ${textColor}; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
-                <p style="color: #6b7280; margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
-                <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
-                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid #e5e7eb; background: white; color: ${textColor}; border-radius: ${borderRadius}; font-size: 1rem; font-family: ${fontFamily}; transition: all 0.2s;" onfocus="this.style.borderColor='${primaryColor}'" onblur="this.style.borderColor='#e5e7eb'">
-                    <button type="submit" style="padding: 1rem 2.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: ${fontFamily}; cursor: pointer; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'; this.style.transform='scale(1.05)'" onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">Subscribe</button>
+        <div class="yenze-newsletter-wrapper" style="font-family: inherit; text-align: inherit;">
+            <div class="yenze-newsletter-container">
+                <h3 class="yenze-newsletter-heading">Subscribe to our Newsletter</h3>
+                <p class="yenze-newsletter-description">Get the latest updates delivered to your inbox.</p>
+                <form id="newsletterForm" class="yenze-newsletter-form">
+                    <input type="email" name="email" placeholder="Enter your email" required class="yenze-newsletter-input" data-primary-color="${primaryColor}">
+                    <button type="submit" class="yenze-newsletter-button" data-primary-color="${primaryColor}">Subscribe</button>
                 </form>
-                <div id="newsletter-message" style="margin-top: 1rem; color: ${textColor}; font-weight: 500;"></div>
+                <div id="newsletter-message" class="yenze-newsletter-message"></div>
                 <script>
                     document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
                         e.preventDefault();
@@ -2446,7 +2486,52 @@ class YenzeBuilder {
                     });
                 </script>
             </div>
-        </section>
+            <style>
+                .yenze-newsletter-wrapper { width: 100%; }
+                .yenze-newsletter-container { width: 100%; max-width: 100%; }
+                .yenze-newsletter-heading { font-size: inherit; margin: 0 0 0.3em; color: inherit; font-weight: inherit; }
+                .yenze-newsletter-description { color: inherit; opacity: 0.7; margin: 0 0 1.5em; font-size: 0.9em; }
+                .yenze-newsletter-form {
+                    display: flex;
+                    gap: 0.75em;
+                    flex-wrap: wrap;
+                    align-items: stretch;
+                }
+                .yenze-newsletter-input {
+                    flex: 1;
+                    min-width: 200px;
+                    padding: 0.85em 1.25em;
+                    border: 1px solid currentColor;
+                    border-color: rgba(0,0,0,0.15);
+                    background: inherit;
+                    color: inherit;
+                    border-radius: inherit;
+                    font-size: inherit;
+                    font-family: inherit;
+                    transition: border-color 0.2s;
+                    box-sizing: border-box;
+                }
+                .yenze-newsletter-input:focus {
+                    outline: none;
+                    border-color: ${primaryColor};
+                }
+                .yenze-newsletter-button {
+                    padding: 0.85em 2em;
+                    background: ${primaryColor};
+                    color: white;
+                    border: none;
+                    border-radius: inherit;
+                    font-size: inherit;
+                    font-weight: 600;
+                    font-family: inherit;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    white-space: nowrap;
+                }
+                .yenze-newsletter-button:hover { opacity: 0.9; transform: scale(1.02); }
+                .yenze-newsletter-message { margin-top: 1em; color: inherit; font-weight: 500; }
+            </style>
+        </div>
             `;
         }
 
