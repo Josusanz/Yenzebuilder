@@ -134,3 +134,4 @@ class PricingModal {
 
 // Global instance
 const pricingModal = new PricingModal();
+window.pricingModal = pricingModal;
