@@ -173,50 +173,63 @@ class AuthUI {
                         </div>
 
                         <!-- STARTER Plan -->
-                        <div class="plan-card">
+                        <div class="plan-card featured">
+                            <div class="plan-badge">POPULAR</div>
                             <div class="plan-header">
                                 <h3>Starter</h3>
                                 <div class="plan-price">
-                                    <span class="price">$12</span>
-                                    <span class="period">/year</span>
+                                    <span class="price">$2.99</span>
+                                    <span class="period">/mo</span>
                                 </div>
                             </div>
                             <ul class="plan-features">
-                                <li>✓ Everything in Free</li>
-                                <li>✓ 1 custom domain (midominio.com)</li>
-                                <li>✓ Remove YENZE badge</li>
-                                <li>✓ Automatic DNS configuration</li>
-                                <li>✓ Basic analytics dashboard</li>
-                                <li>✓ SSL certificate included</li>
-                                <li>✓ Email support</li>
+                                <li>3 Websites</li>
+                                <li>5K visitors/mo</li>
+                                <li>50MB storage</li>
+                                <li>Remove Branding</li>
                             </ul>
-                            <button class="plan-btn secondary" onclick="authUI.selectPlan('starter')">
+                            <button class="plan-btn primary" onclick="authUI.selectPlan('starter')">
                                 Get Starter
                             </button>
                         </div>
 
                         <!-- PRO Plan -->
-                        <div class="plan-card featured">
-                            <div class="plan-badge">BEST VALUE</div>
+                        <div class="plan-card">
                             <div class="plan-header">
                                 <h3>Pro</h3>
                                 <div class="plan-price">
-                                    <span class="price">$49</span>
-                                    <span class="period">/year</span>
+                                    <span class="price">$6.99</span>
+                                    <span class="period">/mo</span>
                                 </div>
                             </div>
                             <ul class="plan-features">
-                                <li>✓ Everything in Starter</li>
-                                <li>✓ Up to 10 custom domains (midominio.com)</li>
-                                <li>✓ Automatic DNS configuration</li>
-                                <li>✓ Unlimited projects</li>
-                                <li>✓ Advanced analytics dashboard</li>
-                                <li>✓ Custom domain management</li>
-                                <li>✓ Priority support</li>
-                                <li>✓ White-label (no YENZE branding)</li>
+                                <li>10 Websites</li>
+                                <li>Custom Domain</li>
+                                <li>25K visitors/mo</li>
+                                <li>Analytics</li>
                             </ul>
-                            <button class="plan-btn primary" onclick="authUI.selectPlan('pro')">
-                                Upgrade to Pro
+                            <button class="plan-btn secondary" onclick="authUI.selectPlan('pro')">
+                                Get Pro
+                            </button>
+                        </div>
+
+                        <!-- BUSINESS Plan -->
+                        <div class="plan-card">
+                            <div class="plan-header">
+                                <h3>Business</h3>
+                                <div class="plan-price">
+                                    <span class="price">$14.99</span>
+                                    <span class="period">/mo</span>
+                                </div>
+                            </div>
+                            <ul class="plan-features">
+                                <li>Unlimited Sites</li>
+                                <li>Multiple Domains</li>
+                                <li>100K visitors/mo</li>
+                                <li>White-label</li>
+                            </ul>
+                            <button class="plan-btn secondary" onclick="authUI.selectPlan('business')">
+                                Get Business
                             </button>
                         </div>
                     </div>

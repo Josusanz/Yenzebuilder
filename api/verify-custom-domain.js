@@ -1,5 +1,5 @@
 // API endpoint to verify custom domain status
-// Checks Cloudflare and updates database
+// Checks Vercel and updates database
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,8 +8,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID;
-const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID;
+const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -49,50 +50,50 @@ export default async function handler(req, res) {
 
     console.log(`[Verify Domain] Checking status for: ${customDomain.domain}`);
 
-    // If no Cloudflare ID, can't verify
-    if (!customDomain.cloudflare_id || !CLOUDFLARE_API_TOKEN) {
-      return res.status(400).json({
-        error: 'Domain not configured with Cloudflare',
-        status: customDomain.status
+    // Verify Vercel configuration
+    if (!VERCEL_TOKEN || !VERCEL_PROJECT_ID) {
+      return res.status(500).json({
+        error: 'Vercel configuration missing',
+        details: 'Please configure VERCEL_TOKEN and VERCEL_PROJECT_ID'
       });
     }
 
-    // Check status with Cloudflare
+    // Check status with Vercel
     try {
-      const cloudflareResponse = await fetch(
-        `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/custom_hostnames/${customDomain.cloudflare_id}`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`,
-            'Content-Type': 'application/json'
-          }
+      const vercelUrl = VERCEL_TEAM_ID
+        ? `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/domains/${customDomain.domain}?teamId=${VERCEL_TEAM_ID}`
+        : `https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/domains/${customDomain.domain}`;
+
+      const vercelResponse = await fetch(vercelUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${VERCEL_TOKEN}`,
+          'Content-Type': 'application/json'
         }
-      );
+      });
 
-      const cloudflareResult = await cloudflareResponse.json();
+      const vercelResult = await vercelResponse.json();
 
-      if (!cloudflareResult.success) {
-        console.error('[Verify Domain] Cloudflare error:', cloudflareResult.errors);
+      if (!vercelResponse.ok) {
+        console.error('[Verify Domain] Vercel error:', vercelResult);
         return res.status(500).json({
           error: 'Failed to verify domain',
-          details: cloudflareResult.errors
+          details: vercelResult.error?.message || 'Unknown error'
         });
       }
 
-      const cfData = cloudflareResult.result;
-      const isActive = cfData.status === 'active';
-      const sslActive = cfData.ssl?.status === 'active';
+      const isVerified = vercelResult.verified === true;
+      const verificationRecords = vercelResult.verification || [];
 
       // Update database with new status
       const { data: updatedDomain, error: updateError } = await supabase
         .from('custom_domains')
         .update({
-          cloudflare_status: cfData.status,
-          ssl_status: cfData.ssl?.status,
-          verification_errors: cfData.verification_errors || [],
-          status: isActive && sslActive ? 'active' : 'pending',
-          verified_at: isActive && sslActive ? new Date().toISOString() : null
+          vercel_verified: isVerified,
+          verification_record: verificationRecords[0] || null,
+          status: isVerified ? 'active' : 'pending',
+          verified_at: isVerified ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString()
         })
         .eq('id', domainId)
         .select()
@@ -108,21 +109,25 @@ export default async function handler(req, res) {
       return res.status(200).json({
         success: true,
         domain: updatedDomain,
-        cloudflare: {
-          status: cfData.status,
-          ssl_status: cfData.ssl?.status,
-          verification_errors: cfData.verification_errors || []
+        vercel: {
+          verified: isVerified,
+          verification: verificationRecords
         },
-        message: isActive && sslActive
+        message: isVerified
           ? 'Domain is active and SSL is configured'
-          : 'Domain is pending verification. Please ensure DNS is configured correctly.'
+          : 'Domain is pending verification. Please ensure DNS is configured correctly.',
+        dnsInstructions: !isVerified && verificationRecords.length > 0 ? {
+          type: verificationRecords[0].type || 'CNAME',
+          name: verificationRecords[0].domain || customDomain.domain,
+          value: verificationRecords[0].value || customDomain.cname_target
+        } : null
       });
 
-    } catch (cfError) {
-      console.error('[Verify Domain] Cloudflare API error:', cfError);
+    } catch (vercelError) {
+      console.error('[Verify Domain] Vercel API error:', vercelError);
       return res.status(500).json({
-        error: 'Failed to communicate with Cloudflare',
-        details: cfError.message
+        error: 'Failed to communicate with Vercel',
+        details: vercelError.message
       });
     }
 

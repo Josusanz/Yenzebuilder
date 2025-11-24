@@ -1,5 +1,5 @@
 /* =====================================================
-   Base Modal Styles
+   Base Modal Styles - Updated for proper scrolling
    ===================================================== */
 
 .modal {
@@ -11,10 +11,10 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
     z-index: 10000;
-    justify-content: center;
-    align-items: center;
     backdrop-filter: blur(4px);
     animation: fadeInModal 0.2s;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 @keyframes fadeInModal {
@@ -32,11 +32,12 @@
     border-radius: 16px;
     max-width: 500px;
     width: 90%;
-    max-height: 90vh;
+    max-height: calc(100vh - 40px);
     overflow-y: auto;
     position: relative;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: slideUpModal 0.3s;
+    margin: auto;
 }
 
 @keyframes slideUpModal {

@@ -682,6 +682,9 @@ class DashboardApp {
     }
 
     async loadBilling() {
+        // First sync subscriptions with Stripe to ensure data is up-to-date
+        await this.syncSubscriptionsWithStripe();
+
         // Load current plan info
         await this.loadBillingPlanInfo();
 
@@ -695,6 +698,30 @@ class DashboardApp {
         await this.updateAvailablePlans();
     }
 
+    async syncSubscriptionsWithStripe() {
+        try {
+            const response = await fetch('/api/sync-subscriptions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${(await supabaseClient.client.auth.getSession()).data.session.access_token}`
+                },
+                body: JSON.stringify({
+                    userId: this.currentUser.id
+                })
+            });
+
+            if (!response.ok) {
+                console.warn('Failed to sync subscriptions, continuing anyway...');
+            } else {
+                console.log('Subscriptions synced with Stripe');
+            }
+        } catch (error) {
+            console.error('Sync error:', error);
+            // Don't throw - continue loading even if sync fails
+        }
+    }
+
     async updateAvailablePlans() {
         try {
             const { data: subscription } = await supabaseClient.client
@@ -704,7 +731,7 @@ class DashboardApp {
                 .eq('status', 'active')
                 .single();
 
-            const currentPlan = subscription?.plan || 'free';
+            const currentPlan = (subscription?.plan || 'free').toLowerCase();
 
             // Update all plan buttons to show which is current
             const planButtons = document.querySelectorAll('.plan-option button');
@@ -764,7 +791,7 @@ class DashboardApp {
                         </p>
                         ${highestPlan.current_period_end ? `
                             <p style="font-size: 14px; color: #6b7280;">
-                                <strong>Renews:</strong> ${new Date(highestPlan.current_period_end).toLocaleDateString()}
+                                <strong>${highestPlan.cancel_at_period_end ? 'Expires' : 'Renews'}:</strong> ${new Date(highestPlan.current_period_end).toLocaleDateString()}
                             </p>
                         ` : ''}
                     </div>

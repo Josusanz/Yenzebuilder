@@ -22,16 +22,19 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing user ID' });
         }
 
-        // Get user's Stripe customer ID
-        const { data: subscription, error } = await supabase
+        // Get user's Stripe customer ID from any active subscription
+        const { data: subscriptions, error } = await supabase
             .from('subscriptions')
             .select('stripe_customer_id')
             .eq('user_id', userId)
-            .single();
+            .eq('status', 'active')
+            .limit(1);
 
-        if (error || !subscription?.stripe_customer_id) {
-            return res.status(404).json({ error: 'No subscription found' });
+        if (error || !subscriptions || subscriptions.length === 0 || !subscriptions[0]?.stripe_customer_id) {
+            return res.status(404).json({ error: 'No active subscription found' });
         }
+
+        const subscription = subscriptions[0];
 
         // Create portal session
         const portalSession = await stripe.billingPortal.sessions.create({

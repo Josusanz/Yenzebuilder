@@ -126,7 +126,7 @@ body {
 }
 
 .sidebar-item.active {
-    background: #0066FF;
+    background: #000000;
     color: white;
 }
 
@@ -136,7 +136,7 @@ body {
 
 /* Current Plan Card */
 .current-plan-card {
-    background: #0066FF;
+    background: #000000;
     border-radius: 10px;
     padding: 16px;
     color: white;
@@ -157,7 +157,7 @@ body {
 
 .plan-info .upgrade-btn {
     background: white;
-    color: #0066FF;
+    color: #000000;
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
@@ -205,16 +205,22 @@ body {
     letter-spacing: -0.3px;
 }
 
+.section-header .btn-primary {
+    width: auto;
+    padding: 8px 20px;
+    font-size: 13px;
+}
+
 /* =====================================================
    Buttons
    ===================================================== */
 
 .btn-primary {
     padding: 8px 16px;
-    background: #0066FF;
+    background: #000000;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -223,14 +229,14 @@ body {
     justify-content: center;
     gap: 6px;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
+    width: auto;
     letter-spacing: -0.1px;
 }
 
 .btn-primary:hover {
-    background: #0052CC;
+    background: #1a1a1a;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 102, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
@@ -238,12 +244,12 @@ body {
     background: #F8FAFC;
     color: #64748B;
     border: 1px solid #E2E8F0;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 100%;
+    width: auto;
     letter-spacing: -0.1px;
 }
 
@@ -614,23 +620,30 @@ body {
 }
 
 .upgrade-notice {
-    background: linear-gradient(135deg, #0099ff20 0%, #0099ff20 100%);
-    border: 2px dashed #0099ff;
-    border-radius: 12px;
-    padding: 40px;
+    background: #EFF6FF;
+    border: 2px dashed #0066FF;
+    border-radius: 10px;
+    padding: 32px;
     text-align: center;
     margin-top: 20px;
 }
 
 .upgrade-notice h3 {
-    font-size: 24px;
-    color: #1f2937;
-    margin-bottom: 12px;
+    font-size: 18px;
+    color: #0F172A;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .upgrade-notice p {
-    color: #6b7280;
-    margin-bottom: 20px;
+    color: #64748B;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.upgrade-notice .btn-primary {
+    width: auto;
+    min-width: 140px;
 }
 
 /* DNS Instructions */

@@ -77,7 +77,7 @@ class CustomDomainsManager {
                 ${domain.status === 'pending' ? `
                     <div class="domain-instructions">
                         <h5>📝 DNS Configuration Required</h5>
-                        <p>Add this CNAME record in your DNS provider:</p>
+                        <p>Add this CNAME record in your DNS provider (e.g., GoDaddy, Namecheap, Cloudflare):</p>
                         <div class="dns-record">
                             <div class="dns-row">
                                 <span class="dns-label">Type:</span>
@@ -85,15 +85,22 @@ class CustomDomainsManager {
                             </div>
                             <div class="dns-row">
                                 <span class="dns-label">Name:</span>
-                                <code>@ or www</code>
+                                <code>${domain.domain.startsWith('www') ? 'www' : '@'}</code>
                             </div>
                             <div class="dns-row">
                                 <span class="dns-label">Value:</span>
-                                <code>cname.yenze.io</code>
-                                <button class="btn-copy" onclick="navigator.clipboard.writeText('cname.yenze.io')">
+                                <code>${domain.cname_target || 'cname.vercel-dns.com'}</code>
+                                <button class="btn-copy" onclick="navigator.clipboard.writeText('${domain.cname_target || 'cname.vercel-dns.com'}')">
                                     📋 Copy
                                 </button>
                             </div>
+                            <div class="dns-row">
+                                <span class="dns-label">TTL:</span>
+                                <code>Auto or 3600</code>
+                            </div>
+                        </div>
+                        <div class="dns-note">
+                            <p><strong>Note:</strong> DNS propagation can take 5-30 minutes. SSL certificate will be automatically provisioned once verified.</p>
                         </div>
                         <button class="btn btn-secondary" onclick="customDomainsManager.verifyDomain('${domain.id}')">
                             🔄 Verify Domain
@@ -158,17 +165,19 @@ class CustomDomainsManager {
     async showAddDomainModal() {
         // Check user's plan
         const subscription = await this.checkSubscription();
-        if (!subscription || !['starter', 'pro'].includes(subscription.plan)) {
+        const planName = subscription?.plan?.toLowerCase() || 'free';
+
+        if (!['pro', 'business'].includes(planName)) {
             this.showUpgradeModal();
             return;
         }
 
         // Check domain limit
-        const maxDomains = subscription.plan === 'starter' ? 1 : 10;
+        const maxDomains = planName === 'pro' ? 1 : 999; // Pro: 1, Business: unlimited
         const activeDomains = this.domains.filter(d => d.status === 'active').length;
 
         if (activeDomains >= maxDomains) {
-            alert(`You've reached your ${subscription.plan.toUpperCase()} plan limit of ${maxDomains} custom domain(s). Upgrade to PRO for more.`);
+            alert(`You've reached your ${planName.toUpperCase()} plan limit of ${maxDomains} custom domain(s). Upgrade to BUSINESS for unlimited domains.`);
             return;
         }
 
@@ -200,7 +209,7 @@ class CustomDomainsManager {
                                 class="form-control"
                                 placeholder="example.com"
                             />
-                            <small class="form-hint">Enter your domain without http:// or www</small>
+                            <small class="form-hint">Enter your domain without http:// or https:// (e.g., example.com or subdomain.example.com)</small>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -227,23 +236,25 @@ class CustomDomainsManager {
                         <button class="modal-close" onclick="document.getElementById('upgradeModal').remove()">×</button>
                     </div>
                     <div class="modal-body">
-                        <p>Custom domains are available on STARTER and PRO plans.</p>
+                        <p>Custom domains are available on PRO and BUSINESS plans.</p>
                         <div class="upgrade-plans">
                             <div class="upgrade-plan">
-                                <h4>STARTER</h4>
-                                <p class="price">$12/year</p>
+                                <h4>PRO</h4>
+                                <p class="price">$6.99/mo</p>
                                 <ul>
                                     <li>1 custom domain</li>
-                                    <li>Remove YENZE badge</li>
+                                    <li>10 websites</li>
+                                    <li>25K visitors/mo</li>
                                     <li>SSL certificate included</li>
                                 </ul>
                             </div>
                             <div class="upgrade-plan highlighted">
-                                <h4>PRO</h4>
-                                <p class="price">$49/year</p>
+                                <h4>BUSINESS</h4>
+                                <p class="price">$14.99/mo</p>
                                 <ul>
-                                    <li>10 custom domains</li>
-                                    <li>Remove YENZE badge</li>
+                                    <li>Unlimited custom domains</li>
+                                    <li>Unlimited websites</li>
+                                    <li>100K visitors/mo</li>
                                     <li>Priority support</li>
                                 </ul>
                             </div>
@@ -270,9 +281,9 @@ class CustomDomainsManager {
             .select('plan')
             .eq('user_id', supabaseClient.currentUser.id)
             .eq('status', 'active')
-            .single();
+            .limit(1);
 
-        return data;
+        return data?.[0] || null;
     }
 
     async loadUserProjects() {
@@ -289,11 +300,24 @@ class CustomDomainsManager {
         const domainInput = document.getElementById('domainInput');
         const projectSelect = document.getElementById('domainProject');
 
-        const domain = domainInput.value.trim();
+        // Clean and normalize domain input
+        let domain = domainInput.value.trim()
+            .toLowerCase()
+            .replace(/^https?:\/\//, '') // Remove http:// or https://
+            .replace(/^www\./, '')       // Remove www.
+            .replace(/\/$/, '');         // Remove trailing slash
+
         const projectId = projectSelect.value;
 
         if (!domain || !projectId) {
             alert('Please fill in all fields');
+            return;
+        }
+
+        // Validate domain format
+        const domainRegex = /^[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?)*$/;
+        if (!domainRegex.test(domain)) {
+            alert('Invalid domain format. Please enter a valid domain like "example.com" or "subdomain.example.com"');
             return;
         }
 

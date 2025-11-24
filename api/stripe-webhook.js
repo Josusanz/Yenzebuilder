@@ -143,13 +143,13 @@ async function handleSubscriptionUpdated(subscription) {
 }
 
 async function handleSubscriptionDeleted(subscription) {
+    // Delete the subscription from database when canceled in Stripe
     await supabase
         .from('subscriptions')
-        .update({
-            status: 'canceled',
-            updated_at: new Date().toISOString()
-        })
+        .delete()
         .eq('stripe_subscription_id', subscription.id);
+
+    console.log('Subscription deleted:', subscription.id);
 }
 
 async function handlePaymentSucceeded(invoice) {

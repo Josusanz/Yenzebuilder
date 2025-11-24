@@ -4,30 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE - Build stunning websites without code</title>
-    <meta name="description" content="Create, design, and publish beautiful websites in minutes. No coding required.">
+    <meta name="description" content="Create, design, and publish beautiful websites in minutes. No coding required. Join thousands of creators using YENZE.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #0066FF;
-            --primary-dark: #0052cc;
-            --primary-light: #E5F0FF;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --bg-light: #FAFAFA;
-            --surface: #FFFFFF;
-            --border: #E2E8F0;
-            --gradient-hero: radial-gradient(circle at 50% 0%, rgba(0, 102, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
         }
 
         html {
@@ -35,169 +22,139 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            color: var(--text-main);
-            line-height: 1.5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* --- Utility Animations --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Navigation --- */
+        /* Navigation */
         .nav {
             position: fixed;
             top: 0;
-            width: 100%;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .nav-content {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 16px 24px;
+            padding: 20px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
-            color: var(--text-main);
+            color: #000;
+            letter-spacing: -0.8px;
             text-decoration: none;
-            letter-spacing: -1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-
-        .logo span { color: var(--primary); }
 
         .nav-menu {
             display: flex;
-            gap: 32px;
+            gap: 40px;
             align-items: center;
         }
 
         .nav-link {
-            color: var(--text-muted);
+            color: #666;
             text-decoration: none;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 15px;
             transition: color 0.2s;
         }
 
-        .nav-link:hover { color: var(--text-main); }
+        .nav-link:hover {
+            color: #000;
+        }
 
         .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 11px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
             text-decoration: none;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            border: none;
             cursor: pointer;
-            border: 1px solid transparent;
         }
 
         .btn-primary {
-            background: var(--text-main);
+            background: #0099ff;
             color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary:hover {
-            background: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: #0088dd;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(0, 153, 255, 0.3);
         }
 
         .btn-secondary {
-            background: white;
-            color: var(--text-main);
-            border: 1px solid var(--border);
+            background: transparent;
+            color: #000;
+            border: 1.5px solid #e0e0e0;
         }
 
         .btn-secondary:hover {
-            border-color: var(--text-muted);
-            background: var(--bg-light);
+            border-color: #0099ff;
+            color: #0099ff;
         }
 
-        .mobile-toggle {
-            display: none;
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        /* --- Hero Section --- */
+        /* Hero Section */
         .hero {
-            padding: 160px 24px 100px;
+            padding: 180px 32px 120px;
             text-align: center;
-            background: var(--gradient-hero);
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 100px;
+            gap: 8px;
+            background: #f0f9ff;
+            border: 1px solid #0099ff33;
+            padding: 8px 16px;
+            border-radius: 50px;
             margin-bottom: 32px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        }
-
-        .hero-badge span {
-            color: var(--primary);
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 600;
+            color: #0099ff;
         }
 
         .hero h1 {
-            font-size: 72px;
+            font-size: 80px;
             font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.03em;
-            color: var(--text-main);
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
+            line-height: 1.05;
+            margin-bottom: 28px;
+            letter-spacing: -3px;
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-subtitle {
-            font-size: 20px;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            line-height: 1.6;
-            max-width: 600px;
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 48px;
+            line-height: 1.5;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -210,167 +167,150 @@
         }
 
         .hero-cta .btn {
-            padding: 14px 32px;
-            font-size: 16px;
-            border-radius: 12px;
-        }
-
-        /* Mockup UI CSS */
-        .hero-demo-container {
-            perspective: 1000px;
-            max-width: 1100px;
-            margin: 0 auto;
+            padding: 16px 36px;
+            font-size: 17px;
         }
 
         .hero-demo {
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 20px;
             overflow: hidden;
-            transform: rotateX(2deg);
-            transform-origin: center top;
-            transition: transform 0.5s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e0e0e0;
+            background: white;
         }
 
-        .hero-demo:hover {
-            transform: rotateX(0deg);
-        }
-
-        .browser-header {
-            background: #f8fafc;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
+        .demo-placeholder {
+            aspect-ratio: 16/10;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
-            gap: 8px;
             align-items: center;
-        }
-
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot.red { background: #FF5F57; }
-        .dot.yellow { background: #FEBC2E; }
-        .dot.green { background: #28C840; }
-
-        .browser-content {
-            height: 500px;
-            display: flex;
-            background: #fff;
-        }
-
-        /* Fake UI Builder */
-        .ui-sidebar { width: 60px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; }
-        .ui-tool { width: 32px; height: 32px; border-radius: 6px; background: #f1f5f9; }
-        .ui-canvas { flex: 1; padding: 40px; background: #f8fafc; display: flex; justify-content: center; }
-        .ui-preview { width: 100%; height: 100%; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 8px; padding: 30px; }
-        .ui-skeleton-header { height: 40px; width: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 20px; }
-        .ui-skeleton-hero { height: 200px; width: 100%; background: #f1f5f9; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
-        .ui-skeleton-lines { display: flex; gap: 10px; }
-        .ui-line { height: 10px; background: #e2e8f0; border-radius: 20px; flex: 1; }
-
-        /* --- Stats --- */
-        .stats {
-            padding: 40px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo-cloud {
-            display: flex;
             justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            opacity: 0.5;
-            filter: grayscale(100%);
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
         }
 
-        .logo-item { font-weight: 700; font-size: 20px; color: #94a3b8; }
+        /* Stats Section */
+        .stats {
+            background: #000;
+            color: white;
+            padding: 80px 32px;
+        }
 
-        /* --- Features --- */
+        .stats-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: #999;
+        }
+
+        /* Features Section */
         .features {
-            padding: 140px 24px;
+            padding: 140px 32px;
+            background: white;
         }
 
-        .section-header {
+        .features-header {
             text-align: center;
             max-width: 700px;
             margin: 0 auto 80px;
         }
 
-        .section-header h2 {
-            font-size: 42px;
+        .features-header h2 {
+            font-size: 56px;
             font-weight: 800;
-            margin-bottom: 16px;
-            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
         }
 
-        .section-header p {
-            font-size: 18px;
-            color: var(--text-muted);
+        .features-header p {
+            font-size: 20px;
+            color: #666;
         }
 
         .features-grid {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
 
-        .feature-card {
-            padding: 32px;
-            border: 1px solid var(--border);
+        .feature {
+            padding: 40px;
+            border: 1px solid #e0e0e0;
             border-radius: 16px;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .feature-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 12px 32px rgba(0, 102, 255, 0.1);
+        .feature:hover {
+            border-color: #0099ff;
             transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 153, 255, 0.15);
         }
 
         .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary-light);
-            color: var(--primary);
-            border-radius: 10px;
+            width: 56px;
+            height: 56px;
+            background: #f0f9ff;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 24px;
+            font-size: 28px;
         }
 
-        .feature-icon svg { width: 24px; height: 24px; }
-
-        .feature-card h3 {
-            font-size: 20px;
+        .feature h3 {
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 15px;
+        .feature p {
+            color: #666;
+            font-size: 16px;
             line-height: 1.6;
         }
 
-        /* --- Pricing --- */
+        /* Pricing Section */
         .pricing {
-            padding: 120px 24px;
-            background: var(--bg-light);
-            position: relative;
+            padding: 140px 32px;
+            background: #fafafa;
         }
 
-        /* Mesh background decoration */
-        .pricing::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .pricing-header h2 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -2px;
+        }
+
+        .pricing-header p {
+            font-size: 20px;
+            color: #666;
         }
 
         .pricing-grid {
@@ -379,389 +319,363 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
-            align-items: start;
         }
 
         .price-card {
             background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 36px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            transition: transform 0.3s ease;
         }
 
         .price-card:hover {
-            transform: translateY(-5px);
+            border-color: #0099ff;
+            box-shadow: 0 16px 48px rgba(0, 153, 255, 0.2);
+            transform: translateY(-8px);
         }
 
         .price-card.featured {
-            border: 2px solid var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
-            z-index: 10;
+            border-color: #0099ff;
+            border-width: 3px;
+            box-shadow: 0 8px 32px rgba(0, 153, 255, 0.15);
         }
 
-        .featured-badge {
+        .price-badge {
             position: absolute;
-            top: -14px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary);
+            background: #0099ff;
             color: white;
-            padding: 4px 12px;
-            border-radius: 100px;
+            padding: 6px 16px;
+            border-radius: 50px;
             font-size: 12px;
             font-weight: 700;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .price-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
-
-        .price { font-size: 42px; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; color: var(--text-main); }
-        .price span { font-size: 16px; color: var(--text-muted); font-weight: 500; }
-
-        .price-features { list-style: none; margin: 32px 0; }
-
-        .price-features li {
-            padding: 8px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .price-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
-        .check-icon { color: var(--primary); width: 16px; height: 16px; }
-
-        /* --- CTA --- */
-        .cta-section {
-            padding: 100px 24px;
-            background: #0F172A;
-            color: white;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Glow effect */
-        .cta-section::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .cta-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
-
-        .cta-content h2 {
+        .price {
             font-size: 48px;
             font-weight: 800;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
         }
 
-        .cta-content p {
+        .price span {
             font-size: 18px;
-            color: #94a3b8;
-            margin-bottom: 40px;
+            color: #666;
+            font-weight: 500;
         }
 
-        .cta-content .btn {
-            background: var(--primary);
+        .price-desc {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .price-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            color: #333;
+            font-size: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .price-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 120px 32px;
+            background: #000;
             color: white;
-            padding: 16px 48px;
-            font-size: 18px;
-            border-radius: 100px;
-        }
-
-        .cta-content .btn:hover {
-            background: #2563eb;
-            box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
-        }
-
-        /* --- Footer --- */
-        footer {
-            background: white;
-            padding: 60px 24px;
-            border-top: 1px solid var(--border);
             text-align: center;
         }
 
-        footer p { color: var(--text-muted); font-size: 14px; }
+        .cta h2 {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
 
-        /* --- Responsive --- */
+        .cta p {
+            font-size: 22px;
+            color: #999;
+            margin-bottom: 48px;
+        }
+
+        .cta .btn {
+            padding: 18px 48px;
+            font-size: 18px;
+            background: #0099ff;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: #fafafa;
+            padding: 60px 32px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        footer p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* Responsive */
         @media (max-width: 1024px) {
-            .hero h1 { font-size: 56px; }
-            .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+            .hero h1 {
+                font-size: 56px;
+            }
+
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 768px) {
             .nav-menu {
                 display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 24px;
-                border-bottom: 1px solid var(--border);
-                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             }
 
-            .nav-menu.active { display: flex; }
-            .mobile-toggle { display: block; }
+            .hero {
+                padding: 140px 24px 80px;
+            }
 
-            .hero h1 { font-size: 40px; }
-            .pricing-grid { grid-template-columns: 1fr; }
-            .hero-demo { display: none; }
+            .hero h1 {
+                font-size: 40px;
+                letter-spacing: -1.5px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-header h2,
+            .pricing-header h2 {
+                font-size: 36px;
+            }
+
+            .cta h2 {
+                font-size: 40px;
+            }
         }
     </style>
 </head>
 <body>
-
+    <!-- Navigation -->
     <nav class="nav">
         <div class="nav-content">
-            <a href="/" class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                YENZE
-            </a>
-            <button class="mobile-toggle" aria-label="Toggle Menu">☰</button>
+            <a href="/" class="logo">YENZE</a>
             <div class="nav-menu">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
                 <a href="https://builder.yenze.io/login.html" class="nav-link">Sign In</a>
-                <a href="https://builder.yenze.io/" class="btn btn-primary">Start Building</a>
+                <a href="https://builder.yenze.io/" class="btn btn-primary">Start Building →</a>
             </div>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="reveal">
+        <div class="hero-content">
             <div class="hero-badge">
-                <span>New</span> Ultra-competitive pricing starting at $2.99/mo
+                ✨ No code required
             </div>
 
-            <h1>Build websites faster than you can imagine</h1>
+            <h1>Build stunning websites in minutes</h1>
 
             <p class="hero-subtitle">
-                The modern website builder for creators who value design and speed.
-                No coding required. Just pure creativity.
+                Design, publish, and scale beautiful websites without writing a single line of code.
+                Join thousands of creators bringing their ideas to life with YENZE.
             </p>
 
             <div class="hero-cta">
-                <a href="https://builder.yenze.io/" class="btn btn-primary">Start for free</a>
-                <a href="#features" class="btn btn-secondary">View features</a>
+                <a href="https://builder.yenze.io/" class="btn btn-primary">Get Started Free →</a>
+                <a href="#features" class="btn btn-secondary">See How It Works</a>
             </div>
         </div>
 
-        <div class="hero-demo-container reveal">
-            <div class="hero-demo">
-                <div class="browser-header">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <div class="browser-content">
-                    <div class="ui-sidebar">
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool" style="margin-top: auto;"></div>
-                    </div>
-                    <div class="ui-canvas">
-                        <div class="ui-preview">
-                            <div class="ui-skeleton-header"></div>
-                            <div class="ui-skeleton-hero">
-                                <span style="color:#cbd5e1; font-weight:600;">Drop Element Here</span>
-                            </div>
-                            <div class="ui-skeleton-lines">
-                                <div class="ui-line"></div>
-                                <div class="ui-line"></div>
-                                <div class="ui-line"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="hero-demo">
+            <div class="demo-placeholder">
+                ⚡ YENZE Builder
             </div>
         </div>
     </section>
 
+    <!-- Stats Section -->
     <section class="stats">
-        <div class="logo-cloud">
-            <span class="logo-item">ACME Corp</span>
-            <span class="logo-item">StarkInd</span>
-            <span class="logo-item">Wayne Ent</span>
-            <span class="logo-item">Cyberdyne</span>
-            <span class="logo-item">Massive</span>
+        <div class="stats-grid">
+            <div>
+                <div class="stat-number">10k+</div>
+                <div class="stat-label">Websites Created</div>
+            </div>
+            <div>
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+            <div>
+                <div class="stat-number">< 1s</div>
+                <div class="stat-label">Load Time</div>
+            </div>
         </div>
     </section>
 
+    <!-- Features Section -->
     <section id="features" class="features">
-        <div class="section-header reveal">
-            <h2>Everything you need to scale</h2>
-            <p>Powerful features packed into a simple interface.</p>
+        <div class="features-header">
+            <h2>Everything you need to succeed</h2>
+            <p>Powerful tools designed for creators, by creators</p>
         </div>
 
         <div class="features-grid">
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
-                </div>
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
                 <h3>Visual Editor</h3>
-                <p>Drag, drop, and customize. Our editor feels like a design tool, but writes clean HTML/CSS code for you.</p>
+                <p>Design your dream website with our intuitive drag-and-drop builder. No technical skills required.</p>
             </div>
 
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                </div>
-                <h3>Global CDN</h3>
-                <p>Deployed instantly to the edge. Your sites load in milliseconds regardless of where your visitors are located.</p>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Powered by Vercel's edge network. Your sites load instantly, anywhere in the world.</p>
             </div>
 
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                </div>
-                <h3>Responsive Native</h3>
-                <p>Breakpoints are handled automatically. Design for desktop and we ensure it looks perfect on mobile.</p>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>Fully Responsive</h3>
+                <p>Perfect on every device. Your designs automatically adapt to mobile, tablet, and desktop.</p>
             </div>
 
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                </div>
+            <div class="feature">
+                <div class="feature-icon">🔗</div>
                 <h3>Custom Domains</h3>
-                <p>Connect any domain you own in seconds with automatic SSL provisioning and renewal.</p>
+                <p>Use your own domain or get a free yenze.io subdomain. SSL certificates included.</p>
             </div>
 
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                </div>
-                <h3>Analytics</h3>
-                <p>Privacy-focused analytics built right in. Track page views, visitors, and referrers without cookies.</p>
+            <div class="feature">
+                <div class="feature-icon">🔌</div>
+                <h3>Smart Integrations</h3>
+                <p>Connect forms, newsletters, analytics, and more. Everything you need, built-in.</p>
             </div>
 
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </div>
-                <h3>Forms & Integrations</h3>
-                <p>Collect leads directly to your email, or connect to Zapier, Slack, and Notion effortlessly.</p>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Built-in Analytics</h3>
+                <p>Understand your visitors. Track performance with powerful, privacy-friendly analytics.</p>
             </div>
         </div>
     </section>
 
+    <!-- Pricing Section -->
     <section id="pricing" class="pricing">
-        <div class="section-header reveal">
-            <h2>Simple pricing</h2>
-            <p>Start for free, upgrade when you're ready.</p>
+        <div class="pricing-header">
+            <h2>Simple, transparent pricing</h2>
+            <p>Start free. Scale as you grow. No hidden fees.</p>
         </div>
 
         <div class="pricing-grid">
-            <div class="price-card reveal">
+            <div class="price-card">
                 <h3>Free</h3>
                 <div class="price">$0<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For hobby projects</p>
-                <a href="https://builder.yenze.io/" class="btn btn-secondary" style="width: 100%">Get Started</a>
+                <div class="price-desc">Perfect to get started</div>
                 <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 1 Website</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> yenze.io subdomain</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 1K visitors/mo</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 10MB storage</li>
+                    <li>✓ 1 website</li>
+                    <li>✓ Unlimited pages</li>
+                    <li>✓ Free subdomain</li>
+                    <li>✓ 1K visitors/mo</li>
+                    <li>✓ 10MB storage</li>
                 </ul>
+                <a href="https://builder.yenze.io/" class="btn btn-secondary" style="width: 100%; text-align: center;">Get Started</a>
             </div>
 
-            <div class="price-card featured reveal">
-                <div class="featured-badge">POPULAR</div>
+            <div class="price-card featured">
+                <div class="price-badge">MOST POPULAR</div>
                 <h3>Starter</h3>
-                <div class="price">$3<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For personal sites</p>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-primary" style="width: 100%">Start Building</a>
+                <div class="price">$2.99<span>/mo</span></div>
+                <div class="price-desc">For growing projects</div>
                 <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 3 Websites</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 5K visitors/mo</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 50MB storage</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Remove Branding</li>
+                    <li>✓ 3 websites</li>
+                    <li>✓ Unlimited pages</li>
+                    <li>✓ 5K visitors/mo</li>
+                    <li>✓ 50MB storage</li>
+                    <li>✓ No branding</li>
                 </ul>
+                <a href="https://builder.yenze.io/signup.html" class="btn btn-primary" style="width: 100%; text-align: center;">Start Building</a>
             </div>
 
-            <div class="price-card reveal">
+            <div class="price-card">
                 <h3>Pro</h3>
-                <div class="price">$7<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For professionals</p>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%">Go Pro</a>
+                <div class="price">$6.99<span>/mo</span></div>
+                <div class="price-desc">For professionals</div>
                 <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 10 Websites</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Custom Domain</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 25K visitors/mo</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Analytics</li>
+                    <li>✓ 10 websites</li>
+                    <li>✓ Custom domain</li>
+                    <li>✓ 25K visitors/mo</li>
+                    <li>✓ 500MB storage</li>
+                    <li>✓ Analytics</li>
                 </ul>
+                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Go Pro</a>
             </div>
 
-            <div class="price-card reveal">
+            <div class="price-card">
                 <h3>Business</h3>
-                <div class="price">$15<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For agencies</p>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%">Scale Up</a>
+                <div class="price">$14.99<span>/mo</span></div>
+                <div class="price-desc">For agencies</div>
                 <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Unlimited Sites</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Multiple Domains</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> 100K visitors/mo</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> White-label</li>
+                    <li>✓ Unlimited sites</li>
+                    <li>✓ Multiple domains</li>
+                    <li>✓ 100K visitors/mo</li>
+                    <li>✓ 2GB storage</li>
+                    <li>✓ White-label</li>
                 </ul>
+                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Scale Up</a>
             </div>
         </div>
     </section>
 
-    <section class="cta-section">
-        <div class="cta-content reveal">
-            <h2>Ready to launch your idea?</h2>
-            <p>Join 10,000+ creators building the web of tomorrow.</p>
-            <a href="https://builder.yenze.io/" class="btn">Get Started Free →</a>
-        </div>
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2>Ready to build?</h2>
+        <p>Join thousands of creators using YENZE</p>
+        <a href="https://builder.yenze.io/" class="btn">Get Started Free →</a>
     </section>
 
+    <!-- Footer -->
     <footer>
-        <div class="logo" style="justify-content: center; margin-bottom: 16px; color: #cbd5e1;">YENZE</div>
-        <p>© 2025 YENZE Inc. All rights reserved.</p>
+        <p>© 2025 YENZE. Made with ❤️ for creators.</p>
     </footer>
-
-    <script>
-        // Mobile Menu Toggle
-        const menuBtn = document.querySelector('.mobile-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        menuBtn.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            menuBtn.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
-        });
-
-        // Reveal Animation on Scroll
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
-    </script>
 </body>
 </html>

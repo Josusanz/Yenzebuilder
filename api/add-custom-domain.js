@@ -1,5 +1,5 @@
 // API endpoint to add custom domain
-// This creates a custom hostname in Cloudflare for SaaS
+// This adds a custom domain to Vercel project
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -8,9 +8,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Cloudflare for SaaS configuration
-const CLOUDFLARE_ZONE_ID = process.env.CLOUDFLARE_ZONE_ID;
-const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+// Vercel configuration
+const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
+const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID;
+const VERCEL_TEAM_ID = process.env.VERCEL_TEAM_ID; // Optional, for team accounts
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -70,22 +71,25 @@ export default async function handler(req, res) {
     }
 
     // Check user's subscription plan
-    const { data: subscription } = await supabase
+    const { data: subscriptions } = await supabase
       .from('subscriptions')
       .select('plan')
       .eq('user_id', user.id)
       .eq('status', 'active')
-      .single();
+      .limit(1);
 
-    if (!subscription || !['starter', 'pro'].includes(subscription.plan)) {
+    const subscription = subscriptions?.[0];
+    const planName = subscription?.plan?.toLowerCase() || 'free';
+
+    if (!['pro', 'business'].includes(planName)) {
       return res.status(403).json({
-        error: 'Custom domains require STARTER or PRO plan',
+        error: 'Custom domains require PRO or BUSINESS plan',
         upgradeRequired: true
       });
     }
 
     // Check domain limit based on plan
-    const maxDomains = subscription.plan === 'starter' ? 1 : 10;
+    const maxDomains = planName === 'pro' ? 1 : 999; // Pro: 1 domain, Business: unlimited
     const { count } = await supabase
       .from('custom_domains')
       .select('*', { count: 'exact', head: true })
@@ -94,7 +98,7 @@ export default async function handler(req, res) {
 
     if (count >= maxDomains) {
       return res.status(403).json({
-        error: `Your ${subscription.plan.toUpperCase()} plan allows ${maxDomains} custom domain(s). Please upgrade to PRO for more.`,
+        error: `Your ${planName.toUpperCase()} plan allows ${maxDomains} custom domain(s). Please upgrade to BUSINESS for unlimited domains.`,
         limitReached: true
       });
     }
@@ -113,56 +117,58 @@ export default async function handler(req, res) {
 
     console.log(`[Custom Domain] Adding domain: ${normalizedDomain} for user: ${user.id}`);
 
-    // Create custom hostname in Cloudflare
-    let cloudflareData = null;
-    if (CLOUDFLARE_ZONE_ID && CLOUDFLARE_API_TOKEN) {
+    // Add domain to Vercel project
+    let vercelData = null;
+    if (VERCEL_TOKEN && VERCEL_PROJECT_ID) {
       try {
-        const cloudflareResponse = await fetch(
-          `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/custom_hostnames`,
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              hostname: normalizedDomain,
-              ssl: {
-                method: 'txt',
-                type: 'dv',
-                settings: {
-                  min_tls_version: '1.2'
-                }
-              }
-            })
-          }
-        );
+        const vercelUrl = VERCEL_TEAM_ID
+          ? `https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/domains?teamId=${VERCEL_TEAM_ID}`
+          : `https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/domains`;
 
-        const cloudflareResult = await cloudflareResponse.json();
+        const vercelResponse = await fetch(vercelUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${VERCEL_TOKEN}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: normalizedDomain,
+            gitBranch: null // Use production branch
+          })
+        });
 
-        if (cloudflareResult.success) {
-          cloudflareData = {
-            id: cloudflareResult.result.id,
-            status: cloudflareResult.result.status,
-            ssl_status: cloudflareResult.result.ssl?.status,
-            verification_errors: cloudflareResult.result.verification_errors || []
+        const vercelResult = await vercelResponse.json();
+
+        if (vercelResponse.ok) {
+          vercelData = {
+            name: vercelResult.name,
+            verified: vercelResult.verified || false,
+            verification: vercelResult.verification || []
           };
-          console.log(`[Custom Domain] Cloudflare custom hostname created: ${cloudflareData.id}`);
+          console.log(`[Custom Domain] Vercel domain added: ${vercelData.name}`);
         } else {
-          console.error('[Custom Domain] Cloudflare error:', cloudflareResult.errors);
+          console.error('[Custom Domain] Vercel error:', vercelResult);
           return res.status(500).json({
-            error: 'Failed to configure domain with Cloudflare',
-            details: cloudflareResult.errors
+            error: 'Failed to configure domain with Vercel',
+            details: vercelResult.error?.message || 'Unknown error'
           });
         }
-      } catch (cfError) {
-        console.error('[Custom Domain] Cloudflare API error:', cfError);
+      } catch (vercelError) {
+        console.error('[Custom Domain] Vercel API error:', vercelError);
         return res.status(500).json({
-          error: 'Failed to communicate with Cloudflare',
-          details: cfError.message
+          error: 'Failed to communicate with Vercel',
+          details: vercelError.message
         });
       }
+    } else {
+      return res.status(500).json({
+        error: 'Vercel configuration missing',
+        details: 'Please configure VERCEL_TOKEN and VERCEL_PROJECT_ID environment variables'
+      });
     }
+
+    // Get Vercel project domain for CNAME target
+    const vercelProjectDomain = `${VERCEL_PROJECT_ID}.vercel.app`;
 
     // Save to database
     const { data: customDomain, error: dbError } = await supabase
@@ -171,12 +177,10 @@ export default async function handler(req, res) {
         user_id: user.id,
         project_id: projectId,
         domain: normalizedDomain,
-        status: 'pending',
-        cloudflare_id: cloudflareData?.id || null,
-        cloudflare_status: cloudflareData?.status || null,
-        ssl_status: cloudflareData?.ssl_status || null,
-        verification_errors: cloudflareData?.verification_errors || [],
-        nameservers: null // Will be populated when user changes nameservers
+        status: vercelData?.verified ? 'active' : 'pending',
+        vercel_verified: vercelData?.verified || false,
+        verification_record: vercelData?.verification?.[0] || null,
+        cname_target: vercelProjectDomain
       })
       .select()
       .single();
@@ -188,14 +192,26 @@ export default async function handler(req, res) {
 
     console.log(`[Custom Domain] Domain added successfully: ${normalizedDomain}`);
 
-    // Return success with instructions
+    // Return success with DNS instructions
     return res.status(200).json({
       success: true,
       domain: customDomain,
       instructions: {
-        step1: `Add a CNAME record pointing ${normalizedDomain} to cname.yenze.io`,
-        step2: 'DNS propagation may take up to 48 hours',
-        step3: 'SSL certificate will be automatically provisioned'
+        title: 'Configure DNS Records',
+        description: 'Add the following DNS record at your domain registrar:',
+        records: [
+          {
+            type: 'CNAME',
+            name: normalizedDomain.includes('www') ? 'www' : '@',
+            value: vercelProjectDomain,
+            ttl: 'Auto or 3600'
+          }
+        ],
+        notes: [
+          'DNS propagation typically takes 5-30 minutes',
+          'SSL certificate will be automatically provisioned once DNS is verified',
+          'You can verify your domain status from the dashboard'
+        ]
       }
     });
 
