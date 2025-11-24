@@ -112,9 +112,70 @@ export default async function handler(req, res) {
       `);
     }
 
-    const projectHtml = customDomain.project.html;
+    let projectHtml = customDomain.project.html;
 
     console.log(`[Serve Project] Successfully serving project: ${customDomain.project.name}`);
+
+    // Inject analytics tracking script before </body> tag
+    const analyticsScript = `
+    <!-- YENZE Analytics Tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      (function() {
+        const supabaseUrl = '${process.env.SUPABASE_URL}';
+        const supabaseAnonKey = '${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}';
+        const projectId = '${customDomain.project_id}';
+
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Generate or get visitor ID
+        function getVisitorId() {
+          let visitorId = localStorage.getItem('yenze_visitor_id');
+          if (!visitorId) {
+            visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('yenze_visitor_id', visitorId);
+          }
+          return visitorId;
+        }
+
+        // Generate session ID
+        const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+        // Track page view
+        supabase.from('analytics_events').insert({
+          project_id: projectId,
+          event_type: 'page_view',
+          visitor_id: getVisitorId(),
+          session_id: sessionId,
+          page_url: window.location.href,
+          referrer: document.referrer || null,
+          user_agent: navigator.userAgent,
+          screen_width: window.screen.width,
+          screen_height: window.screen.height,
+          language: navigator.language,
+          timestamp: new Date().toISOString(),
+          metadata: {
+            platform: navigator.platform,
+            vendor: navigator.vendor,
+            cookieEnabled: navigator.cookieEnabled,
+            onLine: navigator.onLine,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+          }
+        }).then(function(result) {
+          if (result.error) {
+            console.error('Analytics tracking error:', result.error);
+          }
+        });
+      })();
+    </script>
+    `;
+
+    // Inject before </body> or at the end if no </body> tag
+    if (projectHtml.includes('</body>')) {
+      projectHtml = projectHtml.replace('</body>', analyticsScript + '</body>');
+    } else {
+      projectHtml = projectHtml + analyticsScript;
+    }
 
     // Serve the HTML with proper headers
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
