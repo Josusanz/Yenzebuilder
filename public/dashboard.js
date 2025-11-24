@@ -78,8 +78,8 @@ class DashboardApp {
             ? `<img src="${avatarImage}" alt="Profile" />`
             : userInitial;
 
-        // Get display name (prefer full name, fallback to first part of email)
-        const displayName = this.currentUser.user_metadata?.full_name || userEmail.split('@')[0];
+        // Get display name (prefer first name, fallback to first part of email)
+        const displayName = this.currentUser.user_metadata?.first_name || userEmail.split('@')[0];
 
         const profileHTML = `
             <div class="user-profile" onclick="this.querySelector('.user-dropdown').classList.toggle('active')">
@@ -166,8 +166,13 @@ class DashboardApp {
                     </div>
 
                     <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="profileName" value="${user.user_metadata?.full_name || ''}" placeholder="Your name" />
+                        <label>First Name</label>
+                        <input type="text" id="profileFirstName" value="${user.user_metadata?.first_name || ''}" placeholder="First name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="profileLastName" value="${user.user_metadata?.last_name || ''}" placeholder="Last name" />
                     </div>
 
                     ${provider === 'email' ? `
@@ -192,13 +197,18 @@ class DashboardApp {
     }
 
     async saveProfileSettings() {
-        const name = document.getElementById('profileName').value;
+        const firstName = document.getElementById('profileFirstName').value;
+        const lastName = document.getElementById('profileLastName').value;
         const password = document.getElementById('profilePassword')?.value;
 
         try {
             const updates = {};
-            if (name) {
-                updates.data = { full_name: name };
+            if (firstName || lastName) {
+                updates.data = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    full_name: `${firstName} ${lastName}`.trim()
+                };
             }
             if (password) {
                 updates.password = password;
