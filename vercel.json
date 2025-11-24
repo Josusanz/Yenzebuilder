@@ -1,22 +1,24 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "public",
-  "trailingSlash": false,
-  "headers": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
+      "src": "/",
+      "dest": "/landing.html",
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate"
+      },
+      "continue": true
     }
   ],
   "rewrites": [
     {
-      "source": "/s/:slug",
-      "destination": "/api/view-project?slug=:slug"
+      "source": "/",
+      "destination": "/builder.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "builder.yenze.io"
+        }
+      ]
     }
   ]
 }

@@ -40,34 +40,15 @@
     </div>
 
     <script>
-        (function() {
-            const hostname = window.location.hostname;
-            const subdomain = hostname.split('.')[0];
-            const searchParams = window.location.search;
-            let redirectTo = null;
-
-            console.log('[Router] Hostname:', hostname, 'Subdomain:', subdomain);
-
-            // Route builder subdomain to builder.html
-            if (hostname === 'builder.yenze.io' ||
-                (hostname.includes('vercel.app') && subdomain === 'builder')) {
-                redirectTo = '/builder.html' + searchParams;
-            }
-            // Route main domain to landing page
-            else if (hostname === 'yenze.io' ||
-                     hostname === 'www.yenze.io' ||
-                     hostname.includes('vercel.app')) {
-                redirectTo = '/landing.html';
-            }
-
-            if (redirectTo) {
-                console.log('[Router] Redirecting to:', redirectTo);
-                window.location.replace(redirectTo);
+        // This file is now just a fallback - Vercel handles routing via vercel.json
+        // If you see this, the rewrite didn't work - redirect manually
+        setTimeout(() => {
+            if (window.location.hostname.includes('builder')) {
+                window.location.replace('/builder.html' + window.location.search);
             } else {
-                console.error('[Router] No route found for hostname:', hostname);
-                document.body.innerHTML = '<div class="loader"><h1>❌ Invalid Domain</h1><p>This domain is not configured.</p></div>';
+                window.location.replace('/landing.html');
             }
-        })();
+        }, 1000);
     </script>
 </body>
 </html>
