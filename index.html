@@ -13,15 +13,8 @@
 
             // Determine which page to load based on hostname
             if (hostname === 'builder.yenze.io' || hostname.includes('vercel.app')) {
-                // Builder subdomain - check if there's a project parameter
-                const params = new URLSearchParams(window.location.search);
-                if (params.has('project')) {
-                    // Has project parameter, load builder
-                    targetFile = '/builder.html';
-                } else {
-                    // No project, show landing
-                    targetFile = '/landing.html';
-                }
+                // Builder subdomain - always load builder
+                targetFile = '/builder.html';
             } else if (hostname === 'yenze.io' || hostname === 'www.yenze.io') {
                 // Main domain - landing page
                 targetFile = '/landing.html';
