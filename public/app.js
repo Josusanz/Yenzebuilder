@@ -3271,8 +3271,26 @@ class YenzeBuilder {
         // Check if there's a project ID in the URL
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('project');
+        const isNewProject = urlParams.get('new') === 'true';
 
         console.log('[LoadProject] Project ID from URL:', projectId);
+        console.log('[LoadProject] New project flag:', isNewProject);
+
+        // If new project flag is set, clear everything and start fresh
+        if (isNewProject) {
+            console.log('[LoadProject] Creating new project from scratch');
+            localStorage.removeItem('yenzeProject');
+            this.currentHTML = '';
+            this.projectData = {
+                name: 'My Website',
+                html: '',
+                assets: [],
+                publishedUrl: null
+            };
+            document.getElementById('projectName').value = this.projectData.name;
+            this.renderPreview();
+            return;
+        }
 
         if (projectId) {
             // Load project from public API (no authentication required)
