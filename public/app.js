@@ -2662,17 +2662,40 @@ class YenzeBuilder {
             await this.updateExistingProject();
         } else {
             // New project - check user's plan and show appropriate modal
-            const { data: subscription } = await supabaseClient.client
+            const { data: subscription, error: subError } = await supabaseClient.client
                 .from('subscriptions')
-                .select('plan')
+                .select('plan, status')
                 .eq('user_id', supabaseClient.currentUser.id)
                 .eq('status', 'active')
                 .single();
 
-            const currentPlan = subscription?.plan?.toLowerCase() || 'free';
+            console.log('[Publish] Subscription query result:', {
+                subscription,
+                error: subError,
+                userId: supabaseClient.currentUser.id,
+                userEmail: supabaseClient.currentUser.email
+            });
+
+            // Determine current plan
+            let currentPlan = 'free';
+            if (subscription?.plan) {
+                currentPlan = subscription.plan.toLowerCase();
+            } else if (subError) {
+                console.warn('[Publish] Could not fetch subscription:', subError.message);
+                // Check if there's a cached plan in localStorage
+                const cachedPlan = localStorage.getItem('yenze_user_plan');
+                if (cachedPlan) {
+                    console.log('[Publish] Using cached plan:', cachedPlan);
+                    currentPlan = cachedPlan.toLowerCase();
+                }
+            }
+
             this.currentUserPlan = currentPlan;
 
-            console.log('[Publish] User plan detected:', currentPlan);
+            // Cache the plan for future use
+            localStorage.setItem('yenze_user_plan', currentPlan);
+
+            console.log('[Publish] Final user plan:', currentPlan);
 
             // Show appropriate modal based on current plan
             if (currentPlan === 'free') {
@@ -2683,6 +2706,7 @@ class YenzeBuilder {
                 this.showSubdomainModal();
             } else {
                 // Unknown plan or no subscription - show pricing options
+                console.warn('[Publish] Unknown plan, showing pricing options');
                 this.showPublishOptionsModal();
             }
         }
