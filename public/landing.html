@@ -797,8 +797,10 @@
                 return;
             }
 
-            // Store HTML in sessionStorage to be loaded by builder
-            sessionStorage.setItem('pastedHTML', html);
+            // Store HTML in localStorage to be loaded by builder
+            // Use localStorage instead of sessionStorage because sessionStorage doesn't persist across subdomains
+            localStorage.setItem('pastedHTML', html);
+            localStorage.setItem('pastedHTML_timestamp', Date.now().toString());
 
             // Redirect to builder with a flag
             window.location.href = 'https://builder.yenze.io?paste=true';

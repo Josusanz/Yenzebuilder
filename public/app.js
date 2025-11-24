@@ -3355,14 +3355,16 @@ class YenzeBuilder {
         console.log('[LoadProject] Paste mode:', isPasteMode);
 
         // Check for pasted HTML from landing page
-        if (isPasteMode && sessionStorage.getItem('pastedHTML')) {
-            const pastedHTML = sessionStorage.getItem('pastedHTML');
+        if (isPasteMode && localStorage.getItem('pastedHTML')) {
+            const pastedHTML = localStorage.getItem('pastedHTML');
+            const timestamp = localStorage.getItem('pastedHTML_timestamp');
             console.log('[LoadProject] Loading pasted HTML from landing page');
 
-            // Clear the session storage
-            sessionStorage.removeItem('pastedHTML');
+            // Clear the pasted HTML from localStorage
+            localStorage.removeItem('pastedHTML');
+            localStorage.removeItem('pastedHTML_timestamp');
 
-            // Clear localStorage to start fresh
+            // Clear existing project to start fresh
             localStorage.removeItem('yenzeProject');
 
             // Load the pasted HTML
