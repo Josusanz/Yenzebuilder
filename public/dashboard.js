@@ -8,6 +8,7 @@ class DashboardApp {
         this.domains = [];
         this.analytics = {};
         this.currentSection = 'projects';
+        this.pendingAvatarUpdate = null;
         this.init();
     }
 
@@ -72,8 +73,8 @@ class DashboardApp {
         const userEmail = this.currentUser.email;
         const userInitial = userEmail.charAt(0).toUpperCase();
 
-        // Get avatar image or initials
-        const avatarImage = this.currentUser.user_metadata?.avatar_url || this.currentUser.user_metadata?.picture;
+        // Get avatar image or initials - prioritize custom avatar
+        const avatarImage = this.currentUser.user_metadata?.custom_avatar || this.currentUser.user_metadata?.avatar_url || this.currentUser.user_metadata?.picture;
         const avatarHTML = avatarImage
             ? `<img src="${avatarImage}" alt="Profile" />`
             : userInitial;
@@ -139,7 +140,7 @@ class DashboardApp {
 
         const provider = user.app_metadata?.provider || 'email';
         const providerDisplay = provider.charAt(0).toUpperCase() + provider.slice(1);
-        const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+        const avatarImage = user.user_metadata?.custom_avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture;
 
         // Show profile settings modal
         const modalHTML = `
@@ -149,9 +150,18 @@ class DashboardApp {
                     <h2 style="margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #0F172A;">Profile Settings</h2>
 
                     <div style="text-align: center; margin-bottom: 24px;">
-                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;">
+                        <div id="profileAvatarPreview" class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px; position: relative;">
                             ${avatarImage ? `<img src="${avatarImage}" alt="Profile" />` : user.email.charAt(0).toUpperCase()}
                         </div>
+                        <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" onchange="dashboardApp.handleAvatarChange(event)" />
+                        <button type="button" class="primary-btn" style="background: #fafafa; color: #0F172A; border: 1px solid #e5e5e5; padding: 8px 16px; font-size: 14px;" onclick="document.getElementById('profileAvatarInput').click()">
+                            Change Photo
+                        </button>
+                        ${avatarImage && !avatarImage.startsWith('data:') ? `
+                            <button type="button" class="primary-btn" style="background: #fafafa; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 16px; font-size: 14px; margin-left: 8px;" onclick="dashboardApp.removeProfileAvatar()">
+                                Remove
+                            </button>
+                        ` : ''}
                         <div style="font-size: 12px; color: #64748B; margin-top: 8px;">
                             Signed in with ${providerDisplay}
                         </div>
@@ -196,6 +206,46 @@ class DashboardApp {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
+    handleAvatarChange(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Check file size (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            this.showToast('Image must be less than 2MB', 'error');
+            return;
+        }
+
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+            this.showToast('Please select an image file', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            this.pendingAvatarUpdate = dataUrl;
+
+            // Update preview
+            const preview = document.getElementById('profileAvatarPreview');
+            if (preview) {
+                preview.innerHTML = `<img src="${dataUrl}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    removeProfileAvatar() {
+        this.pendingAvatarUpdate = 'remove';
+
+        // Update preview to show initial
+        const preview = document.getElementById('profileAvatarPreview');
+        if (preview && this.currentUser) {
+            preview.innerHTML = this.currentUser.email.charAt(0).toUpperCase();
+        }
+    }
+
     async saveProfileSettings() {
         const firstName = document.getElementById('profileFirstName').value;
         const lastName = document.getElementById('profileLastName').value;
@@ -203,19 +253,36 @@ class DashboardApp {
 
         try {
             const updates = {};
+            const metadata = {};
+
+            // Handle name updates
             if (firstName || lastName) {
-                updates.data = {
-                    first_name: firstName,
-                    last_name: lastName,
-                    full_name: `${firstName} ${lastName}`.trim()
-                };
+                metadata.first_name = firstName;
+                metadata.last_name = lastName;
+                metadata.full_name = `${firstName} ${lastName}`.trim();
             }
+
+            // Handle avatar update
+            if (this.pendingAvatarUpdate === 'remove') {
+                metadata.custom_avatar = null;
+            } else if (this.pendingAvatarUpdate) {
+                metadata.custom_avatar = this.pendingAvatarUpdate;
+            }
+
+            // Only add metadata to updates if there are changes
+            if (Object.keys(metadata).length > 0) {
+                updates.data = metadata;
+            }
+
             if (password) {
                 updates.password = password;
             }
 
             const { error } = await supabaseClient.client.auth.updateUser(updates);
             if (error) throw error;
+
+            // Reset pending avatar
+            this.pendingAvatarUpdate = null;
 
             this.showToast('Profile updated successfully', 'success');
             document.getElementById('profileSettingsModal').remove();

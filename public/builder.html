@@ -2076,24 +2076,24 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.2.2"></script>
+    <script src="/config.js?v=1.2.3"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.2.2"></script>
+    <script src="/supabase-client.js?v=1.2.3"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.2.2"></script>
+    <script src="/stripe-integration.js?v=1.2.3"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.2.2"></script>
-    <script src="/usage-tracker.js?v=1.2.2"></script>
-    <script src="/pricing-modal.js?v=1.2.2"></script>
+    <script src="/pricing-plans.js?v=1.2.3"></script>
+    <script src="/usage-tracker.js?v=1.2.3"></script>
+    <script src="/pricing-modal.js?v=1.2.3"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.2.2"></script>
+    <script src="/auth-ui.js?v=1.2.3"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.2.2"></script>
+    <script src="/app.js?v=1.2.3"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2133,8 +2133,8 @@
             const publishBtn = document.getElementById('publishBtn');
 
             if (user) {
-                // Get avatar image or initials
-                const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+                // Get avatar image or initials - prioritize custom avatar
+                const avatarImage = user.user_metadata?.custom_avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture;
                 const avatarHTML = avatarImage
                     ? `<img src="${avatarImage}" alt="Profile" />`
                     : user.email.charAt(0).toUpperCase();
@@ -2198,7 +2198,7 @@
 
             const provider = user.app_metadata?.provider || 'email';
             const providerDisplay = provider.charAt(0).toUpperCase() + provider.slice(1);
-            const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+            const avatarImage = user.user_metadata?.custom_avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture;
 
             // Show profile settings modal
             const modalHTML = `
@@ -2208,9 +2208,18 @@
                         <h2 style="margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #0F172A;">Profile Settings</h2>
 
                         <div style="text-align: center; margin-bottom: 24px;">
-                            <div class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;">
+                            <div id="profileAvatarPreview" class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px; position: relative;">
                                 ${avatarImage ? `<img src="${avatarImage}" alt="Profile" />` : user.email.charAt(0).toUpperCase()}
                             </div>
+                            <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" onchange="handleAvatarChange(event)" />
+                            <button type="button" class="primary-btn" style="background: #fafafa; color: #0F172A; border: 1px solid #e5e5e5; padding: 8px 16px; font-size: 14px;" onclick="document.getElementById('profileAvatarInput').click()">
+                                Change Photo
+                            </button>
+                            ${avatarImage && !avatarImage.startsWith('data:') ? `
+                                <button type="button" class="primary-btn" style="background: #fafafa; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 16px; font-size: 14px; margin-left: 8px;" onclick="removeProfileAvatar()">
+                                    Remove
+                                </button>
+                            ` : ''}
                             <div style="font-size: 12px; color: #64748B; margin-top: 8px;">
                                 Signed in with ${providerDisplay}
                             </div>
@@ -2255,6 +2264,50 @@
             document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
 
+        // Store avatar data URL temporarily
+        let pendingAvatarUpdate = null;
+
+        function handleAvatarChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Image must be less than 2MB', 'error');
+                return;
+            }
+
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                pendingAvatarUpdate = dataUrl;
+
+                // Update preview
+                const preview = document.getElementById('profileAvatarPreview');
+                if (preview) {
+                    preview.innerHTML = `<img src="${dataUrl}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function removeProfileAvatar() {
+            pendingAvatarUpdate = 'remove';
+
+            // Update preview to show initial
+            const user = supabaseClient.getUser();
+            const preview = document.getElementById('profileAvatarPreview');
+            if (preview && user) {
+                preview.innerHTML = user.email.charAt(0).toUpperCase();
+            }
+        }
+
         async function saveProfileSettings() {
             const firstName = document.getElementById('profileFirstName').value;
             const lastName = document.getElementById('profileLastName').value;
@@ -2262,19 +2315,36 @@
 
             try {
                 const updates = {};
+                const metadata = {};
+
+                // Handle name updates
                 if (firstName || lastName) {
-                    updates.data = {
-                        first_name: firstName,
-                        last_name: lastName,
-                        full_name: `${firstName} ${lastName}`.trim()
-                    };
+                    metadata.first_name = firstName;
+                    metadata.last_name = lastName;
+                    metadata.full_name = `${firstName} ${lastName}`.trim();
                 }
+
+                // Handle avatar update
+                if (pendingAvatarUpdate === 'remove') {
+                    metadata.custom_avatar = null;
+                } else if (pendingAvatarUpdate) {
+                    metadata.custom_avatar = pendingAvatarUpdate;
+                }
+
+                // Only add metadata to updates if there are changes
+                if (Object.keys(metadata).length > 0) {
+                    updates.data = metadata;
+                }
+
                 if (password) {
                     updates.password = password;
                 }
 
                 const { error } = await supabaseClient.client.auth.updateUser(updates);
                 if (error) throw error;
+
+                // Reset pending avatar
+                pendingAvatarUpdate = null;
 
                 showToast('Profile updated successfully', 'success');
                 document.getElementById('profileSettingsModal').remove();
