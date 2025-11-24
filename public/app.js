@@ -234,7 +234,7 @@ class YenzeBuilder {
             'Plus Jakarta Sans', 'Sora', 'Lexend', 'Mulish', 'Quicksand'
         ];
 
-        this.init();
+        // Note: init() is called from builder.html after DOM is ready
     }
 
     async init() {
@@ -3387,26 +3387,25 @@ class YenzeBuilder {
     }
 }
 
-// Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Make app globally accessible for auth-ui integration
-    const app = new YenzeBuilder();
-    window.app = app;
+// Initialize app
+// Make app globally accessible for auth-ui integration
+// Note: init() will be called from builder.html after DOM is ready
+const app = new YenzeBuilder();
+window.app = app;
 
-    // Listen for authentication events
-    window.addEventListener('auth-change', (e) => {
-        const { event } = e.detail;
+// Listen for authentication events
+window.addEventListener('auth-change', (e) => {
+    const { event } = e.detail;
 
-        console.log('[Auth Event]', event, 'pendingPublish:', app.pendingPublish);
+    console.log('[Auth Event]', event, 'pendingPublish:', app.pendingPublish);
 
-        // If user just signed in and was trying to publish, show pricing modal
-        if (event === 'SIGNED_IN' && app.pendingPublish) {
-            console.log('[Auth Event] Showing pricing modal after login');
-            app.pendingPublish = false; // Reset flag
-            // Small delay to let auth modal close
-            setTimeout(() => {
-                app.showPublishOptionsModal();
-            }, 300);
-        }
-    });
+    // If user just signed in and was trying to publish, show pricing modal
+    if (event === 'SIGNED_IN' && app.pendingPublish) {
+        console.log('[Auth Event] Showing pricing modal after login');
+        app.pendingPublish = false; // Reset flag
+        // Small delay to let auth modal close
+        setTimeout(() => {
+            app.showPublishOptionsModal();
+        }, 300);
+    }
 });
