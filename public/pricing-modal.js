@@ -57,77 +57,25 @@ class PricingModal {
     }
 
     renderPlanCard(planId, currentPlan) {
-        const plans = {
-            free: {
-                name: 'Free',
-                price: '$0',
-                period: '/forever',
-                badge: null,
-                features: [
-                    '1 Website',
-                    'Unlimited pages',
-                    'Free subdomain (you.yenze.io)',
-                    '1K visitors/mo',
-                    '10MB storage',
-                    'Basic integrations'
-                ],
-                cta: 'Get Started Free',
-                popular: false
-            },
-            starter: {
-                name: 'Starter',
-                price: '$2.99',
-                period: '/mo',
-                badge: 'MOST POPULAR',
-                features: [
-                    '3 Websites',
-                    'Unlimited pages',
-                    'Free subdomain',
-                    '5K visitors/mo',
-                    '50MB storage',
-                    'Remove branding',
-                    'All integrations'
-                ],
-                cta: 'Get Starter',
-                popular: true
-            },
-            pro: {
-                name: 'Pro',
-                price: '$6.99',
-                period: '/mo',
-                badge: null,
-                features: [
-                    '10 Websites',
-                    'Unlimited pages',
-                    '1 Custom domain (yourbrand.com)',
-                    '25K visitors/mo',
-                    '500MB storage',
-                    'Analytics dashboard',
-                    'Priority support'
-                ],
-                cta: 'Go Pro',
-                popular: false
-            },
-            business: {
-                name: 'Business',
-                price: '$14.99',
-                period: '/mo',
-                badge: 'BEST VALUE',
-                features: [
-                    'Unlimited websites',
-                    'Unlimited pages',
-                    'Multiple custom domains',
-                    '100K visitors/mo',
-                    '2GB storage',
-                    'White-label',
-                    'API access'
-                ],
-                cta: 'Scale Up',
-                popular: false
-            }
+        // Use plans from config.js
+        const plansConfig = {
+            free: PLANS.FREE,
+            starter: PLANS.STARTER,
+            pro: PLANS.PRO,
+            business: PLANS.BUSINESS
         };
 
-        const plan = plans[planId];
+        const planConfig = plansConfig[planId];
+        const plan = {
+            name: planConfig.name,
+            price: planId === 'free' ? '$0' : `$${planConfig.monthlyPrice}`,
+            period: planId === 'free' ? '/forever' : '/mo',
+            badge: planConfig.badge_text || (planConfig.popular ? 'MOST POPULAR' : null),
+            features: planConfig.features,
+            cta: planConfig.cta,
+            popular: planConfig.popular
+        };
+
         const isCurrent = currentPlan && currentPlan.toLowerCase() === planId;
         const featuredClass = plan.popular ? 'plan-card-featured' : '';
 
