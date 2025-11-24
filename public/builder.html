@@ -2002,6 +2002,11 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await supabaseClient.init();
 
+            // Initialize Builder App (loads project if URL has ?project=ID)
+            if (typeof app !== 'undefined') {
+                await app.init();
+            }
+
             // Listen for auth state changes
             window.addEventListener('auth-change', (e) => {
                 const { event, user } = e.detail;
