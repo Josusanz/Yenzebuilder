@@ -3275,28 +3275,26 @@ class YenzeBuilder {
         console.log('[LoadProject] Project ID from URL:', projectId);
 
         if (projectId) {
-            // Check if user is authenticated
-            const user = supabaseClient.getUser();
-            if (!user) {
-                console.warn('[LoadProject] User not authenticated, cannot load project from database');
-                this.showToast('Please sign in to load your project', 'warning');
-                return;
-            }
-
-            // Load project from database
+            // Load project from public API (no authentication required)
             try {
-                console.log('[LoadProject] Fetching project from database...');
+                console.log('[LoadProject] Fetching project from API...');
 
-                const { data: project, error } = await supabaseClient.client
-                    .from('projects')
-                    .select('*')
-                    .eq('id', projectId)
-                    .single();
+                const response = await fetch(`/api/get-project?id=${encodeURIComponent(projectId)}`);
 
-                if (error) {
-                    console.error('[LoadProject] Error loading project:', error);
-                    throw error;
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('[LoadProject] API error:', errorData);
+                    throw new Error(errorData.error || 'Failed to load project');
                 }
+
+                const result = await response.json();
+                console.log('[LoadProject] API response:', result);
+
+                if (!result.success || !result.project) {
+                    throw new Error('Invalid API response');
+                }
+
+                const project = result.project;
 
                 if (project) {
                     console.log('[LoadProject] Project loaded successfully:', project.name);
@@ -3323,9 +3321,6 @@ class YenzeBuilder {
 
                     // Save to localStorage for future edits
                     localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
-
-                    // Remove the query parameter from URL
-                    window.history.replaceState({}, document.title, '/');
 
                     this.showToast('Project loaded successfully', 'success');
                     return;

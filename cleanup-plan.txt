@@ -1,0 +1,42 @@
+# Cleanup Plan for yenzehtml project
+
+## Files to KEEP in ROOT:
+- index.html (router principal)
+- vercel.json
+- package.json
+- .env.local
+- .gitignore
+- Scripts de utilidad (check-*.js, diagnose-*.js, fix-*.js, verify-*.js)
+
+## Files to MOVE from ROOT to /public/ (if not already there):
+- NONE (public/ already has the correct versions)
+
+## Files to DELETE from ROOT (duplicates in /public/):
+- dashboard.html (usar /public/dashboard.html)
+- dashboard.js (usar /public/dashboard.js)
+- builder.html (usar /public/builder.html)
+- landing.html (usar /public/landing.html)
+- view.html (usar /public/view.html)
+- app.js (usar /public/app.js)
+- analytics.js (usar /public/analytics.js)
+- auth-ui.js (usar /public/auth-ui.js)
+- config.js (usar /public/config.js)
+- custom-domains.js (usar /public/custom-domains.js)
+- pricing-modal.js (usar /public/pricing-modal.js)
+- stripe-integration.js (usar /public/stripe-integration.js)
+- supabase-client.js (usar /public/supabase-client.js)
+- _subdomain.html (usar /public/_subdomain.html)
+- dashboard-test.html (test file)
+- example.html (test file)
+- storage-test.html (test file)
+- test-subdomain.html (test file)
+
+## Scripts to KEEP in ROOT (utility scripts):
+- check-domain-data.js
+- check-domain-status.js
+- diagnose-domain-issue.js
+- fix-domain-project-link.js
+- fix-framerlms-domain.js
+- verify-framerlms.js
+- verify-vercel-connection.js
+- GODADDY-FIX.md
