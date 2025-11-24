@@ -673,13 +673,17 @@ class DashboardApp {
 
         // Check if user has access to custom domains
         const hasAccess = await this.checkCustomDomainAccess();
+        console.log('[Custom Domains] Access check result:', hasAccess);
 
         if (!hasAccess) {
+            console.log('[Custom Domains] User does not have access - showing upgrade notice');
             document.getElementById('domainUpgradeNotice').style.display = 'block';
             document.getElementById('addDomainBtn').disabled = true;
             listContainer.innerHTML = '';
             return;
         }
+
+        console.log('[Custom Domains] User has access - loading domains list');
 
         try {
             const { data: domains, error } = await supabaseClient.client
@@ -757,18 +761,28 @@ class DashboardApp {
                 .eq('status', 'active');
 
             if (error) {
-                console.error('Error checking domain access:', error);
+                console.error('[Custom Domains] Error checking domain access:', error);
                 return false;
             }
 
+            console.log('[Custom Domains] Found subscriptions:', subscriptions?.length || 0);
+            subscriptions?.forEach(sub => {
+                console.log('[Custom Domains] - Plan:', sub.plan, 'Status:', sub.status);
+            });
+
             if (subscriptions && subscriptions.length > 0) {
                 // Check if any subscription is paid (not free)
-                return subscriptions.some(sub => {
+                const hasAccess = subscriptions.some(sub => {
                     const plan = sub.plan.toUpperCase();
-                    return plan === 'STARTER' || plan === 'PRO' || plan === 'BUSINESS' || plan === 'ONE_TIME';
+                    const allowed = plan === 'STARTER' || plan === 'PRO' || plan === 'BUSINESS' || plan === 'ONE_TIME';
+                    console.log('[Custom Domains] Plan check:', plan, '- Allowed:', allowed);
+                    return allowed;
                 });
+                console.log('[Custom Domains] Final access decision:', hasAccess);
+                return hasAccess;
             }
 
+            console.log('[Custom Domains] No active subscriptions found');
             return false;
         } catch (error) {
             console.error('Error in checkCustomDomainAccess:', error);
