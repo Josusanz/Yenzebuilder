@@ -24,9 +24,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // Call Google Gemini API
+    // Call Google Gemini API (using gemini-1.5-flash - fast and free)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
