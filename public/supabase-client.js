@@ -80,12 +80,17 @@ class SupabaseClient {
     // Auth methods
     async signUp(email, password, metadata = {}) {
         try {
+            // Get the current URL to redirect back to
+            const redirectUrl = window.location.origin.includes('localhost')
+                ? 'http://localhost:3000/builder.html'
+                : 'https://builder.yenze.io';
+
             const { data, error } = await this.client.auth.signUp({
                 email,
                 password,
                 options: {
                     data: metadata,
-                    emailRedirectTo: 'https://yenze.io'
+                    emailRedirectTo: redirectUrl
                 }
             });
 
@@ -126,10 +131,15 @@ class SupabaseClient {
 
     async signInWithGoogle() {
         try {
+            // Get the current URL to redirect back to the builder
+            const redirectUrl = window.location.origin.includes('localhost')
+                ? 'http://localhost:3000/builder.html'
+                : 'https://builder.yenze.io';
+
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: 'https://yenze.io'
+                    redirectTo: redirectUrl
                 }
             });
 
@@ -143,10 +153,15 @@ class SupabaseClient {
 
     async signInWithGithub() {
         try {
+            // Get the current URL to redirect back to the builder
+            const redirectUrl = window.location.origin.includes('localhost')
+                ? 'http://localhost:3000/builder.html'
+                : 'https://builder.yenze.io';
+
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
-                    redirectTo: 'https://yenze.io'
+                    redirectTo: redirectUrl
                 }
             });
 
