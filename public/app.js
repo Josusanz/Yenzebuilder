@@ -3272,18 +3272,35 @@ class YenzeBuilder {
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('project');
 
+        console.log('[LoadProject] Project ID from URL:', projectId);
+
         if (projectId) {
+            // Check if user is authenticated
+            const user = supabaseClient.getUser();
+            if (!user) {
+                console.warn('[LoadProject] User not authenticated, cannot load project from database');
+                this.showToast('Please sign in to load your project', 'warning');
+                return;
+            }
+
             // Load project from database
             try {
+                console.log('[LoadProject] Fetching project from database...');
+
                 const { data: project, error } = await supabaseClient.client
                     .from('projects')
                     .select('*')
                     .eq('id', projectId)
                     .single();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('[LoadProject] Error loading project:', error);
+                    throw error;
+                }
 
                 if (project) {
+                    console.log('[LoadProject] Project loaded successfully:', project.name);
+
                     this.projectData = {
                         id: project.id,
                         name: project.name || 'Untitled Project',
@@ -3294,7 +3311,10 @@ class YenzeBuilder {
                     document.getElementById('projectName').value = this.projectData.name;
 
                     if (this.projectData.html) {
+                        console.log('[LoadProject] Loading HTML into canvas...');
                         this.loadHTML(this.projectData.html);
+                    } else {
+                        console.warn('[LoadProject] Project has no HTML content');
                     }
 
                     if (this.projectData.assets.length > 0) {
