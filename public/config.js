@@ -46,14 +46,15 @@ const PLANS = {
     STARTER: {
         id: 'starter',
         name: 'Starter',
-        price: 35.88, // $2.99/mo × 12
-        period: 'year',
-        priceId: 'price_starter_yearly', // TODO: Create yearly price in Stripe
+        price: 2.99,
+        period: 'month',
+        priceId: 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
         monthlyPrice: 2.99,
         monthlyPriceId: 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
         features: [
             '3 websites/projects',
             'Multipage support (unlimited pages per site)',
+            '1 custom domain (yourbrand.com)',
             'Free subdomain (you.yenze.io)',
             '5,000 monthly visitors',
             '50MB storage per site',
@@ -66,24 +67,23 @@ const PLANS = {
             maxProjects: 3,
             maxViews: 5000,
             maxStorage: 52428800, // 50MB
-            customDomain: false,
+            customDomain: true,
             removeBranding: true,
             analytics: false
         },
-        deploymentType: 'subdomain',
-        maxDomains: 0,
+        deploymentType: 'custom',
+        maxDomains: 1,
         badge: false,
         popular: true,
         badge_text: 'Most Popular',
-        cta: 'Start Building',
-        savings: 'Save $0.10/mo'
+        cta: 'Start Building'
     },
     PRO: {
         id: 'pro',
         name: 'Pro',
-        price: 83.88, // $6.99/mo × 12
-        period: 'year',
-        priceId: 'price_pro_yearly', // TODO: Create yearly price in Stripe
+        price: 6.99,
+        period: 'month',
+        priceId: 'price_1SWiCYIDLJ66zkJzlw0IY25L',
         monthlyPrice: 6.99,
         monthlyPriceId: 'price_1SWiCYIDLJ66zkJzlw0IY25L',
         features: [
@@ -110,15 +110,14 @@ const PLANS = {
         maxDomains: 1,
         badge: false,
         popular: false,
-        cta: 'Go Pro',
-        savings: 'Save $1/mo'
+        cta: 'Go Pro'
     },
     BUSINESS: {
         id: 'business',
         name: 'Business',
-        price: 179.88, // $14.99/mo × 12
-        period: 'year',
-        priceId: 'price_business_yearly', // TODO: Create yearly price in Stripe
+        price: 14.99,
+        period: 'month',
+        priceId: 'price_1SWiDFIDLJ66zkJzyNmDga03',
         monthlyPrice: 14.99,
         monthlyPriceId: 'price_1SWiDFIDLJ66zkJzyNmDga03',
         features: [
@@ -151,7 +150,6 @@ const PLANS = {
         badge: false,
         popular: false,
         badge_text: 'Best Value',
-        cta: 'Scale Up',
-        savings: 'Save $5/mo'
+        cta: 'Scale Up'
     }
 };

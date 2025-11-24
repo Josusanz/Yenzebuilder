@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog - YENZE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #F8FAFC;
+            color: #0F172A;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 24px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #64748B;
+        }
+
+        .version {
+            margin-bottom: 48px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .version:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .version-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .version-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        .version-date {
+            font-size: 14px;
+            color: #64748B;
+            background: #F1F5F9;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .version-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            background: #0066FF;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .changes {
+            margin-top: 20px;
+        }
+
+        .change-category {
+            margin-bottom: 24px;
+        }
+
+        .change-category:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0F172A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .category-new .category-icon {
+            background: #DBEAFE;
+            color: #0066FF;
+        }
+
+        .category-improved .category-icon {
+            background: #D1FAE5;
+            color: #10B981;
+        }
+
+        .category-fixed .category-icon {
+            background: #FEE2E2;
+            color: #EF4444;
+        }
+
+        .category-changed .category-icon {
+            background: #FEF3C7;
+            color: #F59E0B;
+        }
+
+        .change-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .change-item {
+            padding: 12px 16px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #334155;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .change-item:hover {
+            background: #F1F5F9;
+            border-left-color: #0066FF;
+        }
+
+        .change-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .change-item code {
+            background: #E2E8F0;
+            color: #0F172A;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0066FF;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 24px;
+            transition: all 0.2s;
+        }
+
+        .back-link:hover {
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .version-number {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">
+            ← Back to Home
+        </a>
+
+        <header>
+            <h1>Changelog</h1>
+            <p class="subtitle">Latest updates and improvements to YENZE</p>
+        </header>
+
+        <!-- Version 1.3.1 -->
+        <div class="version">
+            <div class="version-header">
+                <span class="version-number">v1.3.1</span>
+                <span class="version-date">November 24, 2025</span>
+                <span class="version-badge">Latest</span>
+            </div>
+
+            <div class="changes">
+                <div class="change-category category-new">
+                    <h3 class="category-title">
+                        <span class="category-icon">✨</span>
+                        New Features
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Starter plan now includes <strong>1 Custom Domain</strong> - Connect your own domain for just $2.99/mo
+                        </li>
+                        <li class="change-item">
+                            Added changelog page to track all platform updates
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category category-changed">
+                    <h3 class="category-title">
+                        <span class="category-icon">🔄</span>
+                        Changed
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            All plans are now <strong>monthly subscriptions</strong> instead of yearly
+                        </li>
+                        <li class="change-item">
+                            Starter: $2.99/month (previously $35.88/year)
+                        </li>
+                        <li class="change-item">
+                            Pro: $6.99/month (previously $83.88/year) - Price ID: <code>price_1SWiCYIDLJ66zkJzlw0IY25L</code>
+                        </li>
+                        <li class="change-item">
+                            Business: $14.99/month (previously $179.88/year)
+                        </li>
+                        <li class="change-item">
+                            Updated Starter plan <code>deploymentType</code> from 'subdomain' to 'custom'
+                        </li>
+                        <li class="change-item">
+                            Updated Starter plan <code>maxDomains</code> from 0 to 1
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category category-improved">
+                    <h3 class="category-title">
+                        <span class="category-icon">⚡</span>
+                        Improvements
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Improved authentication initialization timing - User profile now loads correctly when creating new projects
+                        </li>
+                        <li class="change-item">
+                            Added multiple auth checks (300ms and 1000ms delays) to handle slow connections
+                        </li>
+                        <li class="change-item">
+                            Enhanced modal visibility with proper scrolling and click-outside-to-close functionality
+                        </li>
+                        <li class="change-item">
+                            Better toast notifications with bouncy animations and checkmark icons
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category category-fixed">
+                    <h3 class="category-title">
+                        <span class="category-icon">🐛</span>
+                        Bug Fixes
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Fixed user profile not showing when accessing <code>builder.html?new=true</code> from dashboard
+                        </li>
+                        <li class="change-item">
+                            Fixed pricing modals not displaying completely on screen
+                        </li>
+                        <li class="change-item">
+                            Fixed "View Pro Plans" button not opening pricing modal
+                        </li>
+                        <li class="change-item">
+                            Fixed publish options modal visibility issues
+                        </li>
+                        <li class="change-item">
+                            Fixed <code>window.pricingModal</code> global availability
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Version 1.2.0 - Previous Session -->
+        <div class="version">
+            <div class="version-header">
+                <span class="version-number">v1.2.0</span>
+                <span class="version-date">November 23, 2025</span>
+            </div>
+
+            <div class="changes">
+                <div class="change-category category-new">
+                    <h3 class="category-title">
+                        <span class="category-icon">✨</span>
+                        New Features
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Added profile picture upload functionality - Upload custom avatars up to 2MB
+                        </li>
+                        <li class="change-item">
+                            Profile settings modal with first name, last name, and password update
+                        </li>
+                        <li class="change-item">
+                            OAuth integration with Google and GitHub
+                        </li>
+                        <li class="change-item">
+                            Real-time avatar preview before saving
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="change-category category-improved">
+                    <h3 class="category-title">
+                        <span class="category-icon">⚡</span>
+                        Improvements
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Enhanced save confirmation notifications with larger size and better visibility
+                        </li>
+                        <li class="change-item">
+                            Extended toast notification duration from 3s to 4s
+                        </li>
+                        <li class="change-item">
+                            Added gradient backgrounds for success messages
+                        </li>
+                        <li class="change-item">
+                            Avatar priority system: custom_avatar → OAuth avatar → initials
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Version 1.0.0 - Initial Release -->
+        <div class="version">
+            <div class="version-header">
+                <span class="version-number">v1.0.0</span>
+                <span class="version-date">November 2025</span>
+            </div>
+
+            <div class="changes">
+                <div class="change-category category-new">
+                    <h3 class="category-title">
+                        <span class="category-icon">🚀</span>
+                        Initial Release
+                    </h3>
+                    <ul class="change-list">
+                        <li class="change-item">
+                            Visual HTML website builder with drag-and-drop interface
+                        </li>
+                        <li class="change-item">
+                            Multi-page website support
+                        </li>
+                        <li class="change-item">
+                            Free subdomain hosting (you.yenze.io)
+                        </li>
+                        <li class="change-item">
+                            Custom domain support for Pro and Business plans
+                        </li>
+                        <li class="change-item">
+                            Project management dashboard
+                        </li>
+                        <li class="change-item">
+                            Real-time preview with device switching (Desktop, Tablet, Mobile)
+                        </li>
+                        <li class="change-item">
+                            Asset management system
+                        </li>
+                        <li class="change-item">
+                            Stripe payment integration
+                        </li>
+                        <li class="change-item">
+                            Analytics tracking
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

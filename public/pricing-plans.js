@@ -47,7 +47,7 @@ const PRICING_PLANS = {
         features: {
             pages: 3,
             subdomain: true,
-            customDomain: false,
+            customDomain: true,
             monthlyViews: 5000,
             storage: 50, // MB
             branding: false,
@@ -60,7 +60,7 @@ const PRICING_PLANS = {
             maxProjects: 3,
             maxViews: 5000,
             maxStorage: 52428800, // 50MB in bytes
-            customDomain: false,
+            customDomain: true,
             removeBranding: true,
             advancedIntegrations: false
         },
@@ -70,6 +70,7 @@ const PRICING_PLANS = {
         badge: 'POPULAR',
         displayFeatures: [
             '3 Websites',
+            '1 Custom Domain',
             '5K visitors/mo',
             '50MB storage',
             'Remove Branding'
