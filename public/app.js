@@ -510,14 +510,23 @@ class YenzeBuilder {
         iframeDoc.write(html);
         iframeDoc.close();
 
-        // Make elements editable
-        setTimeout(() => {
-            this.makeEditable(iframeDoc);
-            this.buildLayersTree(iframeDoc);
-            this.setupIframeKeyboardShortcuts(iframeDoc);
-        }, 500);
+        // Wait for iframe to be fully loaded before making elements editable
+        // Use longer timeout for complex HTML and wait for readyState
+        const initializeEditor = () => {
+            if (iframeDoc.readyState === 'complete') {
+                this.makeEditable(iframeDoc);
+                this.buildLayersTree(iframeDoc);
+                this.setupIframeKeyboardShortcuts(iframeDoc);
+                this.showToast('✅ HTML loaded successfully!', 'success');
+            } else {
+                // If not ready yet, wait a bit more
+                setTimeout(initializeEditor, 200);
+            }
+        };
 
-        this.showToast('✅ HTML loaded successfully!', 'success');
+        // Start checking after a brief delay to allow initial parsing
+        setTimeout(initializeEditor, 300);
+
         this.saveProject();
     }
 
