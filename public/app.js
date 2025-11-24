@@ -297,11 +297,6 @@ class YenzeBuilder {
             }
         });
 
-        // Generate with AI
-        document.getElementById('generateAiBtn').addEventListener('click', async () => {
-            await this.generateWithAI();
-        });
-
         // Code view
         document.getElementById('codeViewBtn').addEventListener('click', () => {
             this.toggleCodeEditor();
@@ -3550,94 +3545,6 @@ class YenzeBuilder {
         }, 4000);
     }
 
-    async generateWithAI(userApiKey = null) {
-        const promptTextarea = document.getElementById('aiPrompt');
-        const generateBtn = document.getElementById('generateAiBtn');
-        const prompt = promptTextarea.value.trim();
-
-        if (!prompt) {
-            this.showToast('⚠️ Please describe the website you want to create', 'warning');
-            return;
-        }
-
-        // Show loading state
-        const originalBtnHTML = generateBtn.innerHTML;
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = `
-            <span style="display: inline-flex; align-items: center; gap: 6px;">
-                <div style="width: 14px; height: 14px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                Generating...
-            </span>
-        `;
-
-        try {
-            this.showToast('🤖 AI is creating your website...', 'info');
-
-            // Call the API
-            const response = await fetch('/api/generate-ai.js', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    prompt,
-                    userApiKey
-                })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                // Check if rate limit exceeded
-                if (data.rateLimitExceeded || data.needsUserKey) {
-                    const useOwnKey = confirm(
-                        'Rate limit exceeded on shared API key.\n\n' +
-                        'Would you like to use your own Google Gemini API key?\n\n' +
-                        '(Get free key at: https://makersuite.google.com/app/apikey)'
-                    );
-
-                    if (useOwnKey) {
-                        const apiKey = prompt('Enter your Google Gemini API key:');
-                        if (apiKey) {
-                            // Retry with user's API key
-                            generateBtn.innerHTML = originalBtnHTML;
-                            generateBtn.disabled = false;
-                            return await this.generateWithAI(apiKey);
-                        }
-                    }
-                }
-
-                throw new Error(data.error || 'Failed to generate website');
-            }
-
-            // Successfully generated!
-            const { html } = data;
-
-            // Load the generated HTML into the builder
-            this.projectData = {
-                name: 'AI Generated Website',
-                html: html,
-                assets: [],
-                publishedUrl: null
-            };
-
-            document.getElementById('projectName').value = this.projectData.name;
-            this.loadHTML(html);
-
-            // Clear the prompt
-            promptTextarea.value = '';
-
-            this.showToast('✨ Website generated successfully! Customize it now.', 'success');
-
-        } catch (error) {
-            console.error('AI Generation error:', error);
-            this.showToast(`❌ ${error.message}`, 'error');
-        } finally {
-            // Restore button
-            generateBtn.disabled = false;
-            generateBtn.innerHTML = originalBtnHTML;
-        }
-    }
 }
 
 // Initialize app

@@ -585,7 +585,7 @@
     <section class="hero">
         <div class="reveal">
             <div class="hero-badge">
-                <span>New</span> AI-Powered Generator v2.0 is live
+                <span>New</span> Template Marketplace v2.0 is live
             </div>
 
             <h1>Build websites faster than you can imagine</h1>
@@ -635,22 +635,6 @@
                     <p>Start with professionally designed templates. Free and premium options available.</p>
                     <button class="btn btn-primary option-btn" id="templates-btn" style="width: 100%;">
                         Browse Templates →
-                    </button>
-                </div>
-
-                <!-- Option 3: Generate with AI -->
-                <div class="option-card">
-                    <div class="option-icon" style="background: #FEF3C7; color: #F59E0B;">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                            <path d="M2 17l10 5 10-5"></path>
-                            <path d="M2 12l10 5 10-5"></path>
-                        </svg>
-                    </div>
-                    <h3>Generate with AI</h3>
-                    <p>Describe your website and let Google Gemini create it for you instantly.</p>
-                    <button class="btn btn-secondary option-btn" id="ai-generate-btn" style="width: 100%;">
-                        Generate with AI →
                     </button>
                 </div>
             </div>
@@ -826,7 +810,6 @@
         // Start Option Buttons
         const useHtmlBtn = document.getElementById('use-html-btn');
         const templatesBtn = document.getElementById('templates-btn');
-        const aiGenerateBtn = document.getElementById('ai-generate-btn');
 
         // Option 1: Use Your HTML - Redirect to builder
         useHtmlBtn.addEventListener('click', () => {
@@ -836,11 +819,6 @@
         // Option 2: Choose Template - Redirect to templates page
         templatesBtn.addEventListener('click', () => {
             window.location.href = 'https://builder.yenze.io/templates.html';
-        });
-
-        // Option 3: Generate with AI - Redirect to builder with AI mode
-        aiGenerateBtn.addEventListener('click', () => {
-            window.location.href = 'https://builder.yenze.io?ai=true';
         });
     </script>
 </body>
