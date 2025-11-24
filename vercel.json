@@ -18,18 +18,5 @@
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder\\.yenze\\.io"
-        }
-      ],
-      "destination": "/builder.html",
-      "permanent": false
-    }
   ]
 }
