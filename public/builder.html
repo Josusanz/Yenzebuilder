@@ -1507,7 +1507,7 @@
             }
         }
 
-        /* Publication Success Popup */
+        /* Publication Success Popup - Framer Minimal Design */
         .publish-popup-overlay {
             display: none;
             position: fixed;
@@ -1515,12 +1515,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
             z-index: 100000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.2s;
+            animation: fadeIn 0.2s ease;
         }
 
         .publish-popup-overlay.active {
@@ -1528,61 +1528,97 @@
         }
 
         .publish-popup {
-            background: white;
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
             border-radius: 16px;
-            max-width: 600px;
+            max-width: 560px;
             width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUpModal 0.3s;
-            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            animation: slideUpModal 0.2s ease;
+            position: relative;
+        }
+
+        .publish-popup-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            color: #666;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .publish-popup-close-btn:hover {
+            background: #f0f0f0;
+            border-color: #d0d0d0;
+            color: #333;
         }
 
         .publish-popup-header {
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-            color: white;
-            padding: 40px 30px;
+            background: #fafafa;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 32px 32px 28px;
             text-align: center;
         }
 
         .publish-popup-header h2 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #0F172A;
+            letter-spacing: -0.5px;
         }
 
         .publish-popup-header p {
             font-size: 14px;
-            opacity: 0.9;
+            color: #64748B;
+            font-weight: 400;
         }
 
         .publish-popup-body {
-            padding: 30px;
+            padding: 28px 32px 32px;
         }
 
         .publish-url-container {
-            background: #f9fafb;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            background: #fafafa;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
         }
 
         .publish-url-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            color: #6b7280;
+            color: #64748B;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
 
         .publish-url-link {
-            font-size: 15px;
-            color: #667eea;
+            font-size: 14px;
+            color: #0066FF;
             word-break: break-all;
             display: block;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             font-weight: 500;
+            text-decoration: none;
+        }
+
+        .publish-url-link:hover {
+            text-decoration: underline;
         }
 
         .publish-url-actions {
@@ -1593,115 +1629,115 @@
         .publish-url-actions button {
             flex: 1;
             padding: 10px 16px;
-            border: none;
+            border: 1px solid #E2E8F0;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            background: #ffffff;
+            color: #0F172A;
         }
 
-        .publish-btn-copy {
-            background: #6366F1;
-            color: white;
-        }
-
-        .publish-btn-copy:hover {
-            background: #4F46E5;
-            transform: translateY(-1px);
-        }
-
-        .publish-btn-visit {
-            background: white;
-            color: #6366F1;
-            border: 2px solid #6366F1;
-        }
-
+        .publish-btn-copy:hover,
         .publish-btn-visit:hover {
-            background: #6366F1;
-            color: white;
+            background: #fafafa;
+            border-color: #d0d0d0;
             transform: translateY(-1px);
         }
 
         .publish-upgrade-box {
-            background: #fef3c7;
-            border: 2px solid #fbbf24;
-            border-radius: 12px;
+            background: #fafafa;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
         }
 
         .publish-upgrade-box h3 {
-            font-size: 16px;
-            color: #92400e;
-            margin-bottom: 8px;
+            font-size: 15px;
+            color: #0F172A;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
+        }
+
+        .publish-upgrade-box h3 svg {
+            color: #0066FF;
         }
 
         .publish-upgrade-box p {
-            font-size: 14px;
-            color: #78350f;
-            margin-bottom: 15px;
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 14px;
+            line-height: 1.5;
         }
 
         .publish-upgrade-box button {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            padding: 11px 16px;
+            background: #0066FF;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .publish-upgrade-box button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            background: #0052CC;
+            transform: translateY(-1px);
         }
 
         .publish-popup-footer {
             display: flex;
-            gap: 12px;
-            padding: 0 30px 30px;
+            gap: 10px;
+            padding: 0 32px 32px;
         }
 
         .publish-popup-footer button {
             flex: 1;
-            padding: 14px;
-            border: none;
+            padding: 12px 16px;
+            border: 1px solid #E2E8F0;
             border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .publish-btn-dashboard {
-            background: #6366F1;
+            background: #0066FF;
             color: white;
+            border-color: #0066FF;
         }
 
         .publish-btn-dashboard:hover {
-            background: #4F46E5;
+            background: #0052CC;
+            border-color: #0052CC;
             transform: translateY(-1px);
         }
 
         .publish-btn-close {
-            background: #f3f4f6;
-            color: #374151;
+            background: #ffffff;
+            color: #0F172A;
         }
 
         .publish-btn-close:hover {
-            background: #e5e7eb;
+            background: #fafafa;
+            border-color: #d0d0d0;
         }
     </style>
 </head>
@@ -2000,23 +2036,23 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.1.5"></script>
+    <script src="/config.js?v=1.1.6"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.1.5"></script>
+    <script src="/supabase-client.js?v=1.1.6"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.1.5"></script>
+    <script src="/stripe-integration.js?v=1.1.6"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.1.5"></script>
-    <script src="/usage-tracker.js?v=1.1.5"></script>
+    <script src="/pricing-plans.js?v=1.1.6"></script>
+    <script src="/usage-tracker.js?v=1.1.6"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.1.5"></script>
+    <script src="/auth-ui.js?v=1.1.6"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.1.5"></script>
+    <script src="/app.js?v=1.1.6"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2317,6 +2353,7 @@
     <!-- Publication Success Popup -->
     <div id="publishPopupOverlay" class="publish-popup-overlay">
         <div class="publish-popup">
+            <button class="publish-popup-close-btn" onclick="closePublishPopup()">×</button>
             <div class="publish-popup-header">
                 <h2>🚀 Published Successfully!</h2>
                 <p>Your website is now live and ready to share</p>
