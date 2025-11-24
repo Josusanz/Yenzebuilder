@@ -78,7 +78,7 @@ class DashboardApp {
                 <span class="user-email">${userEmail}</span>
                 <div class="user-dropdown">
                     <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">Dashboard</div>
-                    <div class="user-dropdown-item" onclick="window.location.href='/'">Editor</div>
+                    <div class="user-dropdown-item" onclick="window.location.href='/builder.html'">Editor</div>
                     <div class="user-dropdown-item danger" onclick="dashboardApp.handleLogout()">Logout</div>
                 </div>
             </div>
@@ -230,7 +230,7 @@ class DashboardApp {
                         </svg>
                         <h3>No projects yet</h3>
                         <p>Create your first project to get started</p>
-                        <button class="btn-primary" onclick="window.location.href='/'">Create Project</button>
+                        <button class="btn-primary" onclick="window.location.href='/builder.html'">Create Project</button>
                     </div>
                 `;
                 return;
@@ -378,7 +378,7 @@ class DashboardApp {
     }
 
     editProject(projectId) {
-        window.location.href = `/?project=${projectId}`;
+        window.location.href = `/builder.html?project=${projectId}`;
     }
 
     async deleteProject(projectId, projectName) {
