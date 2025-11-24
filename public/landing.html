@@ -215,86 +215,86 @@
             border-radius: 12px;
         }
 
-        /* Mockup UI CSS */
+        /* Start Options CSS */
         .hero-demo-container {
-            perspective: 1000px;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 24px;
         }
 
-        .hero-input-area {
-            background: #fff;
+        .start-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid var(--border);
             border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
-            padding: 48px;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 32px;
             text-align: center;
-            transform: rotateX(2deg);
-            transform-origin: center top;
-            transition: transform 0.5s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .hero-input-area:hover {
-            transform: rotateX(0deg);
+        .option-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
         }
 
-        .hero-input-area h3 {
-            font-size: 28px;
+        .featured-option {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 102, 255, 0.1);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .option-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .option-card h3 {
+            font-size: 22px;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 24px;
-            letter-spacing: -0.02em;
+            margin-bottom: 12px;
         }
 
-        #html-input {
-            width: 100%;
-            min-height: 280px;
-            padding: 20px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
-            font-size: 14px;
+        .option-card p {
+            font-size: 15px;
+            color: var(--text-muted);
             line-height: 1.6;
             margin-bottom: 24px;
-            resize: vertical;
-            outline: none;
-            transition: all 0.3s ease;
-            background: #fafafa;
-            color: var(--text-main);
+            flex-grow: 1;
         }
 
-        #html-input:focus {
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
-        }
-
-        #html-input::placeholder {
-            color: #94a3b8;
-            font-size: 13px;
-        }
-
-        .btn-magic {
-            padding: 16px 40px;
-            font-size: 18px;
-            border-radius: 100px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-magic:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0, 102, 255, 0.3);
-        }
-
-        .btn-magic:active {
-            transform: translateY(-1px);
+        .option-btn {
+            margin-top: auto;
         }
 
         /* --- Stats --- */
@@ -530,6 +530,7 @@
         @media (max-width: 1024px) {
             .hero h1 { font-size: 56px; }
             .pricing-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+            .start-options { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -551,7 +552,7 @@
 
             .hero h1 { font-size: 40px; }
             .pricing-grid { grid-template-columns: 1fr; }
-            .hero-demo { display: none; } /* Hide complex 3D element on small mobile */
+            .start-options { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -594,27 +595,57 @@
         </div>
 
         <div class="hero-demo-container reveal">
-            <div class="hero-input-area">
-                <h3>✨ Paste your HTML here and make magic!</h3>
-                <textarea
-                    id="html-input"
-                    placeholder="<!DOCTYPE html>
-<html>
-<head>
-    <title>My Website</title>
-</head>
-<body>
-    <h1>Hello World!</h1>
-</body>
-</html>"
-                    spellcheck="false"
-                ></textarea>
-                <button class="btn btn-primary btn-magic" id="make-magic-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                    Make Magic →
-                </button>
+            <h2 style="text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 48px; color: var(--text-main);">Choose how to start</h2>
+
+            <div class="start-options">
+                <!-- Option 1: Use Your HTML -->
+                <div class="option-card">
+                    <div class="option-icon" style="background: #E5F0FF; color: #0066FF;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Use Your HTML</h3>
+                    <p>Already have code? Paste your HTML and enhance it with our visual editor.</p>
+                    <button class="btn btn-secondary option-btn" id="use-html-btn" style="width: 100%;">
+                        Import HTML →
+                    </button>
+                </div>
+
+                <!-- Option 2: Choose Template -->
+                <div class="option-card featured-option">
+                    <div class="popular-badge">POPULAR</div>
+                    <div class="option-icon" style="background: #E5F0FF; color: #0066FF;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </div>
+                    <h3>Choose a Template</h3>
+                    <p>Start with professionally designed templates. Free and premium options available.</p>
+                    <button class="btn btn-primary option-btn" id="templates-btn" style="width: 100%;">
+                        Browse Templates →
+                    </button>
+                </div>
+
+                <!-- Option 3: Generate with AI -->
+                <div class="option-card">
+                    <div class="option-icon" style="background: #FEF3C7; color: #F59E0B;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Generate with AI</h3>
+                    <p>Describe your website and let Google Gemini create it for you instantly.</p>
+                    <button class="btn btn-secondary option-btn" id="ai-generate-btn" style="width: 100%;">
+                        Generate with AI →
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -785,33 +816,24 @@
             observer.observe(el);
         });
 
-        // Make Magic Button - Load HTML into builder
-        const makeMagicBtn = document.getElementById('make-magic-btn');
-        const htmlInput = document.getElementById('html-input');
+        // Start Option Buttons
+        const useHtmlBtn = document.getElementById('use-html-btn');
+        const templatesBtn = document.getElementById('templates-btn');
+        const aiGenerateBtn = document.getElementById('ai-generate-btn');
 
-        makeMagicBtn.addEventListener('click', () => {
-            const html = htmlInput.value.trim();
-
-            if (!html) {
-                alert('Please paste some HTML code first!');
-                return;
-            }
-
-            // Store HTML in localStorage to be loaded by builder
-            // Use localStorage instead of sessionStorage because sessionStorage doesn't persist across subdomains
-            localStorage.setItem('pastedHTML', html);
-            localStorage.setItem('pastedHTML_timestamp', Date.now().toString());
-
-            // Redirect to builder with a flag
-            window.location.href = 'https://builder.yenze.io?paste=true';
+        // Option 1: Use Your HTML - Redirect to builder
+        useHtmlBtn.addEventListener('click', () => {
+            window.location.href = 'https://builder.yenze.io?new=true';
         });
 
-        // Allow Enter key in textarea but Cmd/Ctrl+Enter to trigger button
-        htmlInput.addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                e.preventDefault();
-                makeMagicBtn.click();
-            }
+        // Option 2: Choose Template - Redirect to templates page
+        templatesBtn.addEventListener('click', () => {
+            window.location.href = 'https://builder.yenze.io/templates.html';
+        });
+
+        // Option 3: Generate with AI - Redirect to builder with AI mode
+        aiGenerateBtn.addEventListener('click', () => {
+            window.location.href = 'https://builder.yenze.io?ai=true';
         });
     </script>
 </body>
