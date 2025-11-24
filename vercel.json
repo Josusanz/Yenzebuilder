@@ -1,14 +1,4 @@
 {
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/landing.html",
-      "headers": {
-        "cache-control": "public, max-age=0, must-revalidate"
-      },
-      "continue": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/",
@@ -19,6 +9,10 @@
           "value": "builder.yenze.io"
         }
       ]
+    },
+    {
+      "source": "/",
+      "destination": "/landing.html"
     }
   ]
 }
