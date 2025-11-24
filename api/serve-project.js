@@ -123,7 +123,7 @@ export default async function handler(req, res) {
     <script>
       (function() {
         const supabaseUrl = '${process.env.SUPABASE_URL}';
-        const supabaseAnonKey = '${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhzc2RjcGhlcHJhY29iYnN2cW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MTA3MDYsImV4cCI6MjA3OTE4NjcwNn0.Z3w9P2dMeNu2J-2AcnxhLVSF_p794JZgIcAKMqkT3-A';
         const projectId = '${customDomain.project_id}';
 
         const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
