@@ -15,6 +15,10 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/api/index"
+    },
+    {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
     }
