@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE - Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css?v=2.5">
+    <link rel="stylesheet" href="dashboard.css?v=2.6">
     <link rel="stylesheet" href="auth-styles.css">
 </head>
 <body>
@@ -486,25 +486,45 @@
     <script src="analytics.js?v=1.3.2"></script>
     <script src="dashboard.js?v=1.3.2"></script>
 
-    <!-- Period Toggle Script -->
+    <!-- Current Plan Highlight Script -->
     <script>
-        // Handle annual/monthly toggle
-        document.querySelectorAll('.period-toggle').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Update button states
-                document.querySelectorAll('.period-toggle').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.background = 'transparent';
-                    b.style.color = '#666';
-                });
-                this.classList.add('active');
-                this.style.background = 'white';
-                this.style.color = '#000';
+        // Highlight current plan when billing section loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for auth to load
+            await supabaseClient.init();
 
-                // TODO: Update plan prices based on period
-                const period = this.dataset.period;
-                console.log('Selected period:', period);
-            });
+            if (supabaseClient.isAuthenticated()) {
+                // Get user's current plan
+                const { data: subscription } = await supabaseClient.getUserSubscription();
+
+                if (subscription) {
+                    const currentPlan = subscription.plan.toLowerCase();
+
+                    // Find all plan buttons and highlight the current one
+                    document.querySelectorAll('.plan-option').forEach(planCard => {
+                        const planTitle = planCard.querySelector('h4')?.textContent.toLowerCase();
+                        const button = planCard.querySelector('button');
+
+                        if (planTitle === currentPlan && button) {
+                            // Disable button and mark as current
+                            button.textContent = 'Current Plan';
+                            button.disabled = true;
+                            button.style.opacity = '0.6';
+                            button.style.cursor = 'not-allowed';
+                            button.classList.remove('btn-primary');
+                            button.classList.add('btn-secondary');
+
+                            // Add visual indicator to card
+                            const badge = document.createElement('div');
+                            badge.className = 'plan-badge';
+                            badge.textContent = 'ACTIVE';
+                            badge.style.cssText = 'position: absolute; top: 16px; right: 16px; background: #10B981; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;';
+                            planCard.style.position = 'relative';
+                            planCard.appendChild(badge);
+                        }
+                    });
+                }
+            }
         });
     </script>
 </body>
