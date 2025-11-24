@@ -765,7 +765,7 @@ class DashboardApp {
                 // Check if any subscription is paid (not free)
                 return subscriptions.some(sub => {
                     const plan = sub.plan.toUpperCase();
-                    return plan === 'STARTER' || plan === 'PRO' || plan === 'ONE_TIME';
+                    return plan === 'STARTER' || plan === 'PRO' || plan === 'BUSINESS' || plan === 'ONE_TIME';
                 });
             }
 
