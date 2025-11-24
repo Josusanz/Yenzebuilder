@@ -22,7 +22,7 @@ const PLANS = {
         features: [
             '1 website/project',
             'Multipage support (unlimited pages in HTML)',
-            'Free subdomain (you.yenze.io)',
+            'Free URL (yenze.io/s/your-site)',
             '1,000 monthly visitors',
             '10MB storage per site',
             'Basic integrations (forms, newsletter)',
@@ -35,9 +35,10 @@ const PLANS = {
             maxStorage: 10485760, // 10MB
             customDomain: false,
             removeBranding: false,
-            analytics: false
+            analytics: false,
+            subdomain: false
         },
-        deploymentType: 'subdomain', // user.yenze.io
+        deploymentType: 'path', // yenze.io/s/username
         maxDomains: 0,
         badge: true,
         popular: false,
@@ -54,8 +55,8 @@ const PLANS = {
         features: [
             '3 websites/projects',
             'Multipage support (unlimited pages per site)',
+            'Custom subdomain (yoursite.yenze.io)',
             '1 custom domain (yourbrand.com)',
-            'Free subdomain (you.yenze.io)',
             '5,000 monthly visitors',
             '50MB storage per site',
             'All integrations (Web3Forms, Loops.so)',
@@ -69,9 +70,10 @@ const PLANS = {
             maxStorage: 52428800, // 50MB
             customDomain: true,
             removeBranding: true,
-            analytics: false
+            analytics: false,
+            subdomain: true
         },
-        deploymentType: 'custom',
+        deploymentType: 'subdomain', // yoursite.yenze.io
         maxDomains: 1,
         badge: false,
         popular: true,
@@ -89,6 +91,7 @@ const PLANS = {
         features: [
             '10 websites/projects',
             'Multipage support (unlimited pages per site)',
+            'Custom subdomain (yoursite.yenze.io)',
             '1 custom domain (yourbrand.com)',
             '25,000 monthly visitors',
             '500MB storage per site',
@@ -104,9 +107,10 @@ const PLANS = {
             maxStorage: 524288000, // 500MB
             customDomain: true,
             removeBranding: true,
-            analytics: true
+            analytics: true,
+            subdomain: true
         },
-        deploymentType: 'custom',
+        deploymentType: 'subdomain', // yoursite.yenze.io
         maxDomains: 1,
         badge: false,
         popular: false,
@@ -123,6 +127,7 @@ const PLANS = {
         features: [
             'Unlimited websites/projects',
             'Multipage support (unlimited pages per site)',
+            'Custom subdomain (yoursite.yenze.io)',
             'Multiple custom domains',
             '100,000 monthly visitors',
             '2GB storage per site',
@@ -143,9 +148,10 @@ const PLANS = {
             removeBranding: true,
             analytics: true,
             whitelabel: true,
-            apiAccess: true
+            apiAccess: true,
+            subdomain: true
         },
-        deploymentType: 'custom',
+        deploymentType: 'subdomain', // yoursite.yenze.io + custom domains
         maxDomains: 999,
         badge: false,
         popular: false,

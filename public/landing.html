@@ -222,50 +222,80 @@
             margin: 0 auto;
         }
 
-        .hero-demo {
+        .hero-input-area {
             background: #fff;
             border-radius: 16px;
             border: 1px solid var(--border);
             box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.02);
-            overflow: hidden;
+            padding: 48px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
             transform: rotateX(2deg);
             transform-origin: center top;
             transition: transform 0.5s ease;
         }
 
-        .hero-demo:hover {
+        .hero-input-area:hover {
             transform: rotateX(0deg);
         }
 
-        .browser-header {
-            background: #f8fafc;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 8px;
+        .hero-input-area h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        #html-input {
+            width: 100%;
+            min-height: 280px;
+            padding: 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            color: var(--text-main);
+        }
+
+        #html-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+        }
+
+        #html-input::placeholder {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .btn-magic {
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 100px;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
         }
 
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot.red { background: #FF5F57; }
-        .dot.yellow { background: #FEBC2E; }
-        .dot.green { background: #28C840; }
-
-        .browser-content {
-            height: 500px;
-            display: flex;
-            background: #fff;
+        .btn-magic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 102, 255, 0.3);
         }
 
-        /* Fake UI Builder */
-        .ui-sidebar { width: 60px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 20px; }
-        .ui-tool { width: 32px; height: 32px; border-radius: 6px; background: #f1f5f9; }
-        .ui-canvas { flex: 1; padding: 40px; background: #f8fafc; display: flex; justify-content: center; }
-        .ui-preview { width: 100%; height: 100%; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 8px; padding: 30px; }
-        .ui-skeleton-header { height: 40px; width: 120px; background: #e2e8f0; border-radius: 4px; margin-bottom: 20px; }
-        .ui-skeleton-hero { height: 200px; width: 100%; background: #f1f5f9; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
-        .ui-skeleton-lines { display: flex; gap: 10px; }
-        .ui-line { height: 10px; background: #e2e8f0; border-radius: 20px; flex: 1; }
+        .btn-magic:active {
+            transform: translateY(-1px);
+        }
 
         /* --- Stats --- */
         .stats {
@@ -564,33 +594,27 @@
         </div>
 
         <div class="hero-demo-container reveal">
-            <div class="hero-demo">
-                <div class="browser-header">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <div class="browser-content">
-                    <div class="ui-sidebar">
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool"></div>
-                        <div class="ui-tool" style="margin-top: auto;"></div>
-                    </div>
-                    <div class="ui-canvas">
-                        <div class="ui-preview">
-                            <div class="ui-skeleton-header"></div>
-                            <div class="ui-skeleton-hero">
-                                <span style="color:#cbd5e1; font-weight:600;">Drop Element Here</span>
-                            </div>
-                            <div class="ui-skeleton-lines">
-                                <div class="ui-line"></div>
-                                <div class="ui-line"></div>
-                                <div class="ui-line"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="hero-input-area">
+                <h3>✨ Paste your HTML here and make magic!</h3>
+                <textarea
+                    id="html-input"
+                    placeholder="<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+</head>
+<body>
+    <h1>Hello World!</h1>
+</body>
+</html>"
+                    spellcheck="false"
+                ></textarea>
+                <button class="btn btn-primary btn-magic" id="make-magic-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    Make Magic →
+                </button>
             </div>
         </div>
     </section>
@@ -759,6 +783,33 @@
 
         document.querySelectorAll('.reveal').forEach(el => {
             observer.observe(el);
+        });
+
+        // Make Magic Button - Load HTML into builder
+        const makeMagicBtn = document.getElementById('make-magic-btn');
+        const htmlInput = document.getElementById('html-input');
+
+        makeMagicBtn.addEventListener('click', () => {
+            const html = htmlInput.value.trim();
+
+            if (!html) {
+                alert('Please paste some HTML code first!');
+                return;
+            }
+
+            // Store HTML in sessionStorage to be loaded by builder
+            sessionStorage.setItem('pastedHTML', html);
+
+            // Redirect to builder with a flag
+            window.location.href = 'https://builder.yenze.io?paste=true';
+        });
+
+        // Allow Enter key in textarea but Cmd/Ctrl+Enter to trigger button
+        htmlInput.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault();
+                makeMagicBtn.click();
+            }
         });
     </script>
 </body>

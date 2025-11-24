@@ -2661,8 +2661,30 @@ class YenzeBuilder {
         if (this.projectData.id) {
             await this.updateExistingProject();
         } else {
-            // New project - show pricing modal to select plan
-            this.showPublishOptionsModal();
+            // New project - check user's plan and show appropriate modal
+            const { data: subscription } = await supabaseClient.client
+                .from('subscriptions')
+                .select('plan')
+                .eq('user_id', supabaseClient.currentUser.id)
+                .eq('status', 'active')
+                .single();
+
+            const currentPlan = subscription?.plan?.toLowerCase() || 'free';
+            this.currentUserPlan = currentPlan;
+
+            console.log('[Publish] User plan detected:', currentPlan);
+
+            // Show appropriate modal based on current plan
+            if (currentPlan === 'free') {
+                // FREE: Show path-based slug modal
+                this.showSlugModal();
+            } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
+                // PAID: Show subdomain modal
+                this.showSubdomainModal();
+            } else {
+                // Unknown plan or no subscription - show pricing options
+                this.showPublishOptionsModal();
+            }
         }
     }
 
@@ -2733,15 +2755,13 @@ class YenzeBuilder {
             // Set current plan for modal
             this.currentUserPlan = selectedPlan;
 
-            // Show appropriate modal
+            // Show appropriate modal based on plan
             if (selectedPlan === 'free') {
+                // FREE plan: Show path-based slug modal (yenze.io/s/slug)
                 this.showSlugModal();
-            } else {
-                // STARTER and PRO use custom domains - redirect to dashboard
-                this.showToast('Custom domains are managed in your dashboard. Redirecting...', 'info');
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1500);
+            } else if (selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'business') {
+                // PAID plans: Show subdomain modal (slug.yenze.io)
+                this.showSubdomainModal();
             }
         } else {
             // User wants to upgrade - redirect to Stripe
@@ -2805,11 +2825,8 @@ class YenzeBuilder {
         if (userPlan === 'free') {
             // FREE: Show slug modal for /s/slug format
             this.showSlugModal();
-        } else if (userPlan === 'starter') {
-            // STARTER: Show subdomain modal for slug.yenze.io
-            this.showSubdomainModal();
-        } else if (userPlan === 'pro') {
-            // PRO: Show custom domain or subdomain modal
+        } else if (userPlan === 'starter' || userPlan === 'pro' || userPlan === 'business') {
+            // STARTER/PRO/BUSINESS: Show subdomain modal for slug.yenze.io
             this.showSubdomainModal();
         }
     }
@@ -2931,18 +2948,30 @@ class YenzeBuilder {
             return;
         }
 
-        if (!/^[a-z0-9-]+$/.test(slug)) {
-            availabilityMessage.textContent = '⚠️ Only lowercase letters, numbers, and hyphens allowed';
-            availabilityMessage.className = 'availability-message warning';
-            publishButton.disabled = true;
-            return;
-        }
+        // For paid plans, use subdomain-utils validation
+        if (this.currentUserPlan !== 'free' && window.subdomainUtils) {
+            const validation = window.subdomainUtils.validate(slug);
+            if (!validation.valid) {
+                availabilityMessage.textContent = '❌ ' + validation.error;
+                availabilityMessage.className = 'availability-message error';
+                publishButton.disabled = true;
+                return;
+            }
+        } else {
+            // Basic validation for free plan
+            if (!/^[a-z0-9-]+$/.test(slug)) {
+                availabilityMessage.textContent = '⚠️ Only lowercase letters, numbers, and hyphens allowed';
+                availabilityMessage.className = 'availability-message warning';
+                publishButton.disabled = true;
+                return;
+            }
 
-        if (slug.length < 3) {
-            availabilityMessage.textContent = '⚠️ Name must be at least 3 characters';
-            availabilityMessage.className = 'availability-message warning';
-            publishButton.disabled = true;
-            return;
+            if (slug.length < 3) {
+                availabilityMessage.textContent = '⚠️ Name must be at least 3 characters';
+                availabilityMessage.className = 'availability-message warning';
+                publishButton.disabled = true;
+                return;
+            }
         }
 
         // Check availability in database
@@ -2997,6 +3026,22 @@ class YenzeBuilder {
 
             const plan = this.currentUserPlan || 'free';
 
+            // Validate subdomain for paid plans
+            if (plan !== 'free' && window.subdomainUtils) {
+                const validation = window.subdomainUtils.validate(slug);
+                if (!validation.valid) {
+                    this.showToast('❌ ' + validation.error, 'error');
+                    return;
+                }
+
+                // Check availability
+                const available = await window.subdomainUtils.checkAvailability(slug, supabaseClient);
+                if (!available) {
+                    this.showToast('❌ This subdomain is already taken', 'error');
+                    return;
+                }
+            }
+
             // Prepare project data based on plan
             const projectData = {
                 name: this.projectData.name,
@@ -3011,8 +3056,8 @@ class YenzeBuilder {
                 // FREE: Use /s/slug format
                 projectData.public_slug = slug;
                 publishedUrl = `https://yenze.io/s/${slug}`;
-            } else if (plan === 'starter' || plan === 'pro') {
-                // STARTER/PRO: Use subdomain format
+            } else if (plan === 'starter' || plan === 'pro' || plan === 'business') {
+                // STARTER/PRO/BUSINESS: Use subdomain format
                 projectData.subdomain_slug = slug;
                 publishedUrl = `https://${slug}.yenze.io`;
             }
@@ -3303,13 +3348,44 @@ class YenzeBuilder {
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('project');
         const isNewProject = urlParams.get('new') === 'true';
+        const isPasteMode = urlParams.get('paste') === 'true';
 
         console.log('[LoadProject] Project ID from URL:', projectId);
         console.log('[LoadProject] New project flag:', isNewProject);
+        console.log('[LoadProject] Paste mode:', isPasteMode);
+
+        // Check for pasted HTML from landing page
+        if (isPasteMode && sessionStorage.getItem('pastedHTML')) {
+            const pastedHTML = sessionStorage.getItem('pastedHTML');
+            console.log('[LoadProject] Loading pasted HTML from landing page');
+
+            // Clear the session storage
+            sessionStorage.removeItem('pastedHTML');
+
+            // Clear localStorage to start fresh
+            localStorage.removeItem('yenzeProject');
+
+            // Load the pasted HTML
+            this.projectData = {
+                name: 'Pasted Website',
+                html: pastedHTML,
+                assets: [],
+                publishedUrl: null
+            };
+
+            document.getElementById('projectName').value = this.projectData.name;
+            this.loadHTML(pastedHTML);
+            this.showToast('✨ HTML loaded! Ready to customize.', 'success');
+
+            // Remove the paste parameter from URL
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
 
         // If new project flag is set, clear everything and start fresh
         if (isNewProject) {
             console.log('[LoadProject] Creating new project from scratch');
+            console.log('[LoadProject] Current user:', supabaseClient.currentUser?.email || 'Not logged in');
             localStorage.removeItem('yenzeProject');
             this.currentHTML = '';
             this.projectData = {
@@ -3320,6 +3396,15 @@ class YenzeBuilder {
             };
             document.getElementById('projectName').value = this.projectData.name;
             this.renderPreview();
+
+            // Make sure user UI is updated after new project is created
+            setTimeout(() => {
+                const user = supabaseClient.getUser();
+                console.log('[LoadProject] Ensuring user UI is shown:', user?.email || 'No user');
+                if (user && typeof updateUserUI === 'function') {
+                    updateUserUI(user);
+                }
+            }, 500);
             return;
         }
 
