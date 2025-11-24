@@ -2041,24 +2041,24 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.1.8"></script>
+    <script src="/config.js?v=1.1.9"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.1.8"></script>
+    <script src="/supabase-client.js?v=1.1.9"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.1.8"></script>
+    <script src="/stripe-integration.js?v=1.1.9"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.1.8"></script>
-    <script src="/usage-tracker.js?v=1.1.8"></script>
-    <script src="/pricing-modal.js?v=1.1.8"></script>
+    <script src="/pricing-plans.js?v=1.1.9"></script>
+    <script src="/usage-tracker.js?v=1.1.9"></script>
+    <script src="/pricing-modal.js?v=1.1.9"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.1.8"></script>
+    <script src="/auth-ui.js?v=1.1.9"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.1.8"></script>
+    <script src="/app.js?v=1.1.9"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2077,8 +2077,20 @@
                 updateUserUI(user);
             });
 
-            // Update UI based on current auth state
-            updateUserUI(supabaseClient.getUser());
+            // Update UI based on current auth state (wait for session to be fully loaded)
+            const currentUser = supabaseClient.getUser();
+            updateUserUI(currentUser);
+
+            // Extra check after a brief delay to catch OAuth returns
+            if (!currentUser) {
+                setTimeout(async () => {
+                    await supabaseClient.init();
+                    const user = supabaseClient.getUser();
+                    if (user) {
+                        updateUserUI(user);
+                    }
+                }, 500);
+            }
         });
 
         function updateUserUI(user) {
@@ -2086,11 +2098,17 @@
             const publishBtn = document.getElementById('publishBtn');
 
             if (user) {
-                // User is logged in - show profile with dropdown (same method as dashboard)
+                // Get avatar image or initials
+                const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+                const avatarHTML = avatarImage
+                    ? `<img src="${avatarImage}" alt="Profile" />`
+                    : user.email.charAt(0).toUpperCase();
+
+                // User is logged in - show profile with dropdown
                 userContainer.style.display = 'block';
                 userContainer.innerHTML = `
                     <div class="user-profile" onclick="this.querySelector('.user-dropdown').classList.toggle('active'); event.stopPropagation();">
-                        <div class="user-avatar">${user.email.charAt(0).toUpperCase()}</div>
+                        <div class="user-avatar">${avatarHTML}</div>
                         <span class="user-email">${user.email}</span>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" style="margin-left: 4px;">
                             <path d="M6 8L2 4h8z"/>
@@ -2104,6 +2122,13 @@
                                     <rect x="3" y="14" width="7" height="7"></rect>
                                 </svg>
                                 Dashboard
+                            </div>
+                            <div class="user-dropdown-item" onclick="showProfileSettings(); event.stopPropagation();">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Profile Settings
                             </div>
                             <div class="user-dropdown-item danger" onclick="handleLogout(); event.stopPropagation();">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
@@ -2126,6 +2151,92 @@
             await supabaseClient.signOut();
             updateUserUI(null);
             showToast('Logged out successfully', 'success');
+        }
+
+        function showProfileSettings() {
+            // Get current user info
+            const user = supabaseClient.getUser();
+            if (!user) return;
+
+            const provider = user.app_metadata?.provider || 'email';
+            const providerDisplay = provider.charAt(0).toUpperCase() + provider.slice(1);
+            const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+
+            // Show profile settings modal
+            const modalHTML = `
+                <div id="profileSettingsModal" class="modal" style="display: flex;">
+                    <div class="modal-content" style="max-width: 500px;">
+                        <span class="close" onclick="document.getElementById('profileSettingsModal').remove()">&times;</span>
+                        <h2 style="margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #0F172A;">Profile Settings</h2>
+
+                        <div style="text-align: center; margin-bottom: 24px;">
+                            <div class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;">
+                                ${avatarImage ? `<img src="${avatarImage}" alt="Profile" />` : user.email.charAt(0).toUpperCase()}
+                            </div>
+                            <div style="font-size: 12px; color: #64748B; margin-top: 8px;">
+                                Signed in with ${providerDisplay}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="${user.email}" disabled style="background: #fafafa; cursor: not-allowed;" />
+                            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">
+                                ${provider !== 'email' ? 'Email cannot be changed for OAuth accounts' : ''}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileName" value="${user.user_metadata?.full_name || ''}" placeholder="Your name" />
+                        </div>
+
+                        ${provider === 'email' ? `
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="profilePassword" placeholder="Leave blank to keep current password" />
+                        </div>
+                        ` : ''}
+
+                        <div style="display: flex; gap: 12px; margin-top: 24px;">
+                            <button class="primary-btn" style="flex: 1; background: #0F172A;" onclick="saveProfileSettings()">
+                                Save Changes
+                            </button>
+                            <button class="primary-btn" style="flex: 1; background: #fafafa; color: #0F172A; border: 1px solid #e5e5e5;" onclick="document.getElementById('profileSettingsModal').remove()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        async function saveProfileSettings() {
+            const name = document.getElementById('profileName').value;
+            const password = document.getElementById('profilePassword')?.value;
+
+            try {
+                const updates = {};
+                if (name) {
+                    updates.data = { full_name: name };
+                }
+                if (password) {
+                    updates.password = password;
+                }
+
+                const { error } = await supabaseClient.client.auth.updateUser(updates);
+                if (error) throw error;
+
+                showToast('Profile updated successfully', 'success');
+                document.getElementById('profileSettingsModal').remove();
+
+                // Refresh user UI
+                const user = supabaseClient.getUser();
+                updateUserUI(user);
+            } catch (error) {
+                showToast('Failed to update profile: ' + error.message, 'error');
+            }
         }
 
         // Close dropdown when clicking outside
