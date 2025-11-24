@@ -11,6 +11,10 @@
       ]
     },
     {
+      "source": "/s/:slug",
+      "destination": "/api/view-project.js?slug=:slug"
+    },
+    {
       "source": "/",
       "destination": "/landing.html"
     }
