@@ -272,11 +272,25 @@ class AuthUI {
     }
 
     showPlanModal() {
-        this.modals.plan.style.display = 'flex';
+        // Use the unified pricing modal instead
+        if (window.pricingModal) {
+            window.pricingModal.show({
+                title: 'Choose Your Plan',
+                subtitle: 'Select the plan that fits your needs',
+                showFree: true,
+                onSelect: async (planId) => {
+                    console.log('Selected plan:', planId);
+                    // Handle plan selection here if needed
+                }
+            });
+        }
     }
 
     closePlanModal() {
-        this.modals.plan.style.display = 'none';
+        // Close the unified pricing modal
+        if (window.pricingModal) {
+            window.pricingModal.close();
+        }
     }
 
     // Tab switching
