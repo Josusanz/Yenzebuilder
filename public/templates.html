@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates - YENZE</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            color: #0F172A;
+        }
+
+        .nav {
+            background: white;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F172A;
+            text-decoration: none;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #0F172A;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #000;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0F172A;
+            border: 1px solid #E2E8F0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #64748B;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            border-color: #0066FF;
+        }
+
+        .tab.active {
+            background: #0F172A;
+            color: white;
+            border-color: #0F172A;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            border-color: #0066FF;
+        }
+
+        .template-preview {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-free {
+            color: #10B981;
+        }
+
+        .badge-premium {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+        }
+
+        .template-info {
+            padding: 20px;
+        }
+
+        .template-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .template-info p {
+            font-size: 14px;
+            color: #64748B;
+            margin-bottom: 16px;
+        }
+
+        .template-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .template-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">YENZE</a>
+            <a href="https://builder.yenze.io" class="btn btn-primary">Back to Builder</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Choose Your Template</h1>
+            <p>Start with a professionally designed template and customize it to your needs</p>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="tab active" data-filter="all">All Templates</button>
+            <button class="tab" data-filter="free">Free</button>
+            <button class="tab" data-filter="premium">Premium</button>
+            <button class="tab" data-filter="business">Business</button>
+            <button class="tab" data-filter="portfolio">Portfolio</button>
+            <button class="tab" data-filter="landing">Landing Page</button>
+        </div>
+
+        <div class="templates-grid" id="templatesGrid">
+            <!-- Templates will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Template data
+        const templates = [
+            {
+                id: 'minimal-portfolio',
+                name: 'Minimal Portfolio',
+                description: 'Clean and modern portfolio template perfect for creatives',
+                category: 'portfolio',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; background: #fff; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        h1 { font-size: 72px; font-weight: 800; margin-bottom: 20px; }
+        .subtitle { font-size: 24px; color: #666; margin-bottom: 40px; }
+        .projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
+        .project { aspect-ratio: 16/9; background: #f0f0f0; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>John Doe</h1>
+        <p class="subtitle">Designer & Developer</p>
+        <div class="projects">
+            <div class="project"></div>
+            <div class="project"></div>
+            <div class="project"></div>
+        </div>
+    </div>
+</body>
+</html>`
+            },
+            {
+                id: 'modern-landing',
+                name: 'Modern Landing Page',
+                description: 'High-converting landing page with gradient backgrounds',
+                category: 'landing',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Landing Page</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 20px; }
+        h1 { font-size: 64px; font-weight: 800; margin-bottom: 24px; }
+        .cta { display: inline-block; padding: 16px 48px; background: white; color: #667eea; border-radius: 100px; font-weight: 700; text-decoration: none; margin-top: 32px; }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div>
+            <h1>Build Something Amazing</h1>
+            <p style="font-size: 24px; opacity: 0.9;">The modern way to create websites</p>
+            <a href="#" class="cta">Get Started Free</a>
+        </div>
+    </div>
+</body>
+</html>`
+            },
+            {
+                id: 'business-pro',
+                name: 'Business Pro',
+                description: 'Professional business website with advanced features',
+                category: 'business',
+                price: '$29',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+                html: null // Premium templates load from database
+            },
+            {
+                id: 'agency-showcase',
+                name: 'Agency Showcase',
+                description: 'Premium agency template with stunning animations',
+                category: 'business',
+                price: '$49',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&h=600&fit=crop',
+                html: null
+            },
+            {
+                id: 'startup-landing',
+                name: 'Startup Landing',
+                description: 'Perfect for SaaS and tech startups',
+                category: 'landing',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Startup</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; }
+        .nav { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: 800; }
+        .hero { padding: 120px 40px; text-align: center; background: #f8f9fa; }
+        h1 { font-size: 56px; font-weight: 800; margin-bottom: 24px; }
+        .btn { display: inline-block; padding: 14px 32px; background: #0066FF; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <div class="logo">Startup</div>
+        <a href="#" class="btn">Sign Up</a>
+    </div>
+    <div class="hero">
+        <h1>Welcome to the Future</h1>
+        <p style="font-size: 20px; color: #666; margin-bottom: 32px;">Build your next big thing with our platform</p>
+        <a href="#" class="btn">Get Started →</a>
+    </div>
+</body>
+</html>`
+            },
+            {
+                id: 'creative-portfolio',
+                name: 'Creative Portfolio',
+                description: 'Unique layout for creative professionals',
+                category: 'portfolio',
+                price: '$19',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop',
+                html: null
+            }
+        ];
+
+        // Render templates
+        function renderTemplates(filter = 'all') {
+            const grid = document.getElementById('templatesGrid');
+
+            let filtered = templates;
+            if (filter !== 'all') {
+                if (filter === 'free') {
+                    filtered = templates.filter(t => !t.isPremium);
+                } else if (filter === 'premium') {
+                    filtered = templates.filter(t => t.isPremium);
+                } else {
+                    filtered = templates.filter(t => t.category === filter);
+                }
+            }
+
+            grid.innerHTML = filtered.map(template => `
+                <div class="template-card" onclick="selectTemplate('${template.id}', ${template.isPremium})">
+                    <div class="template-preview">
+                        <img src="${template.preview}" alt="${template.name}" onerror="this.style.display='none'">
+                        <div class="template-badge ${template.isPremium ? 'badge-premium' : 'badge-free'}">
+                            ${template.isPremium ? 'PREMIUM' : 'FREE'}
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>${template.name}</h3>
+                        <p>${template.description}</p>
+                        <div class="template-footer">
+                            <span class="template-price">${template.price}</span>
+                            <button class="btn ${template.isPremium ? 'btn-secondary' : 'btn-primary'}" style="padding: 8px 20px; font-size: 13px;">
+                                ${template.isPremium ? 'Purchase' : 'Use Template'} →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderTemplates(tab.dataset.filter);
+            });
+        });
+
+        // Select template
+        function selectTemplate(templateId, isPremium) {
+            const template = templates.find(t => t.id === templateId);
+
+            if (isPremium) {
+                alert('Premium templates require a paid plan. Redirect to checkout coming soon!');
+                return;
+            }
+
+            if (template && template.html) {
+                // Store template HTML in localStorage
+                localStorage.setItem('templateHTML', template.html);
+                localStorage.setItem('templateName', template.name);
+
+                // Redirect to builder
+                window.location.href = 'https://builder.yenze.io?template=true';
+            }
+        }
+
+        // Initial render
+        renderTemplates();
+    </script>
+</body>
+</html>

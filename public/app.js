@@ -3349,10 +3349,42 @@ class YenzeBuilder {
         const projectId = urlParams.get('project');
         const isNewProject = urlParams.get('new') === 'true';
         const isPasteMode = urlParams.get('paste') === 'true';
+        const isTemplateMode = urlParams.get('template') === 'true';
 
         console.log('[LoadProject] Project ID from URL:', projectId);
         console.log('[LoadProject] New project flag:', isNewProject);
         console.log('[LoadProject] Paste mode:', isPasteMode);
+        console.log('[LoadProject] Template mode:', isTemplateMode);
+
+        // Check for template HTML from templates page
+        if (isTemplateMode && localStorage.getItem('templateHTML')) {
+            const templateHTML = localStorage.getItem('templateHTML');
+            const templateName = localStorage.getItem('templateName') || 'Template Website';
+            console.log('[LoadProject] Loading template from templates page');
+
+            // Clear the template HTML from localStorage
+            localStorage.removeItem('templateHTML');
+            localStorage.removeItem('templateName');
+
+            // Clear existing project to start fresh
+            localStorage.removeItem('yenzeProject');
+
+            // Load the template HTML
+            this.projectData = {
+                name: templateName,
+                html: templateHTML,
+                assets: [],
+                publishedUrl: null
+            };
+
+            document.getElementById('projectName').value = this.projectData.name;
+            this.loadHTML(templateHTML);
+            this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
+
+            // Remove the template parameter from URL
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
 
         // Check for pasted HTML from landing page
         if (isPasteMode && localStorage.getItem('pastedHTML')) {
