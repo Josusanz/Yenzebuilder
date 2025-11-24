@@ -234,24 +234,41 @@ class DashboardApp {
             // Get custom domains to determine which projects are on paid plans
             const { data: customDomains } = await supabaseClient.client
                 .from('custom_domains')
-                .select('project_id, domain')
+                .select('project_id, domain, status')
                 .eq('user_id', this.currentUser.id);
+
+            console.log('[Dashboard] Custom domains found:', customDomains);
 
             // Create a map of project_id -> custom domain
             const domainMap = {};
             if (customDomains) {
                 customDomains.forEach(cd => {
                     domainMap[cd.project_id] = cd.domain;
+                    console.log(`[Dashboard] Mapping project ${cd.project_id} to domain ${cd.domain} (status: ${cd.status})`);
                 });
             }
+
+            console.log('[Dashboard] Domain map:', domainMap);
 
             // Render projects
             const projectsHTML = await Promise.all(this.projects.map(async (project) => {
                 // Get analytics for this project
                 const stats = await this.getProjectStats(project.id);
 
-                // Determine project plan based on whether it has a custom domain
-                const projectPlan = domainMap[project.id] ? this.userPlan : 'free';
+                // Determine project plan and URL based on whether it has a custom domain
+                const customDomain = domainMap[project.id];
+                const projectPlan = customDomain ? this.userPlan : 'free';
+                const projectUrl = customDomain ? `https://${customDomain}` : project.published_url;
+
+                // Debug logging for Yenze project
+                if (project.name === 'Yenze') {
+                    console.log('[Dashboard] Yenze project details:');
+                    console.log('  Project ID:', project.id);
+                    console.log('  Custom domain:', customDomain);
+                    console.log('  Project plan:', projectPlan);
+                    console.log('  User plan:', this.userPlan);
+                    console.log('  Project URL:', projectUrl);
+                }
 
                 // Create a data URL for the preview iframe
                 const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(project.html)}`;
@@ -271,11 +288,17 @@ class DashboardApp {
                             <div class="project-meta">
                                 <span>📅 ${new Date(project.created_at).toLocaleDateString()}</span>
                                 <span>📦 ${projectPlan}</span>
+                                ${customDomain ? '<span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🌐 CUSTOM DOMAIN</span>' : ''}
                             </div>
-                            ${project.published_url ? `
-                                <a href="${project.published_url}" target="_blank" class="project-url">
-                                    ${project.published_url}
+                            ${projectUrl ? `
+                                <a href="${projectUrl}" target="_blank" class="project-url">
+                                    ${projectUrl}
                                 </a>
+                                ${customDomain && project.published_url ? `
+                                    <a href="${project.published_url}" target="_blank" class="project-url" style="font-size: 12px; color: #9ca3af;">
+                                        Also available at: ${project.published_url}
+                                    </a>
+                                ` : ''}
                             ` : '<span class="project-url" style="color: #9ca3af;">Not published</span>'}
 
                             <div class="project-stats">
