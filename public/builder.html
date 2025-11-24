@@ -852,16 +852,34 @@
             right: 2rem;
             background: var(--text);
             color: white;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
             z-index: 10000;
-            animation: slideIn 0.2s ease-out;
-            font-size: 0.875rem;
+            animation: slideInBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
         }
 
         .toast.success {
-            background: #10B981;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
+        .toast.success::before {
+            content: '✓';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 16px;
         }
 
         .toast.warning {
@@ -880,6 +898,23 @@
             to {
                 transform: translateY(0);
                 opacity: 1;
+            }
+        }
+
+        @keyframes slideInBounce {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+            80% {
+                transform: translateY(5px);
+            }
+            100% {
+                transform: translateY(0);
             }
         }
 
@@ -2041,24 +2076,24 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.2.1"></script>
+    <script src="/config.js?v=1.2.2"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.2.1"></script>
+    <script src="/supabase-client.js?v=1.2.2"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.2.1"></script>
+    <script src="/stripe-integration.js?v=1.2.2"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.2.1"></script>
-    <script src="/usage-tracker.js?v=1.2.1"></script>
-    <script src="/pricing-modal.js?v=1.2.1"></script>
+    <script src="/pricing-plans.js?v=1.2.2"></script>
+    <script src="/usage-tracker.js?v=1.2.2"></script>
+    <script src="/pricing-modal.js?v=1.2.2"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.2.1"></script>
+    <script src="/auth-ui.js?v=1.2.2"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.2.1"></script>
+    <script src="/app.js?v=1.2.2"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>

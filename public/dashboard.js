@@ -1159,6 +1159,22 @@ class DashboardApp {
             console.error('Error loading integrations:', error);
         }
     }
+
+    showToast(message, type = 'success') {
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.remove();
+        }, 4000);
+    }
 }
 
 // Initialize dashboard when DOM is ready
