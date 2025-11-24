@@ -72,14 +72,48 @@ class DashboardApp {
         const userEmail = this.currentUser.email;
         const userInitial = userEmail.charAt(0).toUpperCase();
 
+        // Get avatar image or initials
+        const avatarImage = this.currentUser.user_metadata?.avatar_url || this.currentUser.user_metadata?.picture;
+        const avatarHTML = avatarImage
+            ? `<img src="${avatarImage}" alt="Profile" />`
+            : userInitial;
+
         const profileHTML = `
             <div class="user-profile" onclick="this.querySelector('.user-dropdown').classList.toggle('active')">
-                <div class="user-avatar">${userInitial}</div>
+                <div class="user-avatar">${avatarHTML}</div>
                 <span class="user-email">${userEmail}</span>
                 <div class="user-dropdown">
-                    <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">Dashboard</div>
-                    <div class="user-dropdown-item" onclick="window.location.href='/builder.html'">Editor</div>
-                    <div class="user-dropdown-item danger" onclick="dashboardApp.handleLogout()">Logout</div>
+                    <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Dashboard
+                    </div>
+                    <div class="user-dropdown-item" onclick="window.location.href='/builder.html'">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Editor
+                    </div>
+                    <div class="user-dropdown-item" onclick="dashboardApp.showProfileSettings()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Profile Settings
+                    </div>
+                    <div class="user-dropdown-item danger" onclick="dashboardApp.handleLogout()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </div>
                 </div>
             </div>
         `;
@@ -93,6 +127,95 @@ class DashboardApp {
     async handleLogout() {
         await supabaseClient.signOut();
         window.location.href = '/';
+    }
+
+    showProfileSettings() {
+        // Get current user info
+        const user = this.currentUser;
+        if (!user) return;
+
+        const provider = user.app_metadata?.provider || 'email';
+        const providerDisplay = provider.charAt(0).toUpperCase() + provider.slice(1);
+        const avatarImage = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+
+        // Show profile settings modal
+        const modalHTML = `
+            <div id="profileSettingsModal" class="modal" style="display: flex;">
+                <div class="modal-content" style="max-width: 500px;">
+                    <span class="close" onclick="document.getElementById('profileSettingsModal').remove()">&times;</span>
+                    <h2 style="margin-bottom: 24px; font-size: 24px; font-weight: 600; color: #0F172A;">Profile Settings</h2>
+
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;">
+                            ${avatarImage ? `<img src="${avatarImage}" alt="Profile" />` : user.email.charAt(0).toUpperCase()}
+                        </div>
+                        <div style="font-size: 12px; color: #64748B; margin-top: 8px;">
+                            Signed in with ${providerDisplay}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" value="${user.email}" disabled style="background: #fafafa; cursor: not-allowed;" />
+                        <div style="font-size: 12px; color: #64748B; margin-top: 4px;">
+                            ${provider !== 'email' ? 'Email cannot be changed for OAuth accounts' : ''}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="profileName" value="${user.user_metadata?.full_name || ''}" placeholder="Your name" />
+                    </div>
+
+                    ${provider === 'email' ? `
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="profilePassword" placeholder="Leave blank to keep current password" />
+                    </div>
+                    ` : ''}
+
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button class="primary-btn" style="flex: 1; background: #0F172A;" onclick="dashboardApp.saveProfileSettings()">
+                            Save Changes
+                        </button>
+                        <button class="primary-btn" style="flex: 1; background: #fafafa; color: #0F172A; border: 1px solid #e5e5e5;" onclick="document.getElementById('profileSettingsModal').remove()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async saveProfileSettings() {
+        const name = document.getElementById('profileName').value;
+        const password = document.getElementById('profilePassword')?.value;
+
+        try {
+            const updates = {};
+            if (name) {
+                updates.data = { full_name: name };
+            }
+            if (password) {
+                updates.password = password;
+            }
+
+            const { error } = await supabaseClient.client.auth.updateUser(updates);
+            if (error) throw error;
+
+            this.showToast('Profile updated successfully', 'success');
+            document.getElementById('profileSettingsModal').remove();
+
+            // Refresh user data
+            const { data: { user } } = await supabaseClient.client.auth.getUser();
+            if (user) {
+                this.currentUser = user;
+                this.updateUserProfile();
+            }
+        } catch (error) {
+            this.showToast('Failed to update profile: ' + error.message, 'error');
+        }
     }
 
     switchSection(section) {
