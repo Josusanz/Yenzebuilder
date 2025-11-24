@@ -184,6 +184,7 @@ class AuthUI {
                             </div>
                             <ul class="plan-features">
                                 <li>3 Websites</li>
+                                <li>1 Custom Domain</li>
                                 <li>5K visitors/mo</li>
                                 <li>50MB storage</li>
                                 <li>Remove Branding</li>
