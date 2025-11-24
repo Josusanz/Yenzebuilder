@@ -11,13 +11,34 @@
             const subdomain = hostname.split('.')[0];
             let targetFile = null;
 
-            // Determine which page to load based on hostname
+            // Determine which page to load based on hostname and path
+            const path = window.location.pathname;
+
+            // If already on a specific HTML file, don't redirect
+            if (path.endsWith('.html')) {
+                return;
+            }
+
             if (hostname === 'builder.yenze.io' || hostname.includes('vercel.app')) {
-                // Builder subdomain - always load builder
-                targetFile = '/builder.html';
+                // Builder subdomain - load builder without changing URL
+                fetch('/builder.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    });
+                return;
             } else if (hostname === 'yenze.io' || hostname === 'www.yenze.io') {
-                // Main domain - landing page
-                targetFile = '/landing.html';
+                // Main domain - load landing page without changing URL
+                fetch('/landing.html')
+                    .then(response => response.text())
+                    .then(html => {
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    });
+                return;
             } else if (hostname.includes('.yenze.io') &&
                       subdomain !== 'www' &&
                       subdomain !== 'yenze' &&
@@ -63,11 +84,6 @@
                         document.close();
                     });
                 return;
-            }
-
-            // Redirect to target file (preserves URL parameters)
-            if (targetFile) {
-                window.location.replace(targetFile + window.location.search);
             }
         })();
     </script>
