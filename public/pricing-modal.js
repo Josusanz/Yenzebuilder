@@ -24,8 +24,8 @@ class PricingModal {
 
         // Create modal HTML
         const modalHTML = `
-            <div id="unifiedPricingModal" class="modal" style="display: flex;">
-                <div class="modal-content" style="max-width: 1200px; width: 95%;">
+            <div id="unifiedPricingModal" class="modal" style="display: flex; align-items: center; justify-content: center;" onclick="if(event.target.id === 'unifiedPricingModal') pricingModal.close()">
+                <div class="modal-content" style="max-width: 1200px; width: 95%; max-height: calc(100vh - 80px); overflow-y: auto; margin: 0;" onclick="event.stopPropagation()">
                     <button class="modal-close-btn" onclick="pricingModal.close()">×</button>
 
                     <div style="text-align: center; margin-bottom: 40px;">

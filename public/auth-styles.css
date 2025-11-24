@@ -13,8 +13,9 @@
     z-index: 10000;
     backdrop-filter: blur(4px);
     animation: fadeInModal 0.2s;
-    padding: 20px;
+    padding: 40px 20px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 @keyframes fadeInModal {
@@ -561,4 +562,34 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   Modal Close Button
+   ===================================================== */
+
+.modal-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    font-size: 24px;
+    color: #64748B;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.15s;
+    z-index: 10;
+}
+
+.modal-close-btn:hover {
+    background: #EF4444;
+    border-color: #EF4444;
+    color: white;
+    transform: scale(1.05);
 }
