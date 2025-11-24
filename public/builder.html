@@ -2100,7 +2100,7 @@
     <script src="/auth-ui.js?v=1.3.2"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.3.6"></script>
+    <script src="/app.js?v=1.3.7"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2135,6 +2135,15 @@
                     updateUserUI(user);
                 }
             }, 1000);
+
+            // Additional check for ?new=true case (after app.init completes)
+            setTimeout(() => {
+                const user = supabaseClient.getUser();
+                if (user) {
+                    console.log('[Builder Init] Final user check for new project:', user.email);
+                    updateUserUI(user);
+                }
+            }, 1500);
         });
 
         function updateUserUI(user) {

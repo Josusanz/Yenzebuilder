@@ -3396,15 +3396,6 @@ class YenzeBuilder {
             };
             document.getElementById('projectName').value = this.projectData.name;
             this.renderPreview();
-
-            // Make sure user UI is updated after new project is created
-            setTimeout(() => {
-                const user = supabaseClient.getUser();
-                console.log('[LoadProject] Ensuring user UI is shown:', user?.email || 'No user');
-                if (user && typeof updateUserUI === 'function') {
-                    updateUserUI(user);
-                }
-            }, 500);
             return;
         }
 
