@@ -126,6 +126,7 @@ class SupabaseClient {
 
     async signInWithGoogle() {
         try {
+            console.log('[OAuth] Redirect URL configured:', 'https://builder.yenze.io');
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
@@ -143,6 +144,7 @@ class SupabaseClient {
 
     async signInWithGithub() {
         try {
+            console.log('[OAuth] Redirect URL configured:', 'https://builder.yenze.io');
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
