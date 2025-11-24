@@ -17,6 +17,16 @@
     {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "builder\\.yenze\\.io"
+        }
+      ],
+      "destination": "/builder.html"
     }
   ]
 }
