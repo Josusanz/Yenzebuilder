@@ -1521,6 +1521,8 @@
             justify-content: center;
             align-items: center;
             animation: fadeIn 0.2s ease;
+            overflow-y: auto;
+            padding: 20px;
         }
 
         .publish-popup-overlay.active {
@@ -1531,11 +1533,14 @@
             background: #ffffff;
             border: 1px solid #E2E8F0;
             border-radius: 16px;
-            max-width: 560px;
-            width: 90%;
+            max-width: 540px;
+            width: 100%;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             animation: slideUpModal 0.2s ease;
             position: relative;
+            margin: auto;
         }
 
         .publish-popup-close-btn {
@@ -2036,23 +2041,23 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.1.6"></script>
+    <script src="/config.js?v=1.1.7"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.1.6"></script>
+    <script src="/supabase-client.js?v=1.1.7"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.1.6"></script>
+    <script src="/stripe-integration.js?v=1.1.7"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.1.6"></script>
-    <script src="/usage-tracker.js?v=1.1.6"></script>
+    <script src="/pricing-plans.js?v=1.1.7"></script>
+    <script src="/usage-tracker.js?v=1.1.7"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.1.6"></script>
+    <script src="/auth-ui.js?v=1.1.7"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.1.6"></script>
+    <script src="/app.js?v=1.1.7"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2150,11 +2155,19 @@
             }
 
             overlay.classList.add('active');
+
+            // Close when clicking outside the modal
+            overlay.onclick = function(e) {
+                if (e.target === overlay) {
+                    closePublishPopup();
+                }
+            };
         }
 
         function closePublishPopup() {
             const overlay = document.getElementById('publishPopupOverlay');
             overlay.classList.remove('active');
+            overlay.onclick = null;
         }
 
         function copyPublishUrl() {
