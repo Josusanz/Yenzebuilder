@@ -452,7 +452,7 @@
 .user-email {
     font-size: 14px;
     color: #374151;
-    max-width: 150px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

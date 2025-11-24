@@ -78,10 +78,13 @@ class DashboardApp {
             ? `<img src="${avatarImage}" alt="Profile" />`
             : userInitial;
 
+        // Get display name (prefer full name, fallback to first part of email)
+        const displayName = this.currentUser.user_metadata?.full_name || userEmail.split('@')[0];
+
         const profileHTML = `
             <div class="user-profile" onclick="this.querySelector('.user-dropdown').classList.toggle('active')">
                 <div class="user-avatar">${avatarHTML}</div>
-                <span class="user-email">${userEmail}</span>
+                <span class="user-email">${displayName}</span>
                 <div class="user-dropdown">
                     <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
