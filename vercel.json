@@ -17,7 +17,9 @@
     {
       "source": "/s/:slug",
       "destination": "/api/view-project?slug=:slug"
-    },
+    }
+  ],
+  "redirects": [
     {
       "source": "/",
       "has": [
@@ -26,7 +28,8 @@
           "value": "builder\\.yenze\\.io"
         }
       ],
-      "destination": "/builder.html"
+      "destination": "/builder.html",
+      "permanent": false
     }
   ]
 }
