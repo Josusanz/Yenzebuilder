@@ -20,14 +20,9 @@
             }
 
             if (hostname === 'builder.yenze.io' || hostname.includes('vercel.app')) {
-                // Builder subdomain - load builder without changing URL
-                fetch('/builder.html')
-                    .then(response => response.text())
-                    .then(html => {
-                        document.open();
-                        document.write(html);
-                        document.close();
-                    });
+                // Builder subdomain - redirect to builder.html
+                // Using replace instead of fetch to ensure all scripts load correctly
+                window.location.replace('/builder.html');
                 return;
             } else if (hostname === 'yenze.io' || hostname === 'www.yenze.io') {
                 // Main domain - load landing page without changing URL
