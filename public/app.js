@@ -1216,10 +1216,10 @@ class YenzeBuilder {
             if (!this.collapsedLayers) this.collapsedLayers = new Set();
             this.collapsedLayers.delete(parentId);
 
-            // Update toggle icon
+            // Update toggle icon with rotation
             const toggle = document.querySelector(`.layer-toggle[data-element-id="${parentId}"]`);
             if (toggle) {
-                toggle.textContent = '▼';
+                toggle.style.transform = 'rotate(90deg)';
             }
 
             // Show children
@@ -1244,10 +1244,10 @@ class YenzeBuilder {
             this.collapsedLayers.add(elementId);
         }
 
-        // Update toggle icon
+        // Update toggle icon with rotation
         const toggle = document.querySelector(`.layer-toggle[data-element-id="${elementId}"]`);
         if (toggle) {
-            toggle.textContent = isCollapsed ? '▼' : '▶';
+            toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
         }
 
         // Update children visibility
@@ -1884,7 +1884,7 @@ class YenzeBuilder {
 
             const li = document.createElement('li');
             li.className = 'layer-item';
-            li.style.paddingLeft = `${level * 1.5}rem`;
+            li.style.paddingLeft = `${level * 0.875}rem`;
             li.draggable = true;
             li.dataset.elementId = this.generateElementId(element);
 
@@ -1896,13 +1896,13 @@ class YenzeBuilder {
 
             // Add collapse/expand toggle if element has children
             const collapseToggle = hasChildren ?
-                `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▼</span>` :
+                `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▸</span>` :
                 '<span class="layer-toggle-spacer"></span>';
 
             li.innerHTML = `
                 ${collapseToggle}
                 <span class="layer-icon">${icon}</span>
-                <span>${tagName}</span>
+                <span class="layer-name">${tagName}</span>
             `;
 
             // Store element reference
@@ -1911,6 +1911,11 @@ class YenzeBuilder {
             // Toggle collapse/expand
             const toggle = li.querySelector('.layer-toggle');
             if (toggle) {
+                // Set initial rotation based on collapsed state
+                const elementId = this.generateElementId(element);
+                const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
+                toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
+
                 toggle.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.toggleLayerCollapse(element);
@@ -2578,23 +2583,40 @@ class YenzeBuilder {
 
     getElementIcon(tagName) {
         const icons = {
-            'body': '📄',
-            'header': '🔝',
-            'nav': '🧭',
-            'section': '📦',
-            'div': '▪️',
-            'p': '📝',
-            'h1': '📌',
-            'h2': '📌',
-            'h3': '📌',
-            'button': '🔘',
-            'a': '🔗',
-            'img': '🖼️',
-            'footer': '🔽',
-            'ul': '📋',
-            'li': '•',
+            'body': '□',
+            'html': '□',
+            'head': '⊙',
+            'header': '▭',
+            'nav': '≡',
+            'section': '▢',
+            'article': '▢',
+            'div': '▪',
+            'span': '▸',
+            'p': '¶',
+            'h1': 'H1',
+            'h2': 'H2',
+            'h3': 'H3',
+            'h4': 'H4',
+            'h5': 'H5',
+            'h6': 'H6',
+            'button': '▭',
+            'a': '⎋',
+            'img': '▨',
+            'svg': '◊',
+            'footer': '▭',
+            'ul': '≡',
+            'ol': '≡',
+            'li': '·',
+            'form': '▢',
+            'input': '▭',
+            'textarea': '▭',
+            'select': '▭',
+            'table': '▦',
+            'tr': '─',
+            'td': '□',
+            'th': '■',
         };
-        return icons[tagName] || '▫️';
+        return icons[tagName] || '○';
     }
 
     toggleCodeEditor() {
