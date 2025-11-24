@@ -2109,41 +2109,39 @@
             // Initialize Supabase and wait for it to complete
             await supabaseClient.init();
 
-            // Initialize Builder App (loads project if URL has ?project=ID)
-            if (typeof app !== 'undefined') {
-                await app.init();
-            }
-
             // Listen for auth state changes
             window.addEventListener('auth-change', (e) => {
                 const { event, user } = e.detail;
                 updateUserUI(user);
             });
 
-            // Wait a bit for session to fully load, then update UI
+            // First UI update after supabase init
             setTimeout(() => {
                 const currentUser = supabaseClient.getUser();
-                console.log('[Builder Init] Current user after init:', currentUser?.email || 'No user');
+                console.log('[Builder Init] Current user after supabase init:', currentUser?.email || 'No user');
                 updateUserUI(currentUser);
             }, 300);
 
-            // Extra check after a longer delay to catch OAuth returns and slow connections
+            // Initialize Builder App (loads project if URL has ?project=ID or ?new=true)
+            if (typeof app !== 'undefined') {
+                await app.init();
+            }
+
+            // CRITICAL: Update UI immediately after app.init completes
+            const user = supabaseClient.getUser();
+            if (user) {
+                console.log('[Builder Init] User after app.init:', user.email);
+                updateUserUI(user);
+            }
+
+            // Extra check after a delay to ensure UI is visible
             setTimeout(() => {
                 const user = supabaseClient.getUser();
                 if (user) {
-                    console.log('[Builder Init] User found after extended delay:', user.email);
+                    console.log('[Builder Init] Final user check:', user.email);
                     updateUserUI(user);
                 }
             }, 1000);
-
-            // Additional check for ?new=true case (after app.init completes)
-            setTimeout(() => {
-                const user = supabaseClient.getUser();
-                if (user) {
-                    console.log('[Builder Init] Final user check for new project:', user.email);
-                    updateUserUI(user);
-                }
-            }, 1500);
         });
 
         function updateUserUI(user) {
