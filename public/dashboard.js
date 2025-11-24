@@ -196,14 +196,19 @@ class DashboardApp {
 
         try {
             // Get user's subscription first
-            const { data: subscription } = await supabaseClient.client
+            const { data: subscriptions } = await supabaseClient.client
                 .from('subscriptions')
                 .select('plan')
                 .eq('user_id', this.currentUser.id)
                 .eq('status', 'active')
-                .single();
+                .order('created_at', { ascending: false })
+                .limit(1);
 
+            const subscription = subscriptions?.[0];
             this.userPlan = subscription?.plan || 'free';
+
+            console.log('[Dashboard] User subscription:', subscription);
+            console.log('[Dashboard] User plan:', this.userPlan);
 
             const { data: projects, error } = await supabaseClient.client
                 .from('projects')
