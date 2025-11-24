@@ -1271,7 +1271,7 @@
             align-items: center;
             justify-content: center;
             z-index: 99999;
-            padding: 20px;
+            padding: 40px 20px;
             overflow-y: auto;
         }
 
@@ -1280,10 +1280,13 @@
             border-radius: 12px;
             max-width: 1000px;
             width: 100%;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
             padding: 32px;
             position: relative;
             animation: slideUp 0.3s ease-out;
             border: 1px solid #E2E8F0;
+            margin: 0;
         }
 
         .publish-options-header {
@@ -2076,24 +2079,24 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <!-- Configuration -->
-    <script src="/config.js?v=1.2.6"></script>
+    <script src="/config.js?v=1.2.7"></script>
 
     <!-- Supabase Client Initialization -->
-    <script src="/supabase-client.js?v=1.2.6"></script>
+    <script src="/supabase-client.js?v=1.2.7"></script>
 
     <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.2.6"></script>
+    <script src="/stripe-integration.js?v=1.2.7"></script>
 
     <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.2.6"></script>
-    <script src="/usage-tracker.js?v=1.2.6"></script>
-    <script src="/pricing-modal.js?v=1.2.6"></script>
+    <script src="/pricing-plans.js?v=1.2.7"></script>
+    <script src="/usage-tracker.js?v=1.2.7"></script>
+    <script src="/pricing-modal.js?v=1.2.7"></script>
 
     <!-- Authentication UI -->
-    <script src="/auth-ui.js?v=1.2.6"></script>
+    <script src="/auth-ui.js?v=1.2.7"></script>
 
     <!-- Main App -->
-    <script src="/app.js?v=1.2.6"></script>
+    <script src="/app.js?v=1.2.7"></script>
 
     <!-- Initialize Supabase on page load -->
     <script>
@@ -2502,8 +2505,8 @@
     </div>
 
     <!-- Publish Options Modal -->
-    <div id="publishOptionsModal" class="publish-options-modal" style="display: none;">
-        <div class="publish-options-content">
+    <div id="publishOptionsModal" class="publish-options-modal" style="display: none;" onclick="if(event.target.id === 'publishOptionsModal') app.closePublishOptionsModal()">
+        <div class="publish-options-content" onclick="event.stopPropagation()">
             <div class="publish-options-header">
                 <h2>Choose how your website will be accessible</h2>
                 <p>Select a plan that fits your needs</p>
