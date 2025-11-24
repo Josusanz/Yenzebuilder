@@ -65,24 +65,9 @@
                 return;
             }
 
-            // Fetch and replace current page content
+            // Redirect to target file (preserves URL parameters)
             if (targetFile) {
-                fetch(targetFile)
-                    .then(response => {
-                        if (response.ok) {
-                            return response.text();
-                        }
-                        throw new Error('Page not found');
-                    })
-                    .then(html => {
-                        document.open();
-                        document.write(html);
-                        document.close();
-                    })
-                    .catch(error => {
-                        console.error('Error loading page:', error);
-                        document.body.innerHTML = '<div style="margin:50px;font-family:sans-serif;"><h1>Error loading page</h1><p>Please refresh or contact support.</p></div>';
-                    });
+                window.location.replace(targetFile + window.location.search);
             }
         })();
     </script>
