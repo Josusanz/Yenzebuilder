@@ -76,9 +76,20 @@ export default async function handler(req, res) {
 
       if (!vercelResponse.ok) {
         console.error('[Verify Domain] Vercel error:', vercelResult);
+
+        // Extract meaningful error message
+        let errorMessage = 'Failed to verify domain';
+        if (vercelResult.error) {
+          if (vercelResult.error.code === 'forbidden') {
+            errorMessage = 'Domain belongs to another Vercel account';
+          } else if (vercelResult.error.message) {
+            errorMessage = vercelResult.error.message;
+          }
+        }
+
         return res.status(500).json({
-          error: 'Failed to verify domain',
-          details: vercelResult.error?.message || 'Unknown error'
+          error: errorMessage,
+          details: vercelResult.error || 'Unknown error from Vercel'
         });
       }
 

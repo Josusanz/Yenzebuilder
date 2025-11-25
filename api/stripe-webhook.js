@@ -143,13 +143,17 @@ async function handleSubscriptionUpdated(subscription) {
 }
 
 async function handleSubscriptionDeleted(subscription) {
-    // Delete the subscription from database when canceled in Stripe
+    // Soft-delete: Update status to canceled instead of deleting the record
+    // This preserves the subscription history
     await supabase
         .from('subscriptions')
-        .delete()
+        .update({
+            status: 'canceled',
+            updated_at: new Date().toISOString()
+        })
         .eq('stripe_subscription_id', subscription.id);
 
-    console.log('Subscription deleted:', subscription.id);
+    console.log('Subscription marked as canceled:', subscription.id);
 }
 
 async function handlePaymentSucceeded(invoice) {

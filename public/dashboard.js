@@ -358,7 +358,7 @@ class DashboardApp {
 
             if (subscriptions && subscriptions.length > 0) {
                 // Get the highest tier plan
-                const planPriority = { 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
+                const planPriority = { 'BUSINESS': 4, 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
                 const highestPlan = subscriptions.reduce((highest, sub) => {
                     const currentPriority = planPriority[sub.plan.toUpperCase()] || 0;
                     const highestPriority = planPriority[highest.plan.toUpperCase()] || 0;
@@ -417,7 +417,7 @@ class DashboardApp {
                 .from('projects')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .order('created_at', { ascending: false});
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
 
@@ -1014,7 +1014,7 @@ class DashboardApp {
 
             if (subscriptions && subscriptions.length > 0) {
                 // Get the highest tier plan
-                const planPriority = { 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
+                const planPriority = { 'BUSINESS': 4, 'PRO': 3, 'STARTER': 2, 'FREE': 1, 'ONE_TIME': 2 };
                 const highestPlan = subscriptions.reduce((highest, sub) => {
                     const currentPriority = planPriority[sub.plan.toUpperCase()] || 0;
                     const highestPriority = planPriority[highest.plan.toUpperCase()] || 0;
