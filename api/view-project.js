@@ -27,9 +27,9 @@ module.exports = async function handler(req, res) {
     // Find project with this public slug
     const { data: project, error } = await supabase
       .from('projects')
-      .select('id, name, html_content, user_id, public_slug, is_published')
+      .select('id, name, html, user_id, public_slug, published')
       .eq('public_slug', slug)
-      .eq('is_published', true)
+      .eq('published', true)
       .single();
 
     if (error || !project) {
@@ -103,7 +103,7 @@ module.exports = async function handler(req, res) {
     const plan = subscription?.plan || 'free';
 
     // Inject badge for FREE users
-    let html = project.html_content || '<h1>Empty Project</h1>';
+    let html = project.html || '<h1>Empty Project</h1>';
 
     if (plan === 'free') {
       // Add "Powered by YENZE" badge with upgrade CTA

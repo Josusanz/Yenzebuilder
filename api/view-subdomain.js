@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
       .from('projects')
       .select('*')
       .eq('subdomain_slug', subdomain)
-      .eq('is_published', true)
+      .eq('published', true)
       .single();
 
     if (error || !project) {
@@ -100,7 +100,7 @@ module.exports = async function handler(req, res) {
     // Return the HTML content
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=600');
-    res.status(200).send(project.html_content);
+    res.status(200).send(project.html);
 
   } catch (error) {
     console.error('[View Subdomain] Error:', error);
