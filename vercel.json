@@ -54,7 +54,21 @@
     },
     {
       "source": "/",
-      "destination": "/api/view-subdomain.js"
+      "destination": "/api/view-subdomain.js",
+      "missing": [
+        {
+          "type": "host",
+          "value": "yenze.io"
+        },
+        {
+          "type": "host",
+          "value": "www.yenze.io"
+        },
+        {
+          "type": "host",
+          "value": "builder.yenze.io"
+        }
+      ]
     }
   ],
   "headers": [
