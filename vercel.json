@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/",
@@ -16,7 +18,38 @@
     },
     {
       "source": "/",
-      "destination": "/landing.html"
+      "destination": "/landing.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "yenze.io"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "destination": "/landing.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yenze.io"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/api/view-subdomain.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     }
   ]
 }
