@@ -1,9 +1,8 @@
 {
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/",
+      "source": "/builder",
       "destination": "/builder.html",
       "has": [
         {
@@ -13,62 +12,12 @@
       ]
     },
     {
-      "source": "/s/:slug",
-      "destination": "/api/view-project.js?slug=:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "yenze.io"
-        }
-      ]
+      "source": "/landing",
+      "destination": "/landing.html"
     },
     {
       "source": "/s/:slug",
-      "destination": "/api/view-project.js?slug=:slug",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "destination": "/landing.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "destination": "/landing.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.yenze.io"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "destination": "/api/view-subdomain.js",
-      "missing": [
-        {
-          "type": "host",
-          "value": "yenze.io"
-        },
-        {
-          "type": "host",
-          "value": "www.yenze.io"
-        },
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
+      "destination": "/api/view-project.js?slug=:slug"
     }
   ],
   "headers": [
