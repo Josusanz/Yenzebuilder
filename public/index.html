@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YENZE - Redirecting...</title>
+    <script>
+        // Smart router based on hostname
+        const hostname = window.location.hostname;
+
+        if (hostname === 'builder.yenze.io') {
+            // Builder subdomain
+            window.location.replace('/builder.html' + window.location.search);
+        } else if (hostname === 'yenze.io' || hostname === 'www.yenze.io') {
+            // Main domain - go to landing
+            window.location.replace('/landing.html');
+        } else {
+            // Custom subdomain - let API handle it
+            fetch('/api/view-subdomain.js')
+                .then(r => r.text())
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(() => {
+                    document.body.innerHTML = '<h1>Website Not Found</h1>';
+                });
+        }
+    </script>
+</head>
+<body style="margin:0;padding:0;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;">
+    <div style="text-align:center;">
+        <div style="width:50px;height:50px;border:4px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;"></div>
+        <p>Loading...</p>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>
