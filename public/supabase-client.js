@@ -311,18 +311,30 @@ class SupabaseClient {
         }
 
         try {
-            const { data, error } = await this.client
+            const { data: subscriptions, error } = await this.client
                 .from('subscriptions')
                 .select('*')
                 .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .single();
+                .eq('status', 'active');
 
-            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+            if (error) {
                 throw error;
             }
 
-            return { data: data || null, error: null };
+            // If no subscriptions found, return null
+            if (!subscriptions || subscriptions.length === 0) {
+                return { data: null, error: null };
+            }
+
+            // Get the highest tier plan
+            const planPriority = { 'BUSINESS': 4, 'PRO': 3, 'STARTER': 2, 'ONE_TIME': 2, 'FREE': 1 };
+            const highestPlan = subscriptions.reduce((highest, sub) => {
+                const currentPriority = planPriority[sub.plan.toUpperCase()] || 0;
+                const highestPriority = planPriority[highest.plan.toUpperCase()] || 0;
+                return currentPriority > highestPriority ? sub : highest;
+            }, subscriptions[0]);
+
+            return { data: highestPlan, error: null };
         } catch (error) {
             console.error('Get subscription error:', error);
             return { data: null, error };
