@@ -53,7 +53,7 @@
       ]
     },
     {
-      "source": "/:path*",
+      "source": "/",
       "destination": "/api/view-subdomain.js"
     }
   ],
