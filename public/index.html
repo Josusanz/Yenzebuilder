@@ -40,12 +40,16 @@
     </div>
     <script>
         const hostname = window.location.hostname;
+        // Preserve query parameters (important for auth tokens, etc.)
+        const search = window.location.search;
+        const hash = window.location.hash;
+        const params = search + hash;
 
         // Route based on hostname
         if (hostname === 'builder.yenze.io') {
-            window.location.replace('/builder.html');
+            window.location.replace('/builder.html' + params);
         } else if (hostname === 'yenze.io' || hostname === 'www.yenze.io') {
-            window.location.replace('/landing.html');
+            window.location.replace('/landing.html' + params);
         } else {
             // Custom subdomain - fetch from API
             fetch('/api/view-subdomain.js')
