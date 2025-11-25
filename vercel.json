@@ -14,7 +14,23 @@
     },
     {
       "source": "/s/:slug",
-      "destination": "/api/view-project.js?slug=:slug"
+      "destination": "/api/view-project.js?slug=:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "yenze.io"
+        }
+      ]
+    },
+    {
+      "source": "/s/:slug",
+      "destination": "/api/view-project.js?slug=:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.yenze.io"
+        }
+      ]
     },
     {
       "source": "/",
@@ -37,7 +53,7 @@
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": "/api/view-subdomain.js"
     }
   ],
