@@ -1583,6 +1583,66 @@ class DashboardApp {
         }
     }
 
+    async saveMailchimpConfig() {
+        const audienceId = document.getElementById('mailchimpAudienceId').value.trim();
+        const apiKey = document.getElementById('mailchimpApiKey').value.trim();
+
+        if (!audienceId || !apiKey) {
+            alert('Please enter both Audience ID and API Key');
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient.client
+                .from('user_integrations')
+                .upsert({
+                    user_id: this.currentUser.id,
+                    service: 'mailchimp',
+                    api_key: apiKey,
+                    config: { audience_id: audienceId },
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,service'
+                });
+
+            if (error) throw error;
+
+            this.showToast('Mailchimp configuration saved!', 'success');
+        } catch (error) {
+            console.error('Error saving Mailchimp config:', error);
+            alert('Failed to save configuration: ' + error.message);
+        }
+    }
+
+    async saveConvertKitFormId() {
+        const formId = document.getElementById('convertkitFormId').value.trim();
+
+        if (!formId) {
+            alert('Please enter a ConvertKit Form ID');
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient.client
+                .from('user_integrations')
+                .upsert({
+                    user_id: this.currentUser.id,
+                    service: 'convertkit',
+                    api_key: formId,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,service'
+                });
+
+            if (error) throw error;
+
+            this.showToast('ConvertKit Form ID saved!', 'success');
+        } catch (error) {
+            console.error('Error saving ConvertKit Form ID:', error);
+            alert('Failed to save Form ID: ' + error.message);
+        }
+    }
+
     async loadIntegrations() {
         try {
             const { data: integrations, error } = await supabaseClient.client
@@ -1600,6 +1660,16 @@ class DashboardApp {
                         if (input) input.value = integration.api_key;
                     } else if (integration.service === 'loops') {
                         const input = document.getElementById('loopsFormId');
+                        if (input) input.value = integration.api_key;
+                    } else if (integration.service === 'mailchimp') {
+                        const apiKeyInput = document.getElementById('mailchimpApiKey');
+                        const audienceInput = document.getElementById('mailchimpAudienceId');
+                        if (apiKeyInput) apiKeyInput.value = integration.api_key;
+                        if (audienceInput && integration.config?.audience_id) {
+                            audienceInput.value = integration.config.audience_id;
+                        }
+                    } else if (integration.service === 'convertkit') {
+                        const input = document.getElementById('convertkitFormId');
                         if (input) input.value = integration.api_key;
                     }
                 });

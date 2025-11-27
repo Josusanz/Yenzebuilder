@@ -436,6 +436,48 @@
                         </div>
                     </div>
 
+                    <!-- Mailchimp Integration -->
+                    <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div style="width: 40px; height: 40px; background: #FFF4E6; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#FFE01B">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 15px; color: #0F172A; font-weight: 600;">Mailchimp</h3>
+                                <p style="margin: 0; color: #64748B; font-size: 12px;">Email Marketing</p>
+                            </div>
+                        </div>
+                        <p style="color: #475569; margin-bottom: 16px; line-height: 1.5; font-size: 13px;">Collect subscribers for your Mailchimp lists. Free up to 500 contacts.</p>
+                        <div>
+                            <label style="display: block; font-weight: 500; margin-bottom: 6px; color: #334155; font-size: 13px;">Audience ID</label>
+                            <input type="text" id="mailchimpAudienceId" placeholder="YOUR_AUDIENCE_ID" style="width: 100%; padding: 8px 12px; border: 1px solid #E2E8F0; border-radius: 6px; margin-bottom: 8px; font-size: 13px; box-sizing: border-box;">
+                            <label style="display: block; font-weight: 500; margin-bottom: 6px; color: #334155; font-size: 13px;">API Key</label>
+                            <input type="text" id="mailchimpApiKey" placeholder="YOUR_API_KEY-usX" style="width: 100%; padding: 8px 12px; border: 1px solid #E2E8F0; border-radius: 6px; margin-bottom: 12px; font-size: 13px; box-sizing: border-box;">
+                            <button onclick="dashboardApp.saveMailchimpConfig()" class="btn-primary" style="width: 100%;">Save Configuration</button>
+                            <a href="https://mailchimp.com/help/find-audience-id/" target="_blank" style="display: block; text-align: center; margin-top: 10px; color: #FFE01B; text-decoration: none; font-size: 12px; font-weight: 500;">How to find your Audience ID →</a>
+                        </div>
+                    </div>
+
+                    <!-- ConvertKit Integration -->
+                    <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div style="width: 40px; height: 40px; background: #FEF2F2; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #FB6970; font-weight: 700; font-size: 14px;">CK</div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 15px; color: #0F172A; font-weight: 600;">ConvertKit</h3>
+                                <p style="margin: 0; color: #64748B; font-size: 12px;">Creator Newsletter</p>
+                            </div>
+                        </div>
+                        <p style="color: #475569; margin-bottom: 16px; line-height: 1.5; font-size: 13px;">Grow your audience with ConvertKit forms. Free up to 1,000 subscribers.</p>
+                        <div>
+                            <label style="display: block; font-weight: 500; margin-bottom: 6px; color: #334155; font-size: 13px;">Form ID</label>
+                            <input type="text" id="convertkitFormId" placeholder="YOUR_FORM_ID" style="width: 100%; padding: 8px 12px; border: 1px solid #E2E8F0; border-radius: 6px; margin-bottom: 12px; font-size: 13px; box-sizing: border-box;">
+                            <button onclick="dashboardApp.saveConvertKitFormId()" class="btn-primary" style="width: 100%;">Save Form ID</button>
+                            <a href="https://help.convertkit.com/en/articles/2502494-the-convertkit-api" target="_blank" style="display: block; text-align: center; margin-top: 10px; color: #FB6970; text-decoration: none; font-size: 12px; font-weight: 500;">Get your Form ID →</a>
+                        </div>
+                    </div>
+
                     <!-- More integrations coming soon -->
                     <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px dashed #CBD5E1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 230px; text-align: center;">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" style="margin-bottom: 12px;">
@@ -443,7 +485,7 @@
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                         <h3 style="margin: 0 0 6px; font-size: 14px; color: #64748B; font-weight: 600;">More Coming Soon</h3>
-                        <p style="margin: 0; color: #94A3B8; font-size: 12px;">Stripe, PayPal, Analytics & more...</p>
+                        <p style="margin: 0; color: #94A3B8; font-size: 12px;">Stripe, SendGrid, Beehiiv & more...</p>
                     </div>
                 </div>
             </section>
