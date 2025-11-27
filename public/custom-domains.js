@@ -264,7 +264,7 @@ class CustomDomainsManager {
                         <button class="btn btn-secondary" onclick="document.getElementById('upgradeModal').remove()">
                             Maybe Later
                         </button>
-                        <button class="btn btn-primary" onclick="window.location.href='/dashboard.html?section=billing'">
+                        <button class="btn btn-primary" onclick="window.location.href='/dashboard?section=billing'">
                             Upgrade Now
                         </button>
                     </div>

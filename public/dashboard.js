@@ -91,7 +91,7 @@ class DashboardApp {
                 <div class="user-avatar">${avatarHTML}</div>
                 <span class="user-email">${displayName}</span>
                 <div class="user-dropdown">
-                    <div class="user-dropdown-item" onclick="window.location.href='/dashboard.html'">
+                    <div class="user-dropdown-item" onclick="window.location.href='/dashboard'">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
                             <rect x="3" y="3" width="7" height="7"></rect>
                             <rect x="14" y="3" width="7" height="7"></rect>

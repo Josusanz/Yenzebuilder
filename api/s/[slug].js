@@ -112,7 +112,7 @@ module.exports = async function handler(req, res) {
             <span>Powered by YENZE</span>
           </a>
           <div style="margin-top: 8px; font-size: 12px; opacity: 0.9; text-align: center;">
-            <a href="https://yenze.io/dashboard.html" target="_blank" style="color: white; text-decoration: underline;">Upgrade for custom subdomain</a>
+            <a href="https://builder.yenze.io/dashboard" target="_blank" style="color: white; text-decoration: underline;">Upgrade for custom subdomain</a>
           </div>
         </div>
       `;

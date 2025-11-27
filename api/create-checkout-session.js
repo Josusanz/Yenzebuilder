@@ -86,8 +86,8 @@ export default async function handler(req, res) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${req.headers.origin}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${req.headers.origin}/dashboard.html?canceled=true`,
+            success_url: `https://builder.yenze.io/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `https://builder.yenze.io/dashboard?canceled=true`,
             metadata: {
                 user_id: userId,
                 plan: plan

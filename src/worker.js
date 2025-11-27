@@ -268,8 +268,8 @@ async function handleCheckoutSession(request, env, supabase, corsHeaders) {
       payment_method_types: ['card'],
       line_items: [{ price: PRICE_IDS[plan], quantity: 1 }],
       mode: 'subscription',
-      success_url: `${new URL(request.url).origin}/dashboard.html?success=true`,
-      cancel_url: `${new URL(request.url).origin}/dashboard.html?canceled=true`,
+      success_url: `https://builder.yenze.io/dashboard?success=true`,
+      cancel_url: `https://builder.yenze.io/dashboard?canceled=true`,
       metadata: { user_id: userId, plan: plan },
       allow_promotion_codes: true,
     });
@@ -499,7 +499,7 @@ async function handleCreatePortalSession(request, env, supabase, corsHeaders) {
     // Create portal session
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: 'https://yenze.io/dashboard.html',
+      return_url: 'https://builder.yenze.io/dashboard',
     });
 
     return new Response(JSON.stringify({ url: portalSession.url }), {
@@ -534,7 +534,7 @@ function getBadgeHTML() {
         <span>Powered by YENZE</span>
       </a>
       <div style="margin-top: 8px; font-size: 12px; opacity: 0.9; text-align: center;">
-        <a href="https://yenze.io/dashboard.html" target="_blank" style="color: white; text-decoration: underline;">Upgrade for custom subdomain</a>
+        <a href="https://builder.yenze.io/dashboard" target="_blank" style="color: white; text-decoration: underline;">Upgrade for custom subdomain</a>
       </div>
     </div>
   `;

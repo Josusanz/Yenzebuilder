@@ -432,7 +432,7 @@ class UsageTracker {
             }
         } else {
             // Redirect to dashboard billing
-            window.location.href = '/public/dashboard.html#billing';
+            window.location.href = '/dashboard#billing';
         }
 
         // Optionally auto-select the plan

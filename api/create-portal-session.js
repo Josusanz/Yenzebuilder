@@ -39,7 +39,7 @@ export default async function handler(req, res) {
         // Create portal session
         const portalSession = await stripe.billingPortal.sessions.create({
             customer: subscription.stripe_customer_id,
-            return_url: `${req.headers.origin}/dashboard.html`,
+            return_url: `https://builder.yenze.io/dashboard`,
         });
 
         res.status(200).json({ url: portalSession.url });
