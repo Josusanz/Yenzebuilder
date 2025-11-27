@@ -76,6 +76,68 @@ const ELEMENT_TEMPLATES = {
             </div>
         </section>
     `,
+    'mailchimp-form': `
+        <section style="padding: 3rem 2rem; background: linear-gradient(135deg, #FFE01B 0%, #F0C800 100%); text-align: center;">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h3 style="font-size: 1.75rem; color: #000; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
+                <p style="color: rgba(0,0,0,0.7); margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+                <form action="https://YOUR_MAILCHIMP_URL" method="post" id="mailchimpForm" target="_blank" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" name="EMAIL" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid rgba(0,0,0,0.2); background: white; color: #000; border-radius: 50px; font-size: 1rem;" onfocus="this.style.borderColor='#000'" onblur="this.style.borderColor='rgba(0,0,0,0.2)'">
+                    <input type="hidden" name="u" value="YOUR_U_VALUE">
+                    <input type="hidden" name="id" value="YOUR_AUDIENCE_ID">
+                    <button type="submit" style="padding: 1rem 2.5rem; background: #000; color: #FFE01B; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Subscribe</button>
+                </form>
+                <p style="margin-top: 1rem; color: rgba(0,0,0,0.5); font-size: 0.85rem;">Powered by Mailchimp</p>
+            </div>
+        </section>
+    `,
+    'convertkit-form': `
+        <section style="padding: 3rem 2rem; background: linear-gradient(135deg, #FB6970 0%, #E85A61 100%); text-align: center;">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h3 style="font-size: 1.75rem; color: white; margin: 0 0 0.5rem; font-weight: 700;">Subscribe to our Newsletter</h3>
+                <p style="color: rgba(255,255,255,0.9); margin: 0 0 2rem;">Get the latest updates delivered to your inbox.</p>
+                <form id="convertkitForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" name="email" placeholder="Enter your email" required style="flex: 1; min-width: 250px; padding: 1rem 1.25rem; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 50px; font-size: 1rem; backdrop-filter: blur(10px);" onfocus="this.style.borderColor='white'" onblur="this.style.borderColor='rgba(255,255,255,0.3)'">
+                    <button type="submit" style="padding: 1rem 2.5rem; background: white; color: #FB6970; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Subscribe</button>
+                </form>
+                <div id="convertkit-message" style="margin-top: 1rem; color: white; font-weight: 500;"></div>
+                <script>
+                    document.getElementById('convertkitForm').addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const email = this.querySelector('[name="email"]').value;
+                        const messageDiv = document.getElementById('convertkit-message');
+                        const button = this.querySelector('button');
+
+                        button.disabled = true;
+                        button.textContent = 'Subscribing...';
+
+                        try {
+                            const response = await fetch('https://api.convertkit.com/v3/forms/YOUR_FORM_ID/subscribe', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    api_key: 'YOUR_API_KEY',
+                                    email: email
+                                })
+                            });
+
+                            if (response.ok) {
+                                messageDiv.textContent = '✓ Thanks for subscribing!';
+                                this.reset();
+                            } else {
+                                messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                            }
+                        } catch (error) {
+                            messageDiv.textContent = '✗ Something went wrong. Please try again.';
+                        } finally {
+                            button.disabled = false;
+                            button.textContent = 'Subscribe';
+                        }
+                    });
+                </script>
+            </div>
+        </section>
+    `,
     'navbar': `
         <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 3rem; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000;">
             <div style="font-size: 1.5rem; font-weight: 700; color: #667eea;">YENZE</div>
@@ -2253,6 +2315,8 @@ class YenzeBuilder {
         const elementNames = {
             'contact-form': 'Contact Form',
             'newsletter-form': 'Newsletter Form',
+            'mailchimp-form': 'Mailchimp Newsletter',
+            'convertkit-form': 'ConvertKit Newsletter',
             'navbar': 'Navigation Bar',
             'footer': 'Footer',
             'hero': 'Hero Section',
@@ -2325,6 +2389,8 @@ class YenzeBuilder {
         const elementNames = {
             'contact-form': 'Contact Form',
             'newsletter-form': 'Newsletter Form',
+            'mailchimp-form': 'Mailchimp Newsletter',
+            'convertkit-form': 'ConvertKit Newsletter',
             'navbar': 'Navigation Bar',
             'footer': 'Footer',
             'hero': 'Hero Section',
