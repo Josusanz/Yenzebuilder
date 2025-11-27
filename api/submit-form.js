@@ -1,6 +1,6 @@
 // API Route for handling contact form submissions
 // Uses Resend to send emails to site owners
-// v1.2 - Fixed database insert and error handling
+// v1.3 - Debug mode enabled
 
 const { createClient } = require('@supabase/supabase-js');
 const { Resend } = require('resend');
