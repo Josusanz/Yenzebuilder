@@ -3772,9 +3772,11 @@
             document.getElementById('mobileLoadHtmlBtn')?.addEventListener('click', () => {
                 const htmlCode = document.getElementById('mobileHtmlPaste')?.value;
                 if (htmlCode && htmlCode.trim()) {
-                    // Use the same logic as desktop
-                    if (typeof app !== 'undefined' && app.loadHtml) {
-                        app.loadHtml(htmlCode);
+                    // Use the same logic as desktop - loadHTML with uppercase
+                    if (typeof app !== 'undefined' && app.loadHTML) {
+                        app.loadHTML(htmlCode);
+                        closeMobilePanel();
+                        document.getElementById('mobileHtmlPaste').value = '';
                     } else {
                         // Fallback: set in desktop textarea and click load
                         const desktopPaste = document.getElementById('htmlPaste');
@@ -3782,10 +3784,9 @@
                             desktopPaste.value = htmlCode;
                         }
                         document.getElementById('loadHtmlBtn')?.click();
+                        closeMobilePanel();
+                        document.getElementById('mobileHtmlPaste').value = '';
                     }
-                    closeMobilePanel();
-                    // Clear the textarea
-                    document.getElementById('mobileHtmlPaste').value = '';
                 } else {
                     alert('Please paste HTML code first');
                 }
