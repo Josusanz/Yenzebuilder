@@ -1,6 +1,6 @@
 // API Route for handling contact form submissions
 // Uses Resend to send emails to site owners
-// v1.3 - Debug mode enabled
+// v1.4 - Webhook reconnected, forcing new deploy
 
 const { createClient } = require('@supabase/supabase-js');
 const { Resend } = require('resend');
