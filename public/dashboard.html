@@ -41,6 +41,13 @@
                     </svg>
                     My Projects
                 </a>
+                <a href="#messages" class="sidebar-item" data-section="messages">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Messages
+                    <span class="messages-badge" id="messagesBadge" style="display: none; margin-left: auto; background: #EF4444; color: white; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;">0</span>
+                </a>
                 <a href="#analytics" class="sidebar-item" id="analyticsSidebarItem" data-section="analytics">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="20" x2="12" y2="10"></line>
@@ -103,6 +110,57 @@
                         <div class="loading-spinner"></div>
                         <p>Loading your projects...</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messagesSection" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Messages</h2>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <select id="messagesProjectFilter" class="filter-select" onchange="dashboardApp.filterMessages()">
+                            <option value="all">All Projects</option>
+                        </select>
+                        <button class="btn-secondary" onclick="dashboardApp.markAllAsRead()" id="markAllReadBtn" style="display: none;">
+                            Mark all as read
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="padding: 16px;">
+                        <div class="stat-info">
+                            <h3 id="totalMessages" style="font-size: 28px; margin: 0;">0</h3>
+                            <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">Total Messages</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 16px;">
+                        <div class="stat-info">
+                            <h3 id="unreadMessages" style="font-size: 28px; margin: 0; color: #0066FF;">0</h3>
+                            <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">Unread</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="padding: 16px;">
+                        <div class="stat-info">
+                            <h3 id="thisMonthMessages" style="font-size: 28px; margin: 0;">0</h3>
+                            <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">This Month</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="messagesList" class="messages-list">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Loading messages...</p>
+                    </div>
+                </div>
+
+                <div id="noMessagesState" class="empty-state" style="display: none; text-align: center; padding: 60px 20px;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" style="margin-bottom: 16px;">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <h3 style="margin: 0 0 8px; color: #334155; font-size: 18px;">No messages yet</h3>
+                    <p style="margin: 0; color: #64748b; font-size: 14px;">When visitors submit forms on your sites, their messages will appear here.</p>
                 </div>
             </section>
 

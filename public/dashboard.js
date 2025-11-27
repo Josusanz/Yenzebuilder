@@ -6,6 +6,7 @@ class DashboardApp {
         this.projects = [];
         this.subscriptions = [];
         this.domains = [];
+        this.messages = [];
         this.analytics = {};
         this.currentSection = 'projects';
         this.pendingAvatarUpdate = null;
@@ -32,6 +33,9 @@ class DashboardApp {
             this.setupEventListeners();
             this.updateUserProfile();
             this.loadCurrentPlan();
+
+            // Load unread messages count for badge
+            this.loadUnreadCount();
 
             // Load initial section (projects)
             this.switchSection('projects');
@@ -313,6 +317,7 @@ class DashboardApp {
 
         const sectionMap = {
             'projects': 'projectsSection',
+            'messages': 'messagesSection',
             'analytics': 'analyticsSection',
             'domains': 'domainsSection',
             'billing': 'billingSection',
@@ -328,6 +333,9 @@ class DashboardApp {
         switch (section) {
             case 'projects':
                 this.loadProjects();
+                break;
+            case 'messages':
+                this.loadMessages();
                 break;
             case 'analytics':
                 this.loadAnalytics();
@@ -1615,6 +1623,401 @@ class DashboardApp {
         setTimeout(() => {
             toast.remove();
         }, 4000);
+    }
+
+    // =====================================================
+    // Messages Section
+    // =====================================================
+
+    async loadMessages() {
+        const listContainer = document.getElementById('messagesList');
+        const noMessagesState = document.getElementById('noMessagesState');
+
+        listContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading messages...</p></div>';
+        noMessagesState.style.display = 'none';
+
+        try {
+            // First, get user's projects to filter messages
+            const { data: projects } = await supabaseClient.client
+                .from('projects')
+                .select('id, name')
+                .eq('user_id', this.currentUser.id);
+
+            if (!projects || projects.length === 0) {
+                listContainer.innerHTML = '';
+                noMessagesState.style.display = 'block';
+                this.updateMessageStats([], []);
+                return;
+            }
+
+            const projectIds = projects.map(p => p.id);
+            const projectMap = {};
+            projects.forEach(p => { projectMap[p.id] = p.name || 'Untitled Project'; });
+
+            // Populate project filter
+            const filterSelect = document.getElementById('messagesProjectFilter');
+            filterSelect.innerHTML = '<option value="all">All Projects</option>';
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name || 'Untitled Project';
+                filterSelect.appendChild(option);
+            });
+
+            // Get messages for user's projects
+            const { data: messages, error } = await supabaseClient.client
+                .from('form_submissions')
+                .select('*')
+                .in('project_id', projectIds)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            this.messages = messages || [];
+
+            // Update stats
+            this.updateMessageStats(this.messages, projects);
+
+            // Render messages
+            this.renderMessages(this.messages, projectMap);
+
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            listContainer.innerHTML = `<p style="text-align: center; color: #dc2626; padding: 20px;">Error loading messages: ${error.message}</p>`;
+        }
+    }
+
+    updateMessageStats(messages, projects) {
+        const totalEl = document.getElementById('totalMessages');
+        const unreadEl = document.getElementById('unreadMessages');
+        const thisMonthEl = document.getElementById('thisMonthMessages');
+        const badge = document.getElementById('messagesBadge');
+        const markAllBtn = document.getElementById('markAllReadBtn');
+
+        const total = messages.length;
+        const unread = messages.filter(m => !m.read).length;
+
+        // Calculate this month's messages
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const thisMonth = messages.filter(m => new Date(m.created_at) >= startOfMonth).length;
+
+        if (totalEl) totalEl.textContent = total;
+        if (unreadEl) unreadEl.textContent = unread;
+        if (thisMonthEl) thisMonthEl.textContent = thisMonth;
+
+        // Update badge
+        if (badge) {
+            if (unread > 0) {
+                badge.textContent = unread > 99 ? '99+' : unread;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Show/hide mark all as read button
+        if (markAllBtn) {
+            markAllBtn.style.display = unread > 0 ? 'block' : 'none';
+        }
+    }
+
+    renderMessages(messages, projectMap) {
+        const listContainer = document.getElementById('messagesList');
+        const noMessagesState = document.getElementById('noMessagesState');
+
+        if (messages.length === 0) {
+            listContainer.innerHTML = '';
+            noMessagesState.style.display = 'block';
+            return;
+        }
+
+        noMessagesState.style.display = 'none';
+
+        const messagesHTML = messages.map(message => {
+            const initials = this.getInitials(message.name || message.email);
+            const projectName = message.project_id ? (projectMap[message.project_id] || 'Unknown Project') : 'Unknown';
+            const date = this.formatMessageDate(message.created_at);
+            const isUnread = !message.read;
+
+            return `
+                <div class="message-card ${isUnread ? 'unread' : ''}" onclick="dashboardApp.viewMessage('${message.id}')">
+                    <div class="message-header">
+                        <div class="message-sender">
+                            <div class="message-avatar">${initials}</div>
+                            <div class="message-sender-info">
+                                <h4>${this.escapeHtml(message.name || 'Anonymous')}</h4>
+                                <p>${this.escapeHtml(message.email)}</p>
+                            </div>
+                        </div>
+                        <div class="message-meta">
+                            <div class="message-date">${date}</div>
+                            <span class="message-project">${this.escapeHtml(projectName)}</span>
+                        </div>
+                    </div>
+                    <div class="message-preview">${this.escapeHtml(message.message)}</div>
+                    <div class="message-actions" onclick="event.stopPropagation()">
+                        <a href="mailto:${message.email}" class="message-action-btn primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Reply
+                        </a>
+                        ${isUnread ? `
+                            <button class="message-action-btn" onclick="dashboardApp.markAsRead('${message.id}')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Mark as read
+                            </button>
+                        ` : ''}
+                        <button class="message-action-btn" onclick="dashboardApp.deleteMessage('${message.id}')" style="color: #EF4444;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        listContainer.innerHTML = messagesHTML;
+    }
+
+    async viewMessage(messageId) {
+        const message = this.messages.find(m => m.id === messageId);
+        if (!message) return;
+
+        // Mark as read if not already
+        if (!message.read) {
+            await this.markAsRead(messageId);
+        }
+
+        // Get project name
+        let projectName = 'Unknown Project';
+        if (message.project_id) {
+            const { data: project } = await supabaseClient.client
+                .from('projects')
+                .select('name')
+                .eq('id', message.project_id)
+                .single();
+            if (project) projectName = project.name || 'Untitled Project';
+        }
+
+        const initials = this.getInitials(message.name || message.email);
+        const date = new Date(message.created_at).toLocaleString();
+
+        const modalHTML = `
+            <div id="messageDetailModal" class="modal" style="display: flex;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <span class="close" onclick="document.getElementById('messageDetailModal').remove()">&times;</span>
+
+                    <div class="message-detail">
+                        <div class="message-detail-header">
+                            <div class="message-detail-sender">
+                                <div class="message-detail-avatar">${initials}</div>
+                                <div class="message-detail-info">
+                                    <h3>${this.escapeHtml(message.name || 'Anonymous')}</h3>
+                                    <p>${this.escapeHtml(message.email)}</p>
+                                    ${message.phone ? `<p style="color: #94A3B8; font-size: 13px;">Phone: ${this.escapeHtml(message.phone)}</p>` : ''}
+                                </div>
+                            </div>
+                            <div class="message-detail-meta">
+                                <div class="message-detail-date">${date}</div>
+                                <span class="message-detail-project">${this.escapeHtml(projectName)}</span>
+                            </div>
+                        </div>
+
+                        ${message.subject ? `<h4 style="margin-bottom: 12px; color: #0F172A;">${this.escapeHtml(message.subject)}</h4>` : ''}
+
+                        <div class="message-detail-content">
+                            <p>${this.escapeHtml(message.message)}</p>
+                        </div>
+
+                        ${message.custom_fields ? `
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="font-size: 14px; color: #64748B; margin-bottom: 12px;">Additional Information</h4>
+                                <div style="background: #F8FAFC; border-radius: 8px; padding: 16px;">
+                                    ${Object.entries(message.custom_fields).map(([key, value]) => `
+                                        <div style="margin-bottom: 8px;">
+                                            <strong style="color: #334155;">${this.escapeHtml(key.replace(/_/g, ' '))}:</strong>
+                                            <span style="color: #64748B; margin-left: 8px;">${this.escapeHtml(String(value))}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="message-detail-actions">
+                            <a href="mailto:${message.email}?subject=Re: ${encodeURIComponent(message.subject || 'Your message')}" class="btn-primary" style="text-decoration: none;">
+                                Reply by Email
+                            </a>
+                            <button class="btn-secondary" onclick="dashboardApp.deleteMessage('${message.id}'); document.getElementById('messageDetailModal').remove();">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async markAsRead(messageId) {
+        try {
+            const { error } = await supabaseClient.client
+                .from('form_submissions')
+                .update({ read: true })
+                .eq('id', messageId);
+
+            if (error) throw error;
+
+            // Update local state
+            const message = this.messages.find(m => m.id === messageId);
+            if (message) message.read = true;
+
+            // Re-render
+            this.loadMessages();
+
+        } catch (error) {
+            console.error('Error marking message as read:', error);
+        }
+    }
+
+    async markAllAsRead() {
+        try {
+            const unreadIds = this.messages.filter(m => !m.read).map(m => m.id);
+
+            if (unreadIds.length === 0) return;
+
+            const { error } = await supabaseClient.client
+                .from('form_submissions')
+                .update({ read: true })
+                .in('id', unreadIds);
+
+            if (error) throw error;
+
+            this.showToast('All messages marked as read', 'success');
+            this.loadMessages();
+
+        } catch (error) {
+            console.error('Error marking all as read:', error);
+            this.showToast('Failed to mark messages as read', 'error');
+        }
+    }
+
+    async deleteMessage(messageId) {
+        if (!confirm('Are you sure you want to delete this message?')) return;
+
+        try {
+            const { error } = await supabaseClient.client
+                .from('form_submissions')
+                .delete()
+                .eq('id', messageId);
+
+            if (error) throw error;
+
+            this.showToast('Message deleted', 'success');
+            this.loadMessages();
+
+        } catch (error) {
+            console.error('Error deleting message:', error);
+            this.showToast('Failed to delete message', 'error');
+        }
+    }
+
+    filterMessages() {
+        const filterValue = document.getElementById('messagesProjectFilter').value;
+
+        // Get project map
+        const projectMap = {};
+        this.projects.forEach(p => { projectMap[p.id] = p.name || 'Untitled Project'; });
+
+        let filteredMessages = this.messages;
+        if (filterValue !== 'all') {
+            filteredMessages = this.messages.filter(m => m.project_id === filterValue);
+        }
+
+        this.renderMessages(filteredMessages, projectMap);
+    }
+
+    getInitials(name) {
+        if (!name) return '?';
+        const parts = name.split(' ').filter(p => p.length > 0);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.substring(0, 2).toUpperCase();
+    }
+
+    formatMessageDate(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diff = now - date;
+
+        // Less than 24 hours
+        if (diff < 86400000) {
+            const hours = Math.floor(diff / 3600000);
+            if (hours < 1) {
+                const mins = Math.floor(diff / 60000);
+                return mins < 1 ? 'Just now' : `${mins}m ago`;
+            }
+            return `${hours}h ago`;
+        }
+
+        // Less than 7 days
+        if (diff < 604800000) {
+            const days = Math.floor(diff / 86400000);
+            return `${days}d ago`;
+        }
+
+        // Otherwise show date
+        return date.toLocaleDateString();
+    }
+
+    escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    async loadUnreadCount() {
+        try {
+            // Get user's projects
+            const { data: projects } = await supabaseClient.client
+                .from('projects')
+                .select('id')
+                .eq('user_id', this.currentUser.id);
+
+            if (!projects || projects.length === 0) return;
+
+            const projectIds = projects.map(p => p.id);
+
+            // Count unread messages
+            const { count } = await supabaseClient.client
+                .from('form_submissions')
+                .select('*', { count: 'exact', head: true })
+                .in('project_id', projectIds)
+                .eq('read', false);
+
+            // Update badge
+            const badge = document.getElementById('messagesBadge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        } catch (error) {
+            console.error('Error loading unread count:', error);
+        }
     }
 }
 
