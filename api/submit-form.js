@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
     if (project_id || site_id) {
       const { data: project } = await supabase
         .from('projects')
-        .select('id, name, user_id, subdomain, slug')
+        .select('id, name, user_id, subdomain_slug, public_slug')
         .eq('id', project_id || site_id)
         .single();
 
@@ -113,8 +113,8 @@ module.exports = async function handler(req, res) {
       if (subdomain) {
         const { data: project } = await supabase
           .from('projects')
-          .select('id, name, user_id, subdomain, slug')
-          .eq('subdomain', subdomain)
+          .select('id, name, user_id, subdomain_slug, public_slug')
+          .eq('subdomain_slug', subdomain)
           .single();
 
         if (project) {
@@ -123,8 +123,8 @@ module.exports = async function handler(req, res) {
       } else if (slug) {
         const { data: project } = await supabase
           .from('projects')
-          .select('id, name, user_id, subdomain, slug')
-          .eq('slug', slug)
+          .select('id, name, user_id, subdomain_slug, public_slug')
+          .eq('public_slug', slug)
           .single();
 
         if (project) {
@@ -133,24 +133,32 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Get owner email from user profile
+    // Get owner email from auth.users (most reliable source)
     if (projectData && projectData.user_id) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('email, full_name')
-        .eq('id', projectData.user_id)
-        .single();
-
-      if (profile) {
-        ownerEmail = profile.email;
-        ownerName = profile.full_name;
+      try {
+        // Try to get user from auth.users using admin API
+        const { data: { user }, error: authError } = await supabase.auth.admin.getUserById(projectData.user_id);
+        if (user && !authError) {
+          ownerEmail = user.email;
+          ownerName = user.user_metadata?.full_name || user.user_metadata?.name || null;
+          console.log('[Submit Form] Found user email from auth:', ownerEmail);
+        }
+      } catch (authErr) {
+        console.log('[Submit Form] Auth lookup error:', authErr.message);
       }
 
-      // If no email in profile, try auth.users
+      // Fallback: try profiles table if auth lookup failed
       if (!ownerEmail) {
-        const { data: { user } } = await supabase.auth.admin.getUserById(projectData.user_id);
-        if (user) {
-          ownerEmail = user.email;
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email, full_name')
+          .eq('id', projectData.user_id)
+          .single();
+
+        if (profile && profile.email) {
+          ownerEmail = profile.email;
+          ownerName = profile.full_name;
+          console.log('[Submit Form] Found user email from profiles:', ownerEmail);
         }
       }
     }
