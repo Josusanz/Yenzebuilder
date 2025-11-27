@@ -585,6 +585,7 @@ class YenzeBuilder {
                 this.makeEditable(iframeDoc);
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
+                this.adjustIframeHeight(canvas, iframeDoc);
                 this.showToast('✅ HTML loaded successfully!', 'success');
             } else {
                 // If not ready yet, wait a bit more
@@ -596,6 +597,33 @@ class YenzeBuilder {
         setTimeout(initializeEditor, 300);
 
         this.saveProject();
+    }
+
+    // Adjust iframe height to fit content (especially for mobile)
+    adjustIframeHeight(canvas, iframeDoc) {
+        try {
+            const body = iframeDoc.body;
+            const html = iframeDoc.documentElement;
+
+            if (body && html) {
+                // Get the full content height
+                const contentHeight = Math.max(
+                    body.scrollHeight,
+                    body.offsetHeight,
+                    html.clientHeight,
+                    html.scrollHeight,
+                    html.offsetHeight
+                );
+
+                // Set iframe height to content height (with a minimum)
+                const minHeight = window.innerWidth <= 768 ? 500 : 600;
+                canvas.style.height = Math.max(contentHeight + 50, minHeight) + 'px';
+
+                console.log('[Canvas] Adjusted iframe height to:', canvas.style.height);
+            }
+        } catch (e) {
+            console.log('[Canvas] Could not adjust iframe height:', e);
+        }
     }
 
     setupIframeKeyboardShortcuts(doc) {

@@ -2192,23 +2192,28 @@
 
             /* Canvas adjustments for mobile */
             .canvas-area {
-                padding: 12px;
-                padding-top: 68px;
-                padding-bottom: calc(72px + env(safe-area-inset-bottom));
+                padding: 8px;
+                padding-top: 60px;
+                padding-bottom: calc(70px + env(safe-area-inset-bottom));
+                overflow: auto;
+                -webkit-overflow-scrolling: touch;
             }
 
             .canvas-wrapper {
                 width: 100% !important;
-                min-height: calc(100vh - 140px) !important;
-                border-radius: 12px;
+                height: auto !important;
+                min-height: auto !important;
+                border-radius: 8px;
+                overflow: visible;
             }
 
             #canvas {
                 width: 100% !important;
-                height: 100% !important;
-                min-height: calc(100vh - 160px) !important;
-                border-radius: 12px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                height: auto !important;
+                min-height: 500px;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                display: block;
             }
 
             .empty-state {
