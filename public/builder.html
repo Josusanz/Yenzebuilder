@@ -2390,6 +2390,13 @@
     <!-- Mobile Navigation Bar -->
     <nav class="mobile-nav">
         <div class="mobile-nav-items">
+            <button class="mobile-nav-btn" data-panel="load">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span>Load</span>
+            </button>
             <button class="mobile-nav-btn" data-panel="elements">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="7" height="7"></rect>
@@ -2398,14 +2405,6 @@
                     <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
                 <span>Elements</span>
-            </button>
-            <button class="mobile-nav-btn" data-panel="layers">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                    <polyline points="2 17 12 22 22 17"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
-                <span>Layers</span>
             </button>
             <button class="mobile-nav-btn active" data-panel="canvas">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2433,6 +2432,45 @@
 
     <!-- Mobile Panel Overlay -->
     <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
+
+    <!-- Mobile Load HTML Panel -->
+    <div class="mobile-panel" id="mobileLoadPanel">
+        <div class="mobile-panel-header">
+            <h3>Load HTML</h3>
+            <button class="mobile-panel-close" onclick="closeMobilePanel()">×</button>
+        </div>
+        <div class="mobile-panel-content">
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; line-height: 1.5;">
+                Paste your HTML code from Gemini AI or any other source
+            </p>
+            <textarea id="mobileHtmlPaste" placeholder="Paste your HTML code here..."
+                style="width: 100%; min-height: 200px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: monospace; font-size: 12px; resize: vertical; background: var(--bg-secondary);"></textarea>
+            <button class="btn btn-primary" id="mobileLoadHtmlBtn"
+                style="width: 100%; margin-top: 16px; padding: 14px; font-size: 15px; font-weight: 600;">
+                Load HTML
+            </button>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Or import from file:</p>
+                <button class="btn btn-secondary" onclick="document.getElementById('htmlFileInput').click()"
+                    style="width: 100%; padding: 12px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px; vertical-align: middle;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Import HTML File
+                </button>
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 12px;">Need help creating HTML?</p>
+                <a href="/prompt-generator" class="btn btn-secondary" style="width: 100%; padding: 12px; text-decoration: none; display: block; text-align: center;">
+                    AI Prompt Generator →
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Mobile Elements Panel -->
     <div class="mobile-panel" id="mobileElementsPanel">
@@ -3729,12 +3767,52 @@
             document.getElementById('mobileRedoBtn')?.addEventListener('click', () => {
                 if (typeof app !== 'undefined') app.redo();
             });
+
+            // Mobile Load HTML button
+            document.getElementById('mobileLoadHtmlBtn')?.addEventListener('click', () => {
+                const htmlCode = document.getElementById('mobileHtmlPaste')?.value;
+                if (htmlCode && htmlCode.trim()) {
+                    // Use the same logic as desktop
+                    if (typeof app !== 'undefined' && app.loadHtml) {
+                        app.loadHtml(htmlCode);
+                    } else {
+                        // Fallback: set in desktop textarea and click load
+                        const desktopPaste = document.getElementById('htmlPaste');
+                        if (desktopPaste) {
+                            desktopPaste.value = htmlCode;
+                        }
+                        document.getElementById('loadHtmlBtn')?.click();
+                    }
+                    closeMobilePanel();
+                    // Clear the textarea
+                    document.getElementById('mobileHtmlPaste').value = '';
+                } else {
+                    alert('Please paste HTML code first');
+                }
+            });
+
+            // Auto-open Load panel on mobile if no project loaded
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    // Check if there's no content loaded
+                    const canvas = document.getElementById('canvas');
+                    const hasContent = canvas && canvas.innerHTML.trim() && !canvas.innerHTML.includes('Drop elements here');
+                    if (!hasContent) {
+                        openMobilePanel('load');
+                        // Update nav button state
+                        document.querySelectorAll('.mobile-nav-btn').forEach(b => {
+                            b.classList.toggle('active', b.dataset.panel === 'load');
+                        });
+                    }
+                }, 500);
+            }
         }
 
         function openMobilePanel(panel) {
             closeMobilePanel();
 
             const panelMap = {
+                'load': 'mobileLoadPanel',
                 'elements': 'mobileElementsPanel',
                 'layers': 'mobileLayersPanel',
                 'style': 'mobileStylePanel',
