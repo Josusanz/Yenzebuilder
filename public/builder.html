@@ -1972,10 +1972,559 @@
             background: #fafafa;
             border-color: #d0d0d0;
         }
+
+        /* =====================================================
+           MOBILE RESPONSIVE STYLES
+           ===================================================== */
+
+        /* Mobile Navigation Bar */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            z-index: 10000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .mobile-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+
+        .mobile-nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        .mobile-nav-btn.active {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .mobile-nav-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+            z-index: 10000;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-header .logo {
+            font-size: 1rem;
+        }
+
+        .mobile-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mobile-header-actions .btn {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        /* Mobile Panel Overlay */
+        .mobile-panel-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+        }
+
+        .mobile-panel-overlay.active {
+            display: block;
+        }
+
+        /* Mobile Panels */
+        .mobile-panel {
+            display: none;
+            position: fixed;
+            bottom: 60px;
+            bottom: calc(60px + env(safe-area-inset-bottom));
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-radius: 20px 20px 0 0;
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .mobile-panel.active {
+            transform: translateY(0);
+        }
+
+        .mobile-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 1;
+        }
+
+        .mobile-panel-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .mobile-panel-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-panel-content {
+            padding: 16px 20px;
+        }
+
+        /* Mobile drag handle */
+        .mobile-panel::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 1024px) {
+            /* Hide desktop sidebars */
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+
+            /* Adjust grid for tablet */
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--topbar-height) 1fr;
+            }
+
+            /* Canvas takes full width */
+            .canvas-container {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Show mobile UI */
+            .mobile-nav,
+            .mobile-header {
+                display: flex;
+            }
+
+            .mobile-panel {
+                display: block;
+            }
+
+            /* Hide desktop topbar */
+            .topbar {
+                display: none;
+            }
+
+            /* Adjust app container */
+            .app-container {
+                grid-template-rows: 56px 1fr;
+                padding-bottom: calc(60px + env(safe-area-inset-bottom));
+            }
+
+            /* Hide desktop sidebars completely */
+            .left-sidebar,
+            .right-sidebar {
+                display: none !important;
+            }
+
+            /* Canvas adjustments */
+            .canvas-container {
+                padding: 12px;
+                padding-top: 68px;
+                padding-bottom: calc(72px + env(safe-area-inset-bottom));
+            }
+
+            #canvas {
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Mobile elements grid */
+            .mobile-elements-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .mobile-element-card {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 16px 8px;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.2s;
+                text-align: center;
+            }
+
+            .mobile-element-card:active {
+                transform: scale(0.95);
+                background: var(--accent-light);
+                border-color: var(--accent);
+            }
+
+            .mobile-element-card svg {
+                width: 28px;
+                height: 28px;
+                margin-bottom: 8px;
+                color: var(--text-secondary);
+            }
+
+            .mobile-element-card span {
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--text-secondary);
+            }
+
+            /* Mobile property controls */
+            .mobile-property-group {
+                margin-bottom: 20px;
+            }
+
+            .mobile-property-group label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-secondary);
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .mobile-property-input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 14px;
+                background: var(--bg-tertiary);
+                transition: all 0.2s;
+            }
+
+            .mobile-property-input:focus {
+                outline: none;
+                border-color: var(--accent);
+                background: var(--bg-secondary);
+            }
+
+            /* Mobile color picker */
+            .mobile-color-picker {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .mobile-color-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                border: 2px solid var(--border);
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .mobile-color-btn:active,
+            .mobile-color-btn.active {
+                border-color: var(--accent);
+                transform: scale(1.1);
+            }
+
+            /* Mobile action buttons */
+            .mobile-action-row {
+                display: flex;
+                gap: 12px;
+                margin-top: 16px;
+            }
+
+            .mobile-action-btn {
+                flex: 1;
+                padding: 14px;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                background: var(--bg-tertiary);
+                color: var(--text);
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .mobile-action-btn:active {
+                transform: scale(0.98);
+            }
+
+            .mobile-action-btn.primary {
+                background: var(--accent);
+                color: white;
+                border-color: var(--accent);
+            }
+
+            .mobile-action-btn.danger {
+                color: #EF4444;
+                border-color: #FEE2E2;
+                background: #FEF2F2;
+            }
+
+            /* Adjust modals for mobile */
+            .modal-content,
+            .subdomain-modal-content,
+            .publish-options-content,
+            .web3forms-content {
+                margin: 16px;
+                max-height: calc(100vh - 32px);
+                border-radius: 16px;
+            }
+
+            /* Toast position on mobile */
+            .toast-container {
+                bottom: calc(80px + env(safe-area-inset-bottom));
+                left: 16px;
+                right: 16px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 375px) {
+            .mobile-elements-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .mobile-nav-btn {
+                padding: 8px 12px;
+            }
+
+            .mobile-nav-btn span {
+                font-size: 9px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            YENZE
+        </div>
+        <div class="mobile-header-actions">
+            <button class="btn btn-secondary" id="mobilePreviewBtn">Preview</button>
+            <button class="btn btn-primary" id="mobilePublishBtn">Publish</button>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <nav class="mobile-nav">
+        <div class="mobile-nav-items">
+            <button class="mobile-nav-btn" data-panel="elements">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Elements</span>
+            </button>
+            <button class="mobile-nav-btn" data-panel="layers">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <span>Layers</span>
+            </button>
+            <button class="mobile-nav-btn active" data-panel="canvas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                </svg>
+                <span>Canvas</span>
+            </button>
+            <button class="mobile-nav-btn" data-panel="style">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Style</span>
+            </button>
+            <button class="mobile-nav-btn" data-panel="more">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+                <span>More</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Panel Overlay -->
+    <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
+
+    <!-- Mobile Elements Panel -->
+    <div class="mobile-panel" id="mobileElementsPanel">
+        <div class="mobile-panel-header">
+            <h3>Add Elements</h3>
+            <button class="mobile-panel-close" onclick="closeMobilePanel()">×</button>
+        </div>
+        <div class="mobile-panel-content">
+            <div class="mobile-elements-grid" id="mobileElementsGrid">
+                <!-- Elements will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Layers Panel -->
+    <div class="mobile-panel" id="mobileLayersPanel">
+        <div class="mobile-panel-header">
+            <h3>Layers</h3>
+            <button class="mobile-panel-close" onclick="closeMobilePanel()">×</button>
+        </div>
+        <div class="mobile-panel-content">
+            <div id="mobileLayersTree">
+                <p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Import HTML to see layers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Style Panel -->
+    <div class="mobile-panel" id="mobileStylePanel">
+        <div class="mobile-panel-header">
+            <h3>Style Element</h3>
+            <button class="mobile-panel-close" onclick="closeMobilePanel()">×</button>
+        </div>
+        <div class="mobile-panel-content" id="mobileStyleContent">
+            <p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Select an element to edit its style</p>
+        </div>
+    </div>
+
+    <!-- Mobile More Panel -->
+    <div class="mobile-panel" id="mobileMorePanel">
+        <div class="mobile-panel-header">
+            <h3>More Options</h3>
+            <button class="mobile-panel-close" onclick="closeMobilePanel()">×</button>
+        </div>
+        <div class="mobile-panel-content">
+            <div class="mobile-action-row">
+                <button class="mobile-action-btn" onclick="document.getElementById('htmlFileInput').click()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Import HTML
+                </button>
+            </div>
+            <div class="mobile-action-row">
+                <button class="mobile-action-btn" id="mobileCodeBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    View Code
+                </button>
+            </div>
+            <div class="mobile-action-row">
+                <button class="mobile-action-btn" id="mobileUndoBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v6h6"></path>
+                        <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+                    </svg>
+                    Undo
+                </button>
+                <button class="mobile-action-btn" id="mobileRedoBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 7v6h-6"></path>
+                        <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+                    </svg>
+                    Redo
+                </button>
+            </div>
+            <div class="mobile-action-row">
+                <button class="mobile-action-btn" onclick="window.location.href='/dashboard'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Top Bar -->
         <div class="topbar">
@@ -3103,6 +3652,273 @@
             </div>
         </div>
     </div>
+
+    <!-- Mobile Navigation Script -->
+    <script>
+        // Mobile UI functionality
+        let currentMobilePanel = null;
+
+        // Mobile elements data
+        const mobileElements = [
+            { id: 'hero', name: 'Hero', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>' },
+            { id: 'navbar', name: 'Navbar', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>' },
+            { id: 'footer', name: 'Footer', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="15" x2="21" y2="15"/></svg>' },
+            { id: 'card', name: 'Cards', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' },
+            { id: 'cta', name: 'CTA', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' },
+            { id: 'contact-form', name: 'Contact', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' },
+            { id: 'newsletter-form', name: 'Newsletter', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>' },
+            { id: 'two-columns', name: '2 Columns', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18"/><rect x="13" y="3" width="8" height="18"/></svg>' },
+            { id: 'three-columns', name: '3 Columns', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18"/><rect x="9.5" y="3" width="5" height="18"/><rect x="16" y="3" width="5" height="18"/></svg>' }
+        ];
+
+        // Initialize mobile UI
+        document.addEventListener('DOMContentLoaded', () => {
+            initMobileUI();
+        });
+
+        function initMobileUI() {
+            // Populate mobile elements grid
+            const grid = document.getElementById('mobileElementsGrid');
+            if (grid) {
+                grid.innerHTML = mobileElements.map(el => `
+                    <div class="mobile-element-card" onclick="addMobileElement('${el.id}')">
+                        ${el.icon}
+                        <span>${el.name}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Mobile nav buttons
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const panel = btn.dataset.panel;
+
+                    // Update active state
+                    document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    if (panel === 'canvas') {
+                        closeMobilePanel();
+                    } else {
+                        openMobilePanel(panel);
+                    }
+                });
+            });
+
+            // Close panel on overlay click
+            document.getElementById('mobilePanelOverlay')?.addEventListener('click', closeMobilePanel);
+
+            // Mobile button handlers
+            document.getElementById('mobilePreviewBtn')?.addEventListener('click', () => {
+                document.getElementById('previewBtn')?.click();
+            });
+
+            document.getElementById('mobilePublishBtn')?.addEventListener('click', () => {
+                document.getElementById('publishBtn')?.click();
+            });
+
+            document.getElementById('mobileCodeBtn')?.addEventListener('click', () => {
+                closeMobilePanel();
+                document.getElementById('codeViewBtn')?.click();
+            });
+
+            document.getElementById('mobileUndoBtn')?.addEventListener('click', () => {
+                if (typeof app !== 'undefined') app.undo();
+            });
+
+            document.getElementById('mobileRedoBtn')?.addEventListener('click', () => {
+                if (typeof app !== 'undefined') app.redo();
+            });
+        }
+
+        function openMobilePanel(panel) {
+            closeMobilePanel();
+
+            const panelMap = {
+                'elements': 'mobileElementsPanel',
+                'layers': 'mobileLayersPanel',
+                'style': 'mobileStylePanel',
+                'more': 'mobileMorePanel'
+            };
+
+            const panelId = panelMap[panel];
+            const panelEl = document.getElementById(panelId);
+            const overlay = document.getElementById('mobilePanelOverlay');
+
+            if (panelEl) {
+                // Update layers if opening layers panel
+                if (panel === 'layers') {
+                    updateMobileLayersTree();
+                }
+
+                // Update style panel if opening
+                if (panel === 'style') {
+                    updateMobileStylePanel();
+                }
+
+                panelEl.classList.add('active');
+                overlay?.classList.add('active');
+                currentMobilePanel = panelId;
+            }
+        }
+
+        function closeMobilePanel() {
+            document.querySelectorAll('.mobile-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('mobilePanelOverlay')?.classList.remove('active');
+
+            // Set canvas as active in nav
+            document.querySelectorAll('.mobile-nav-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.panel === 'canvas');
+            });
+
+            currentMobilePanel = null;
+        }
+
+        function addMobileElement(elementType) {
+            if (typeof app !== 'undefined') {
+                app.insertElementTemplate(elementType);
+                closeMobilePanel();
+                app.showToast(`✅ ${elementType} added`, 'success');
+            }
+        }
+
+        function updateMobileLayersTree() {
+            const container = document.getElementById('mobileLayersTree');
+            const desktopLayers = document.getElementById('layersTree');
+
+            if (container && desktopLayers) {
+                // Clone the desktop layers tree for mobile
+                container.innerHTML = desktopLayers.innerHTML ||
+                    '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Import HTML to see layers</p>';
+
+                // Add click handlers to layer items
+                container.querySelectorAll('.layer-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const elementId = item.dataset.elementId;
+                        if (elementId && typeof app !== 'undefined') {
+                            const canvas = document.getElementById('canvas');
+                            const iframeDoc = canvas?.contentDocument || canvas?.contentWindow?.document;
+                            const element = iframeDoc?.querySelector(`[data-yenze-id="${elementId}"]`);
+                            if (element) {
+                                app.selectElement(element);
+                                closeMobilePanel();
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function updateMobileStylePanel() {
+            const container = document.getElementById('mobileStyleContent');
+
+            if (!container || typeof app === 'undefined' || !app.selectedElement) {
+                if (container) {
+                    container.innerHTML = '<p style="color: var(--text-tertiary); text-align: center; padding: 20px;">Select an element to edit its style</p>';
+                }
+                return;
+            }
+
+            const el = app.selectedElement;
+            const styles = window.getComputedStyle(el);
+
+            container.innerHTML = `
+                <div class="mobile-property-group">
+                    <label>Text Content</label>
+                    <input type="text" class="mobile-property-input" id="mobileTextContent"
+                           value="${el.textContent?.substring(0, 100) || ''}"
+                           onchange="updateMobileText(this.value)">
+                </div>
+
+                <div class="mobile-property-group">
+                    <label>Background Color</label>
+                    <div class="mobile-color-picker">
+                        <input type="color" class="mobile-color-btn"
+                               value="${rgbToHex(styles.backgroundColor) || '#ffffff'}"
+                               onchange="updateMobileStyle('backgroundColor', this.value)">
+                        <button class="mobile-color-btn" style="background: transparent; border-style: dashed;"
+                                onclick="updateMobileStyle('backgroundColor', 'transparent')">∅</button>
+                    </div>
+                </div>
+
+                <div class="mobile-property-group">
+                    <label>Text Color</label>
+                    <input type="color" class="mobile-color-btn"
+                           value="${rgbToHex(styles.color) || '#000000'}"
+                           onchange="updateMobileStyle('color', this.value)">
+                </div>
+
+                <div class="mobile-property-group">
+                    <label>Font Size</label>
+                    <input type="range" class="mobile-property-input"
+                           min="8" max="72" value="${parseInt(styles.fontSize) || 16}"
+                           onchange="updateMobileStyle('fontSize', this.value + 'px')">
+                </div>
+
+                <div class="mobile-property-group">
+                    <label>Padding</label>
+                    <input type="range" class="mobile-property-input"
+                           min="0" max="100" value="${parseInt(styles.padding) || 0}"
+                           onchange="updateMobileStyle('padding', this.value + 'px')">
+                </div>
+
+                <div class="mobile-action-row">
+                    <button class="mobile-action-btn danger" onclick="deleteMobileElement()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Delete Element
+                    </button>
+                </div>
+            `;
+        }
+
+        function updateMobileText(value) {
+            if (typeof app !== 'undefined' && app.selectedElement) {
+                app.selectedElement.textContent = value;
+                app.updateHTML('Edit text');
+            }
+        }
+
+        function updateMobileStyle(property, value) {
+            if (typeof app !== 'undefined' && app.selectedElement) {
+                app.selectedElement.style[property] = value;
+                app.updateHTML(`Change ${property}`);
+            }
+        }
+
+        function deleteMobileElement() {
+            if (typeof app !== 'undefined' && app.selectedElement) {
+                app.deleteElement();
+                closeMobilePanel();
+            }
+        }
+
+        // Helper: RGB to Hex
+        function rgbToHex(rgb) {
+            if (!rgb || rgb === 'transparent' || rgb === 'rgba(0, 0, 0, 0)') return '#ffffff';
+            const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!match) return '#ffffff';
+            return '#' + [match[1], match[2], match[3]].map(x => {
+                const hex = parseInt(x).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        // Update mobile style panel when element is selected
+        if (typeof app !== 'undefined') {
+            const originalSelectElement = app.selectElement?.bind(app);
+            if (originalSelectElement) {
+                app.selectElement = function(el) {
+                    originalSelectElement(el);
+                    if (currentMobilePanel === 'mobileStylePanel') {
+                        updateMobileStylePanel();
+                    }
+                };
+            }
+        }
+    </script>
 </body>
 
 </html>
