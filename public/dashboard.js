@@ -1330,6 +1330,29 @@ class DashboardApp {
         const visitorCheck = PlanUtils.checkVisitorLimit(currentVisitors, plan);
         const visitorLevel = PlanUtils.getUsageLevel(visitorCheck.percentage);
 
+        // Get form submissions count for this month
+        let currentFormSubmissions = 0;
+        try {
+            const projectIds = this.projects.map(p => p.id);
+            if (projectIds.length > 0) {
+                const startOfMonth = new Date();
+                startOfMonth.setDate(1);
+                startOfMonth.setHours(0, 0, 0, 0);
+
+                const { count } = await supabaseClient.client
+                    .from('form_submissions')
+                    .select('*', { count: 'exact', head: true })
+                    .in('project_id', projectIds)
+                    .gte('created_at', startOfMonth.toISOString());
+
+                currentFormSubmissions = count || 0;
+            }
+        } catch (error) {
+            console.error('Error getting form submissions count:', error);
+        }
+        const formCheck = PlanUtils.checkFormSubmissionLimit(currentFormSubmissions, plan);
+        const formLevel = PlanUtils.getUsageLevel(formCheck.percentage);
+
         // Build HTML
         const usageHTML = `
             <div class="usage-limits">
@@ -1375,6 +1398,25 @@ class DashboardApp {
                         </div>
                     ` : ''}
                     ${visitorCheck.exceeded ? '<p class="limit-warning">⚠️ Visitor limit exceeded this month.</p>' : ''}
+                </div>
+
+                <!-- Form Messages -->
+                <div class="limit-item ${formLevel}">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Form Messages
+                        </span>
+                        <span class="limit-value">${currentFormSubmissions.toLocaleString()} / ${PlanUtils.formatLimit(limits.maxFormSubmissions)}</span>
+                    </div>
+                    ${limits.maxFormSubmissions !== -1 ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill ${formLevel}" style="width: ${Math.min(formCheck.percentage, 100)}%"></div>
+                        </div>
+                    ` : ''}
+                    ${formCheck.exceeded ? '<p class="limit-warning">⚠️ Monthly form submission limit reached.</p>' : ''}
                 </div>
 
                 <!-- Storage per Site -->

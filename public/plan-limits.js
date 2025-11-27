@@ -8,6 +8,7 @@ const PLAN_LIMITS = {
         maxVisitors: 1000,
         maxStorage: 10, // MB per site
         maxCustomDomains: 0,
+        maxFormSubmissions: 50, // Monthly form submissions
         hasSubdomain: false, // Only /s/slug URLs
         hasAnalytics: false,
         hasCodeExport: false,
@@ -26,6 +27,7 @@ const PLAN_LIMITS = {
         maxVisitors: 5000,
         maxStorage: 50, // MB per site
         maxCustomDomains: 1,
+        maxFormSubmissions: 500, // Monthly form submissions
         hasSubdomain: true, // yoursite.yenze.io
         hasAnalytics: true,
         hasCodeExport: false,
@@ -45,6 +47,7 @@ const PLAN_LIMITS = {
         maxVisitors: 25000,
         maxStorage: 500, // MB per site
         maxCustomDomains: -1, // Unlimited
+        maxFormSubmissions: 2000, // Monthly form submissions
         hasSubdomain: true,
         hasAnalytics: true,
         hasCodeExport: true,
@@ -65,6 +68,7 @@ const PLAN_LIMITS = {
         maxVisitors: -1, // Unlimited
         maxStorage: -1, // Unlimited
         maxCustomDomains: -1, // Unlimited
+        maxFormSubmissions: -1, // Unlimited
         hasSubdomain: true,
         hasAnalytics: true,
         hasCodeExport: true,
@@ -89,6 +93,7 @@ const PLAN_LIMITS = {
         maxVisitors: -1,
         maxStorage: -1,
         maxCustomDomains: -1,
+        maxFormSubmissions: -1, // Unlimited
         hasSubdomain: true,
         hasAnalytics: true,
         hasCodeExport: true,
@@ -193,6 +198,26 @@ const PlanUtils = {
             limit: limits.maxCustomDomains,
             current: currentDomainCount,
             remaining: limits.maxCustomDomains === -1 ? -1 : Math.max(0, limits.maxCustomDomains - currentDomainCount)
+        };
+    },
+
+    /**
+     * Check form submission limit
+     * @param {number} currentSubmissions - Current monthly form submissions
+     * @param {string} planName - Plan name
+     * @returns {object} { exceeded: boolean, limit: number, current: number, percentage: number }
+     */
+    checkFormSubmissionLimit(currentSubmissions, planName) {
+        const limits = this.getLimits(planName);
+        const exceeded = limits.maxFormSubmissions !== -1 && currentSubmissions >= limits.maxFormSubmissions;
+        const percentage = limits.maxFormSubmissions === -1 ? 0 : (currentSubmissions / limits.maxFormSubmissions) * 100;
+
+        return {
+            exceeded,
+            limit: limits.maxFormSubmissions,
+            current: currentSubmissions,
+            percentage: Math.min(percentage, 100),
+            remaining: limits.maxFormSubmissions === -1 ? -1 : Math.max(0, limits.maxFormSubmissions - currentSubmissions)
         };
     },
 
