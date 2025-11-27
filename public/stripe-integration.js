@@ -20,42 +20,70 @@ class StripeIntegration {
     }
 
     async createCheckoutSession(plan) {
+        console.log('[StripeIntegration] createCheckoutSession called with plan:', plan);
+
         if (!supabaseClient.isAuthenticated()) {
+            console.error('[StripeIntegration] User not authenticated');
             throw new Error('User must be authenticated');
         }
 
         try {
+            console.log('[StripeIntegration] Getting session...');
+            const sessionData = await supabaseClient.client.auth.getSession();
+            console.log('[StripeIntegration] Session data:', sessionData.data.session ? 'exists' : 'null');
+
+            const requestBody = {
+                plan: plan,
+                userId: supabaseClient.currentUser.id,
+                email: supabaseClient.currentUser.email
+            };
+            console.log('[StripeIntegration] Request body:', requestBody);
+
             // Call backend API to create Stripe checkout session
+            console.log('[StripeIntegration] Calling /api/create-checkout-session...');
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await supabaseClient.client.auth.getSession()).data.session.access_token}`
+                    'Authorization': `Bearer ${sessionData.data.session.access_token}`
                 },
-                body: JSON.stringify({
-                    plan: plan,
-                    userId: supabaseClient.currentUser.id,
-                    email: supabaseClient.currentUser.email
-                })
+                body: JSON.stringify(requestBody)
             });
 
+            console.log('[StripeIntegration] Response status:', response.status);
+            console.log('[StripeIntegration] Response ok:', response.ok);
+
             if (!response.ok) {
-                throw new Error('Failed to create checkout session');
+                const errorData = await response.json();
+                console.error('[StripeIntegration] Checkout session error:', errorData);
+                throw new Error(errorData.error || 'Failed to create checkout session');
             }
 
-            const { sessionId } = await response.json();
+            const responseData = await response.json();
+            console.log('[StripeIntegration] Response data:', responseData);
+
+            const { sessionId } = responseData;
+            console.log('[StripeIntegration] Session ID:', sessionId);
+
+            if (!this.stripe) {
+                console.error('[StripeIntegration] Stripe not initialized!');
+                throw new Error('Stripe not initialized');
+            }
 
             // Redirect to Stripe Checkout
+            console.log('[StripeIntegration] Redirecting to Stripe checkout...');
             const result = await this.stripe.redirectToCheckout({
                 sessionId: sessionId
             });
 
             if (result.error) {
+                console.error('[StripeIntegration] Stripe redirect error:', result.error);
                 throw new Error(result.error.message);
             }
 
         } catch (error) {
-            console.error('Checkout error:', error);
+            console.error('[StripeIntegration] Checkout error:', error);
+            console.error('[StripeIntegration] Error stack:', error.stack);
             throw error;
         }
     }
@@ -107,6 +135,7 @@ class StripeIntegration {
 
 // Create singleton instance
 const stripeIntegration = new StripeIntegration();
+window.stripeIntegration = stripeIntegration;
 
 // Helper function to handle successful checkout
 function handleCheckoutSuccess() {

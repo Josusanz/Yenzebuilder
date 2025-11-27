@@ -2340,54 +2340,395 @@ class YenzeBuilder {
     extractPageStyles(iframeDoc) {
         const styles = {
             primaryColor: '#667eea',
+            secondaryColor: '#764ba2',
             textColor: '#1a1a2e',
+            labelColor: '#374151',
             backgroundColor: '#ffffff',
+            sectionBgColor: '#f9fafb',
             fontFamily: 'system-ui, -apple-system, sans-serif',
             borderRadius: '8px',
-            buttonStyle: 'solid'
+            inputBorderColor: '#d1d5db',
+            inputPadding: '0.75rem',
+            headingColor: '#1a1a2e',
+            headingFontWeight: '700',
+            buttonStyle: 'solid',
+            isDarkMode: false
         };
 
         try {
-            // Check body and common elements for colors and fonts
             const body = iframeDoc.body;
             const computedBody = iframeDoc.defaultView.getComputedStyle(body);
 
             // Get font family
             styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
 
-            // Find primary color from buttons, links, or headings
-            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"]');
-            if (buttons.length > 0) {
-                const btnStyle = iframeDoc.defaultView.getComputedStyle(buttons[0]);
-                const bgColor = btnStyle.backgroundColor;
-                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-                    styles.primaryColor = bgColor;
+            // Get background color and detect dark mode
+            const bodyBg = computedBody.backgroundColor;
+            if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
+                styles.backgroundColor = bodyBg;
+                // Detect dark mode by checking if background is dark
+                const rgb = bodyBg.match(/\d+/g);
+                if (rgb && rgb.length >= 3) {
+                    const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+                    styles.isDarkMode = brightness < 128;
                 }
-                styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
+            }
+
+            // Find primary color from buttons, links, or accent elements
+            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"], a[class*="btn"]');
+            if (buttons.length > 0) {
+                for (const btn of buttons) {
+                    const btnStyle = iframeDoc.defaultView.getComputedStyle(btn);
+                    const bgColor = btnStyle.backgroundColor;
+                    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent' && bgColor !== 'rgb(255, 255, 255)') {
+                        styles.primaryColor = bgColor;
+                        styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
+                        break;
+                    }
+                }
+            }
+
+            // Check links for accent color if no button found
+            if (styles.primaryColor === '#667eea') {
+                const links = iframeDoc.querySelectorAll('a');
+                for (const link of links) {
+                    const linkStyle = iframeDoc.defaultView.getComputedStyle(link);
+                    const color = linkStyle.color;
+                    if (color && color !== 'rgb(0, 0, 238)' && color !== 'rgb(0, 0, 0)') {
+                        styles.primaryColor = color;
+                        break;
+                    }
+                }
             }
 
             // Check for existing forms to match their style
             const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
             if (existingInputs.length > 0) {
                 const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
-                styles.borderRadius = inputStyle.borderRadius || styles.borderRadius;
+                if (inputStyle.borderRadius && inputStyle.borderRadius !== '0px') {
+                    styles.borderRadius = inputStyle.borderRadius;
+                }
+                if (inputStyle.borderColor) {
+                    styles.inputBorderColor = inputStyle.borderColor;
+                }
+                if (inputStyle.padding) {
+                    styles.inputPadding = inputStyle.padding;
+                }
             }
 
             // Get text color from paragraphs or body
-            const paragraphs = iframeDoc.querySelectorAll('p, div');
+            const paragraphs = iframeDoc.querySelectorAll('p');
             if (paragraphs.length > 0) {
                 const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
-                styles.textColor = pStyle.color || styles.textColor;
+                if (pStyle.color) {
+                    styles.textColor = pStyle.color;
+                }
             }
 
-            // Get background color
-            styles.backgroundColor = computedBody.backgroundColor || styles.backgroundColor;
+            // Get heading styles
+            const headings = iframeDoc.querySelectorAll('h1, h2, h3');
+            if (headings.length > 0) {
+                const hStyle = iframeDoc.defaultView.getComputedStyle(headings[0]);
+                if (hStyle.color) {
+                    styles.headingColor = hStyle.color;
+                }
+                if (hStyle.fontWeight) {
+                    styles.headingFontWeight = hStyle.fontWeight;
+                }
+            }
+
+            // Get label styles
+            const labels = iframeDoc.querySelectorAll('label');
+            if (labels.length > 0) {
+                const labelStyle = iframeDoc.defaultView.getComputedStyle(labels[0]);
+                if (labelStyle.color) {
+                    styles.labelColor = labelStyle.color;
+                }
+            }
+
+            // Check sections for background
+            const sections = iframeDoc.querySelectorAll('section, .section, [class*="section"]');
+            if (sections.length > 0) {
+                const secStyle = iframeDoc.defaultView.getComputedStyle(sections[0]);
+                if (secStyle.backgroundColor && secStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                    styles.sectionBgColor = secStyle.backgroundColor;
+                }
+            }
+
+            // Adjust colors for dark mode
+            if (styles.isDarkMode) {
+                styles.labelColor = styles.textColor;
+                styles.inputBorderColor = 'rgba(255,255,255,0.2)';
+            }
 
         } catch (error) {
             console.log('Could not extract all page styles, using defaults');
         }
 
         return styles;
+    }
+
+    getAdaptedWeb3FormTemplate(templateType, styles) {
+        const {
+            primaryColor,
+            textColor,
+            labelColor,
+            fontFamily,
+            borderRadius,
+            inputBorderColor,
+            isDarkMode
+        } = styles;
+
+        // Use transparent/inherit backgrounds to blend with the site's design
+        const inputBg = isDarkMode ? 'rgba(255,255,255,0.1)' : 'white';
+
+        // All templates now use minimal styling - just the form elements without decorative containers
+        const templates = {
+            basic: `
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="hidden" name="redirect" value="https://web3forms.com/success">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    <input type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    <textarea name="message" placeholder="Your Message" required style="width: 100%; padding: 0.75rem 1rem; margin-bottom: 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; min-height: 120px; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+
+    <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
+</form>`,
+
+            tailwind: `
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Full Name</label>
+        <input type="text" name="name" placeholder="John Doe" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Phone Number</label>
+        <input type="text" name="phone" placeholder="+1 (555) 123-4567" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Your Message</label>
+        <textarea name="message" rows="4" placeholder="Your message..." required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+    </div>
+    <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
+</form>`,
+
+            ajax: `
+<form action="https://api.web3forms.com/submit" method="POST" id="ajaxContactForm" style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Full Name</label>
+        <input type="text" name="name" placeholder="John Doe" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.25rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Phone Number</label>
+        <input type="text" name="phone" placeholder="+1 (555) 123-4567" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Your Message</label>
+        <textarea name="message" rows="4" placeholder="Your message..." required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+    </div>
+    <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
+    <p style="font-size: 0.875rem; text-align: center; color: inherit; margin-top: 1rem;" id="ajaxResult"></p>
+</form>
+<script>
+const ajaxForm = document.getElementById("ajaxContactForm");
+const ajaxResult = document.getElementById("ajaxResult");
+if (ajaxForm) {
+    ajaxForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formData = new FormData(ajaxForm);
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
+        ajaxResult.innerHTML = "Please wait...";
+        fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: json
+        }).then(async (response) => {
+            let json = await response.json();
+            if (response.status == 200) {
+                ajaxResult.innerHTML = json.message;
+                ajaxResult.style.color = "#10B981";
+            } else {
+                ajaxResult.innerHTML = json.message;
+                ajaxResult.style.color = "#EF4444";
+            }
+        }).catch((error) => {
+            console.log(error);
+            ajaxResult.innerHTML = "Something went wrong!";
+        }).then(function() {
+            ajaxForm.reset();
+            setTimeout(() => { ajaxResult.style.display = "none"; }, 5000);
+        });
+    });
+}
+</script>`,
+
+            multicolumn: `
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <div style="display: flex; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">First Name</label>
+            <input type="text" name="first_name" placeholder="John" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Last Name</label>
+            <input type="text" name="last_name" placeholder="Doe" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+        </div>
+    </div>
+
+    <div style="display: flex; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Email Address</label>
+            <input type="email" name="email" placeholder="you@example.com" required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Phone Number</label>
+            <input type="text" name="phone" placeholder="+1 (555) 123-4567" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+        </div>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Your Message</label>
+        <textarea name="message" rows="4" placeholder="Your message..." required style="width: 100%; padding: 0.75rem 1rem; border: 1px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+    </div>
+    <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
+</form>`,
+
+            validation: `
+<form action="https://api.web3forms.com/submit" method="POST" id="validationForm" novalidate style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <div style="display: flex; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">First Name</label>
+            <input type="text" name="first_name" placeholder="John" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+            <div class="invalid-feedback" style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;">Please provide your first name.</div>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Last Name</label>
+            <input type="text" name="last_name" placeholder="Doe" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+            <div class="invalid-feedback" style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;">Please provide your last name.</div>
+        </div>
+    </div>
+
+    <div style="display: flex; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Email Address</label>
+            <input type="email" name="email" placeholder="you@example.com" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+            <div class="invalid-feedback" style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;">Please provide a valid email.</div>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Phone Number</label>
+            <input type="text" name="phone" placeholder="+1 (555) 123-4567" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+        </div>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: inherit;">Your Message</label>
+        <textarea name="message" rows="4" placeholder="Your message..." required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid ${inputBorderColor}; border-radius: ${borderRadius}; font-family: inherit; font-size: 1rem; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+        <div class="invalid-feedback" style="color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; display: none;">Please enter your message.</div>
+    </div>
+    <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
+    <p style="font-size: 0.875rem; text-align: center; color: inherit; margin-top: 1rem;" id="validationResult"></p>
+</form>
+<script>
+const validationForm = document.getElementById("validationForm");
+const validationResult = document.getElementById("validationResult");
+if (validationForm) {
+    validationForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        let isValid = true;
+        validationForm.querySelectorAll("[required]").forEach(input => {
+            const feedback = input.nextElementSibling;
+            if (!input.value.trim() || (input.type === "email" && !input.value.includes("@"))) {
+                input.style.borderColor = "#EF4444";
+                if (feedback && feedback.classList.contains("invalid-feedback")) {
+                    feedback.style.display = "block";
+                }
+                isValid = false;
+            } else {
+                input.style.borderColor = "${inputBorderColor}";
+                if (feedback && feedback.classList.contains("invalid-feedback")) {
+                    feedback.style.display = "none";
+                }
+            }
+        });
+        if (!isValid) return;
+        const formData = new FormData(validationForm);
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
+        validationResult.innerHTML = "Please wait...";
+        fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: json
+        }).then(async (response) => {
+            let json = await response.json();
+            if (response.status == 200) {
+                validationResult.innerHTML = json.message;
+                validationResult.style.color = "#10B981";
+                validationForm.reset();
+            } else {
+                validationResult.innerHTML = json.message;
+                validationResult.style.color = "#EF4444";
+            }
+        }).catch((error) => {
+            validationResult.innerHTML = "Something went wrong!";
+            validationResult.style.color = "#EF4444";
+        });
+    });
+}
+</script>`,
+
+            raw: `
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+    <input type="hidden" name="subject" value="New Contact Form Submission">
+    <input type="hidden" name="redirect" value="https://web3forms.com/success">
+    <input type="checkbox" name="botcheck" style="display: none;">
+
+    <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: inherit;">Name:</label>
+        <input type="text" name="name" required style="width: 100%; padding: 0.5rem; border: 1px solid ${inputBorderColor}; border-radius: 4px; font-family: inherit; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: inherit;">Email:</label>
+        <input type="email" name="email" required style="width: 100%; padding: 0.5rem; border: 1px solid ${inputBorderColor}; border-radius: 4px; font-family: inherit; background: ${inputBg}; color: inherit; box-sizing: border-box;">
+    </div>
+    <div style="margin-bottom: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem; color: inherit;">Message:</label>
+        <textarea name="message" required style="width: 100%; padding: 0.5rem; border: 1px solid ${inputBorderColor}; border-radius: 4px; font-family: inherit; min-height: 100px; background: ${inputBg}; color: inherit; box-sizing: border-box; resize: vertical;"></textarea>
+    </div>
+    <button type="submit" style="padding: 0.75rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: 4px; font-family: inherit; cursor: pointer;">Submit Form</button>
+</form>`
+        };
+
+        return templates[templateType] || null;
     }
 
     adaptFormTemplate(elementType, pageStyles) {
@@ -2785,21 +3126,23 @@ class YenzeBuilder {
         // Close the modal first
         this.closeWeb3FormsModal();
 
-        // Get the appropriate template
-        const templates = this.getWeb3FormsTemplates();
-        const template = templates[templateType];
-
-        if (!template) {
-            this.showToast('⚠️ Template not found', 'error');
-            return;
-        }
-
         // Insert the template into the canvas
         const canvas = document.getElementById('canvas');
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
 
         if (!iframeDoc || !iframeDoc.body) {
             this.showToast('⚠️ Please import HTML first', 'error');
+            return;
+        }
+
+        // Extract current page styles to adapt the form
+        const pageStyles = this.extractPageStyles(iframeDoc);
+
+        // Get the appropriate template with adapted styles
+        const template = this.getAdaptedWeb3FormTemplate(templateType, pageStyles);
+
+        if (!template) {
+            this.showToast('⚠️ Template not found', 'error');
             return;
         }
 
@@ -2829,308 +3172,33 @@ class YenzeBuilder {
         this.showToast('✅ Web3Forms contact form added', 'success');
     }
 
+    // Legacy function kept for backwards compatibility - now uses getAdaptedWeb3FormTemplate
     getWeb3FormsTemplates() {
+        // Extract styles from current page if available
+        const canvas = document.getElementById('canvas');
+        if (canvas) {
+            const iframeDoc = canvas.contentDocument || canvas.contentWindow?.document;
+            if (iframeDoc && iframeDoc.body) {
+                const styles = this.extractPageStyles(iframeDoc);
+                return {
+                    basic: this.getAdaptedWeb3FormTemplate('basic', styles),
+                    tailwind: this.getAdaptedWeb3FormTemplate('tailwind', styles),
+                    ajax: this.getAdaptedWeb3FormTemplate('ajax', styles),
+                    multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', styles),
+                    validation: this.getAdaptedWeb3FormTemplate('validation', styles),
+                    raw: this.getAdaptedWeb3FormTemplate('raw', styles)
+                };
+            }
+        }
+        // Fallback to default styles
+        const defaultStyles = this.extractPageStyles({ body: document.body, defaultView: window, querySelectorAll: () => [] });
         return {
-            basic: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 600px; margin: 0 auto; padding: 20px;">
-    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-    <input type="hidden" name="subject" value="New Contact Form Submission">
-
-    <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-    <input type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-    <textarea name="message" placeholder="Your Message" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; min-height: 120px;"></textarea>
-    <input type="hidden" name="redirect" value="https://web3forms.com/success">
-    <input type="checkbox" name="botcheck" style="display: none;">
-
-    <button type="submit" style="width: 100%; padding: 12px; background: #0066FF; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">Send Message</button>
-</form>`,
-
-            tailwind: `
-<div style="display: flex; align-items: center; min-height: 100vh; background: #F9FAFB; padding: 20px;">
-    <div style="max-width: 28rem; margin: 2.5rem auto; background: white; padding: 1.25rem; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center;">
-            <h1 style="margin: 0.75rem 0; font-size: 1.875rem; font-weight: 600; color: #374151;">Contact Us</h1>
-            <p style="color: #9CA3AF;">Fill up the form below to send us a message.</p>
-        </div>
-        <div style="margin: 1.75rem 0;">
-            <form action="https://api.web3forms.com/submit" method="POST" id="form">
-                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                <input type="hidden" name="subject" value="New Submission from Web3Forms">
-                <input type="checkbox" name="botcheck" style="display: none;">
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="name" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Full Name</label>
-                    <input type="text" name="name" id="name" placeholder="John Doe" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; outline: none;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="email" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Email Address</label>
-                    <input type="email" name="email" id="email" placeholder="you@company.com" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; outline: none;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="phone" style="font-size: 0.875rem; color: #4B5563;">Phone Number</label>
-                    <input type="text" name="phone" id="phone" placeholder="+1 (555) 1234-567" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; outline: none;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="message" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Your Message</label>
-                    <textarea rows="5" name="message" id="message" placeholder="Your Message" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem; outline: none;"></textarea>
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <button type="submit" style="width: 100%; padding: 0.75rem 1rem; color: white; background: #6366F1; border-radius: 0.375rem; cursor: pointer; border: none; font-size: 16px;">Send Message</button>
-                </div>
-                <p style="font-size: 1rem; text-align: center; color: #9CA3AF;" id="result"></p>
-            </form>
-        </div>
-    </div>
-</div>`,
-
-            ajax: `
-<div style="display: flex; align-items: center; min-height: 100vh; background: #F9FAFB; padding: 20px;">
-    <div style="max-width: 28rem; margin: 2.5rem auto; background: white; padding: 1.25rem; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center;">
-            <h1 style="margin: 0.75rem 0; font-size: 1.875rem; font-weight: 600; color: #374151;">Contact Us</h1>
-            <p style="color: #9CA3AF;">Fill up the form below to send us a message.</p>
-        </div>
-        <div style="margin: 1.75rem 0;">
-            <form action="https://api.web3forms.com/submit" method="POST" id="ajaxContactForm">
-                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                <input type="hidden" name="subject" value="New Submission from Web3Forms">
-                <input type="checkbox" name="botcheck" style="display: none;">
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="name" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Full Name</label>
-                    <input type="text" name="name" id="name" placeholder="John Doe" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="email" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Email Address</label>
-                    <input type="email" name="email" id="email" placeholder="you@company.com" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="phone" style="font-size: 0.875rem; color: #4B5563;">Phone Number</label>
-                    <input type="text" name="phone" id="phone" placeholder="+1 (555) 1234-567" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="message" style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Your Message</label>
-                    <textarea rows="5" name="message" id="message" placeholder="Your Message" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;"></textarea>
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <button type="submit" style="width: 100%; padding: 0.75rem 1rem; color: white; background: #6366F1; border-radius: 0.375rem; cursor: pointer; border: none;">Send Message</button>
-                </div>
-                <p style="font-size: 1rem; text-align: center; color: #9CA3AF;" id="ajaxResult"></p>
-            </form>
-        </div>
-    </div>
-</div>
-<script>
-const ajaxForm = document.getElementById("ajaxContactForm");
-const ajaxResult = document.getElementById("ajaxResult");
-if (ajaxForm) {
-    ajaxForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const formData = new FormData(ajaxForm);
-        const object = Object.fromEntries(formData);
-        const json = JSON.stringify(object);
-        ajaxResult.innerHTML = "Please wait...";
-        fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: json
-        }).then(async (response) => {
-            let json = await response.json();
-            if (response.status == 200) {
-                ajaxResult.innerHTML = json.message;
-                ajaxResult.style.color = "#10B981";
-            } else {
-                ajaxResult.innerHTML = json.message;
-                ajaxResult.style.color = "#EF4444";
-            }
-        }).catch((error) => {
-            console.log(error);
-            ajaxResult.innerHTML = "Something went wrong!";
-        }).then(function() {
-            ajaxForm.reset();
-            setTimeout(() => { ajaxResult.style.display = "none"; }, 5000);
-        });
-    });
-}
-</script>`,
-
-            multicolumn: `
-<div style="display: flex; align-items: center; min-height: 100vh; background: #F9FAFB; padding: 20px;">
-    <div style="max-width: 36rem; margin: 2.5rem auto; background: white; padding: 1.25rem; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center;">
-            <h1 style="margin: 0.75rem 0; font-size: 1.875rem; font-weight: 600; color: #374151;">Contact Us</h1>
-            <p style="color: #9CA3AF;">Fill up the form below to send us a message.</p>
-        </div>
-        <div style="margin: 1.75rem 0;">
-            <form action="https://api.web3forms.com/submit" method="POST">
-                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                <input type="hidden" name="subject" value="New Submission from Web3Forms">
-                <input type="checkbox" name="botcheck" style="display: none;">
-
-                <div style="display: flex; margin-bottom: 1.5rem; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">First Name</label>
-                        <input type="text" name="first_name" placeholder="John" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Last Name</label>
-                        <input type="text" name="last_name" placeholder="Doe" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                    </div>
-                </div>
-
-                <div style="display: flex; margin-bottom: 1.5rem; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Email Address</label>
-                        <input type="email" name="email" placeholder="you@company.com" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: #4B5563;">Phone Number</label>
-                        <input type="text" name="phone" placeholder="+1 (555) 1234-567" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Your Message</label>
-                    <textarea rows="5" name="message" placeholder="Your Message" required style="width: 100%; padding: 0.75rem; border: 1px solid #D1D5DB; border-radius: 0.375rem;"></textarea>
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <button type="submit" style="width: 100%; padding: 0.75rem 1rem; color: white; background: #6366F1; border-radius: 0.375rem; cursor: pointer; border: none;">Send Message</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>`,
-
-            validation: `
-<div style="display: flex; align-items: center; min-height: 100vh; background: #F9FAFB; padding: 20px;">
-    <div style="max-width: 36rem; margin: 2.5rem auto; background: white; padding: 1.25rem; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-        <div style="text-align: center;">
-            <h1 style="margin: 0.75rem 0; font-size: 1.875rem; font-weight: 600; color: #374151;">Contact Us</h1>
-            <p style="color: #9CA3AF;">Fill up the form below to send us a message.</p>
-        </div>
-        <div style="margin: 1.75rem 0;">
-            <form action="https://api.web3forms.com/submit" method="POST" id="validationForm" class="needs-validation" novalidate>
-                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                <input type="hidden" name="subject" value="New Submission from Web3Forms">
-                <input type="checkbox" name="botcheck" style="display: none;">
-
-                <div style="display: flex; margin-bottom: 1.5rem; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">First Name</label>
-                        <input type="text" name="first_name" placeholder="John" required style="width: 100%; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.375rem;">
-                        <div class="invalid-feedback" style="color: #EF4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">Please provide your first name.</div>
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Last Name</label>
-                        <input type="text" name="last_name" placeholder="Doe" required style="width: 100%; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.375rem;">
-                        <div class="invalid-feedback" style="color: #EF4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">Please provide your last name.</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; margin-bottom: 1.5rem; gap: 1rem;">
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Email Address</label>
-                        <input type="email" name="email" placeholder="you@company.com" required style="width: 100%; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.375rem;">
-                        <div class="invalid-feedback" style="color: #EF4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">Please provide a valid email.</div>
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: #4B5563;">Phone Number</label>
-                        <input type="text" name="phone" placeholder="+1 (555) 1234-567" required style="width: 100%; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.375rem;">
-                        <div class="invalid-feedback" style="color: #EF4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">Please provide your phone number.</div>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem; color: #4B5563;">Your Message</label>
-                    <textarea rows="5" name="message" placeholder="Your Message" required style="width: 100%; padding: 0.75rem; border: 2px solid #E5E7EB; border-radius: 0.375rem;"></textarea>
-                    <div class="invalid-feedback" style="color: #EF4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">Please enter your message.</div>
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <button type="submit" style="width: 100%; padding: 0.75rem 1rem; color: white; background: #6366F1; border-radius: 0.375rem; cursor: pointer; border: none;">Send Message</button>
-                </div>
-                <p style="font-size: 1rem; text-align: center; color: #9CA3AF;" id="validationResult"></p>
-            </form>
-        </div>
-    </div>
-</div>
-<style>
-.invalid-feedback, .empty-feedback { display: none; }
-.was-validated :placeholder-shown:invalid ~ .empty-feedback { display: block; }
-.was-validated :not(:placeholder-shown):invalid ~ .invalid-feedback { display: block; }
-.is-invalid, .was-validated :invalid { border-color: #DC2626 !important; }
-</style>
-<script>
-(function() {
-    const form = document.getElementById("validationForm");
-    const result = document.getElementById("validationResult");
-    if (form) {
-        form.addEventListener("submit", function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-                form.querySelectorAll(':invalid')[0].focus();
-            } else {
-                event.preventDefault();
-                event.stopPropagation();
-                const formData = new FormData(form);
-                const object = Object.fromEntries(formData);
-                const json = JSON.stringify(object);
-                result.innerHTML = "Please wait...";
-                fetch("https://api.web3forms.com/submit", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", Accept: "application/json" },
-                    body: json
-                }).then(async (response) => {
-                    let json = await response.json();
-                    if (response.status == 200) {
-                        result.innerHTML = json.message;
-                        result.style.color = "#10B981";
-                    } else {
-                        result.innerHTML = json.message;
-                        result.style.color = "#EF4444";
-                    }
-                }).catch((error) => {
-                    result.innerHTML = "Something went wrong!";
-                }).then(function() {
-                    form.reset();
-                    form.classList.remove("was-validated");
-                    setTimeout(() => { result.style.display = "none"; }, 5000);
-                });
-            }
-            form.classList.add("was-validated");
-        }, false);
-    }
-})();
-</script>`,
-
-            raw: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 500px; margin: 150px auto; padding: 30px; border: 1px solid #ddd;">
-    <fieldset>
-        <legend>Contact Form</legend>
-        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-        <input type="hidden" name="subject" value="New Submission from Web3Forms">
-        <input type="hidden" name="redirect" value="https://web3forms.com/success">
-        <input type="checkbox" name="botcheck" style="display: none;">
-
-        <div>
-            <label for="name">Full Name</label><br>
-            <input type="text" name="name" id="name" placeholder="John Doe" required style="width: 100%;"><br><br>
-        </div>
-        <div>
-            <label for="email">Email Address</label><br>
-            <input type="email" name="email" id="email" placeholder="you@company.com" required style="width: 100%;"><br><br>
-        </div>
-        <div>
-            <label for="phone">Phone Number</label><br>
-            <input type="text" name="phone" id="phone" placeholder="+1 (555) 1234-567" required style="width: 100%;"><br><br>
-        </div>
-        <div>
-            <label for="message">Your Message</label><br>
-            <textarea rows="5" name="message" id="message" placeholder="Your Message" required style="width: 100%;"></textarea><br><br>
-        </div>
-        <button type="submit" style="width: 100%;">Send Message</button>
-    </fieldset>
-</form>`
+            basic: this.getAdaptedWeb3FormTemplate('basic', defaultStyles),
+            tailwind: this.getAdaptedWeb3FormTemplate('tailwind', defaultStyles),
+            ajax: this.getAdaptedWeb3FormTemplate('ajax', defaultStyles),
+            multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', defaultStyles),
+            validation: this.getAdaptedWeb3FormTemplate('validation', defaultStyles),
+            raw: this.getAdaptedWeb3FormTemplate('raw', defaultStyles)
         };
     }
 
@@ -3168,17 +3236,38 @@ if (ajaxForm) {
     }
 
     async initializeStripeAndCheckout(plan) {
-        // Initialize Stripe if not already done
-        if (!stripeIntegration.initialized) {
-            await stripeIntegration.init();
-        }
+        console.log('[initializeStripeAndCheckout] Called with plan:', plan);
+        console.log('[initializeStripeAndCheckout] All payment links:', STRIPE_CONFIG.paymentLinks);
 
         // Show loading message
         this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
 
         try {
-            // Create checkout session and redirect to Stripe
-            await stripeIntegration.createCheckoutSession(plan);
+            // Get the payment link from config
+            const planKey = plan.toLowerCase();
+            console.log('[initializeStripeAndCheckout] Looking for plan key:', planKey);
+
+            const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
+            console.log('[initializeStripeAndCheckout] Payment link found:', paymentLink);
+
+            if (!paymentLink) {
+                console.error('[App] No payment link found for plan:', plan);
+                this.showToast('❌ Payment link not configured for this plan.', 'error');
+                return;
+            }
+
+            // Add customer email as prefill if user is authenticated
+            if (supabaseClient.isAuthenticated()) {
+                const userEmail = supabaseClient.currentUser.email;
+                const userId = supabaseClient.currentUser.id;
+                const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
+
+                console.log('[initializeStripeAndCheckout] Final redirect URL:', urlWithEmail);
+                window.location.href = urlWithEmail;
+            } else {
+                console.log('[initializeStripeAndCheckout] User not authenticated, redirecting to:', paymentLink);
+                window.location.href = paymentLink;
+            }
         } catch (error) {
             console.error('Failed to start checkout:', error);
             this.showToast('❌ Failed to start checkout. Please try again.', 'error');
@@ -3199,17 +3288,38 @@ if (ajaxForm) {
     async upgradeFromModal(plan) {
         this.closeSubdomainModal();
 
-        // Initialize Stripe if not already done
-        if (!stripeIntegration.initialized) {
-            await stripeIntegration.init();
-        }
+        console.log('[upgradeFromModal] Called with plan:', plan);
+        console.log('[upgradeFromModal] All payment links:', STRIPE_CONFIG.paymentLinks);
 
         // Show loading message
         this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
 
         try {
-            // Create checkout session and redirect to Stripe
-            await stripeIntegration.createCheckoutSession(plan);
+            // Get the payment link from config
+            const planKey = plan.toLowerCase();
+            console.log('[upgradeFromModal] Looking for plan key:', planKey);
+
+            const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
+            console.log('[upgradeFromModal] Payment link found:', paymentLink);
+
+            if (!paymentLink) {
+                console.error('[App] No payment link found for plan:', plan);
+                this.showToast('❌ Payment link not configured for this plan.', 'error');
+                return;
+            }
+
+            // Add customer email as prefill if user is authenticated
+            if (supabaseClient.isAuthenticated()) {
+                const userEmail = supabaseClient.currentUser.email;
+                const userId = supabaseClient.currentUser.id;
+                const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
+
+                console.log('[upgradeFromModal] Final redirect URL:', urlWithEmail);
+                window.location.href = urlWithEmail;
+            } else {
+                console.log('[upgradeFromModal] User not authenticated, redirecting to:', paymentLink);
+                window.location.href = paymentLink;
+            }
         } catch (error) {
             console.error('Failed to start checkout:', error);
             this.showToast('❌ Failed to start checkout. Please try again.', 'error');

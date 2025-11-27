@@ -368,6 +368,9 @@ class DashboardApp {
                 const plan = highestPlan.plan.toUpperCase();
                 subscriptionCount = subscriptions.filter(s => s.plan.toUpperCase() === plan).length;
 
+                // Store user plan for limits checking
+                this.userPlan = plan;
+
                 if (PLANS[plan]) {
                     planName = PLANS[plan].name;
                     if (subscriptionCount > 1) {
@@ -375,12 +378,25 @@ class DashboardApp {
                     }
                     planDescription = `$${PLANS[plan].price}/${PLANS[plan].period}`;
                 }
+            } else {
+                // No active subscription - FREE plan
+                this.userPlan = 'FREE';
+            }
+
+            // Show/hide PRO badge on Analytics tab based on plan
+            const analyticsSidebarItem = document.getElementById('analyticsSidebarItem');
+            const proBadge = analyticsSidebarItem?.querySelector('.pro-badge');
+            const hasAnalytics = PlanUtils.hasFeature('hasAnalytics', this.userPlan);
+
+            if (proBadge) {
+                // Show PRO badge for FREE users
+                proBadge.style.display = hasAnalytics ? 'none' : 'inline-block';
             }
 
             const planInfoHTML = `
                 <h4>${planName}</h4>
                 <p>${planDescription}</p>
-                ${planName === 'Free' ? '<button class="upgrade-btn" onclick="authUI.showPlanModal()">Upgrade Plan</button>' : ''}
+                ${planName === 'Free' ? '<button class="upgrade-btn" onclick="pricingModal.show()">Upgrade Plan</button>' : ''}
             `;
 
             const planInfoElement = document.getElementById('currentPlanInfo');
@@ -433,7 +449,7 @@ class DashboardApp {
                         </svg>
                         <h3>No projects yet</h3>
                         <p>Create your first project to get started</p>
-                        <button class="btn-primary" onclick="window.location.href='/builder.html'">Create Project</button>
+                        <button class="btn-primary" onclick="dashboardApp.handleCreateProject()">Create Project</button>
                     </div>
                 `;
                 return;
@@ -457,6 +473,9 @@ class DashboardApp {
             }
 
             console.log('[Dashboard] Domain map:', domainMap);
+
+            // Check if user has access to analytics
+            const hasAnalytics = PlanUtils.hasFeature('hasAnalytics', this.userPlan);
 
             // Render projects
             const projectsHTML = await Promise.all(this.projects.map(async (project) => {
@@ -511,13 +530,35 @@ class DashboardApp {
 
                             <div class="project-stats">
                                 <div class="project-stat">
-                                    <span>${stats.views}</span>
+                                    <span>${hasAnalytics ? stats.views : '—'}</span>
                                     <span>Views</span>
                                 </div>
                                 <div class="project-stat">
-                                    <span>${stats.visitors}</span>
+                                    <span>${hasAnalytics ? stats.visitors : '—'}</span>
                                     <span>Visitors</span>
                                 </div>
+                                ${!hasAnalytics ? `
+                                    <div style="grid-column: 1 / -1; text-align: center; margin-top: 8px;">
+                                        <button
+                                            onclick="event.stopPropagation(); if(typeof pricingModal !== 'undefined') { pricingModal.show(); } else { alert('Please wait, loading pricing...'); }"
+                                            style="
+                                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                                color: white;
+                                                border: none;
+                                                padding: 6px 12px;
+                                                border-radius: 6px;
+                                                font-size: 11px;
+                                                font-weight: 600;
+                                                cursor: pointer;
+                                                transition: transform 0.2s;
+                                            "
+                                            onmouseover="this.style.transform='scale(1.05)'"
+                                            onmouseout="this.style.transform='scale(1)'"
+                                        >
+                                            ✨ Upgrade
+                                        </button>
+                                    </div>
+                                ` : ''}
                             </div>
 
                             <div class="project-actions">
@@ -584,6 +625,23 @@ class DashboardApp {
         window.location.href = `/builder.html?project=${projectId}`;
     }
 
+    handleCreateProject() {
+        // Check if user can create more projects based on their plan
+        const plan = this.userPlan || 'FREE';
+        const currentProjectCount = this.projects.length;
+        const check = PlanUtils.canCreateProject(currentProjectCount, plan);
+
+        if (!check.allowed) {
+            // Show upgrade modal
+            alert(`You've reached your plan limit of ${check.limit} project${check.limit !== 1 ? 's' : ''}.\n\nUpgrade to create more projects!`);
+            this.showSection('billing');
+            return;
+        }
+
+        // Allowed to create project
+        window.location.href = '/builder.html?new=true';
+    }
+
     async deleteProject(projectId, projectName) {
         if (!confirm(`Are you sure you want to delete "${projectName}"? This action cannot be undone.`)) {
             return;
@@ -607,6 +665,16 @@ class DashboardApp {
     }
 
     async loadAnalytics() {
+        const plan = this.userPlan || 'FREE';
+        const hasAnalytics = PlanUtils.hasFeature('hasAnalytics', plan);
+
+        // Check if user has access to analytics
+        if (!hasAnalytics) {
+            // Show blurred analytics with upgrade CTA
+            this.showAnalyticsUpgradeView();
+            return;
+        }
+
         const selectedProject = document.getElementById('analyticsFilter').value;
 
         // Update total stats
@@ -631,6 +699,166 @@ class DashboardApp {
             filterSelect.appendChild(option);
         });
         filterSelect.value = currentValue;
+    }
+
+    showAnalyticsUpgradeView() {
+        // Get the analytics section
+        const analyticsSection = document.getElementById('analyticsSection');
+
+        // Create blurred content with upgrade overlay
+        analyticsSection.innerHTML = `
+            <div style="position: relative; min-height: 600px;">
+                <!-- Blurred Analytics Content -->
+                <div style="filter: blur(8px); pointer-events: none; opacity: 0.4;">
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Total Views</h3>
+                            <div class="analytics-stat">1,234</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Unique Visitors</h3>
+                            <div class="analytics-stat">567</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Avg. Duration</h3>
+                            <div class="analytics-stat">2m 34s</div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Total Projects</h3>
+                            <div class="analytics-stat">3</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <h3>Project Performance</h3>
+                        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 16px;">
+                            <div class="analytics-item">
+                                <div>
+                                    <div class="analytics-project-name">My Website</div>
+                                    <div class="analytics-project-url">https://example.com</div>
+                                </div>
+                                <div class="analytics-numbers">
+                                    <div class="analytics-number">
+                                        <strong>450</strong>
+                                        <span>Views</span>
+                                    </div>
+                                    <div class="analytics-number">
+                                        <strong>234</strong>
+                                        <span>Visitors</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="analytics-item">
+                                <div>
+                                    <div class="analytics-project-name">Portfolio Site</div>
+                                    <div class="analytics-project-url">https://example2.com</div>
+                                </div>
+                                <div class="analytics-numbers">
+                                    <div class="analytics-number">
+                                        <strong>784</strong>
+                                        <span>Views</span>
+                                    </div>
+                                    <div class="analytics-number">
+                                        <strong>333</strong>
+                                        <span>Visitors</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upgrade Overlay -->
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    text-align: center;
+                    z-index: 10;
+                    background: white;
+                    padding: 48px;
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                    max-width: 500px;
+                    width: 90%;
+                ">
+                    <div style="
+                        width: 64px;
+                        height: 64px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border-radius: 16px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 24px;
+                    ">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <line x1="12" y1="20" x2="12" y2="10"></line>
+                            <line x1="18" y1="20" x2="18" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="16"></line>
+                        </svg>
+                    </div>
+
+                    <h2 style="
+                        font-size: 28px;
+                        font-weight: 700;
+                        color: #1f2937;
+                        margin-bottom: 12px;
+                    ">Unlock Analytics</h2>
+
+                    <p style="
+                        font-size: 16px;
+                        color: #6b7280;
+                        margin-bottom: 32px;
+                        line-height: 1.6;
+                    ">Get detailed insights into your website performance, visitor behavior, and engagement metrics.</p>
+
+                    <button
+                        class="btn-primary"
+                        onclick="if(typeof pricingModal !== 'undefined') { pricingModal.show(); } else { alert('Please wait, loading pricing...'); }"
+                        style="
+                            width: 100%;
+                            padding: 16px 32px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            margin-bottom: 12px;
+                        "
+                    >
+                        Upgrade Plan
+                    </button>
+
+                    <p style="
+                        font-size: 13px;
+                        color: #9ca3af;
+                        margin-top: 16px;
+                    ">Starting at just <strong>$9/month</strong></p>
+
+                    <div style="
+                        margin-top: 24px;
+                        padding-top: 24px;
+                        border-top: 1px solid #e5e7eb;
+                    ">
+                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 12px; font-weight: 500;">
+                            ✨ Included with Starter:
+                        </p>
+                        <div style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 8px;
+                            text-align: left;
+                            font-size: 13px;
+                            color: #4b5563;
+                        ">
+                            <div>✓ Real-time analytics dashboard</div>
+                            <div>✓ 5 projects with custom subdomains</div>
+                            <div>✓ 5,000 monthly visitors</div>
+                            <div>✓ Remove YENZE branding</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     async loadProjectAnalytics() {
@@ -1050,7 +1278,7 @@ class DashboardApp {
                         <h4 style="font-size: 24px; color: #667eea; margin-bottom: 5px;">Free Plan</h4>
                         <p style="color: #6b7280;">$0/forever</p>
                     </div>
-                    <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="authUI.showPlanModal()">
+                    <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="pricingModal.show()">
                         Upgrade Plan
                     </button>
                 `;
@@ -1064,11 +1292,143 @@ class DashboardApp {
     }
 
     async loadUsageStats() {
+        const container = document.getElementById('usageInfo');
+        const plan = this.userPlan || 'FREE';
+        const limits = PlanUtils.getLimits(plan);
+
+        // Get current usage
         const projectsCount = this.projects.length;
         const domainsCount = this.domains.length;
 
-        document.getElementById('projectsUsage').textContent = `${projectsCount} / ∞`;
-        document.getElementById('domainsUsage').textContent = `${domainsCount} / ${await this.getMaxDomains()}`;
+        // Check project limit
+        const projectCheck = PlanUtils.canCreateProject(projectsCount, plan);
+        const projectPercentage = limits.maxProjects === -1 ? 0 : (projectsCount / limits.maxProjects) * 100;
+        const projectLevel = PlanUtils.getUsageLevel(projectPercentage);
+
+        // Check custom domains limit
+        const domainCheck = PlanUtils.canAddCustomDomain(domainsCount, plan);
+        const domainPercentage = limits.maxCustomDomains === -1 ? 0 :
+            limits.maxCustomDomains === 0 ? 0 : (domainsCount / limits.maxCustomDomains) * 100;
+        const domainLevel = PlanUtils.getUsageLevel(domainPercentage);
+
+        // Get actual visitor data from analytics
+        let currentVisitors = 0;
+        try {
+            const totalStats = await analyticsTracker.getTotalStats(this.currentUser.id, null);
+            currentVisitors = totalStats.uniqueVisitors || 0;
+        } catch (error) {
+            console.error('Error getting visitor stats:', error);
+        }
+        const visitorCheck = PlanUtils.checkVisitorLimit(currentVisitors, plan);
+        const visitorLevel = PlanUtils.getUsageLevel(visitorCheck.percentage);
+
+        // Build HTML
+        const usageHTML = `
+            <div class="usage-limits">
+                <!-- Projects -->
+                <div class="limit-item ${projectLevel}">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Projects
+                        </span>
+                        <span class="limit-value">${projectsCount} / ${PlanUtils.formatLimit(limits.maxProjects)}</span>
+                    </div>
+                    ${limits.maxProjects !== -1 ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill ${projectLevel}" style="width: ${Math.min(projectPercentage, 100)}%"></div>
+                        </div>
+                    ` : ''}
+                    ${!projectCheck.allowed ? '<p class="limit-warning">⚠️ Project limit reached. Upgrade to create more.</p>' : ''}
+                </div>
+
+                <!-- Monthly Visitors -->
+                <div class="limit-item ${visitorLevel}">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Monthly Visitors
+                        </span>
+                        <span class="limit-value">${currentVisitors.toLocaleString()} / ${PlanUtils.formatLimit(limits.maxVisitors)}</span>
+                    </div>
+                    ${limits.maxVisitors !== -1 ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill ${visitorLevel}" style="width: ${Math.min(visitorCheck.percentage, 100)}%"></div>
+                        </div>
+                    ` : ''}
+                    ${visitorCheck.exceeded ? '<p class="limit-warning">⚠️ Visitor limit exceeded this month.</p>' : ''}
+                </div>
+
+                <!-- Storage per Site -->
+                <div class="limit-item normal">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                            </svg>
+                            Storage per Site
+                        </span>
+                        <span class="limit-value">${PlanUtils.formatStorage(limits.maxStorage)} limit</span>
+                    </div>
+                </div>
+
+                <!-- Custom Domains -->
+                <div class="limit-item ${domainLevel}">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            Custom Domains
+                        </span>
+                        <span class="limit-value">${domainsCount} / ${PlanUtils.formatLimit(limits.maxCustomDomains)}</span>
+                    </div>
+                    ${limits.maxCustomDomains > 0 && limits.maxCustomDomains !== -1 ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill ${domainLevel}" style="width: ${Math.min(domainPercentage, 100)}%"></div>
+                        </div>
+                    ` : ''}
+                    ${!domainCheck.allowed ? '<p class="limit-warning">⚠️ Domain limit reached. Upgrade to add more.</p>' : ''}
+                    ${limits.maxCustomDomains === 0 ? '<p class="limit-info">Custom domains available on paid plans</p>' : ''}
+                </div>
+
+                <!-- Features -->
+                <div class="limit-item normal">
+                    <div class="limit-header">
+                        <span class="limit-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 11 12 14 22 4"></polyline>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Features
+                        </span>
+                    </div>
+                    <div class="features-list">
+                        ${limits.hasSubdomain ? '<span class="feature-badge">✓ Custom Subdomain</span>' : '<span class="feature-badge disabled">✗ Custom Subdomain</span>'}
+                        ${limits.hasAnalytics ? '<span class="feature-badge">✓ Analytics</span>' : '<span class="feature-badge disabled">✗ Analytics</span>'}
+                        ${limits.hasCodeExport ? '<span class="feature-badge">✓ Code Export</span>' : '<span class="feature-badge disabled">✗ Code Export</span>'}
+                        ${limits.hasRemoveBranding ? '<span class="feature-badge">✓ No Branding</span>' : '<span class="feature-badge disabled">✗ Has Branding</span>'}
+                        ${limits.hasPrioritySupport ? '<span class="feature-badge">✓ Priority Support</span>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = usageHTML;
     }
 
     async getMaxDomains() {

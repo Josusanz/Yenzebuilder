@@ -78,17 +78,77 @@ export function sendError(res, statusCode, title, message, details = null) {
   return res.status(statusCode).send(html);
 }
 
+// Helper to clean editor-specific classes and attributes from HTML
+function cleanEditorMarkup(html) {
+  if (!html) return html;
+
+  // Remove draggable attributes
+  html = html.replace(/\s*draggable="[^"]*"/gi, '');
+
+  // Remove editor-specific classes
+  html = html.replace(/\s*class="[^"]*\b(selected|layer-hover|layer-active|editing|dragging|resizing)\b[^"]*"/gi, (match) => {
+    // Keep the class attribute but remove editor-specific classes
+    const cleanedClasses = match
+      .replace(/class="/, '')
+      .replace(/"$/, '')
+      .split(/\s+/)
+      .filter(cls => !['selected', 'layer-hover', 'layer-active', 'editing', 'dragging', 'resizing'].includes(cls))
+      .join(' ')
+      .trim();
+
+    return cleanedClasses ? ` class="${cleanedClasses}"` : '';
+  });
+
+  // Remove data-layer-id attributes
+  html = html.replace(/\s*data-layer-id="[^"]*"/gi, '');
+
+  // Remove data-editing attributes
+  html = html.replace(/\s*data-editing="[^"]*"/gi, '');
+
+  // Remove contenteditable attributes
+  html = html.replace(/\s*contenteditable="[^"]*"/gi, '');
+
+  // Remove inline styles that are editor-specific
+  html = html.replace(/style="([^"]*)"/gi, (match, styles) => {
+    const cleanedStyles = styles
+      .split(';')
+      .filter(style => {
+        const trimmed = style.trim().toLowerCase();
+        // Remove editor-specific styles
+        return !trimmed.startsWith('outline') &&
+               !trimmed.startsWith('cursor') &&
+               !trimmed.startsWith('user-select') &&
+               !trimmed.startsWith('transition: outline') &&
+               !trimmed.startsWith('box-shadow') &&
+               !trimmed.includes('outline-offset');
+      })
+      .filter(style => style.trim().length > 0) // Remove empty styles
+      .join(';')
+      .trim();
+
+    return cleanedStyles ? `style="${cleanedStyles}"` : '';
+  });
+
+  // Clean up empty style attributes
+  html = html.replace(/\s*style=""\s*/gi, ' ');
+
+  return html;
+}
+
 // Helper to serve project content with analytics and badge
 export async function serveProject(res, project, options = {}) {
   try {
-    const { 
+    const {
       supabaseUrl = process.env.SUPABASE_URL,
       // Use env var if available, otherwise fallback to the one found in code (though we should move to env var)
       supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhzc2RjcGhlcHJhY29iYnN2cW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MTA3MDYsImV4cCI6MjA3OTE4NjcwNn0.Z3w9P2dMeNu2J-2AcnxhLVSF_p794JZgIcAKMqkT3-A',
-      showBadge = false 
+      showBadge = false
     } = options;
 
     let html = project.html || '<h1>Empty Project</h1>';
+
+    // Clean editor markup before serving
+    html = cleanEditorMarkup(html);
 
     // 1. Inject Badge if needed (for free plan)
     if (showBadge) {

@@ -104,7 +104,7 @@ class PricingModal {
                 </ul>
 
                 <button
-                    onclick="pricingModal.selectPlan('${planId}')"
+                    onclick="${planId === 'free' ? 'pricingModal.close()' : `pricingModal.selectPlan('${planId}')`}"
                     class="${isCurrent ? 'btn-secondary' : 'btn-primary'}"
                     ${isCurrent ? 'disabled' : ''}
                     style="width: 100%; padding: 12px; font-size: 14px; ${isCurrent ? 'opacity: 0.6; cursor: not-allowed;' : ''}"
@@ -115,11 +115,61 @@ class PricingModal {
         `;
     }
 
-    selectPlan(planId) {
+    async selectPlan(planId) {
+        console.log('[PricingModal] selectPlan called with:', planId);
+
+        // If there's a callback, use it
         if (this.onSelectCallback) {
+            console.log('[PricingModal] Using callback');
             this.onSelectCallback(planId);
+            this.close();
+            return;
         }
-        this.close();
+
+        // Default behavior: redirect to Stripe checkout
+        if (planId === 'free') {
+            console.log('[PricingModal] Free plan selected, closing modal');
+            this.close();
+            return;
+        }
+
+        // For paid plans, redirect to Stripe Payment Link
+        try {
+            console.log('[PricingModal] Redirecting to Stripe Payment Link for plan:', planId);
+
+            // Check if user is authenticated
+            if (!supabaseClient || !supabaseClient.currentUser) {
+                console.log('[PricingModal] User not authenticated, redirecting to signup');
+                window.location.href = `https://builder.yenze.io/signup.html?plan=${planId}`;
+                return;
+            }
+
+            // Get the payment link from config
+            const paymentLink = STRIPE_CONFIG.paymentLinks[planId.toLowerCase()];
+
+            if (!paymentLink) {
+                console.error('[PricingModal] No payment link found for plan:', planId);
+                alert('Payment link not configured for this plan. Please contact support.');
+                return;
+            }
+
+            console.log('[PricingModal] Payment link:', paymentLink);
+
+            // Add customer email as prefill
+            const userEmail = supabaseClient.currentUser.email;
+            const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${supabaseClient.currentUser.id}`;
+
+            console.log('[PricingModal] Redirecting to:', urlWithEmail);
+            this.close(); // Close modal before redirecting
+
+            // Redirect to Stripe Payment Link
+            window.location.href = urlWithEmail;
+
+        } catch (error) {
+            console.error('[PricingModal] Error selecting plan:', error);
+            console.error('[PricingModal] Error stack:', error.stack);
+            alert('An error occurred: ' + (error.message || 'Please try again.'));
+        }
     }
 
     close() {

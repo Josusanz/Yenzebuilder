@@ -431,13 +431,27 @@ class AuthUI {
         try {
             this.showAuthMessage('Redirecting to checkout...', 'info');
 
-            // Initialize Stripe if not already
-            if (!stripeIntegration.initialized) {
-                await stripeIntegration.init();
+            // Get the payment link from config
+            const paymentLink = STRIPE_CONFIG.paymentLinks[plan.toLowerCase()];
+
+            if (!paymentLink) {
+                console.error('[AuthUI] No payment link found for plan:', plan);
+                this.showAuthMessage('Payment link not configured for this plan. Please contact support.', 'error');
+                return;
             }
 
-            // Create checkout session and redirect
-            await stripeIntegration.createCheckoutSession(plan);
+            // Add customer email as prefill if user is authenticated
+            if (supabaseClient.isAuthenticated()) {
+                const userEmail = supabaseClient.currentUser.email;
+                const userId = supabaseClient.currentUser.id;
+                const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
+
+                console.log('[AuthUI] Redirecting to:', urlWithEmail);
+                window.location.href = urlWithEmail;
+            } else {
+                // No user email, just redirect to payment link
+                window.location.href = paymentLink;
+            }
 
         } catch (error) {
             console.error('Checkout error:', error);

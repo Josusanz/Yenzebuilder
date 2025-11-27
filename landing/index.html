@@ -634,7 +634,7 @@
                     <li>✓ 50MB storage</li>
                     <li>✓ No branding</li>
                 </ul>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-primary" style="width: 100%; text-align: center;">Start Building</a>
+                <button onclick="handlePricingClick('starter')" class="btn btn-primary" style="width: 100%; text-align: center; cursor: pointer;">Start Building</button>
             </div>
 
             <div class="price-card">
@@ -648,7 +648,7 @@
                     <li>✓ 500MB storage</li>
                     <li>✓ Analytics</li>
                 </ul>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Go Pro</a>
+                <button onclick="handlePricingClick('pro')" class="btn btn-secondary" style="width: 100%; text-align: center; cursor: pointer;">Go Pro</button>
             </div>
 
             <div class="price-card">
@@ -662,7 +662,7 @@
                     <li>✓ 2GB storage</li>
                     <li>✓ White-label</li>
                 </ul>
-                <a href="https://builder.yenze.io/signup.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Scale Up</a>
+                <button onclick="handlePricingClick('business')" class="btn btn-secondary" style="width: 100%; text-align: center; cursor: pointer;">Scale Up</button>
             </div>
         </div>
     </section>
@@ -678,5 +678,64 @@
     <footer>
         <p>© 2025 YENZE. Made with ❤️ for creators.</p>
     </footer>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Stripe -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Configuration -->
+    <script src="/config.js"></script>
+    <script src="/supabase-client.js"></script>
+    <script src="/stripe-integration.js"></script>
+
+    <script>
+        // Handle pricing button clicks
+        async function handlePricingClick(plan) {
+            try {
+                // Get payment link from config
+                const paymentLinks = {
+                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
+                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                };
+
+                const paymentLink = paymentLinks[plan.toLowerCase()];
+
+                if (!paymentLink) {
+                    console.error('No payment link for plan:', plan);
+                    window.location.href = `https://builder.yenze.io/signup.html?plan=${plan}`;
+                    return;
+                }
+
+                // Check if user is authenticated
+                if (typeof supabaseClient !== 'undefined') {
+                    const { data: { session } } = await supabaseClient.client.auth.getSession();
+
+                    if (session && session.user) {
+                        // User is authenticated - redirect with prefilled email
+                        const email = session.user.email;
+                        const userId = session.user.id;
+                        window.location.href = `${paymentLink}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${userId}`;
+                        return;
+                    }
+                }
+
+                // User not authenticated - redirect to payment link
+                window.location.href = paymentLink;
+
+            } catch (error) {
+                console.error('Error handling pricing click:', error);
+                // Fallback to payment link
+                const paymentLinks = {
+                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
+                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                };
+                window.location.href = paymentLinks[plan.toLowerCase()] || 'https://builder.yenze.io/signup.html';
+            }
+        }
+    </script>
 </body>
 </html>

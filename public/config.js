@@ -7,7 +7,12 @@ const SUPABASE_CONFIG = {
 
 // Stripe Configuration
 const STRIPE_CONFIG = {
-    publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK'
+    publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK',
+    paymentLinks: {
+        starter: 'https://buy.stripe.com/eVq7sM3er132eJZeD3aIM04',
+        pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+        business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+    }
 };
 
 // Plans Configuration - Ultra-Competitive Pricing

@@ -46,17 +46,8 @@ export default async function handler(req, res) {
             });
         }
 
-        // Check if user already has an active subscription
-        const { data: existingSub } = await supabase
-            .from('subscriptions')
-            .select('*')
-            .eq('user_id', userId)
-            .eq('status', 'active')
-            .single();
-
-        if (existingSub && plan === 'pro') {
-            return res.status(400).json({ error: 'User already has an active subscription' });
-        }
+        // Allow upgrades/downgrades - users can change their plan
+        // The webhook will handle updating the existing subscription
 
         // Create or retrieve Stripe customer
         let customerId;

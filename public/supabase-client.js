@@ -29,11 +29,35 @@ class SupabaseClient {
                     SUPABASE_CONFIG.anonKey
                 );
 
+                // Check if we have OAuth hash in URL
+                const hash = window.location.hash;
+                const hasOAuthHash = hash && (hash.includes('access_token=') || hash.includes('refresh_token='));
+
+                if (hasOAuthHash) {
+                    console.log('[OAuth] Detected OAuth hash, waiting for Supabase to process...');
+                    // Wait for Supabase to process the hash
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+
                 // Check if user is already logged in
                 const { data: { session } } = await this.client.auth.getSession();
                 if (session) {
                     this.currentUser = session.user;
                     console.log('User session loaded:', session.user.email);
+
+                    // If we just processed OAuth, clean the URL
+                    if (hasOAuthHash) {
+                        console.log('[OAuth] Session established, cleaning URL...');
+                        // Use a short timeout to ensure this happens in the same user gesture context
+                        setTimeout(() => {
+                            const cleanUrl = window.location.origin + window.location.pathname;
+                            window.history.replaceState({}, document.title, cleanUrl);
+                            // Force a UI update by dispatching auth event
+                            window.dispatchEvent(new CustomEvent('auth-change', {
+                                detail: { event: 'SIGNED_IN', user: session.user }
+                            }));
+                        }, 100);
+                    }
                 }
 
                 // Listen for auth changes
@@ -126,11 +150,34 @@ class SupabaseClient {
 
     async signInWithGoogle() {
         try {
-            console.log('[OAuth] Redirect URL configured:', 'https://builder.yenze.io');
+            // Detect Safari browser
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            console.log('[OAuth] Browser detected - Safari:', isSafari);
+            console.log('[OAuth] User Agent:', navigator.userAgent);
+
+            // For Safari, we need to handle OAuth differently due to third-party cookie restrictions
+            // The solution is to store the intent before redirect and check on return
+            if (isSafari) {
+                // Store a flag that we're attempting OAuth
+                sessionStorage.setItem('yenze_oauth_attempt', Date.now().toString());
+                console.log('[OAuth] Safari detected - storing OAuth attempt flag');
+            }
+
+            // Use current origin for redirect to ensure same-site cookies work
+            const redirectUrl = window.location.origin;
+            console.log('[OAuth] Redirect URL configured:', redirectUrl);
+
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: 'https://builder.yenze.io'
+                    redirectTo: redirectUrl,
+                    skipBrowserRedirect: false,
+                    queryParams: {
+                        access_type: 'offline',
+                        // Use 'consent' for Safari to force proper session establishment
+                        // Use 'select_account' for other browsers for better UX
+                        prompt: isSafari ? 'consent' : 'select_account'
+                    }
                 }
             });
 
