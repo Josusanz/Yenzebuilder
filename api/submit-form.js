@@ -226,7 +226,13 @@ module.exports = async function handler(req, res) {
 
     if (dbError) {
       console.error('[Submit Form] Database error:', dbError);
-      // Continue anyway - still try to send email
+      console.error('[Submit Form] Database error details:', JSON.stringify(dbError, null, 2));
+      // Return error instead of silently continuing
+      return res.status(500).json({
+        success: false,
+        error: 'Database error: ' + (dbError.message || 'Failed to save submission'),
+        details: dbError.code
+      });
     } else {
       console.log('[Submit Form] Submission saved:', submission.id);
     }
