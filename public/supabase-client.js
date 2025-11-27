@@ -163,8 +163,18 @@ class SupabaseClient {
                 console.log('[OAuth] Safari detected - storing OAuth attempt flag');
             }
 
-            // Use current origin for redirect to ensure same-site cookies work
-            const redirectUrl = window.location.origin;
+            // Use explicit redirect URL based on current domain
+            // This ensures builder.yenze.io redirects back to builder.yenze.io
+            let redirectUrl = window.location.origin;
+
+            // Ensure we're using the full URL with protocol
+            if (window.location.hostname === 'builder.yenze.io') {
+                redirectUrl = 'https://builder.yenze.io';
+            } else if (window.location.hostname === 'yenze.io' || window.location.hostname === 'www.yenze.io') {
+                redirectUrl = 'https://yenze.io';
+            }
+
+            console.log('[OAuth] Current hostname:', window.location.hostname);
             console.log('[OAuth] Redirect URL configured:', redirectUrl);
 
             const { data, error } = await this.client.auth.signInWithOAuth({
