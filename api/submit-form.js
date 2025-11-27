@@ -207,23 +207,33 @@ module.exports = async function handler(req, res) {
     }
 
     // Store form submission in database
+    // Log environment check
+    console.log('[Submit Form] Using Supabase URL:', process.env.SUPABASE_URL ? 'configured' : 'MISSING');
+    console.log('[Submit Form] Using Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'configured' : 'MISSING');
+
+    const insertData = {
+      name: fullName,
+      email: email,
+      phone: phone || null,
+      message: message,
+      subject: subject || 'New Contact Form Submission',
+      project_id: projectData?.id || null,
+      site_url: site_url,
+      ip_address: req.headers['x-forwarded-for'] || req.connection?.remoteAddress,
+      user_agent: req.headers['user-agent'],
+      custom_fields: Object.keys(customFields).length > 0 ? customFields : null,
+      created_at: new Date().toISOString()
+    };
+
+    console.log('[Submit Form] Attempting insert with data:', JSON.stringify(insertData, null, 2));
+
     const { data: submission, error: dbError } = await supabase
       .from('form_submissions')
-      .insert({
-        name: fullName,
-        email: email,
-        phone: phone || null,
-        message: message,
-        subject: subject || 'New Contact Form Submission',
-        project_id: projectData?.id || null,
-        site_url: site_url,
-        ip_address: req.headers['x-forwarded-for'] || req.connection?.remoteAddress,
-        user_agent: req.headers['user-agent'],
-        custom_fields: Object.keys(customFields).length > 0 ? customFields : null,
-        created_at: new Date().toISOString()
-      })
-      .select()
+      .insert(insertData)
+      .select('id')
       .single();
+
+    console.log('[Submit Form] Insert result - data:', JSON.stringify(submission), 'error:', JSON.stringify(dbError));
 
     if (dbError) {
       console.error('[Submit Form] Database error:', dbError);
@@ -232,11 +242,15 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({
         success: false,
         error: 'Database error: ' + (dbError.message || 'Failed to save submission'),
-        details: dbError.code
+        details: dbError.code,
+        debug: {
+          hasSupabaseUrl: !!process.env.SUPABASE_URL,
+          hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+        }
       });
-    } else {
-      console.log('[Submit Form] Submission saved:', submission.id);
     }
+
+    console.log('[Submit Form] Submission saved:', submission?.id);
 
     // Send email notification to site owner
     if (ownerEmail && process.env.RESEND_API_KEY) {
