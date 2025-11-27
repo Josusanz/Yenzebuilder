@@ -507,8 +507,70 @@
             </div>
         </div>
 
-        <!-- Sections -->
+        <!-- Multi-page Option -->
         <div class="section">
+            <div class="section-label">Website Structure</div>
+            <div class="options-grid" id="structureOptions" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="option selected" data-value="single">
+                    <span class="option-icon">📄</span>
+                    <span class="option-label">Single Page</span>
+                </div>
+                <div class="option" data-value="multi">
+                    <span class="option-icon">📚</span>
+                    <span class="option-label">Multi-page</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pages to Include (only shown for multipage) -->
+        <div class="section" id="pagesSection" style="display: none;">
+            <div class="section-label">Pages to Include</div>
+            <div class="features-grid" id="pageOptions">
+                <div class="feature selected" data-value="home">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Home</span>
+                </div>
+                <div class="feature" data-value="about">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">About</span>
+                </div>
+                <div class="feature" data-value="services">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Services</span>
+                </div>
+                <div class="feature" data-value="portfolio">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Portfolio</span>
+                </div>
+                <div class="feature" data-value="blog">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Blog</span>
+                </div>
+                <div class="feature" data-value="contact">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Contact</span>
+                </div>
+                <div class="feature" data-value="pricing">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Pricing</span>
+                </div>
+                <div class="feature" data-value="team">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Team</span>
+                </div>
+                <div class="feature" data-value="faq">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">FAQ</span>
+                </div>
+                <div class="feature" data-value="testimonials">
+                    <div class="feature-check">✓</div>
+                    <span class="feature-label">Testimonials</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sections (only shown for single page) -->
+        <div class="section" id="sectionsSection">
             <div class="section-label">Sections to Include</div>
             <div class="features-grid" id="featureOptions">
                 <div class="feature" data-value="hero">
@@ -581,6 +643,8 @@
             type: '',
             style: '',
             color: '',
+            structure: 'single',
+            pages: ['home'],
             features: [],
             details: ''
         };
@@ -611,6 +675,46 @@
                 document.querySelectorAll('#colorOptions .color-option').forEach(o => o.classList.remove('selected'));
                 el.classList.add('selected');
                 state.color = el.dataset.value;
+                updatePrompt();
+            });
+        });
+
+        // Structure options (single/multi)
+        document.querySelectorAll('#structureOptions .option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('#structureOptions .option').forEach(o => o.classList.remove('selected'));
+                el.classList.add('selected');
+                state.structure = el.dataset.value;
+
+                // Show/hide pages section vs sections section
+                const pagesSection = document.getElementById('pagesSection');
+                const sectionsSection = document.getElementById('sectionsSection');
+
+                if (state.structure === 'multi') {
+                    pagesSection.style.display = 'block';
+                    sectionsSection.style.display = 'none';
+                } else {
+                    pagesSection.style.display = 'none';
+                    sectionsSection.style.display = 'block';
+                }
+
+                updatePrompt();
+            });
+        });
+
+        // Page options (multi-select for multipage)
+        document.querySelectorAll('#pageOptions .feature').forEach(el => {
+            el.addEventListener('click', () => {
+                // Home is always required
+                if (el.dataset.value === 'home') return;
+
+                el.classList.toggle('selected');
+                const value = el.dataset.value;
+                if (state.pages.includes(value)) {
+                    state.pages = state.pages.filter(p => p !== value);
+                } else {
+                    state.pages.push(value);
+                }
                 updatePrompt();
             });
         });
@@ -654,7 +758,7 @@
         });
 
         function updatePrompt() {
-            if (!state.type && !state.style && !state.color && state.features.length === 0) {
+            if (!state.type && !state.style && !state.color && state.features.length === 0 && state.pages.length <= 1) {
                 document.getElementById('output').textContent = 'Select options above to generate your prompt...';
                 return;
             }
@@ -703,7 +807,73 @@
                 blog: 'Blog preview section'
             };
 
-            let prompt = `Create a complete HTML website in a single file for ${typeLabels[state.type] || 'a website'}.
+            const pageLabels = {
+                home: 'Home page',
+                about: 'About page',
+                services: 'Services page',
+                portfolio: 'Portfolio/Work page',
+                blog: 'Blog page',
+                contact: 'Contact page',
+                pricing: 'Pricing page',
+                team: 'Team page',
+                faq: 'FAQ page',
+                testimonials: 'Testimonials page'
+            };
+
+            let prompt = '';
+
+            // Multi-page website
+            if (state.structure === 'multi') {
+                prompt = `Create a complete MULTI-PAGE website in a SINGLE HTML FILE for ${typeLabels[state.type] || 'a website'}.
+
+IMPORTANT - MULTI-PAGE STRUCTURE:
+This website must have multiple pages within ONE HTML file using JavaScript routing. Each page should be a separate section that shows/hides based on navigation. Include:
+- A shared navigation header that appears on all pages
+- A shared footer that appears on all pages
+- Smooth transitions between pages
+- URL hash-based routing (e.g., #home, #about, #contact)
+- Active state in navigation for current page
+
+PAGES TO CREATE:`;
+
+                state.pages.forEach(page => {
+                    prompt += `\n- ${pageLabels[page]}`;
+                });
+
+                prompt += `
+
+DESIGN STYLE:
+${state.style ? `- ${styleLabels[state.style]}` : '- Modern and professional'}
+${state.color ? `- Color palette: ${colorLabels[state.color]}` : ''}
+
+ROUTING CODE STRUCTURE:
+\`\`\`javascript
+// Handle navigation
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById(pageId).style.display = 'block';
+    // Update active nav link
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.querySelector(\`nav a[href="#\${pageId}"]\`).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// Listen for hash changes
+window.addEventListener('hashchange', () => {
+    const page = location.hash.slice(1) || 'home';
+    showPage(page);
+});
+
+// Initial page load
+document.addEventListener('DOMContentLoaded', () => {
+    const page = location.hash.slice(1) || 'home';
+    showPage(page);
+});
+\`\`\``;
+
+            } else {
+                // Single page website
+                prompt = `Create a complete HTML website in a single file for ${typeLabels[state.type] || 'a website'}.
 
 DESIGN STYLE:
 ${state.style ? `- ${styleLabels[state.style]}` : '- Modern and professional'}
@@ -711,15 +881,16 @@ ${state.color ? `- Color palette: ${colorLabels[state.color]}` : ''}
 
 SECTIONS TO INCLUDE:`;
 
-            if (state.features.length > 0) {
-                state.features.forEach(f => {
-                    prompt += `\n- ${featureLabels[f]}`;
-                });
-            } else {
-                prompt += '\n- Hero section\n- Main content sections';
+                if (state.features.length > 0) {
+                    state.features.forEach(f => {
+                        prompt += `\n- ${featureLabels[f]}`;
+                    });
+                } else {
+                    prompt += '\n- Hero section\n- Main content sections';
+                }
             }
 
-            const hasContactForm = state.features.includes('contact');
+            const hasContactForm = state.features.includes('contact') || (state.structure === 'multi' && state.pages.includes('contact'));
 
             prompt += `
 
