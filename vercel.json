@@ -32,6 +32,14 @@
       ]
     },
     {
+      "source": "/start",
+      "destination": "/start.html"
+    },
+    {
+      "source": "/prompt-generator",
+      "destination": "/prompt-generator.html"
+    },
+    {
       "source": "/s/:slug",
       "destination": "/api/view-project.js?slug=:slug"
     },

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YENZE - Comienza tu Proyecto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066FF;
+            --text: #1a1a1a;
+            --text-muted: #666;
+            --border: #e0e0e0;
+            --bg: #ffffff;
+            --bg-secondary: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .option-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-box:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-box.featured {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: var(--primary);
+        }
+
+        .option-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .option-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .option-description {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: var(--text);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .option-btn:hover {
+            background: #000;
+            transform: scale(1.02);
+        }
+
+        .option-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .option-btn.primary:hover {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Import HTML Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        .import-section {
+            margin-bottom: 30px;
+        }
+
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--bg-secondary);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .drop-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .drop-text {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .choose-file-btn {
+            background: var(--text);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .choose-file-btn:hover {
+            background: #000;
+        }
+
+        .paste-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: all 0.2s;
+        }
+
+        .paste-area:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .load-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .load-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 24px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 30px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">YENZE</div>
+            <div class="subtitle">¿Cómo quieres empezar tu proyecto?</div>
+        </div>
+
+        <div class="options-container">
+            <!-- Option 1: Import HTML -->
+            <div class="option-box" onclick="openImportModal()">
+                <div class="option-icon">📄</div>
+                <div class="option-title">Import HTML</div>
+                <div class="option-description">Sube o pega tu código HTML existente</div>
+                <button class="option-btn">Importar →</button>
+            </div>
+
+            <!-- Option 2: AI Prompt Generator -->
+            <div class="option-box featured">
+                <div class="badge">Popular</div>
+                <div class="option-icon">✨</div>
+                <div class="option-title">AI Prompt Generator</div>
+                <div class="option-description">Genera prompts para crear tu web con IA</div>
+                <button class="option-btn primary" onclick="window.location.href='/prompt-generator.html'">Crear Prompt
+                    →</button>
+            </div>
+
+            <!-- Option 3: Templates -->
+            <div class="option-box" onclick="window.location.href='/templates.html'">
+                <div class="option-icon">🎨</div>
+                <div class="option-title">Templates</div>
+                <div class="option-description">Comienza con plantillas profesionales</div>
+                <button class="option-btn">Ver Templates →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import HTML Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content" style="position: relative;">
+            <button class="close-btn" onclick="closeImportModal()">×</button>
+
+            <div class="modal-header">
+                <div class="modal-title">Import HTML</div>
+                <div class="modal-subtitle">Sube un archivo HTML o pega tu código</div>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="import-section">
+                <div class="section-label">Subir Archivo</div>
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div class="drop-icon">📁</div>
+                    <div class="drop-text">Arrastra tu archivo HTML aquí o haz clic para seleccionar</div>
+                    <button class="choose-file-btn">Choose File</button>
+                    <input type="file" id="fileInput" class="file-input" accept=".html,.htm"
+                        onchange="handleFileSelect(event)">
+                </div>
+            </div>
+
+            <!-- Paste Area -->
+            <div class="import-section">
+                <div class="section-label">Pegar Código HTML</div>
+                <textarea class="paste-area" id="htmlPaste" placeholder="Paste HTML code here..."
+                    oninput="checkPasteContent()"></textarea>
+            </div>
+
+            <!-- Load Button -->
+            <button class="load-btn" id="loadBtn" onclick="loadHTML()" disabled>Load HTML</button>
+        </div>
+    </div>
+
+    <script>
+        // Import Modal Functions
+        function openImportModal() {
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+            document.getElementById('htmlPaste').value = '';
+            document.getElementById('loadBtn').disabled = true;
+        }
+
+        // Drag and Drop
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // File Selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            if (file.type === 'text/html' || file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('htmlPaste').value = e.target.result;
+                    document.getElementById('loadBtn').disabled = false;
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Por favor, selecciona un archivo HTML válido');
+            }
+        }
+
+        // Check Paste Content
+        function checkPasteContent() {
+            const content = document.getElementById('htmlPaste').value.trim();
+            document.getElementById('loadBtn').disabled = content.length === 0;
+        }
+
+        // Load HTML
+        function loadHTML() {
+            const htmlContent = document.getElementById('htmlPaste').value.trim();
+
+            if (!htmlContent) {
+                alert('Por favor, pega o sube código HTML primero');
+                return;
+            }
+
+            // Store HTML in localStorage
+            localStorage.setItem('importedHTML', htmlContent);
+
+            // Redirect to builder with import flag
+            window.location.href = 'https://builder.yenze.io?import=true';
+        }
+
+        // Close modal on outside click
+        document.getElementById('importModal').addEventListener('click', (e) => {
+            if (e.target.id === 'importModal') {
+                closeImportModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeImportModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

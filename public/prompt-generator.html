@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YENZE - Generador de Prompts para Websites</title>
+    <meta name="description" content="Crea prompts profesionales para generar websites con IA">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0052cc;
+            --primary-light: #E5F0FF;
+            --success: #10B981;
+            --text: #1a1a1a;
+            --text-muted: #666;
+            --bg: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .credit {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .credit a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .option-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-card.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .option-card .emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .option-card .label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .color-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .color-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .color-card.selected {
+            border-color: var(--primary);
+            border-width: 3px;
+            background: var(--primary-light);
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .color-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+        }
+
+        .feature-checkbox {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-checkbox:hover {
+            border-color: var(--primary);
+        }
+
+        .feature-checkbox.checked {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .checkbox-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-checkbox.checked .checkbox-icon {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .feature-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .prompt-preview {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 30px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .prompt-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #0d9668;
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: #6366f1;
+        }
+
+        .prompt-text {
+            background: #0f0f1e;
+            border-radius: 8px;
+            padding: 16px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Generador de Prompts para Websites</h1>
+            <p>Crea prompts profesionales para generar tu website con IA</p>
+        </div>
+
+        <div class="credit">
+            Desarrollado por <a href="https://yenze.io" target="_blank">YENZE</a> para crear websites increíbles
+        </div>
+
+        <!-- Tipo de Website -->
+        <div class="section">
+            <div class="section-title">🌐 ¿Qué tipo de website necesitas?</div>
+            <div class="options-grid">
+                <div class="option-card" data-type="business" onclick="selectType('business')">
+                    <span class="emoji">💼</span>
+                    <span class="label">Negocio</span>
+                </div>
+                <div class="option-card" data-type="portfolio" onclick="selectType('portfolio')">
+                    <span class="emoji">🎨</span>
+                    <span class="label">Portfolio</span>
+                </div>
+                <div class="option-card" data-type="ecommerce" onclick="selectType('ecommerce')">
+                    <span class="emoji">🛍️</span>
+                    <span class="label">E-commerce</span>
+                </div>
+                <div class="option-card" data-type="restaurant" onclick="selectType('restaurant')">
+                    <span class="emoji">🍕</span>
+                    <span class="label">Restaurante</span>
+                </div>
+                <div class="option-card" data-type="saas" onclick="selectType('saas')">
+                    <span class="emoji">🚀</span>
+                    <span class="label">SaaS</span>
+                </div>
+                <div class="option-card" data-type="blog" onclick="selectType('blog')">
+                    <span class="emoji">📝</span>
+                    <span class="label">Blog</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estilo de Diseño -->
+        <div class="section">
+            <div class="section-title">✨ Estilo de Diseño</div>
+            <div class="options-grid">
+                <div class="option-card" data-style="modern" onclick="selectStyle('modern')">
+                    <span class="emoji">⚡</span>
+                    <span class="label">Moderno</span>
+                </div>
+                <div class="option-card" data-style="minimalist" onclick="selectStyle('minimalist')">
+                    <span class="emoji">⬜</span>
+                    <span class="label">Minimalista</span>
+                </div>
+                <div class="option-card" data-style="elegant" onclick="selectStyle('elegant')">
+                    <span class="emoji">💎</span>
+                    <span class="label">Elegante</span>
+                </div>
+                <div class="option-card" data-style="playful" onclick="selectStyle('playful')">
+                    <span class="emoji">🎪</span>
+                    <span class="label">Divertido</span>
+                </div>
+                <div class="option-card" data-style="corporate" onclick="selectStyle('corporate')">
+                    <span class="emoji">🏢</span>
+                    <span class="label">Corporativo</span>
+                </div>
+                <div class="option-card" data-style="dark" onclick="selectStyle('dark')">
+                    <span class="emoji">🌙</span>
+                    <span class="label">Dark Mode</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paleta de Colores -->
+        <div class="section">
+            <div class="section-title">🎨 Paleta de Colores</div>
+            <div class="color-options">
+                <div class="color-card" data-color="blue" onclick="selectColor('blue')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    </div>
+                    <div class="color-label">Azul/Púrpura</div>
+                </div>
+                <div class="color-card" data-color="green" onclick="selectColor('green')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">
+                    </div>
+                    <div class="color-label">Verde/Aqua</div>
+                </div>
+                <div class="color-card" data-color="orange" onclick="selectColor('orange')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    </div>
+                    <div class="color-label">Rosa/Naranja</div>
+                </div>
+                <div class="color-card" data-color="dark" onclick="selectColor('dark')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
+                    </div>
+                    <div class="color-label">Oscuro</div>
+                </div>
+                <div class="color-card" data-color="earth" onclick="selectColor('earth')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);">
+                    </div>
+                    <div class="color-label">Tierra</div>
+                </div>
+                <div class="color-card" data-color="neon" onclick="selectColor('neon')">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #00f260 0%, #0575e6 100%);">
+                    </div>
+                    <div class="color-label">Neón</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secciones a Incluir -->
+        <div class="section">
+            <div class="section-title">📋 Secciones a Incluir</div>
+            <div class="section-subtitle">Selecciona las secciones que quieres en tu website</div>
+            <div class="features-grid">
+                <div class="feature-checkbox" data-feature="hero" onclick="toggleFeature('hero')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Hero Section</div>
+                </div>
+                <div class="feature-checkbox" data-feature="about" onclick="toggleFeature('about')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Sobre Nosotros</div>
+                </div>
+                <div class="feature-checkbox" data-feature="services" onclick="toggleFeature('services')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Servicios</div>
+                </div>
+                <div class="feature-checkbox" data-feature="portfolio" onclick="toggleFeature('portfolio')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Portfolio/Galería</div>
+                </div>
+                <div class="feature-checkbox" data-feature="testimonials" onclick="toggleFeature('testimonials')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Testimonios</div>
+                </div>
+                <div class="feature-checkbox" data-feature="pricing" onclick="toggleFeature('pricing')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Precios</div>
+                </div>
+                <div class="feature-checkbox" data-feature="contact" onclick="toggleFeature('contact')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">Contacto</div>
+                </div>
+                <div class="feature-checkbox" data-feature="faq" onclick="toggleFeature('faq')">
+                    <div class="checkbox-icon">✓</div>
+                    <div class="feature-label">FAQ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles Adicionales -->
+        <div class="section">
+            <div class="section-title">📝 Detalles Adicionales (Opcional)</div>
+            <textarea class="input-field" id="additionalDetails"
+                placeholder="Ej: Quiero que tenga animaciones suaves, usar la fuente Montserrat, incluir un mapa de ubicación..."
+                oninput="updatePrompt()"></textarea>
+        </div>
+
+        <!-- Preview del Prompt -->
+        <div class="prompt-preview">
+            <div class="prompt-header">
+                <div class="prompt-title">📋 Tu Prompt Generado</div>
+                <button class="copy-btn" onclick="copyPrompt()">Copiar</button>
+            </div>
+            <div class="prompt-text" id="promptOutput">Selecciona las opciones arriba para generar tu prompt...</div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="action-buttons">
+            <a href="https://gemini.google.com" target="_blank" class="btn btn-secondary">
+                Abrir Gemini AI →
+            </a>
+            <a href="https://builder.yenze.io" class="btn btn-primary">
+                Ir a YENZE Builder →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            type: '',
+            style: '',
+            color: '',
+            features: [],
+            details: ''
+        };
+
+        function selectType(type) {
+            state.type = type;
+            document.querySelectorAll('[data-type]').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+            updatePrompt();
+        }
+
+        function selectStyle(style) {
+            state.style = style;
+            document.querySelectorAll('[data-style]').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-style="${style}"]`).classList.add('selected');
+            updatePrompt();
+        }
+
+        function selectColor(color) {
+            state.color = color;
+            document.querySelectorAll('[data-color]').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`[data-color="${color}"]`).classList.add('selected');
+            updatePrompt();
+        }
+
+        function toggleFeature(feature) {
+            const element = document.querySelector(`[data-feature="${feature}"]`);
+            if (state.features.includes(feature)) {
+                state.features = state.features.filter(f => f !== feature);
+                element.classList.remove('checked');
+            } else {
+                state.features.push(feature);
+                element.classList.add('checked');
+            }
+            updatePrompt();
+        }
+
+        function updatePrompt() {
+            state.details = document.getElementById('additionalDetails').value;
+
+            if (!state.type && !state.style && !state.color && state.features.length === 0) {
+                document.getElementById('promptOutput').textContent = 'Selecciona las opciones arriba para generar tu prompt...';
+                return;
+            }
+
+            const typeLabels = {
+                business: 'un sitio web de negocio profesional',
+                portfolio: 'un portfolio creativo',
+                ecommerce: 'una tienda online (e-commerce)',
+                restaurant: 'un sitio web de restaurante',
+                saas: 'una landing page de SaaS/producto tech',
+                blog: 'un blog moderno'
+            };
+
+            const styleLabels = {
+                modern: 'Moderno y limpio',
+                minimalist: 'Minimalista',
+                elegant: 'Elegante y sofisticado',
+                playful: 'Divertido y colorido',
+                corporate: 'Corporativo y profesional',
+                dark: 'Dark mode con estética tech'
+            };
+
+            const colorLabels = {
+                blue: 'azules y púrpuras con gradientes',
+                green: 'verdes y aqua frescos',
+                orange: 'rosas y naranjas vibrantes',
+                dark: 'tonos oscuros y grises',
+                earth: 'tonos tierra y cálidos',
+                neon: 'colores neón brillantes'
+            };
+
+            const featureLabels = {
+                hero: 'Hero section impactante con CTA',
+                about: 'Sección "Sobre Nosotros"',
+                services: 'Sección de Servicios/Productos',
+                portfolio: 'Galería de Portfolio/Proyectos',
+                testimonials: 'Testimonios de clientes',
+                pricing: 'Tabla de precios',
+                contact: 'Formulario de contacto',
+                faq: 'Sección de preguntas frecuentes (FAQ)'
+            };
+
+            let prompt = `Crea un sitio web HTML completo en un solo archivo para ${typeLabels[state.type] || 'un sitio web'}.
+
+ESTILO DE DISEÑO:
+${state.style ? `- ${styleLabels[state.style]}` : '- Estilo moderno y profesional'}
+${state.color ? `- Paleta de colores: ${colorLabels[state.color]}` : ''}
+
+SECCIONES A INCLUIR:`;
+
+            if (state.features.length > 0) {
+                state.features.forEach(feature => {
+                    prompt += `\n- ${featureLabels[feature]}`;
+                });
+            } else {
+                prompt += '\n- Hero section\n- Secciones principales del sitio';
+            }
+
+            prompt += `
+
+REQUISITOS TÉCNICOS:
+- Todo el código en un solo archivo HTML
+- CSS incluido en etiqueta <style>
+- JavaScript incluido en etiqueta <script>
+- Diseño responsive (mobile-first)
+- Usar Flexbox/Grid para layouts
+- Fuentes de Google Fonts
+- Imágenes placeholder de Unsplash
+- Animaciones suaves y modernas
+- Optimizado para performance`;
+
+            if (state.details) {
+                prompt += `\n\nDETALLES ADICIONALES:\n${state.details}`;
+            }
+
+            prompt += `\n\nEl código debe estar listo para copiar y pegar, completamente funcional y con un diseño profesional y atractivo.`;
+
+            document.getElementById('promptOutput').textContent = prompt;
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+
+            if (promptText === 'Selecciona las opciones arriba para generar tu prompt...') {
+                alert('⚠️ Primero selecciona algunas opciones para generar el prompt');
+                return;
+            }
+
+            navigator.clipboard.writeText(promptText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copiado!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Error al copiar. Por favor, selecciona y copia manualmente el texto.');
+            });
+        }
+    </script>
+</body>
+
+</html>
