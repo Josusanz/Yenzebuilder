@@ -227,30 +227,31 @@ module.exports = async function handler(req, res) {
 
     console.log('[Submit Form] Attempting insert with data:', JSON.stringify(insertData, null, 2));
 
-    const { data: submission, error: dbError } = await supabase
+    // Try insert without select first to see if it works
+    const { error: dbError } = await supabase
       .from('form_submissions')
-      .insert(insertData)
-      .select('id')
-      .single();
+      .insert(insertData);
 
-    console.log('[Submit Form] Insert result - data:', JSON.stringify(submission), 'error:', JSON.stringify(dbError));
+    console.log('[Submit Form] Insert result - error:', JSON.stringify(dbError));
 
     if (dbError) {
       console.error('[Submit Form] Database error:', dbError);
       console.error('[Submit Form] Database error details:', JSON.stringify(dbError, null, 2));
-      // Return error instead of silently continuing
+      // Return error with debug info
       return res.status(500).json({
         success: false,
         error: 'Database error: ' + (dbError.message || 'Failed to save submission'),
         details: dbError.code,
         debug: {
           hasSupabaseUrl: !!process.env.SUPABASE_URL,
-          hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+          hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+          projectFound: !!projectData,
+          projectId: projectData?.id
         }
       });
     }
 
-    console.log('[Submit Form] Submission saved:', submission?.id);
+    console.log('[Submit Form] Submission saved successfully');
 
     // Send email notification to site owner
     if (ownerEmail && process.env.RESEND_API_KEY) {
@@ -328,7 +329,12 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Thank you! Your message has been received.',
-      submission_id: submission?.id
+      saved: true,
+      debug: {
+        projectFound: !!projectData,
+        projectId: projectData?.id,
+        ownerEmail: ownerEmail ? 'found' : 'not found'
+      }
     });
 
   } catch (error) {
