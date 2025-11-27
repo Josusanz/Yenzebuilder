@@ -643,6 +643,9 @@ SECCIONES A INCLUIR:`;
                 prompt += '\n- Hero section\n- Secciones principales del sitio';
             }
 
+            // Check if contact form is selected
+            const hasContactForm = state.features.includes('contact');
+
             prompt += `
 
 REQUISITOS TÉCNICOS:
@@ -655,6 +658,59 @@ REQUISITOS TÉCNICOS:
 - Imágenes placeholder de Unsplash
 - Animaciones suaves y modernas
 - Optimizado para performance`;
+
+            // Add contact form instructions if selected
+            if (hasContactForm) {
+                prompt += `
+
+IMPORTANTE - FORMULARIO DE CONTACTO:
+El formulario de contacto DEBE usar la API de YENZE Forms. Usa este código exacto para el formulario:
+
+<form id="contactForm" onsubmit="submitForm(event)">
+    <input type="text" name="name" placeholder="Tu nombre" required>
+    <input type="email" name="email" placeholder="Tu email" required>
+    <textarea name="message" placeholder="Tu mensaje" required></textarea>
+    <button type="submit">Enviar mensaje</button>
+</form>
+
+<script>
+async function submitForm(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch('https://yenze.io/api/submit-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('¡Mensaje enviado correctamente!');
+            form.reset();
+        } else {
+            alert('Error: ' + (result.error || 'No se pudo enviar'));
+        }
+    } catch (error) {
+        alert('Error de conexión. Inténtalo de nuevo.');
+    }
+
+    btn.disabled = false;
+    btn.textContent = originalText;
+}
+</script>
+
+NO uses Web3Forms, Formspree ni otros servicios. Usa EXACTAMENTE la URL https://yenze.io/api/submit-form`;
+            }
 
             if (state.details) {
                 prompt += `\n\nDETALLES ADICIONALES:\n${state.details}`;

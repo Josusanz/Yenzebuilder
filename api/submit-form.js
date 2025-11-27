@@ -1,7 +1,8 @@
 // API Route for handling contact form submissions
-// This replaces Web3Forms with our own system
+// Uses Resend to send emails to site owners
 
 const { createClient } = require('@supabase/supabase-js');
+const { Resend } = require('resend');
 
 module.exports = async function handler(req, res) {
   // Enable CORS for form submissions from any published site
@@ -26,14 +27,18 @@ module.exports = async function handler(req, res) {
       message,
       subject,
       project_id,
+      site_id,
       // Support for multi-column forms
       first_name,
       last_name,
-      // Original referrer/site info
-      site_url
+      // Custom fields (any additional fields)
+      ...customFields
     } = req.body;
 
-    console.log('[Submit Form] Received submission:', { name, email, subject, project_id });
+    // Get site_url from body or referer
+    const site_url = req.body.site_url || req.headers.referer || req.headers.origin;
+
+    console.log('[Submit Form] Received submission:', { name, email, subject, project_id, site_id, site_url });
 
     // Validate required fields
     if (!email || !message) {
@@ -63,6 +68,135 @@ module.exports = async function handler(req, res) {
       ? `${first_name} ${last_name}`
       : (name || 'Anonymous');
 
+    // Find the site owner based on project_id, site_id, or site_url
+    let ownerEmail = null;
+    let ownerName = null;
+    let projectData = null;
+
+    // Try to find project by ID first
+    if (project_id || site_id) {
+      const { data: project } = await supabase
+        .from('projects')
+        .select('id, name, user_id, subdomain, slug')
+        .eq('id', project_id || site_id)
+        .single();
+
+      if (project) {
+        projectData = project;
+      }
+    }
+
+    // If no project found by ID, try to find by subdomain from URL
+    if (!projectData && site_url) {
+      // Extract subdomain from URL like "example.yenze.io" or "yenze.io/s/example"
+      let subdomain = null;
+      let slug = null;
+
+      try {
+        const url = new URL(site_url);
+        const hostname = url.hostname;
+
+        // Check for subdomain.yenze.io
+        if (hostname.endsWith('.yenze.io') && hostname !== 'yenze.io' && hostname !== 'www.yenze.io') {
+          subdomain = hostname.split('.')[0];
+        }
+
+        // Check for yenze.io/s/slug
+        const pathMatch = url.pathname.match(/^\/s\/([^\/]+)/);
+        if (pathMatch) {
+          slug = pathMatch[1];
+        }
+      } catch (e) {
+        console.log('[Submit Form] Could not parse URL:', site_url);
+      }
+
+      if (subdomain) {
+        const { data: project } = await supabase
+          .from('projects')
+          .select('id, name, user_id, subdomain, slug')
+          .eq('subdomain', subdomain)
+          .single();
+
+        if (project) {
+          projectData = project;
+        }
+      } else if (slug) {
+        const { data: project } = await supabase
+          .from('projects')
+          .select('id, name, user_id, subdomain, slug')
+          .eq('slug', slug)
+          .single();
+
+        if (project) {
+          projectData = project;
+        }
+      }
+    }
+
+    // Get owner email from user profile
+    if (projectData && projectData.user_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .eq('id', projectData.user_id)
+        .single();
+
+      if (profile) {
+        ownerEmail = profile.email;
+        ownerName = profile.full_name;
+      }
+
+      // If no email in profile, try auth.users
+      if (!ownerEmail) {
+        const { data: { user } } = await supabase.auth.admin.getUserById(projectData.user_id);
+        if (user) {
+          ownerEmail = user.email;
+        }
+      }
+    }
+
+    console.log('[Submit Form] Found owner:', { ownerEmail, projectName: projectData?.name });
+
+    // Check rate limits based on user plan
+    if (projectData) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', projectData.user_id)
+        .single();
+
+      const plan = profile?.plan || 'free';
+
+      // Get submission count for this month
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const { count } = await supabase
+        .from('form_submissions')
+        .select('*', { count: 'exact', head: true })
+        .eq('project_id', projectData.id)
+        .gte('created_at', startOfMonth.toISOString());
+
+      // Plan limits
+      const limits = {
+        free: 50,
+        basic: 500,
+        pro: 2000,
+        business: 10000
+      };
+
+      const limit = limits[plan] || 50;
+
+      if (count >= limit) {
+        console.log('[Submit Form] Rate limit exceeded:', { plan, count, limit });
+        return res.status(429).json({
+          success: false,
+          error: 'Monthly form submission limit reached. Please contact the site owner.'
+        });
+      }
+    }
+
     // Store form submission in database
     const { data: submission, error: dbError } = await supabase
       .from('form_submissions')
@@ -72,10 +206,11 @@ module.exports = async function handler(req, res) {
         phone: phone || null,
         message: message,
         subject: subject || 'New Contact Form Submission',
-        project_id: project_id || null,
-        site_url: site_url || req.headers.referer || null,
-        ip_address: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        project_id: projectData?.id || null,
+        site_url: site_url,
+        ip_address: req.headers['x-forwarded-for'] || req.connection?.remoteAddress,
         user_agent: req.headers['user-agent'],
+        custom_fields: Object.keys(customFields).length > 0 ? customFields : null,
         created_at: new Date().toISOString()
       })
       .select()
@@ -83,30 +218,95 @@ module.exports = async function handler(req, res) {
 
     if (dbError) {
       console.error('[Submit Form] Database error:', dbError);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to save form submission'
-      });
+      // Continue anyway - still try to send email
+    } else {
+      console.log('[Submit Form] Submission saved:', submission.id);
     }
 
-    console.log('[Submit Form] Submission saved:', submission.id);
+    // Send email notification to site owner
+    if (ownerEmail && process.env.RESEND_API_KEY) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // TODO: In future, send email notification to site owner
-    // For now, we just store in database
+        const siteName = projectData?.name || 'your YENZE site';
+        const formSubject = subject || 'New Contact Form Submission';
+
+        // Build custom fields HTML if any
+        let customFieldsHtml = '';
+        if (Object.keys(customFields).length > 0) {
+          customFieldsHtml = '<h3 style="color: #333; margin-top: 20px;">Additional Information</h3>';
+          for (const [key, value] of Object.entries(customFields)) {
+            if (key !== 'site_url' && value) {
+              const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+              customFieldsHtml += `<p><strong>${formattedKey}:</strong> ${value}</p>`;
+            }
+          }
+        }
+
+        await resend.emails.send({
+          from: 'YENZE Forms <forms@yenze.io>',
+          to: ownerEmail,
+          subject: `[${siteName}] ${formSubject}`,
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px 12px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 24px;">New Form Submission</h1>
+                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">From ${siteName}</p>
+              </div>
+
+              <div style="background: #f8f9fa; padding: 30px; border: 1px solid #e9ecef; border-top: none; border-radius: 0 0 12px 12px;">
+                <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                  <h2 style="color: #333; margin-top: 0; margin-bottom: 20px; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Contact Details</h2>
+
+                  <p style="margin: 10px 0;"><strong>Name:</strong> ${fullName}</p>
+                  <p style="margin: 10px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #667eea;">${email}</a></p>
+                  ${phone ? `<p style="margin: 10px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
+
+                  <h3 style="color: #333; margin-top: 25px; margin-bottom: 15px; font-size: 16px;">Message</h3>
+                  <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #667eea;">
+                    <p style="margin: 0; white-space: pre-wrap; line-height: 1.6;">${message}</p>
+                  </div>
+
+                  ${customFieldsHtml}
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #e8f4f8; border-radius: 8px; text-align: center;">
+                  <p style="margin: 0; color: #666; font-size: 14px;">
+                    Reply directly to this email to respond to ${fullName}
+                  </p>
+                </div>
+              </div>
+
+              <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+                <p>Powered by <a href="https://yenze.io" style="color: #667eea; text-decoration: none;">YENZE</a></p>
+                <p style="margin-top: 5px;">Submission received from: ${site_url || 'Unknown'}</p>
+              </div>
+            </div>
+          `,
+          replyTo: email
+        });
+
+        console.log('[Submit Form] Email sent to:', ownerEmail);
+      } catch (emailError) {
+        console.error('[Submit Form] Email error:', emailError);
+        // Don't fail the request if email fails - submission is still saved
+      }
+    } else {
+      console.log('[Submit Form] No owner email or Resend API key - skipping email notification');
+    }
 
     // Success response
     return res.status(200).json({
       success: true,
-      message: 'Thank you! Your message has been received. We will get back to you soon.',
-      submission_id: submission.id
+      message: 'Thank you! Your message has been received.',
+      submission_id: submission?.id
     });
 
   } catch (error) {
     console.error('[Submit Form] Error:', error);
     return res.status(500).json({
       success: false,
-      error: 'An error occurred while processing your submission',
-      details: error.message
+      error: 'An error occurred while processing your submission'
     });
   }
 };
