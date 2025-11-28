@@ -256,25 +256,84 @@
         </div>
     </main>
 
-    <!-- Scripts (Placeholder for Auth Logic) -->
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/config.js"></script>
+    <script src="/supabase-client.js"></script>
+
     <script>
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Supabase
+            try {
+                await supabaseClient.init();
 
-            btn.disabled = true;
-            btn.textContent = 'Signing in...';
+                // Check if already logged in
+                if (supabaseClient.isAuthenticated()) {
+                    window.location.href = '/dashboard.html';
+                }
+            } catch (error) {
+                console.error('Failed to init Supabase:', error);
+            }
 
-            // Simulate login delay
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.textContent = originalText;
-                alert('This is a demo login page. Backend integration required.');
-            }, 1000);
+            // Email Login
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = e.target.querySelector('button[type="submit"]');
+                const emailInput = e.target.querySelector('input[type="email"]');
+                const passwordInput = e.target.querySelector('input[type="password"]');
+                const originalText = btn.textContent;
+
+                btn.disabled = true;
+                btn.textContent = 'Signing in...';
+
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                const { data, error } = await supabaseClient.signIn(email, password);
+
+                if (error) {
+                    alert('Login failed: ' + error.message);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                } else {
+                    // Success
+                    window.location.href = '/dashboard.html';
+                }
+            });
+
+            // Social Login - Google
+            const googleBtn = document.querySelector('.google-btn');
+            googleBtn.addEventListener('click', async () => {
+                const originalText = googleBtn.innerHTML;
+                googleBtn.disabled = true;
+                googleBtn.innerHTML = 'Connecting...';
+
+                const { error } = await supabaseClient.signInWithGoogle();
+
+                if (error) {
+                    alert('Google login failed: ' + error.message);
+                    googleBtn.disabled = false;
+                    googleBtn.innerHTML = originalText;
+                }
+            });
+
+            // Social Login - GitHub
+            const githubBtn = document.querySelector('.github-btn');
+            githubBtn.addEventListener('click', async () => {
+                const originalText = githubBtn.innerHTML;
+                githubBtn.disabled = true;
+                githubBtn.innerHTML = 'Connecting...';
+
+                const { error } = await supabaseClient.signInWithGithub();
+
+                if (error) {
+                    alert('GitHub login failed: ' + error.message);
+                    githubBtn.disabled = false;
+                    githubBtn.innerHTML = originalText;
+                }
+            });
         });
     </script>
 
 </body>
-
-</html>
