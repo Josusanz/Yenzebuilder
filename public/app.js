@@ -1319,19 +1319,7 @@ class YenzeBuilder {
         }
     }
 
-    async publish() {
-        if (!supabaseClient.isAuthenticated()) {
-            this.showAuthModal('login');
-            return;
-        }
 
-        if (this.isPublishing) return;
-        this.isPublishing = true;
-        const publishBtn = document.getElementById('publishBtn');
-        const originalText = publishBtn.innerHTML;
-        publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
-        publishBtn.disabled = true;
-    }
 
     updateUndoRedoButtons() {
         const undoBtn = document.getElementById('undoBtn');
@@ -3209,7 +3197,6 @@ if (validationForm) {
             this.pendingPublish = true;
             // Show auth modal first
             authUI.showAuthModal('login');
-            this.showToast('Please log in to publish your website', 'info');
             return;
         }
 
