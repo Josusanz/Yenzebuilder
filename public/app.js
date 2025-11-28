@@ -630,10 +630,37 @@ class YenzeBuilder {
 
                 // Add resize observer to body to auto-adjust height
                 if (iframeDoc.body) {
-                    const observer = new ResizeObserver(() => {
+                    const resizeObserver = new ResizeObserver(() => {
                         this.adjustIframeHeight(canvas, iframeDoc);
                     });
-                    observer.observe(iframeDoc.body);
+                    resizeObserver.observe(iframeDoc.body);
+
+                    // Add MutationObserver to handle dynamic content changes (e.g. multipage navigation)
+                    const mutationObserver = new MutationObserver((mutations) => {
+                        let shouldRebuildLayers = false;
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'childList') {
+                                mutation.addedNodes.forEach((node) => {
+                                    if (node.nodeType === 1) { // Element node
+                                        this.makeElementEditable(node, iframeDoc);
+                                        // Also make children editable
+                                        node.querySelectorAll('*').forEach(child => {
+                                            this.makeElementEditable(child, iframeDoc);
+                                        });
+                                        shouldRebuildLayers = true;
+                                    }
+                                });
+                                if (mutation.removedNodes.length > 0) {
+                                    shouldRebuildLayers = true;
+                                }
+                            }
+                        });
+
+                        if (shouldRebuildLayers) {
+                            this.buildLayersTree(iframeDoc);
+                        }
+                    });
+                    mutationObserver.observe(iframeDoc.body, { childList: true, subtree: true });
                 }
             } else {
                 // If not ready yet, wait a bit more
@@ -929,23 +956,47 @@ class YenzeBuilder {
         el.addEventListener('dragover', (e) => {
             if (!this.draggedElement || this.draggedElement === e.target) return;
 
+            // Prevent dragging into self or children
+            if (this.draggedElement.contains(e.target)) return;
+
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
 
             const parent = e.target.parentNode;
-            const draggedParent = this.draggedElement.parentNode;
 
-            // Only allow reordering within same parent or into container elements
-            if (parent === draggedParent || this.isContainer(e.target)) {
+            // Allow dropping into any container or next to any element whose parent is a container
+            // We removed the restriction of same parent to allow moving elements between sections
+            if (this.isContainer(e.target) || this.isContainer(parent)) {
                 const rect = e.target.getBoundingClientRect();
                 const midpoint = rect.top + rect.height / 2;
 
+                // Remove existing indicator first to prevent duplicates
+                if (this.dropIndicator && this.dropIndicator.parentNode && this.dropIndicator.parentNode !== e.target && this.dropIndicator.parentNode !== parent) {
+                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+                }
+
                 if (this.isContainer(e.target)) {
                     // Drop inside container
-                    if (e.target.children.length === 0) {
-                        e.target.appendChild(this.dropIndicator);
+                    // If hovering near the top/bottom edge, treat as "before/after" the container itself
+                    // This allows dropping *next* to a container instead of *inside* it
+                    const edgeThreshold = 10; // px
+                    if (e.clientY < rect.top + edgeThreshold && parent) {
+                        parent.insertBefore(this.dropIndicator, e.target);
+                    } else if (e.clientY > rect.bottom - edgeThreshold && parent) {
+                        parent.insertBefore(this.dropIndicator, e.target.nextSibling);
                     } else {
-                        e.target.insertBefore(this.dropIndicator, e.target.firstChild);
+                        // Drop inside
+                        if (e.target.children.length === 0) {
+                            e.target.appendChild(this.dropIndicator);
+                        } else {
+                            // If hovering over children, let the child's dragover handle it
+                            // But if we are definitely inside the container (and not over a child), append
+                            // This is tricky because event bubbles. 
+                            // We'll rely on the fact that if we are over a child, the child's handler ran first (capturing phase? no, bubbling).
+                            // Actually, we should stop propagation if we handled it?
+                            // For now, default to prepending if empty, or appending if at bottom
+                            e.target.appendChild(this.dropIndicator);
+                        }
                     }
                 } else if (e.clientY < midpoint) {
                     // Drop before element
@@ -954,6 +1005,8 @@ class YenzeBuilder {
                     // Drop after element
                     parent.insertBefore(this.dropIndicator, e.target.nextSibling);
                 }
+
+                e.stopPropagation(); // Prevent parent handlers from overriding
             }
         });
 
@@ -962,9 +1015,6 @@ class YenzeBuilder {
 
             e.preventDefault();
             e.stopPropagation();
-
-            const parent = e.target.parentNode;
-            const draggedParent = this.draggedElement.parentNode;
 
             // Perform the move
             if (this.dropIndicator && this.dropIndicator.parentNode) {
@@ -983,8 +1033,14 @@ class YenzeBuilder {
 
                 this.updateHTML('Reorder element');
                 this.buildLayersTree(doc); // Update layers tree
+
+                // Re-select the moved element
+                this.selectElement(this.draggedElement);
+
                 this.showToast('✅ Element repositioned', 'success');
             }
+
+            this.draggedElement = null;
         });
     }
 
