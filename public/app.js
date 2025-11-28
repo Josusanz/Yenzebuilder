@@ -1625,19 +1625,19 @@ class YenzeBuilder {
                     <label class="prop-label" style="margin-bottom: 4px; display: block;">Padding</label>
                     <div class="prop-spacing-grid">
                         <div class="prop-spacing-item">
-                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <span class="prop-spacing-icon" title="Padding Top"><i class="fa-solid fa-arrow-up" style="font-size: 10px; opacity: 0.7;"></i></span>
                             <input type="number" id="propPaddingTop" class="prop-spacing-input" value="${spacing.pt}" placeholder="0">
                         </div>
                         <div class="prop-spacing-item">
-                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <span class="prop-spacing-icon" title="Padding Right"><i class="fa-solid fa-arrow-right" style="font-size: 10px; opacity: 0.7;"></i></span>
                             <input type="number" id="propPaddingRight" class="prop-spacing-input" value="${spacing.pr}" placeholder="0">
                         </div>
                         <div class="prop-spacing-item">
-                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <span class="prop-spacing-icon" title="Padding Bottom"><i class="fa-solid fa-arrow-down" style="font-size: 10px; opacity: 0.7;"></i></span>
                             <input type="number" id="propPaddingBottom" class="prop-spacing-input" value="${spacing.pb}" placeholder="0">
                         </div>
                         <div class="prop-spacing-item">
-                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <span class="prop-spacing-icon" title="Padding Left"><i class="fa-solid fa-arrow-left" style="font-size: 10px; opacity: 0.7;"></i></span>
                             <input type="number" id="propPaddingLeft" class="prop-spacing-input" value="${spacing.pl}" placeholder="0">
                         </div>
                     </div>
