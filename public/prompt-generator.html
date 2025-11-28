@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -383,6 +384,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar">
         <a href="/" class="nav-brand">YENZE</a>
@@ -481,27 +483,33 @@
             <div class="section-label">Color Palette</div>
             <div class="color-grid" id="colorOptions">
                 <div class="color-option" data-value="monochrome">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #0a0a0a 0%, #404040 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #0a0a0a 0%, #404040 100%);">
+                    </div>
                     <div class="color-label">Monochrome</div>
                 </div>
                 <div class="color-option" data-value="blue">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);">
+                    </div>
                     <div class="color-label">Blue/Purple</div>
                 </div>
                 <div class="color-option" data-value="green">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);">
+                    </div>
                     <div class="color-label">Green/Teal</div>
                 </div>
                 <div class="color-option" data-value="warm">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);">
+                    </div>
                     <div class="color-label">Warm</div>
                 </div>
                 <div class="color-option" data-value="earth">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);">
+                    </div>
                     <div class="color-label">Earth</div>
                 </div>
                 <div class="color-option" data-value="neon">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #00f260 0%, #0575e6 100%);"></div>
+                    <div class="color-preview" style="background: linear-gradient(135deg, #00f260 0%, #0575e6 100%);">
+                    </div>
                     <div class="color-label">Neon</div>
                 </div>
             </div>
@@ -619,7 +627,8 @@
         <!-- Additional Details -->
         <div class="section">
             <div class="section-label">Additional Details (Optional)</div>
-            <textarea class="textarea" id="details" placeholder="e.g., Use Montserrat font, include animations, add a map section..."></textarea>
+            <textarea class="textarea" id="details"
+                placeholder="e.g., Use Montserrat font, include animations, add a map section..."></textarea>
         </div>
 
         <!-- Output -->
@@ -764,161 +773,138 @@
             }
 
             const typeLabels = {
-                landing: 'a landing page',
-                business: 'a professional business website',
-                portfolio: 'a creative portfolio',
-                store: 'an e-commerce store',
-                saas: 'a SaaS product landing page',
-                restaurant: 'a restaurant website',
-                agency: 'a digital agency website',
-                blog: 'a modern blog',
-                personal: 'a personal website',
-                event: 'an event/conference website'
+                landing: 'High-Conversion Landing Page',
+                business: 'Corporate Business Website',
+                portfolio: 'Creative Professional Portfolio',
+                store: 'Modern E-commerce Storefront',
+                saas: 'SaaS Product Landing Page',
+                restaurant: 'Premium Restaurant Website',
+                agency: 'Digital Agency Website',
+                blog: 'Editorial/Magazine Style Blog',
+                personal: 'Personal Brand Website',
+                event: 'Event & Conference Website'
             };
 
             const styleLabels = {
-                minimal: 'Minimal and clean',
-                modern: 'Modern with subtle animations',
-                bold: 'Bold typography and strong visuals',
-                elegant: 'Elegant and sophisticated',
-                playful: 'Playful and colorful',
-                dark: 'Dark mode aesthetic'
+                minimal: 'Minimalist Luxury (High whitespace, clean typography, subtle details)',
+                modern: 'Modern Tech (Glassmorphism, gradients, rounded corners, smooth animations)',
+                bold: 'Brutalism/Bold (Large typography, high contrast, sharp edges)',
+                elegant: 'Classic Elegance (Serif fonts, gold/muted accents, sophisticated layout)',
+                playful: 'Playful & Creative (Vibrant colors, organic shapes, bounce animations)',
+                dark: 'Premium Dark Mode (Deep backgrounds, neon/glow accents, high contrast)'
             };
 
             const colorLabels = {
-                monochrome: 'black, white, and grays',
-                blue: 'blues and purples with gradients',
-                green: 'greens and teals',
-                warm: 'warm oranges and pinks',
-                earth: 'earthy and natural tones',
-                neon: 'bright neon colors'
+                monochrome: 'Monochromatic (Black, White, and varying shades of Gray)',
+                blue: 'Trust & Tech (Deep Blues, Electric Purples, and cool gradients)',
+                green: 'Nature & Growth (Emerald Greens, Teals, and fresh accents)',
+                warm: 'Energy & Warmth (Sunset Oranges, Pinks, and warm gradients)',
+                earth: 'Organic & Earthy (Beige, Terracotta, Olive, and natural tones)',
+                neon: 'Cyberpunk/Neon (Dark background with bright Neon Green/Pink/Blue)'
             };
 
             const featureLabels = {
-                hero: 'Hero section with headline and CTA',
-                about: 'About section',
-                services: 'Services/Features section',
-                portfolio: 'Portfolio/Gallery',
-                testimonials: 'Testimonials',
-                pricing: 'Pricing table',
-                contact: 'Contact form',
-                faq: 'FAQ section',
-                team: 'Team section',
-                blog: 'Blog preview section'
+                hero: 'Hero Section (Immersive background, strong headline, clear CTA)',
+                about: 'About Section (Storytelling approach with image/text layout)',
+                services: 'Services Grid (Cards with icons and hover effects)',
+                portfolio: 'Project Gallery (Masonry or Grid layout with filtering)',
+                testimonials: 'Social Proof/Testimonials (Carousel or Grid)',
+                pricing: 'Pricing Tables (Comparison view with "Recommended" highlight)',
+                contact: 'Contact Section (Form + Map + Info)',
+                faq: 'FAQ Accordion (Smooth expand/collapse)',
+                team: 'Team Members (Profile cards with social links)',
+                blog: 'Latest Articles (Grid of blog post previews)'
             };
 
             const pageLabels = {
-                home: 'Home page',
-                about: 'About page',
-                services: 'Services page',
-                portfolio: 'Portfolio/Work page',
-                blog: 'Blog page',
-                contact: 'Contact page',
-                pricing: 'Pricing page',
-                team: 'Team page',
-                faq: 'FAQ page',
-                testimonials: 'Testimonials page'
+                home: 'Home Page',
+                about: 'About Us',
+                services: 'Services/Products',
+                portfolio: 'Portfolio/Work',
+                blog: 'Blog/News',
+                contact: 'Contact Us',
+                pricing: 'Pricing',
+                team: 'Team',
+                faq: 'FAQ',
+                testimonials: 'Testimonials'
             };
 
-            let prompt = '';
+            // Constructing the "Mega Prompt"
+            let prompt = `ACT AS A WORLD-CLASS WEB DEVELOPER AND UI/UX DESIGNER.
+Your task is to code a COMPLETE, PRODUCTION-READY website in a SINGLE HTML FILE.
 
-            // Multi-page website
-            if (state.structure === 'multi') {
-                prompt = `Create a complete MULTI-PAGE website in a SINGLE HTML FILE for ${typeLabels[state.type] || 'a website'}.
+### PROJECT OVERVIEW
+- **Type**: ${typeLabels[state.type] || 'Professional Website'}
+- **Structure**: ${state.structure === 'multi' ? 'Multi-Page Application (SPA) in one file' : 'Single Page Landing Page'}
+- **Design Style**: ${styleLabels[state.style] || 'Modern & Professional'}
+- **Color Palette**: ${colorLabels[state.color] || 'Professional Color Scheme'}
 
-IMPORTANT - MULTI-PAGE STRUCTURE:
-This website must have multiple pages within ONE HTML file using JavaScript routing. Each page should be a separate section that shows/hides based on navigation. Include:
-- A shared navigation header that appears on all pages
-- A shared footer that appears on all pages
-- Smooth transitions between pages
-- URL hash-based routing (e.g., #home, #about, #contact)
-- Active state in navigation for current page
+### CRITICAL REQUIREMENTS (DO NOT IGNORE)
+1. **Single File Only**: All HTML, CSS, and JavaScript must be contained in ONE \`index.html\` file.
+2. **Modern Design**: Use a sophisticated design system. No "default" looking HTML. It must look like a 2025 award-winning website.
+3. **Responsive**: Fully responsive mobile-first design using CSS Grid and Flexbox.
+4. **Images**: Use high-quality Unsplash source URLs (e.g., \`https://images.unsplash.com/photo-...\`) relevant to the industry.
+5. **Icons**: Use FontAwesome (via CDN) or inline SVGs for all icons.
+6. **Fonts**: Use professional Google Fonts (e.g., Inter, Plus Jakarta Sans, Playfair Display) appropriate for the style.
 
-PAGES TO CREATE:`;
+### CONTENT STRATEGY
+- Write **REAL, ENGAGING COPY** tailored to the "${state.type}" industry. Do NOT use "Lorem Ipsum".
+- Use persuasive headlines and clear calls-to-action (CTAs).
 
-                state.pages.forEach(page => {
-                    prompt += `\n- ${pageLabels[page]}`;
-                });
+### CSS STYLING INSTRUCTIONS
+- Use **CSS Variables** (:root) for colors, spacing, and fonts to ensure consistency.
+- Implement **smooth scrolling** (\`html { scroll-behavior: smooth; }\`).
+- Add **hover effects** to buttons, cards, and links (transform, shadow, opacity).
+- Use **Glassmorphism** or subtle shadows for depth where appropriate.
+- Ensure accessible contrast ratios.
 
-                prompt += `
+### JAVASCRIPT FUNCTIONALITY
+- **Navbar**: Sticky on scroll, mobile hamburger menu.
+- **Animations**: Use IntersectionObserver to fade-in elements as the user scrolls down.
+${state.structure === 'multi' ? `- **Routing**: Implement a client-side router to switch "pages" (sections) instantly without reload. Handle active states in the navbar.` : ''}
 
-DESIGN STYLE:
-${state.style ? `- ${styleLabels[state.style]}` : '- Modern and professional'}
-${state.color ? `- Color palette: ${colorLabels[state.color]}` : ''}
-
-ROUTING CODE STRUCTURE:
-\`\`\`javascript
-// Handle navigation
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById(pageId).style.display = 'block';
-    // Update active nav link
-    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-    document.querySelector(\`nav a[href="#\${pageId}"]\`).classList.add('active');
-    window.scrollTo(0, 0);
-}
-
-// Listen for hash changes
-window.addEventListener('hashchange', () => {
-    const page = location.hash.slice(1) || 'home';
-    showPage(page);
-});
-
-// Initial page load
-document.addEventListener('DOMContentLoaded', () => {
-    const page = location.hash.slice(1) || 'home';
-    showPage(page);
-});
-\`\`\``;
-
-            } else {
-                // Single page website
-                prompt = `Create a complete HTML website in a single file for ${typeLabels[state.type] || 'a website'}.
-
-DESIGN STYLE:
-${state.style ? `- ${styleLabels[state.style]}` : '- Modern and professional'}
-${state.color ? `- Color palette: ${colorLabels[state.color]}` : ''}
-
-SECTIONS TO INCLUDE:`;
-
-                if (state.features.length > 0) {
-                    state.features.forEach(f => {
-                        prompt += `\n- ${featureLabels[f]}`;
-                    });
-                } else {
-                    prompt += '\n- Hero section\n- Main content sections';
+### SECTIONS TO BUILD
+${state.structure === 'multi' ?
+                    `Create the following "pages" (hidden/shown via JS):
+${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}` :
+                    `Include the following sections in order:
+${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Hero, Features, About, Contact'}`
                 }
-            }
 
+${state.details ? `### SPECIFIC USER INSTRUCTIONS\n${state.details}` : ''}
+
+`;
+
+            // Contact Form Logic
             const hasContactForm = state.features.includes('contact') || (state.structure === 'multi' && state.pages.includes('contact'));
-
-            prompt += `
-
-TECHNICAL REQUIREMENTS:
-- All code in a single HTML file
-- CSS in <style> tag
-- JavaScript in <script> tag
-- Fully responsive (mobile-first)
-- Use Flexbox/Grid for layouts
-- Google Fonts
-- Placeholder images from Unsplash
-- Smooth animations
-- Performance optimized`;
 
             if (hasContactForm) {
                 prompt += `
+### CONTACT FORM INTEGRATION (MANDATORY)
+You MUST implement the contact form exactly as follows using the YENZE API.
+Do NOT use any other service.
 
-IMPORTANT - CONTACT FORM:
-The contact form MUST use the YENZE Forms API. Use this exact code:
-
-<form id="contactForm" onsubmit="submitForm(event)">
-    <input type="text" name="name" placeholder="Your name" required>
-    <input type="email" name="email" placeholder="Your email" required>
-    <textarea name="message" placeholder="Your message" required></textarea>
-    <button type="submit">Send Message</button>
+HTML:
+\`\`\`html
+<form id="contactForm" onsubmit="submitForm(event)" class="contact-form">
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Your Name" required>
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="john@example.com" required>
+    </div>
+    <div class="form-group">
+        <label>Message</label>
+        <textarea name="message" placeholder="How can we help?" required></textarea>
+    </div>
+    <button type="submit" class="btn-submit">Send Message</button>
 </form>
+\`\`\`
 
-<script>
+JAVASCRIPT:
+\`\`\`javascript
 async function submitForm(e) {
     e.preventDefault();
     const form = e.target;
@@ -952,19 +938,21 @@ async function submitForm(e) {
     btn.disabled = false;
     btn.textContent = originalText;
 }
-<\/script>
-
-Do NOT use Web3Forms, Formspree or other services. Use EXACTLY https://yenze.io/api/submit-form`;
+\`\`\`
+`;
             }
 
-            if (state.details) {
-                prompt += `\n\nADDITIONAL DETAILS:\n${state.details}`;
-            }
-
-            prompt += `\n\nThe code should be ready to copy and paste, fully functional with a professional design.`;
+            prompt += `
+### FINAL OUTPUT FORMAT
+Return ONLY the raw HTML code starting with \`<!DOCTYPE html>\`.
+Do not wrap it in markdown code blocks (like \`\`\`html).
+Do not add explanations before or after the code.
+Just the code.
+`;
 
             document.getElementById('output').textContent = prompt;
         }
     </script>
 </body>
+
 </html>
