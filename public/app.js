@@ -1653,18 +1653,50 @@ class YenzeBuilder {
                     <div class="prop-col">
                         <label class="prop-label">Font Family</label>
                         <select id="propFontFamily" class="prop-select">
-                            <option value="Inter" ${typography.family === 'Inter' ? 'selected' : ''}>Inter</option>
-                            <option value="Roboto" ${typography.family === 'Roboto' ? 'selected' : ''}>Roboto</option>
-                            <option value="Open Sans" ${typography.family === 'Open Sans' ? 'selected' : ''}>Open Sans</option>
-                            <option value="Lato" ${typography.family === 'Lato' ? 'selected' : ''}>Lato</option>
-                            <option value="Montserrat" ${typography.family === 'Montserrat' ? 'selected' : ''}>Montserrat</option>
-                            <option value="Playfair Display" ${typography.family === 'Playfair Display' ? 'selected' : ''}>Playfair Display</option>
-                            <option value="Merriweather" ${typography.family === 'Merriweather' ? 'selected' : ''}>Merriweather</option>
-                            <option value="Arial" ${typography.family === 'Arial' ? 'selected' : ''}>Arial</option>
-                            <option value="Helvetica" ${typography.family === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
-                            <option value="Times New Roman" ${typography.family === 'Times New Roman' ? 'selected' : ''}>Times New Roman</option>
-                            <option value="Courier New" ${typography.family === 'Courier New' ? 'selected' : ''}>Courier New</option>
-                            <option value="${typography.family}" ${!['Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Playfair Display', 'Merriweather', 'Arial', 'Helvetica', 'Times New Roman', 'Courier New'].includes(typography.family) ? 'selected' : ''}>Current (${typography.family})</option>
+                            <optgroup label="System">
+                                <option value="Arial" ${typography.family === 'Arial' ? 'selected' : ''}>Arial</option>
+                                <option value="Helvetica" ${typography.family === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
+                                <option value="Times New Roman" ${typography.family === 'Times New Roman' ? 'selected' : ''}>Times New Roman</option>
+                                <option value="Courier New" ${typography.family === 'Courier New' ? 'selected' : ''}>Courier New</option>
+                            </optgroup>
+                            <optgroup label="Sans Serif">
+                                <option value="Inter" ${typography.family === 'Inter' ? 'selected' : ''}>Inter</option>
+                                <option value="Roboto" ${typography.family === 'Roboto' ? 'selected' : ''}>Roboto</option>
+                                <option value="Open Sans" ${typography.family === 'Open Sans' ? 'selected' : ''}>Open Sans</option>
+                                <option value="Lato" ${typography.family === 'Lato' ? 'selected' : ''}>Lato</option>
+                                <option value="Montserrat" ${typography.family === 'Montserrat' ? 'selected' : ''}>Montserrat</option>
+                                <option value="Poppins" ${typography.family === 'Poppins' ? 'selected' : ''}>Poppins</option>
+                                <option value="Raleway" ${typography.family === 'Raleway' ? 'selected' : ''}>Raleway</option>
+                                <option value="Oswald" ${typography.family === 'Oswald' ? 'selected' : ''}>Oswald</option>
+                                <option value="Ubuntu" ${typography.family === 'Ubuntu' ? 'selected' : ''}>Ubuntu</option>
+                                <option value="Nunito" ${typography.family === 'Nunito' ? 'selected' : ''}>Nunito</option>
+                                <option value="Rubik" ${typography.family === 'Rubik' ? 'selected' : ''}>Rubik</option>
+                                <option value="Work Sans" ${typography.family === 'Work Sans' ? 'selected' : ''}>Work Sans</option>
+                                <option value="Quicksand" ${typography.family === 'Quicksand' ? 'selected' : ''}>Quicksand</option>
+                                <option value="DM Sans" ${typography.family === 'DM Sans' ? 'selected' : ''}>DM Sans</option>
+                            </optgroup>
+                            <optgroup label="Serif">
+                                <option value="Playfair Display" ${typography.family === 'Playfair Display' ? 'selected' : ''}>Playfair Display</option>
+                                <option value="Merriweather" ${typography.family === 'Merriweather' ? 'selected' : ''}>Merriweather</option>
+                                <option value="Lora" ${typography.family === 'Lora' ? 'selected' : ''}>Lora</option>
+                                <option value="PT Serif" ${typography.family === 'PT Serif' ? 'selected' : ''}>PT Serif</option>
+                                <option value="Crimson Text" ${typography.family === 'Crimson Text' ? 'selected' : ''}>Crimson Text</option>
+                                <option value="Libre Baskerville" ${typography.family === 'Libre Baskerville' ? 'selected' : ''}>Libre Baskerville</option>
+                                <option value="Cormorant Garamond" ${typography.family === 'Cormorant Garamond' ? 'selected' : ''}>Cormorant Garamond</option>
+                            </optgroup>
+                            <optgroup label="Display & Handwriting">
+                                <option value="Bebas Neue" ${typography.family === 'Bebas Neue' ? 'selected' : ''}>Bebas Neue</option>
+                                <option value="Abril Fatface" ${typography.family === 'Abril Fatface' ? 'selected' : ''}>Abril Fatface</option>
+                                <option value="Pacifico" ${typography.family === 'Pacifico' ? 'selected' : ''}>Pacifico</option>
+                                <option value="Dancing Script" ${typography.family === 'Dancing Script' ? 'selected' : ''}>Dancing Script</option>
+                                <option value="Lobster" ${typography.family === 'Lobster' ? 'selected' : ''}>Lobster</option>
+                            </optgroup>
+                            <optgroup label="Monospace">
+                                <option value="Roboto Mono" ${typography.family === 'Roboto Mono' ? 'selected' : ''}>Roboto Mono</option>
+                                <option value="Fira Code" ${typography.family === 'Fira Code' ? 'selected' : ''}>Fira Code</option>
+                                <option value="Source Code Pro" ${typography.family === 'Source Code Pro' ? 'selected' : ''}>Source Code Pro</option>
+                            </optgroup>
+                            <option value="${typography.family}" ${!['Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Raleway', 'Oswald', 'Ubuntu', 'Nunito', 'Rubik', 'Work Sans', 'Quicksand', 'DM Sans', 'Playfair Display', 'Merriweather', 'Lora', 'PT Serif', 'Crimson Text', 'Libre Baskerville', 'Cormorant Garamond', 'Bebas Neue', 'Abril Fatface', 'Pacifico', 'Dancing Script', 'Lobster', 'Roboto Mono', 'Fira Code', 'Source Code Pro', 'Arial', 'Helvetica', 'Times New Roman', 'Courier New'].includes(typography.family) ? 'selected' : ''} style="display: ${!['Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Raleway', 'Oswald', 'Ubuntu', 'Nunito', 'Rubik', 'Work Sans', 'Quicksand', 'DM Sans', 'Playfair Display', 'Merriweather', 'Lora', 'PT Serif', 'Crimson Text', 'Libre Baskerville', 'Cormorant Garamond', 'Bebas Neue', 'Abril Fatface', 'Pacifico', 'Dancing Script', 'Lobster', 'Roboto Mono', 'Fira Code', 'Source Code Pro', 'Arial', 'Helvetica', 'Times New Roman', 'Courier New'].includes(typography.family) ? 'block' : 'none'}">Current (${typography.family})</option>
                         </select>
                     </div>
                 </div>
