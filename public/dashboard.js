@@ -349,7 +349,174 @@ class DashboardApp {
             case 'integrations':
                 this.loadIntegrations();
                 break;
+            case 'payments':
+                this.loadPayments();
+                break;
         }
+    }
+
+    async loadPayments() {
+        const listContainer = document.getElementById('detectedPaymentsList');
+        listContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Scanning projects for pricing...</p></div>';
+
+        // Simulate scanning delay
+        setTimeout(async () => {
+            const detectedItems = await this.scanProjectsForPayments();
+
+            document.getElementById('detectedItemsCount').textContent = detectedItems.length;
+
+            if (detectedItems.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <h3>No pricing items found</h3>
+                        <p>Add pricing sections to your websites to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = detectedItems.map(item => `
+                <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">${item.projectName}</div>
+                            <h3 style="margin: 0; font-size: 16px; color: #0F172A; font-weight: 600;">${item.name}</h3>
+                        </div>
+                        <div style="background: #EFF6FF; color: #0066FF; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 14px;">
+                            ${item.price}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px; font-size: 13px; color: #475569;">
+                        <ul style="padding-left: 20px; margin: 0;">
+                            ${item.features.slice(0, 2).map(f => `<li>${f}</li>`).join('')}
+                            ${item.features.length > 2 ? `<li>+${item.features.length - 2} more features</li>` : ''}
+                        </ul>
+                    </div>
+
+                    <div style="border-top: 1px solid #F1F5F9; padding-top: 16px; margin-top: 16px;">
+                        <button onclick="dashboardApp.createPaymentLink('${item.id}')" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Create Payment Link
+                        </button>
+                        <div style="text-align: center; margin-top: 8px; font-size: 11px; color: #94A3B8;">
+                            5% platform fee applies
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }, 800);
+    }
+
+    async scanProjectsForPayments() {
+        const detectedItems = [];
+
+        for (const project of this.projects) {
+            if (!project.html) continue;
+
+            // Create a temporary DOM element to parse HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(project.html, 'text/html');
+
+            // Look for pricing cards/plans
+            // Strategy: Look for common classes like .pricing-plan, .card with price inside
+            const pricingCards = doc.querySelectorAll('.pricing-plan, .pricing-card, .plan-card');
+
+            pricingCards.forEach((card, index) => {
+                const nameEl = card.querySelector('h3, h4, .plan-name, .title');
+                const priceEl = card.querySelector('.price, .amount, .plan-price');
+                const features = Array.from(card.querySelectorAll('li')).map(li => li.textContent.trim());
+
+                if (nameEl && priceEl) {
+                    detectedItems.push({
+                        id: `${project.id}_${index}`,
+                        projectId: project.id,
+                        projectName: project.name || 'Untitled Project',
+                        name: nameEl.textContent.trim(),
+                        price: priceEl.textContent.trim(),
+                        features: features
+                    });
+                }
+            });
+
+            // Fallback: Look for any element with a currency symbol and a button nearby
+            if (detectedItems.length === 0) {
+                // This is a simpler heuristic
+                const prices = Array.from(doc.querySelectorAll('*')).filter(el =>
+                    /^\s*[$€£]\s*\d+/.test(el.textContent) && el.children.length === 0
+                );
+
+                prices.forEach((priceEl, index) => {
+                    // Find closest container
+                    const container = priceEl.closest('div, section');
+                    if (container) {
+                        const nameEl = container.querySelector('h3, h4');
+                        const btn = container.querySelector('button, a.btn');
+
+                        if (nameEl && btn) {
+                            detectedItems.push({
+                                id: `${project.id}_fallback_${index}`,
+                                projectId: project.id,
+                                projectName: project.name || 'Untitled Project',
+                                name: nameEl.textContent.trim(),
+                                price: priceEl.textContent.trim(),
+                                features: []
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        return detectedItems;
+    }
+
+    connectStripe() {
+        // Simulate Stripe Connect flow
+        const btn = document.getElementById('connectStripeBtn');
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = 'Connecting...';
+
+        setTimeout(() => {
+            alert('To connect Stripe, you need to deploy the backend API. Since this is a demo environment, we simulated the connection.\n\nIn a real app, this would redirect to Stripe Connect onboarding.');
+            btn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Stripe Connected
+            `;
+            btn.style.background = '#10B981';
+            btn.style.borderColor = '#10B981';
+        }, 1500);
+    }
+
+    createPaymentLink(itemId) {
+        // Simulate creating a payment link
+        const btn = event.currentTarget; // Get the button that was clicked
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = 'Creating...';
+
+        setTimeout(() => {
+            const mockLink = `https://buy.stripe.com/test_${Math.random().toString(36).substr(2, 9)}`;
+
+            // Prompt user to copy
+            prompt('Payment Link Created! Copy this URL and paste it into your button link in the editor:', mockLink);
+
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+
+            // Update active links count
+            const countEl = document.getElementById('activeLinksCount');
+            countEl.textContent = parseInt(countEl.textContent) + 1;
+
+        }, 1000);
     }
 
     async loadCurrentPlan() {
