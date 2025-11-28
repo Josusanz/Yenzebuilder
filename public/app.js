@@ -1099,7 +1099,7 @@ class YenzeBuilder {
         if (element.children.length === 0) return true;
 
         // If has children, check if they're all inline elements
-        const inlineTags = ['SPAN', 'STRONG', 'EM', 'B', 'I', 'U', 'A', 'CODE', 'MARK', 'SMALL'];
+        const inlineTags = ['SPAN', 'STRONG', 'EM', 'B', 'I', 'U', 'A', 'CODE', 'MARK', 'SMALL', 'BR'];
         const allInline = Array.from(element.children).every(child =>
             inlineTags.includes(child.tagName)
         );
