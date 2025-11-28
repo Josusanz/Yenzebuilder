@@ -577,6 +577,13 @@ class YenzeBuilder {
             wrapper.style.width = width + 'px';
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = parseInt(width);
+
+            // Recalculate height after transition/reflow
+            setTimeout(() => {
+                const canvas = document.getElementById('canvas');
+                const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+                this.adjustIframeHeight(canvas, iframeDoc);
+            }, 300);
         }
     }
 
@@ -620,6 +627,14 @@ class YenzeBuilder {
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
                 this.showToast('✅ HTML loaded successfully!', 'success');
+
+                // Add resize observer to body to auto-adjust height
+                if (iframeDoc.body) {
+                    const observer = new ResizeObserver(() => {
+                        this.adjustIframeHeight(canvas, iframeDoc);
+                    });
+                    observer.observe(iframeDoc.body);
+                }
             } else {
                 // If not ready yet, wait a bit more
                 setTimeout(initializeEditor, 200);
@@ -639,6 +654,9 @@ class YenzeBuilder {
             const html = iframeDoc.documentElement;
 
             if (body && html) {
+                // Reset height first to allow shrinking
+                canvas.style.height = 'auto';
+
                 // Get the full content height
                 const contentHeight = Math.max(
                     body.scrollHeight,
