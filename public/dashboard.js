@@ -358,6 +358,31 @@ class DashboardApp {
 
     async loadPayments() {
         const listContainer = document.getElementById('detectedPaymentsList');
+        const connectBtn = document.getElementById('connectStripeBtn');
+        const isConnected = !!this.currentUser?.user_metadata?.stripe_account_id;
+
+        // Update Connect Button State
+        if (isConnected) {
+            connectBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Stripe Connected
+            `;
+            connectBtn.style.background = '#10B981';
+            connectBtn.style.borderColor = '#10B981';
+            connectBtn.disabled = true;
+        } else {
+            connectBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                </svg>
+                Connect Stripe
+            `;
+            connectBtn.disabled = false;
+            connectBtn.onclick = () => this.connectStripe();
+        }
+
         listContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Scanning projects for pricing...</p></div>';
 
         // Simulate scanning delay
@@ -396,7 +421,7 @@ class DashboardApp {
                     </div>
 
                     <div style="border-top: 1px solid #F1F5F9; padding-top: 16px; margin-top: 16px;">
-                        <button onclick="dashboardApp.createPaymentLink('${item.id}')" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <button onclick="dashboardApp.createPaymentLink('${item.id}', '${item.name}', '${item.price}')" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" ${!isConnected ? 'disabled title="Connect Stripe first"' : ''}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -476,48 +501,55 @@ class DashboardApp {
     }
 
     connectStripe() {
-        // Simulate Stripe Connect flow
-        const btn = document.getElementById('connectStripeBtn');
-        const originalText = btn.innerHTML;
-
-        btn.disabled = true;
-        btn.innerHTML = 'Connecting...';
-
-        setTimeout(() => {
-            alert('To connect Stripe, you need to deploy the backend API. Since this is a demo environment, we simulated the connection.\n\nIn a real app, this would redirect to Stripe Connect onboarding.');
-            btn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                Stripe Connected
-            `;
-            btn.style.background = '#10B981';
-            btn.style.borderColor = '#10B981';
-        }, 1500);
+        if (!this.currentUser) return;
+        // Redirect to backend API to initiate OAuth flow
+        window.location.href = `/api/connect-stripe?userId=${this.currentUser.id}`;
     }
 
-    createPaymentLink(itemId) {
-        // Simulate creating a payment link
-        const btn = event.currentTarget; // Get the button that was clicked
+    async createPaymentLink(itemId, name, price) {
+        const btn = event.currentTarget;
         const originalText = btn.innerHTML;
 
         btn.disabled = true;
         btn.innerHTML = 'Creating...';
 
-        setTimeout(() => {
-            const mockLink = `https://buy.stripe.com/test_${Math.random().toString(36).substr(2, 9)}`;
+        try {
+            const { data: { session } } = await supabaseClient.client.auth.getSession();
+
+            const response = await fetch('/api/create-payment-link', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    productName: name,
+                    amount: price,
+                    currency: 'usd' // Defaulting to USD for now, should parse from price string
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to create link');
+            }
+
+            const { url } = await response.json();
 
             // Prompt user to copy
-            prompt('Payment Link Created! Copy this URL and paste it into your button link in the editor:', mockLink);
+            prompt('Payment Link Created! Copy this URL and paste it into your button link in the editor:', url);
 
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-
-            // Update active links count
+            // Update active links count (optimistic)
             const countEl = document.getElementById('activeLinksCount');
             countEl.textContent = parseInt(countEl.textContent) + 1;
 
-        }, 1000);
+        } catch (error) {
+            console.error('Payment Link Error:', error);
+            alert('Error creating payment link: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 
     async loadCurrentPlan() {
