@@ -1360,14 +1360,22 @@ class YenzeBuilder {
     }
 
     selectElement(element) {
-        // First, ensure the element's page is visible (for multi-page SPAs)
-        this.ensureElementPageVisible(element);
-
         // Remove previous selection
         if (this.selectedElement) {
             this.selectedElement.style.outline = 'none';
             this.selectedElement.style.boxShadow = 'none';
         }
+
+        // If deselecting, stop here
+        if (!element) {
+            this.selectedElement = null;
+            // Clear properties panel
+            this.showProperties(null);
+            return;
+        }
+
+        // First, ensure the element's page is visible (for multi-page SPAs)
+        this.ensureElementPageVisible(element);
 
         // Highlight selected element with Framer-style selection
         this.selectedElement = element;
