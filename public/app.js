@@ -1319,6 +1319,20 @@ class YenzeBuilder {
         }
     }
 
+    async publish() {
+        if (!supabaseClient.isAuthenticated()) {
+            this.showAuthModal('login');
+            return;
+        }
+
+        if (this.isPublishing) return;
+        this.isPublishing = true;
+        const publishBtn = document.getElementById('publishBtn');
+        const originalText = publishBtn.innerHTML;
+        publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+        publishBtn.disabled = true;
+    }
+
     updateUndoRedoButtons() {
         const undoBtn = document.getElementById('undoBtn');
         const redoBtn = document.getElementById('redoBtn');
@@ -1369,9 +1383,12 @@ class YenzeBuilder {
 
         // Highlight selected element with Framer-style selection
         this.selectedElement = element;
-        element.style.outline = '2px solid #0066FF';
-        element.style.outlineOffset = '2px';
-        element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
+
+        if (!this.isPreviewMode) {
+            element.style.outline = '2px solid #0066FF';
+            element.style.outlineOffset = '2px';
+            element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
+        }
 
         // Scroll element into view in the canvas
         element.scrollIntoView({
@@ -3168,6 +3185,9 @@ if (validationForm) {
     }
 
     preview() {
+        // Clear selection to remove editor artifacts
+        this.selectElement(null);
+
         // Open in new window
         const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
         previewWindow.document.write(this.currentHTML);
@@ -3392,6 +3412,13 @@ if (validationForm) {
     }
 
     async selectPlanAndPublish(selectedPlan) {
+        // Check if user is authenticated first
+        if (!supabaseClient.isAuthenticated()) {
+            this.closePublishOptionsModal();
+            this.showAuthModal('login');
+            return;
+        }
+
         // Get user's current subscription
         const { data: subscription } = await supabaseClient.client
             .from('subscriptions')
