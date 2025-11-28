@@ -944,10 +944,9 @@ async function submitForm(e) {
 
             prompt += `
 ### FINAL OUTPUT FORMAT
-Return ONLY the raw HTML code starting with \`<!DOCTYPE html>\`.
-Do not wrap it in markdown code blocks (like \`\`\`html).
-Do not add explanations before or after the code.
-Just the code.
+Please provide the complete code in a single HTML file.
+Wrap the code in a markdown code block (e.g., \`\`\`html ... \`\`\`).
+Ensure the code is complete and functional.
 `;
 
             document.getElementById('output').textContent = prompt;
