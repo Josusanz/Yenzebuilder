@@ -927,36 +927,38 @@ class YenzeBuilder {
             this.draggedElement = e.target;
             e.target.style.opacity = '0.5';
             e.target.style.cursor = 'grabbing';
+            e.dataTransfer.effectAllowed = 'move';
 
-            // Create drop indicator
+            // Create drop indicator if needed
             if (!this.dropIndicator) {
                 this.dropIndicator = doc.createElement('div');
                 this.dropIndicator.style.cssText = `
+                        position: absolute;
                         height: 3px;
                         background: #0066FF;
-                        margin: 4px 0;
                         border-radius: 2px;
                         pointer-events: none;
+                        z-index: 10000;
                         box-shadow: 0 0 8px rgba(0, 102, 255, 0.5);
+                        display: none;
                     `;
+                doc.body.appendChild(this.dropIndicator);
             }
-
-            e.dataTransfer.effectAllowed = 'move';
         });
 
         el.addEventListener('dragend', (e) => {
             e.target.style.opacity = '';
             e.target.style.cursor = 'grab';
-            if (this.dropIndicator && this.dropIndicator.parentNode) {
-                this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+            if (this.dropIndicator) {
+                this.dropIndicator.style.display = 'none';
             }
             this.draggedElement = null;
+            this.currentDropTarget = null;
+            this.currentDropPosition = null;
         });
 
         el.addEventListener('dragover', (e) => {
             if (!this.draggedElement || this.draggedElement === e.target) return;
-
-            // Prevent dragging into self or children
             if (this.draggedElement.contains(e.target)) return;
 
             e.preventDefault();
@@ -964,83 +966,101 @@ class YenzeBuilder {
 
             const parent = e.target.parentNode;
 
-            // Allow dropping into any container or next to any element whose parent is a container
-            // We removed the restriction of same parent to allow moving elements between sections
             if (this.isContainer(e.target) || this.isContainer(parent)) {
+                e.stopPropagation();
+
                 const rect = e.target.getBoundingClientRect();
+                const scrollTop = doc.documentElement.scrollTop || doc.body.scrollTop;
+                const scrollLeft = doc.documentElement.scrollLeft || doc.body.scrollLeft;
+
+                this.dropIndicator.style.display = 'block';
+                this.dropIndicator.style.width = `${rect.width}px`;
+                this.dropIndicator.style.left = `${rect.left + scrollLeft}px`;
+
                 const midpoint = rect.top + rect.height / 2;
 
-                // Remove existing indicator first to prevent duplicates
-                if (this.dropIndicator && this.dropIndicator.parentNode && this.dropIndicator.parentNode !== e.target && this.dropIndicator.parentNode !== parent) {
-                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
-                }
-
+                // Determine position
                 if (this.isContainer(e.target)) {
-                    // Drop inside container
-                    // If hovering near the top/bottom edge, treat as "before/after" the container itself
-                    // This allows dropping *next* to a container instead of *inside* it
-                    const edgeThreshold = 10; // px
+                    // Check if we are at the edges to drop before/after the container
+                    const edgeThreshold = 10;
                     if (e.clientY < rect.top + edgeThreshold && parent) {
-                        parent.insertBefore(this.dropIndicator, e.target);
+                        this.dropIndicator.style.top = `${rect.top + scrollTop}px`;
+                        this.currentDropTarget = e.target;
+                        this.currentDropPosition = 'before';
                     } else if (e.clientY > rect.bottom - edgeThreshold && parent) {
-                        parent.insertBefore(this.dropIndicator, e.target.nextSibling);
+                        this.dropIndicator.style.top = `${rect.bottom + scrollTop}px`;
+                        this.currentDropTarget = e.target;
+                        this.currentDropPosition = 'after';
                     } else {
-                        // Drop inside
-                        if (e.target.children.length === 0) {
-                            e.target.appendChild(this.dropIndicator);
-                        } else {
-                            // If hovering over children, let the child's dragover handle it
-                            // But if we are definitely inside the container (and not over a child), append
-                            // This is tricky because event bubbles. 
-                            // We'll rely on the fact that if we are over a child, the child's handler ran first (capturing phase? no, bubbling).
-                            // Actually, we should stop propagation if we handled it?
-                            // For now, default to prepending if empty, or appending if at bottom
-                            e.target.appendChild(this.dropIndicator);
-                        }
+                        // Inside
+                        // For inside, we might want to highlight the container border instead of a line?
+                        // For now, let's put the line at the bottom (append) or top (prepend)
+                        // Default to append
+                        this.dropIndicator.style.top = `${rect.bottom + scrollTop - 2}px`; // Inside bottom
+                        this.dropIndicator.style.width = `${rect.width - 4}px`; // Slightly smaller
+                        this.dropIndicator.style.left = `${rect.left + scrollLeft + 2}px`;
+
+                        this.currentDropTarget = e.target;
+                        this.currentDropPosition = 'inside';
                     }
                 } else if (e.clientY < midpoint) {
-                    // Drop before element
-                    parent.insertBefore(this.dropIndicator, e.target);
+                    // Before
+                    this.dropIndicator.style.top = `${rect.top + scrollTop}px`;
+                    this.currentDropTarget = e.target;
+                    this.currentDropPosition = 'before';
                 } else {
-                    // Drop after element
-                    parent.insertBefore(this.dropIndicator, e.target.nextSibling);
+                    // After
+                    this.dropIndicator.style.top = `${rect.bottom + scrollTop}px`;
+                    this.currentDropTarget = e.target;
+                    this.currentDropPosition = 'after';
                 }
+            }
+        });
 
-                e.stopPropagation(); // Prevent parent handlers from overriding
+        el.addEventListener('dragleave', (e) => {
+            if (this.dropIndicator && this.dropIndicator.parentNode && !el.contains(e.relatedTarget) && e.relatedTarget !== this.dropIndicator) {
+                // We are leaving the element and not going into a child or the indicator
+                // But removing it here causes flickering if we are just moving slightly.
+                // Let's rely on dragover to move it.
+                // However, if we leave the iframe, we should remove it.
+                // This is hard to detect perfectly from here.
             }
         });
 
         el.addEventListener('drop', (e) => {
-            if (!this.draggedElement) return;
+            if (!this.draggedElement || !this.currentDropTarget) return;
 
             e.preventDefault();
             e.stopPropagation();
 
-            // Perform the move
-            if (this.dropIndicator && this.dropIndicator.parentNode) {
-                const dropParent = this.dropIndicator.parentNode;
-                const nextSibling = this.dropIndicator.nextSibling;
+            const target = this.currentDropTarget;
+            const position = this.currentDropPosition;
 
-                // Remove drop indicator
-                this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+            if (target === this.draggedElement) return;
 
-                // Insert element at new position
-                if (nextSibling) {
-                    dropParent.insertBefore(this.draggedElement, nextSibling);
-                } else {
-                    dropParent.appendChild(this.draggedElement);
-                }
+            let parent = target.parentNode;
 
-                this.updateHTML('Reorder element');
-                this.buildLayersTree(doc); // Update layers tree
-
-                // Re-select the moved element
-                this.selectElement(this.draggedElement);
-
-                this.showToast('✅ Element repositioned', 'success');
+            if (position === 'inside') {
+                target.appendChild(this.draggedElement);
+            } else if (position === 'before') {
+                parent.insertBefore(this.draggedElement, target);
+            } else if (position === 'after') {
+                parent.insertBefore(this.draggedElement, target.nextSibling);
             }
 
+            // Cleanup
+            if (this.dropIndicator) {
+                this.dropIndicator.style.display = 'none';
+            }
+
+            this.updateHTML('Reorder element');
+            this.buildLayersTree(doc);
+            this.selectElement(this.draggedElement);
+            this.showToast('✅ Element repositioned', 'success');
+
             this.draggedElement = null;
+            this.currentDropTarget = null;
+            this.currentDropPosition = null;
         });
     }
 
