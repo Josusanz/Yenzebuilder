@@ -321,7 +321,8 @@ class DashboardApp {
             'analytics': 'analyticsSection',
             'domains': 'domainsSection',
             'billing': 'billingSection',
-            'integrations': 'integrationsSection'
+            'integrations': 'integrationsSection',
+            'payments': 'paymentsSection'
         };
 
         const targetSection = document.getElementById(sectionMap[section]);
