@@ -1570,6 +1570,25 @@ class YenzeBuilder {
             `;
         }
 
+        // 1.5 Link (if applicable)
+        if (tagName === 'a') {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Link</div>
+                    <div class="prop-col">
+                        <label class="prop-label">URL (href)</label>
+                        <input type="text" id="propLinkHref" class="prop-input" value="${element.getAttribute('href') || '#'}" placeholder="https://example.com">
+                    </div>
+                    <div class="prop-col" style="margin-top: 8px;">
+                        <label class="prop-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="propLinkTarget" ${element.getAttribute('target') === '_blank' ? 'checked' : ''}>
+                            Open in new tab
+                        </label>
+                    </div>
+                </div>
+            `;
+        }
+
         // 2. Colors
         html += `
             <div class="prop-section">
@@ -1786,6 +1805,27 @@ class YenzeBuilder {
                 // Debounce history save? For now just update
             });
             textInput.addEventListener('change', () => this.updateHTML('Update text'));
+        }
+
+        // Link Properties
+        const linkHrefInput = document.getElementById('propLinkHref');
+        if (linkHrefInput) {
+            linkHrefInput.addEventListener('change', (e) => {
+                element.setAttribute('href', e.target.value);
+                this.updateHTML('Update link URL');
+            });
+        }
+
+        const linkTargetInput = document.getElementById('propLinkTarget');
+        if (linkTargetInput) {
+            linkTargetInput.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    element.setAttribute('target', '_blank');
+                } else {
+                    element.removeAttribute('target');
+                }
+                this.updateHTML('Update link target');
+            });
         }
 
         // Colors
