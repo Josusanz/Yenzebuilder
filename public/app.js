@@ -1502,543 +1502,339 @@ class YenzeBuilder {
 
     showProperties(element) {
         const panel = document.getElementById('propertiesPanel');
+        if (!element) {
+            panel.innerHTML = '<div class="prop-empty">Select an element to edit its properties</div>';
+            return;
+        }
 
         const tagName = element.tagName.toLowerCase();
-        const currentText = element.textContent || '';
-
-        // Get computed styles from iframe window
         const iframeWindow = element.ownerDocument.defaultView;
         const styles = iframeWindow.getComputedStyle(element);
 
-        // Get actual background (check parent if transparent)
-        let bgColor = styles.backgroundColor;
-        let hasInlineBackground = element.style.backgroundColor !== '';
-        if (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') {
-            let parent = element.parentElement;
-            while (parent && (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent')) {
-                const parentStyles = iframeWindow.getComputedStyle(parent);
-                bgColor = parentStyles.backgroundColor;
-                parent = parent.parentElement;
-            }
+        // Helper to get style value
+        const getStyle = (prop) => styles[prop];
+        const getStyleInt = (prop) => parseInt(styles[prop]) || 0;
+
+        // Colors
+        let bgColor = this.rgbToHex(getStyle('backgroundColor'));
+        if (getStyle('backgroundColor') === 'rgba(0, 0, 0, 0)' || getStyle('backgroundColor') === 'transparent') {
+            bgColor = '#ffffff'; // Default for picker if transparent
         }
-        bgColor = this.rgbToHex(bgColor);
+        const textColor = this.rgbToHex(getStyle('color'));
 
-        const textColor = this.rgbToHex(styles.color);
-        const hasInlineTextColor = element.style.color !== '';
-        const fontSize = parseInt(styles.fontSize);
-        const fontFamily = styles.fontFamily.split(',')[0].replace(/['"]/g, '');
-
-        // Position & Size
-        const position = element.style.position || styles.position || 'static';
-        const width = element.style.width || '';
-        const height = element.style.height || '';
-        const top = element.style.top || '';
-        const left = element.style.left || '';
-
-        const isTextEl = this.isTextElement(element);
-        const isImage = element.tagName === 'IMG';
-        const isVideo = element.tagName === 'VIDEO';
-        const isLink = element.tagName === 'A';
-
-        const linkHref = isLink ? (element.getAttribute('href') || '') : '';
-        const imgSrc = isImage ? (element.getAttribute('src') || '') : '';
-        const imgAlt = isImage ? (element.getAttribute('alt') || '') : '';
-        const imgObjectFit = isImage ? (element.style.objectFit || 'fill') : '';
-
-        // Video properties
-        const videoSrc = isVideo ? (element.querySelector('source')?.getAttribute('src') || element.getAttribute('src') || '') : '';
-        const videoControls = isVideo ? element.hasAttribute('controls') : false;
-        const videoAutoplay = isVideo ? element.hasAttribute('autoplay') : false;
-        const videoLoop = isVideo ? element.hasAttribute('loop') : false;
-        const videoMuted = isVideo ? element.hasAttribute('muted') : false;
-        const videoObjectFit = isVideo ? (element.style.objectFit || 'contain') : '';
-
-        // Store original values to detect changes
-        this.originalValues = {
-            bgColor: bgColor,
-            textColor: textColor,
-            hasInlineBackground: hasInlineBackground,
-            hasInlineTextColor: hasInlineTextColor
+        // Spacing
+        const spacing = {
+            mt: getStyleInt('marginTop'),
+            mr: getStyleInt('marginRight'),
+            mb: getStyleInt('marginBottom'),
+            ml: getStyleInt('marginLeft'),
+            pt: getStyleInt('paddingTop'),
+            pr: getStyleInt('paddingRight'),
+            pb: getStyleInt('paddingBottom'),
+            pl: getStyleInt('paddingLeft')
         };
 
-        panel.innerHTML = `
-            <div style="background: #F5F9FF; border: 1px solid #E5E5E5; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8125rem; color: #666;">
-                💡 ${isTextEl ? 'Double-click to edit inline' : isImage ? 'Double-click to replace' : isVideo ? 'Click upload button to change video' : 'Drag to reorder within parent'}
-            </div>
+        // Typography
+        const typography = {
+            size: getStyleInt('fontSize'),
+            weight: getStyle('fontWeight'),
+            align: getStyle('textAlign'),
+            style: getStyle('fontStyle'),
+            family: getStyle('fontFamily').split(',')[0].replace(/['"]/g, '')
+        };
 
-            <div class="property-group">
-                <label class="property-label">Element</label>
-                <input type="text" class="property-input" value="${tagName}" readonly style="background: var(--bg);">
-            </div>
+        const isText = this.isTextElement(element);
+        const isImage = tagName === 'img';
 
-            ${isLink ? `
-            <div class="property-group">
-                <label class="property-label">🔗 Link URL</label>
-                <input type="text" class="property-input" id="propLinkHref" value="${linkHref}" placeholder="https://example.com">
-            </div>
-            ` : ''}
+        let html = '';
 
-            ${isImage ? `
-            <div class="property-group">
-                <label class="property-label">🖼️ Image</label>
-                <button class="btn btn-secondary" id="uploadImgBtn" style="width: 100%; margin-bottom: 0.5rem;">
-                    📤 Upload New Image
-                </button>
-                <input type="text" class="property-input" id="propImgSrc" value="${imgSrc}" placeholder="https://...">
-            </div>
-            <div class="property-group">
-                <label class="property-label">Alt Text</label>
-                <input type="text" class="property-input" id="propImgAlt" value="${imgAlt}" placeholder="Image description">
-            </div>
-            <div class="property-group">
-                <label class="property-label">Image Fit</label>
-                <select class="property-input" id="propImgObjectFit">
-                    <option value="fill" ${imgObjectFit === 'fill' ? 'selected' : ''}>Fill</option>
-                    <option value="contain" ${imgObjectFit === 'contain' ? 'selected' : ''}>Fit</option>
-                    <option value="cover" ${imgObjectFit === 'cover' ? 'selected' : ''}>Cover</option>
-                    <option value="none" ${imgObjectFit === 'none' ? 'selected' : ''}>None</option>
-                    <option value="scale-down" ${imgObjectFit === 'scale-down' ? 'selected' : ''}>Scale Down</option>
-                </select>
-            </div>
-            ` : ''}
+        // 1. Text Content (if applicable)
+        if (isText) {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Text</div>
+                    <div class="prop-col">
+                        <label class="prop-label">Content</label>
+                        <textarea id="propTextContent" class="prop-textarea">${element.textContent.trim()}</textarea>
+                    </div>
+                </div>
+            `;
+        }
 
-            ${isVideo ? `
-            <div class="property-group">
-                <label class="property-label">🎥 Video</label>
-                <button class="btn btn-secondary" id="uploadVideoBtn" style="width: 100%; margin-bottom: 0.5rem;">
-                    📤 Upload New Video
-                </button>
-                <input type="text" class="property-input" id="propVideoSrc" value="${videoSrc}" placeholder="https://... or video.mp4">
-            </div>
-            <div class="property-group">
-                <label class="property-label">Video Options</label>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="propVideoControls" ${videoControls ? 'checked' : ''} style="cursor: pointer;">
-                        <span>Show controls</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="propVideoAutoplay" ${videoAutoplay ? 'checked' : ''} style="cursor: pointer;">
-                        <span>Autoplay</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="propVideoLoop" ${videoLoop ? 'checked' : ''} style="cursor: pointer;">
-                        <span>Loop</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" id="propVideoMuted" ${videoMuted ? 'checked' : ''} style="cursor: pointer;">
-                        <span>Muted</span>
-                    </label>
+        // 2. Colors
+        html += `
+            <div class="prop-section">
+                <div class="prop-header">Colors</div>
+                <div class="prop-row">
+                    <div class="prop-col">
+                        <label class="prop-label">Text Color</label>
+                        <div class="prop-color-wrapper">
+                            <div class="prop-color-preview" style="background-color: ${textColor}">
+                                <input type="color" id="propTextColor" class="prop-color-input" value="${textColor}">
+                            </div>
+                            <input type="text" class="prop-color-hex" value="${textColor}" onchange="document.getElementById('propTextColor').value = this.value; document.getElementById('propTextColor').dispatchEvent(new Event('input'));">
+                        </div>
+                    </div>
+                    <div class="prop-col">
+                        <label class="prop-label">Background</label>
+                        <div class="prop-color-wrapper">
+                            <div class="prop-color-preview" style="background-color: ${bgColor}">
+                                <input type="color" id="propBgColor" class="prop-color-input" value="${bgColor}">
+                            </div>
+                            <input type="text" class="prop-color-hex" value="${bgColor}" onchange="document.getElementById('propBgColor').value = this.value; document.getElementById('propBgColor').dispatchEvent(new Event('input'));">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="property-group">
-                <label class="property-label">Video Fit</label>
-                <select class="property-input" id="propVideoObjectFit">
-                    <option value="fill" ${videoObjectFit === 'fill' ? 'selected' : ''}>Fill</option>
-                    <option value="contain" ${videoObjectFit === 'contain' ? 'selected' : ''}>Fit</option>
-                    <option value="cover" ${videoObjectFit === 'cover' ? 'selected' : ''}>Cover</option>
-                    <option value="none" ${videoObjectFit === 'none' ? 'selected' : ''}>None</option>
-                    <option value="scale-down" ${videoObjectFit === 'scale-down' ? 'selected' : ''}>Scale Down</option>
-                </select>
-            </div>
-            ` : ''}
+        `;
 
-            ${isTextEl ? `
-            <div class="property-group">
-                <label class="property-label">Text Content</label>
-                <textarea class="property-input" id="propText" style="min-height: 60px;">${currentText.trim()}</textarea>
-            </div>
-            ` : ''}
+        // 3. Spacing
+        html += `
+            <div class="prop-section">
+                <div class="prop-header">Spacing</div>
+                
+                <div style="margin-bottom: 8px;">
+                    <label class="prop-label" style="margin-bottom: 4px; display: block;">Margin</label>
+                    <div class="prop-spacing-grid">
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-solid fa-arrow-up"></i></span>
+                            <input type="number" id="propMarginTop" class="prop-spacing-input" value="${spacing.mt}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                            <input type="number" id="propMarginRight" class="prop-spacing-input" value="${spacing.mr}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-solid fa-arrow-down"></i></span>
+                            <input type="number" id="propMarginBottom" class="prop-spacing-input" value="${spacing.mb}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                            <input type="number" id="propMarginLeft" class="prop-spacing-input" value="${spacing.ml}" placeholder="0">
+                        </div>
+                    </div>
+                </div>
 
-            <div class="property-group">
-                <label class="property-label">Position</label>
-                <select class="property-input" id="propPosition">
-                    <option value="static" ${position === 'static' ? 'selected' : ''}>Static</option>
-                    <option value="relative" ${position === 'relative' ? 'selected' : ''}>Relative</option>
-                    <option value="absolute" ${position === 'absolute' ? 'selected' : ''}>Absolute</option>
-                    <option value="fixed" ${position === 'fixed' ? 'selected' : ''}>Fixed</option>
-                    <option value="sticky" ${position === 'sticky' ? 'selected' : ''}>Sticky</option>
-                </select>
+                <div>
+                    <label class="prop-label" style="margin-bottom: 4px; display: block;">Padding</label>
+                    <div class="prop-spacing-grid">
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <input type="number" id="propPaddingTop" class="prop-spacing-input" value="${spacing.pt}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <input type="number" id="propPaddingRight" class="prop-spacing-input" value="${spacing.pr}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <input type="number" id="propPaddingBottom" class="prop-spacing-input" value="${spacing.pb}" placeholder="0">
+                        </div>
+                        <div class="prop-spacing-item">
+                            <span class="prop-spacing-icon"><i class="fa-regular fa-square"></i></span>
+                            <input type="number" id="propPaddingLeft" class="prop-spacing-input" value="${spacing.pl}" placeholder="0">
+                        </div>
+                    </div>
+                </div>
             </div>
+        `;
 
-            <div class="property-group">
-                <label class="property-label">Size</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <input type="text" class="property-input" id="propWidth" value="${width}" placeholder="auto" style="font-size: 0.8125rem;">
-                    <input type="text" class="property-input" id="propHeight" value="${height}" placeholder="auto" style="font-size: 0.8125rem;">
+        // 4. Typography
+        html += `
+            <div class="prop-section">
+                <div class="prop-header">Typography</div>
+                <div class="prop-row">
+                    <div class="prop-col">
+                        <label class="prop-label">Font Size</label>
+                        <select id="propFontSize" class="prop-select">
+                            <option value="12" ${typography.size === 12 ? 'selected' : ''}>Small (12px)</option>
+                            <option value="14" ${typography.size === 14 ? 'selected' : ''}>Normal (14px)</option>
+                            <option value="16" ${typography.size === 16 ? 'selected' : ''}>Medium (16px)</option>
+                            <option value="18" ${typography.size === 18 ? 'selected' : ''}>Large (18px)</option>
+                            <option value="20" ${typography.size === 20 ? 'selected' : ''}>XL (20px)</option>
+                            <option value="24" ${typography.size === 24 ? 'selected' : ''}>2XL (24px)</option>
+                            <option value="30" ${typography.size === 30 ? 'selected' : ''}>3XL (30px)</option>
+                            <option value="36" ${typography.size === 36 ? 'selected' : ''}>4XL (36px)</option>
+                            <option value="48" ${typography.size === 48 ? 'selected' : ''}>5XL (48px)</option>
+                            <option value="60" ${typography.size === 60 ? 'selected' : ''}>6XL (60px)</option>
+                            <option value="${typography.size}" ${![12, 14, 16, 18, 20, 24, 30, 36, 48, 60].includes(typography.size) ? 'selected' : ''}>Custom (${typography.size}px)</option>
+                        </select>
+                    </div>
+                    <div class="prop-col">
+                        <label class="prop-label">Weight</label>
+                        <select id="propFontWeight" class="prop-select">
+                            <option value="300" ${typography.weight == 300 ? 'selected' : ''}>Light</option>
+                            <option value="400" ${typography.weight == 400 ? 'selected' : ''}>Regular</option>
+                            <option value="500" ${typography.weight == 500 ? 'selected' : ''}>Medium</option>
+                            <option value="600" ${typography.weight == 600 ? 'selected' : ''}>Semi Bold</option>
+                            <option value="700" ${typography.weight == 700 ? 'selected' : ''}>Bold</option>
+                            <option value="800" ${typography.weight == 800 ? 'selected' : ''}>Extra Bold</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="prop-col">
+                    <label class="prop-label">Alignment</label>
+                    <div class="prop-btn-group">
+                        <button class="prop-btn ${typography.align === 'left' ? 'active' : ''}" onclick="app.applyStyle('textAlign', 'left')"><i class="fa-solid fa-align-left"></i></button>
+                        <button class="prop-btn ${typography.align === 'center' ? 'active' : ''}" onclick="app.applyStyle('textAlign', 'center')"><i class="fa-solid fa-align-center"></i></button>
+                        <button class="prop-btn ${typography.align === 'right' ? 'active' : ''}" onclick="app.applyStyle('textAlign', 'right')"><i class="fa-solid fa-align-right"></i></button>
+                        <button class="prop-btn ${typography.align === 'justify' ? 'active' : ''}" onclick="app.applyStyle('textAlign', 'justify')"><i class="fa-solid fa-align-justify"></i></button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 5. Image (Specific)
+        if (isImage) {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Image</div>
+                    <div class="prop-col">
+                        <label class="prop-label">Source URL</label>
+                        <input type="text" id="propImgSrc" class="prop-input" value="${element.getAttribute('src') || ''}">
+                    </div>
+                    <div class="prop-col" style="margin-top: 8px;">
+                        <button class="btn btn-secondary" onclick="app.enableImageEdit(app.selectedElement)" style="width: 100%; font-size: 12px;">Upload Image</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 6. Advanced (Classes)
+        html += `
+            <div class="prop-section">
+                <div class="prop-header">Advanced</div>
+                <div class="prop-col">
+                    <label class="prop-label">CSS Classes</label>
+                    <textarea id="propClasses" class="prop-code-block" placeholder="e.g. btn btn-primary mt-4">${element.className}</textarea>
+                </div>
+                <div class="prop-col" style="margin-top: 8px;">
+                     <label class="prop-label">ID</label>
+                    <input type="text" id="propId" class="prop-input" value="${element.id || ''}" placeholder="element-id">
                 </div>
             </div>
 
-            ${position !== 'static' ? `
-            <div class="property-group">
-                <label class="property-label">Position Offset</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <input type="text" class="property-input" id="propTop" value="${top}" placeholder="top" style="font-size: 0.8125rem;">
-                    <input type="text" class="property-input" id="propLeft" value="${left}" placeholder="left" style="font-size: 0.8125rem;">
-                </div>
-            </div>
-            ` : ''}
-
-            <div class="property-group">
-                <label class="property-label">Font Family</label>
-                <div style="position: relative;">
-                    <input type="text" class="property-input" id="propFontSearch" value="${fontFamily}" placeholder="Search fonts...">
-                    <div id="fontDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 6px; max-height: 200px; overflow-y: auto; margin-top: 4px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
-                </div>
-            </div>
-
-            <div class="property-group">
-                <label class="property-label">Font Size</label>
-                <input type="number" class="property-input" id="propFontSize" value="${fontSize}" min="8" max="200">
-            </div>
-
-            <div class="property-group">
-                <label class="property-label">Background</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" class="color-preview" id="propBgColor" value="${bgColor}">
-                    <input type="text" class="property-input color-input" id="propBgColorText" value="${bgColor}">
-                </div>
-            </div>
-
-            <div class="property-group">
-                <label class="property-label">Text Color</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" class="color-preview" id="propTextColor" value="${textColor}">
-                    <input type="text" class="property-input color-input" id="propTextColorText" value="${textColor}">
-                </div>
-            </div>
-
-            <div class="property-group">
-                <button class="btn btn-primary" style="width: 100%;" id="applyPropsBtn">
-                    Apply Changes
-                </button>
-            </div>
-
-            <div class="property-group">
-                <button class="btn btn-secondary" style="width: 100%; background: #EF4444; color: white; border-color: #DC2626;" id="deleteElementBtn">
-                    🗑️ Delete Element
+            <div class="prop-section" style="border-bottom: none;">
+                <button class="btn btn-danger" onclick="app.deleteSelectedElement()" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; font-size: 12px; padding: 8px;">
+                    <i class="fa-solid fa-trash" style="margin-right: 6px;"></i> Delete Element
                 </button>
             </div>
         `;
 
-        // Setup font search
-        this.setupFontSearch(element);
+        panel.innerHTML = html;
 
-        // Setup image upload button
-        if (isImage) {
-            document.getElementById('uploadImgBtn')?.addEventListener('click', () => {
-                this.enableImageEdit(element);
+        // Attach Event Listeners
+        this.attachPropertyListeners(element);
+    }
+
+    attachPropertyListeners(element) {
+        // Text Content
+        const textInput = document.getElementById('propTextContent');
+        if (textInput) {
+            textInput.addEventListener('input', (e) => {
+                element.textContent = e.target.value;
+                // Debounce history save? For now just update
+            });
+            textInput.addEventListener('change', () => this.updateHTML('Update text'));
+        }
+
+        // Colors
+        const colorInputs = ['propTextColor', 'propBgColor'];
+        colorInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', (e) => {
+                    const prop = id === 'propTextColor' ? 'color' : 'backgroundColor';
+                    element.style[prop] = e.target.value;
+                    // Update preview hex
+                    input.parentElement.nextElementSibling.value = e.target.value;
+                    input.parentElement.style.backgroundColor = e.target.value;
+                });
+                input.addEventListener('change', () => this.updateHTML('Update color'));
+            }
+        });
+
+        // Spacing
+        const spacingInputs = [
+            { id: 'propMarginTop', prop: 'marginTop' },
+            { id: 'propMarginRight', prop: 'marginRight' },
+            { id: 'propMarginBottom', prop: 'marginBottom' },
+            { id: 'propMarginLeft', prop: 'marginLeft' },
+            { id: 'propPaddingTop', prop: 'paddingTop' },
+            { id: 'propPaddingRight', prop: 'paddingRight' },
+            { id: 'propPaddingBottom', prop: 'paddingBottom' },
+            { id: 'propPaddingLeft', prop: 'paddingLeft' }
+        ];
+
+        spacingInputs.forEach(item => {
+            const input = document.getElementById(item.id);
+            if (input) {
+                input.addEventListener('input', (e) => {
+                    element.style[item.prop] = e.target.value + 'px';
+                });
+                input.addEventListener('change', () => this.updateHTML('Update spacing'));
+            }
+        });
+
+        // Typography
+        const fontSizeInput = document.getElementById('propFontSize');
+        if (fontSizeInput) {
+            fontSizeInput.addEventListener('change', (e) => {
+                element.style.fontSize = e.target.value + 'px';
+                this.updateHTML('Update font size');
             });
         }
 
-        // Setup video upload button
-        if (isVideo) {
-            document.getElementById('uploadVideoBtn')?.addEventListener('click', () => {
-                this.enableVideoEdit(element);
+        const fontWeightInput = document.getElementById('propFontWeight');
+        if (fontWeightInput) {
+            fontWeightInput.addEventListener('change', (e) => {
+                element.style.fontWeight = e.target.value;
+                this.updateHTML('Update font weight');
             });
         }
 
-        // Setup LIVE property change handlers
-        document.getElementById('applyPropsBtn').addEventListener('click', () => {
-            this.applyProperties(element, true); // true = save to history
-        });
-
-        // Setup delete button
-        document.getElementById('deleteElementBtn')?.addEventListener('click', () => {
-            this.deleteElement(element);
-        });
-
-        // Live updates for all properties
-        const applyLive = () => this.applyProperties(element, false); // false = don't save to history yet
-
-        // Text content
-        if (isTextEl) {
-            document.getElementById('propText')?.addEventListener('input', applyLive);
+        // Image
+        const imgSrcInput = document.getElementById('propImgSrc');
+        if (imgSrcInput) {
+            imgSrcInput.addEventListener('change', (e) => {
+                element.src = e.target.value;
+                this.updateHTML('Update image src');
+            });
         }
 
-        // Font size - live update
-        document.getElementById('propFontSize')?.addEventListener('input', applyLive);
+        // Advanced
+        const classesInput = document.getElementById('propClasses');
+        if (classesInput) {
+            classesInput.addEventListener('change', (e) => {
+                element.className = e.target.value;
+                this.updateHTML('Update classes');
+            });
+        }
 
-        // Position
-        document.getElementById('propPosition')?.addEventListener('change', applyLive);
-
-        // Size fields
-        document.getElementById('propWidth')?.addEventListener('input', applyLive);
-        document.getElementById('propHeight')?.addEventListener('input', applyLive);
-        document.getElementById('propTop')?.addEventListener('input', applyLive);
-        document.getElementById('propLeft')?.addEventListener('input', applyLive);
-
-        // Link URL
-        document.getElementById('propLinkHref')?.addEventListener('input', applyLive);
-
-        // Image properties
-        document.getElementById('propImgSrc')?.addEventListener('input', applyLive);
-        document.getElementById('propImgAlt')?.addEventListener('input', applyLive);
-        document.getElementById('propImgObjectFit')?.addEventListener('change', applyLive);
-
-        // Video properties
-        document.getElementById('propVideoSrc')?.addEventListener('input', applyLive);
-        document.getElementById('propVideoControls')?.addEventListener('change', applyLive);
-        document.getElementById('propVideoAutoplay')?.addEventListener('change', applyLive);
-        document.getElementById('propVideoLoop')?.addEventListener('change', applyLive);
-        document.getElementById('propVideoMuted')?.addEventListener('change', applyLive);
-        document.getElementById('propVideoObjectFit')?.addEventListener('change', applyLive);
-
-        // Color pickers - sync and apply live
-        document.getElementById('propBgColor').addEventListener('input', (e) => {
-            document.getElementById('propBgColorText').value = e.target.value;
-            applyLive();
-        });
-
-        document.getElementById('propTextColor').addEventListener('input', (e) => {
-            document.getElementById('propTextColorText').value = e.target.value;
-            applyLive();
-        });
-
-        document.getElementById('propBgColorText')?.addEventListener('input', (e) => {
-            document.getElementById('propBgColor').value = e.target.value;
-            applyLive();
-        });
-
-        document.getElementById('propTextColorText')?.addEventListener('input', (e) => {
-            document.getElementById('propTextColor').value = e.target.value;
-            applyLive();
-        });
-    }
-
-    setupFontSearch(element) {
-        const searchInput = document.getElementById('propFontSearch');
-        const dropdown = document.getElementById('fontDropdown');
-
-        searchInput.addEventListener('focus', () => {
-            this.showFontDropdown('', element);
-        });
-
-        searchInput.addEventListener('input', (e) => {
-            this.showFontDropdown(e.target.value, element);
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
-    }
-
-    showFontDropdown(query, element) {
-        const dropdown = document.getElementById('fontDropdown');
-        const filtered = this.googleFonts.filter(font =>
-            font.toLowerCase().includes(query.toLowerCase())
-        );
-
-        dropdown.innerHTML = filtered.map(font => `
-            <div style="padding: 0.5rem 0.75rem; cursor: pointer; font-family: '${font}', sans-serif; transition: background 0.15s;"
-                 onmouseover="this.style.background='var(--bg)'"
-                 onmouseout="this.style.background='white'"
-                 onclick="document.getElementById('propFontSearch').value='${font}'; document.getElementById('fontDropdown').style.display='none'; app.applyProperties(app.selectedElement, false);">
-                ${font}
-            </div>
-        `).join('');
-
-        dropdown.style.display = filtered.length > 0 ? 'block' : 'none';
-    }
-
-    loadGoogleFont(fontName) {
-        const formattedName = fontName.replace(/ /g, '+');
-
-        // Load in main document
-        const link = document.getElementById('dynamicFonts');
-        const currentFonts = link.href ? link.href.split('family=')[1]?.split('&')[0] || '' : '';
-        const fontsArray = currentFonts ? currentFonts.split('|') : [];
-
-        if (!fontsArray.includes(formattedName)) {
-            fontsArray.push(formattedName);
-            const fontUrl = `https://fonts.googleapis.com/css2?${fontsArray.map(f => `family=${f}:wght@300;400;500;600;700`).join('&')}&display=swap`;
-            link.href = fontUrl;
-
-            // Also load in iframe
-            const canvas = document.getElementById('canvas');
-            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-            if (iframeDoc) {
-                let iframeLink = iframeDoc.getElementById('dynamicFonts');
-                if (!iframeLink) {
-                    iframeLink = iframeDoc.createElement('link');
-                    iframeLink.id = 'dynamicFonts';
-                    iframeLink.rel = 'stylesheet';
-                    iframeDoc.head.appendChild(iframeLink);
-                }
-                iframeLink.href = fontUrl;
-            }
+        const idInput = document.getElementById('propId');
+        if (idInput) {
+            idInput.addEventListener('change', (e) => {
+                element.id = e.target.value;
+                this.updateHTML('Update ID');
+            });
         }
     }
 
+    applyStyle(prop, value) {
+        if (this.selectedElement) {
+            this.selectedElement.style[prop] = value;
+            this.updateHTML(`Update ${prop}`);
+            // Refresh panel to show active state
+            this.showProperties(this.selectedElement);
+        }
+    }
+
+    // Deprecated but kept for compatibility if called elsewhere, redirecting to new logic
     applyProperties(element, saveToHistory = true) {
-        const newText = document.getElementById('propText')?.value;
-        const bgColor = document.getElementById('propBgColor').value;
-        const textColor = document.getElementById('propTextColor').value;
-        const fontSize = document.getElementById('propFontSize').value;
-        const fontFamily = document.getElementById('propFontSearch')?.value;
-        const position = document.getElementById('propPosition')?.value;
-        const width = document.getElementById('propWidth')?.value;
-        const height = document.getElementById('propHeight')?.value;
-        const top = document.getElementById('propTop')?.value;
-        const left = document.getElementById('propLeft')?.value;
-
-        // Apply text changes
-        if (newText !== undefined && element.children.length === 0) {
-            element.textContent = newText;
-        }
-
-        // Only apply background if it was changed or already had inline style
-        if (this.originalValues.hasInlineBackground || bgColor !== this.originalValues.bgColor) {
-            element.style.backgroundColor = bgColor;
-        }
-
-        // Only apply text color if it was changed or already had inline style
-        if (this.originalValues.hasInlineTextColor || textColor !== this.originalValues.textColor) {
-            element.style.color = textColor;
-        }
-
-        // Apply font size (always apply because it's a number input)
-        if (fontSize) {
-            element.style.fontSize = fontSize + 'px';
-        }
-
-        // Apply font family
-        if (fontFamily) {
-            this.loadGoogleFont(fontFamily);
-            element.style.fontFamily = `'${fontFamily}', sans-serif`;
-        }
-
-        // Apply position & size
-        if (position !== undefined && position !== null) {
-            element.style.position = position;
-        }
-
-        if (width !== undefined && width !== null) {
-            element.style.width = width || '';
-        }
-
-        if (height !== undefined && height !== null) {
-            element.style.height = height || '';
-        }
-
-        if (top !== undefined && top !== null) {
-            element.style.top = top || '';
-        }
-
-        if (left !== undefined && left !== null) {
-            element.style.left = left || '';
-        }
-
-        // Apply link href
-        if (element.tagName === 'A') {
-            const newHref = document.getElementById('propLinkHref')?.value;
-            if (newHref !== undefined) {
-                element.setAttribute('href', newHref);
-            }
-        }
-
-        // Apply image src, alt, and object-fit
-        if (element.tagName === 'IMG') {
-            const newSrc = document.getElementById('propImgSrc')?.value;
-            const newAlt = document.getElementById('propImgAlt')?.value;
-            const objectFit = document.getElementById('propImgObjectFit')?.value;
-
-            if (newSrc !== undefined) {
-                element.setAttribute('src', newSrc);
-            }
-            if (newAlt !== undefined) {
-                element.setAttribute('alt', newAlt);
-            }
-            if (objectFit !== undefined) {
-                element.style.objectFit = objectFit;
-                // Ensure image has width/height for object-fit to work
-                if (!element.style.width && !element.style.height) {
-                    element.style.width = '100%';
-                    element.style.height = 'auto';
-                }
-            }
-        }
-
-        // Apply video src, controls, and options
-        if (element.tagName === 'VIDEO') {
-            const newSrc = document.getElementById('propVideoSrc')?.value;
-            const controls = document.getElementById('propVideoControls')?.checked;
-            const autoplay = document.getElementById('propVideoAutoplay')?.checked;
-            const loop = document.getElementById('propVideoLoop')?.checked;
-            const muted = document.getElementById('propVideoMuted')?.checked;
-            const objectFit = document.getElementById('propVideoObjectFit')?.value;
-
-            if (newSrc !== undefined) {
-                // Check if video has a source element or direct src
-                const sourceElement = element.querySelector('source');
-                if (sourceElement) {
-                    sourceElement.setAttribute('src', newSrc);
-                } else {
-                    element.setAttribute('src', newSrc);
-                }
-                // Reload the video to reflect changes
-                element.load();
-            }
-
-            // Update video attributes
-            if (controls !== undefined) {
-                if (controls) {
-                    element.setAttribute('controls', '');
-                } else {
-                    element.removeAttribute('controls');
-                }
-            }
-
-            if (autoplay !== undefined) {
-                if (autoplay) {
-                    element.setAttribute('autoplay', '');
-                } else {
-                    element.removeAttribute('autoplay');
-                }
-            }
-
-            if (loop !== undefined) {
-                if (loop) {
-                    element.setAttribute('loop', '');
-                } else {
-                    element.removeAttribute('loop');
-                }
-            }
-
-            if (muted !== undefined) {
-                if (muted) {
-                    element.setAttribute('muted', '');
-                } else {
-                    element.removeAttribute('muted');
-                }
-            }
-
-            if (objectFit !== undefined) {
-                element.style.objectFit = objectFit;
-                // Ensure video has width/height for object-fit to work
-                if (!element.style.width && !element.style.height) {
-                    element.style.width = '100%';
-                    element.style.height = 'auto';
-                }
-            }
-        }
-
-        // Only update HTML and show toast if saving to history
-        if (saveToHistory) {
-            this.updateHTML('Update properties');
-            this.showToast('✅ Properties updated!', 'success');
-        } else {
-            // For live updates, just update the current HTML without adding to history
-            const canvas = document.getElementById('canvas');
-            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-            const newHTML = iframeDoc.documentElement.outerHTML;
-            this.currentHTML = newHTML;
-            this.projectData.html = this.currentHTML;
-            this.saveProject();
-        }
+        // This is now handled by individual event listeners in attachPropertyListeners
+        // But if needed, we can trigger a refresh
+        if (element) this.showProperties(element);
     }
 
     deleteElement(element) {

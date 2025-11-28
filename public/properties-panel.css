@@ -1,0 +1,229 @@
+/* Properties Panel - Lovable/Framer Style */
+:root {
+    --prop-bg: #ffffff;
+    --prop-bg-hover: #f9fafb;
+    --prop-border: #e5e7eb;
+    --prop-text: #374151;
+    --prop-text-light: #6b7280;
+    --prop-accent: #0066FF;
+    --prop-radius: 6px;
+    --prop-font-size: 12px;
+}
+
+#propertiesPanel {
+    padding: 0;
+    background: var(--prop-bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--prop-text);
+}
+
+.prop-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--prop-border);
+}
+
+.prop-section:last-child {
+    border-bottom: none;
+}
+
+.prop-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.prop-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.prop-row:last-child {
+    margin-bottom: 0;
+}
+
+.prop-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.prop-label {
+    font-size: 11px;
+    color: var(--prop-text-light);
+    font-weight: 500;
+}
+
+/* Inputs */
+.prop-input, .prop-textarea, .prop-select {
+    width: 100%;
+    padding: 6px 8px;
+    background: #f3f4f6;
+    border: 1px solid transparent;
+    border-radius: var(--prop-radius);
+    font-size: var(--prop-font-size);
+    color: var(--prop-text);
+    transition: all 0.2s;
+}
+
+.prop-input:hover, .prop-textarea:hover, .prop-select:hover {
+    background: #e5e7eb;
+}
+
+.prop-input:focus, .prop-textarea:focus, .prop-select:focus {
+    background: #ffffff;
+    border-color: var(--prop-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+}
+
+.prop-textarea {
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.4;
+}
+
+/* Color Picker */
+.prop-color-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border-radius: var(--prop-radius);
+    padding: 4px;
+    gap: 8px;
+    border: 1px solid transparent;
+}
+
+.prop-color-wrapper:hover {
+    background: #e5e7eb;
+}
+
+.prop-color-preview {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.prop-color-input {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.prop-color-hex {
+    background: transparent;
+    border: none;
+    font-size: var(--prop-font-size);
+    color: var(--prop-text);
+    width: 100%;
+    font-family: monospace;
+}
+
+.prop-color-hex:focus {
+    outline: none;
+}
+
+/* Spacing Grid */
+.prop-spacing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.prop-spacing-item {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border-radius: var(--prop-radius);
+    padding: 4px 8px;
+    gap: 6px;
+}
+
+.prop-spacing-icon {
+    color: var(--prop-text-light);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.prop-spacing-input {
+    background: transparent;
+    border: none;
+    width: 100%;
+    font-size: var(--prop-font-size);
+    color: var(--prop-text);
+    text-align: right;
+}
+
+.prop-spacing-input:focus {
+    outline: none;
+}
+
+/* Typography */
+.prop-btn-group {
+    display: flex;
+    background: #f3f4f6;
+    border-radius: var(--prop-radius);
+    padding: 2px;
+    gap: 2px;
+}
+
+.prop-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--prop-text-light);
+    transition: all 0.2s;
+}
+
+.prop-btn:hover {
+    background: rgba(0,0,0,0.05);
+    color: var(--prop-text);
+}
+
+.prop-btn.active {
+    background: white;
+    color: var(--prop-accent);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Advanced */
+.prop-code-block {
+    font-family: monospace;
+    font-size: 11px;
+    background: #f9fafb;
+    border: 1px solid var(--prop-border);
+    border-radius: var(--prop-radius);
+    padding: 8px;
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Empty State */
+.prop-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--prop-text-light);
+    font-size: 13px;
+}
