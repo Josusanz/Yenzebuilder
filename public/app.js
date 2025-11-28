@@ -675,7 +675,10 @@ class YenzeBuilder {
     }
 
     // Adjust iframe height to fit content (especially for mobile)
+    // Adjust iframe height to fit content (especially for mobile)
     adjustIframeHeight(canvas, iframeDoc) {
+        // Disabled to allow proper 100vh rendering and internal scrolling
+        /*
         try {
             const body = iframeDoc.body;
             const html = iframeDoc.documentElement;
@@ -702,6 +705,9 @@ class YenzeBuilder {
         } catch (e) {
             console.log('[Canvas] Could not adjust iframe height:', e);
         }
+        */
+        // Ensure height is 100% to fill the wrapper
+        canvas.style.height = '100%';
     }
 
     setupIframeKeyboardShortcuts(doc) {
