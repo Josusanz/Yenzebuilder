@@ -1580,17 +1580,19 @@ class YenzeBuilder {
         }
 
         // 1.5 Link (if applicable)
-        if (tagName === 'a') {
+        const linkElement = element.tagName.toLowerCase() === 'a' ? element : element.closest('a');
+
+        if (linkElement) {
             html += `
                 <div class="prop-section">
                     <div class="prop-header">Link</div>
                     <div class="prop-col">
                         <label class="prop-label">URL (href)</label>
-                        <input type="text" id="propLinkHref" class="prop-input" value="${element.getAttribute('href') || '#'}" placeholder="https://example.com">
+                        <input type="text" id="propLinkHref" class="prop-input" value="${linkElement.getAttribute('href') || '#'}" placeholder="https://example.com">
                     </div>
                     <div class="prop-col" style="margin-top: 8px;">
                         <label class="prop-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" id="propLinkTarget" ${element.getAttribute('target') === '_blank' ? 'checked' : ''}>
+                            <input type="checkbox" id="propLinkTarget" ${linkElement.getAttribute('target') === '_blank' ? 'checked' : ''}>
                             Open in new tab
                         </label>
                     </div>
@@ -1836,24 +1838,28 @@ class YenzeBuilder {
         }
 
         // Link Properties
-        const linkHrefInput = document.getElementById('propLinkHref');
-        if (linkHrefInput) {
-            linkHrefInput.addEventListener('change', (e) => {
-                element.setAttribute('href', e.target.value);
-                this.updateHTML('Update link URL');
-            });
-        }
+        const linkElement = element.tagName.toLowerCase() === 'a' ? element : element.closest('a');
 
-        const linkTargetInput = document.getElementById('propLinkTarget');
-        if (linkTargetInput) {
-            linkTargetInput.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    element.setAttribute('target', '_blank');
-                } else {
-                    element.removeAttribute('target');
-                }
-                this.updateHTML('Update link target');
-            });
+        if (linkElement) {
+            const linkHrefInput = document.getElementById('propLinkHref');
+            if (linkHrefInput) {
+                linkHrefInput.addEventListener('change', (e) => {
+                    linkElement.setAttribute('href', e.target.value);
+                    this.updateHTML('Update link URL');
+                });
+            }
+
+            const linkTargetInput = document.getElementById('propLinkTarget');
+            if (linkTargetInput) {
+                linkTargetInput.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        linkElement.setAttribute('target', '_blank');
+                    } else {
+                        linkElement.removeAttribute('target');
+                    }
+                    this.updateHTML('Update link target');
+                });
+            }
         }
 
         // Icon Properties
