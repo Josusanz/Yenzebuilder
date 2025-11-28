@@ -916,6 +916,15 @@ class YenzeBuilder {
                 return;
             }
 
+            // Check if it's an icon
+            const isIcon = (e.target.tagName === 'I' || e.target.tagName === 'SPAN') &&
+                Array.from(e.target.classList).some(c => c.startsWith('fa-') || c.startsWith('bi-') || c.includes('icon'));
+
+            if (isIcon) {
+                this.showToast('Edit icon classes in the properties panel', 'info');
+                return;
+            }
+
             // If not editable, show message
             this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
         });
@@ -1589,6 +1598,25 @@ class YenzeBuilder {
             `;
         }
 
+        // 1.6 Icon (if applicable)
+        const isIcon = (tagName === 'i' || tagName === 'span') &&
+            Array.from(element.classList).some(c => c.startsWith('fa-') || c.startsWith('bi-') || c.includes('icon'));
+
+        if (isIcon) {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Icon</div>
+                    <div class="prop-col">
+                        <label class="prop-label">Icon Class</label>
+                        <input type="text" id="propIconClass" class="prop-input" value="${element.className}" placeholder="fas fa-home">
+                        <div style="font-size: 10px; color: #666; margin-top: 4px;">
+                            Use FontAwesome classes (e.g. 'fa-brands fa-instagram')
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         // 2. Colors
         html += `
             <div class="prop-section">
@@ -1825,6 +1853,15 @@ class YenzeBuilder {
                     element.removeAttribute('target');
                 }
                 this.updateHTML('Update link target');
+            });
+        }
+
+        // Icon Properties
+        const iconClassInput = document.getElementById('propIconClass');
+        if (iconClassInput) {
+            iconClassInput.addEventListener('change', (e) => {
+                element.className = e.target.value;
+                this.updateHTML('Update icon class');
             });
         }
 
