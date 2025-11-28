@@ -101,6 +101,76 @@
             font-size: 16px;
         }
 
+        /* How it works */
+        .how-it-works {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 48px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #0a0a0a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .step-line {
+            width: 40px;
+            height: 1px;
+            background: #eaeaea;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .how-it-works {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 24px;
+                padding: 20px;
+                background: #fff;
+                border-radius: 12px;
+                border: 1px solid #eaeaea;
+            }
+
+            .step {
+                flex-direction: row;
+                text-align: left;
+                width: 100%;
+            }
+
+            .step-line {
+                display: none;
+            }
+        }
+
         /* Section */
         .section {
             margin-bottom: 40px;
@@ -398,6 +468,24 @@
         <div class="header">
             <h1>AI Prompt Builder</h1>
             <p>Create the perfect prompt to generate your website</p>
+        </div>
+
+        <!-- How it works -->
+        <div class="how-it-works">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">Select your options below to generate a professional prompt</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">Copy the prompt and paste it into Gemini, ChatGPT or Claude</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">Copy the generated HTML code and paste it in YENZE Editor</div>
+            </div>
         </div>
 
         <!-- Website Type -->
