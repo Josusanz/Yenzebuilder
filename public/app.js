@@ -1376,6 +1376,9 @@ class YenzeBuilder {
 
         // Show properties
         this.showProperties(element);
+
+        // Switch to properties tab automatically
+        this.switchTab('properties', 'right');
     }
 
     ensureElementPageVisible(element) {
