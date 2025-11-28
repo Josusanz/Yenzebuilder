@@ -268,6 +268,11 @@ class YenzeBuilder {
         this.currentHTML = '';
         this.selectedElement = null;
         this.currentDevice = 'desktop';
+        this.deviceWidths = {
+            desktop: 1440,
+            tablet: 768,
+            mobile: 375
+        };
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
         this.draggedElement = null;
@@ -320,12 +325,21 @@ class YenzeBuilder {
             btn.addEventListener('click', (e) => this.switchDevice(e.target.dataset.device));
         });
 
+        // Device width input
+        document.getElementById('canvasWidthInput')?.addEventListener('change', (e) => {
+            this.updateCanvasWidth(e.target.value);
+        });
+
+        document.getElementById('canvasWidthInput')?.addEventListener('input', (e) => {
+            this.updateCanvasWidth(e.target.value);
+        });
+
         // Import area
         const importArea = document.getElementById('importArea');
         const fileInput = document.getElementById('fileInput');
-        
+
         importArea.addEventListener('click', () => fileInput.click());
-        
+
         importArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             importArea.classList.add('dragover');
@@ -535,16 +549,35 @@ class YenzeBuilder {
 
     switchDevice(device) {
         this.currentDevice = device;
-        
+
         // Update active button
         document.querySelectorAll('.device-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         document.querySelector(`[data-device="${device}"]`).classList.add('active');
 
-        // Update canvas wrapper
+        // Update canvas wrapper class
         const wrapper = document.getElementById('canvasWrapper');
         wrapper.className = `canvas-wrapper ${device}`;
+
+        // Update width from stored value
+        const width = this.deviceWidths[device];
+        this.updateCanvasWidth(width);
+
+        // Update input value
+        const input = document.getElementById('canvasWidthInput');
+        if (input) {
+            input.value = width;
+        }
+    }
+
+    updateCanvasWidth(width) {
+        const wrapper = document.getElementById('canvasWrapper');
+        if (wrapper) {
+            wrapper.style.width = width + 'px';
+            // Update stored width for current device
+            this.deviceWidths[this.currentDevice] = parseInt(width);
+        }
     }
 
     loadHTMLFile(file) {
@@ -787,73 +820,73 @@ class YenzeBuilder {
         // Skip script and style tags
         if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
 
-            el.style.cursor = 'grab';
-            el.style.transition = 'outline 0.15s, box-shadow 0.15s';
+        el.style.cursor = 'grab';
+        el.style.transition = 'outline 0.15s, box-shadow 0.15s';
 
-            // Hover effect
-            el.addEventListener('mouseenter', (e) => {
-                e.stopPropagation();
-                if (el !== this.selectedElement && !this.isDragging) {
-                    e.target.style.outline = '1px solid #0066FF';
-                    e.target.style.outlineOffset = '2px';
-                }
-            });
+        // Hover effect
+        el.addEventListener('mouseenter', (e) => {
+            e.stopPropagation();
+            if (el !== this.selectedElement && !this.isDragging) {
+                e.target.style.outline = '1px solid #0066FF';
+                e.target.style.outlineOffset = '2px';
+            }
+        });
 
-            el.addEventListener('mouseleave', (e) => {
-                if (el !== this.selectedElement) {
-                    e.target.style.outline = 'none';
-                }
-            });
+        el.addEventListener('mouseleave', (e) => {
+            if (el !== this.selectedElement) {
+                e.target.style.outline = 'none';
+            }
+        });
 
-            // Single click to select
-            el.addEventListener('click', (e) => {
-                // Prevent default for all elements in edit mode
+        // Single click to select
+        el.addEventListener('click', (e) => {
+            // Prevent default for all elements in edit mode
+            e.preventDefault();
+            e.stopPropagation();
+            if (!this.isDragging) {
+                this.selectElement(e.target);
+            }
+        });
+
+        // Double click to edit
+        el.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Enable inline editing for text elements (includes buttons, links, headings)
+            if (this.isTextElement(e.target)) {
+                this.enableInlineTextEdit(e.target);
+                return;
+            }
+
+            // Enable image replacement for images
+            if (e.target.tagName === 'IMG') {
+                this.enableImageEdit(e.target);
+                return;
+            }
+
+            // If not editable, show message
+            this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
+        });
+
+        // Drag and drop to reorder elements (Framer-style)
+        el.setAttribute('draggable', 'true');
+
+        el.addEventListener('dragstart', (e) => {
+            // Don't drag if in edit mode
+            if (e.target.contentEditable === 'true') {
                 e.preventDefault();
-                e.stopPropagation();
-                if (!this.isDragging) {
-                    this.selectElement(e.target);
-                }
-            });
+                return;
+            }
 
-            // Double click to edit
-            el.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+            this.draggedElement = e.target;
+            e.target.style.opacity = '0.5';
+            e.target.style.cursor = 'grabbing';
 
-                // Enable inline editing for text elements (includes buttons, links, headings)
-                if (this.isTextElement(e.target)) {
-                    this.enableInlineTextEdit(e.target);
-                    return;
-                }
-
-                // Enable image replacement for images
-                if (e.target.tagName === 'IMG') {
-                    this.enableImageEdit(e.target);
-                    return;
-                }
-
-                // If not editable, show message
-                this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
-            });
-
-            // Drag and drop to reorder elements (Framer-style)
-            el.setAttribute('draggable', 'true');
-
-            el.addEventListener('dragstart', (e) => {
-                // Don't drag if in edit mode
-                if (e.target.contentEditable === 'true') {
-                    e.preventDefault();
-                    return;
-                }
-
-                this.draggedElement = e.target;
-                e.target.style.opacity = '0.5';
-                e.target.style.cursor = 'grabbing';
-
-                // Create drop indicator
-                if (!this.dropIndicator) {
-                    this.dropIndicator = doc.createElement('div');
-                    this.dropIndicator.style.cssText = `
+            // Create drop indicator
+            if (!this.dropIndicator) {
+                this.dropIndicator = doc.createElement('div');
+                this.dropIndicator.style.cssText = `
                         height: 3px;
                         background: #0066FF;
                         margin: 4px 0;
@@ -861,80 +894,80 @@ class YenzeBuilder {
                         pointer-events: none;
                         box-shadow: 0 0 8px rgba(0, 102, 255, 0.5);
                     `;
-                }
+            }
 
-                e.dataTransfer.effectAllowed = 'move';
-            });
+            e.dataTransfer.effectAllowed = 'move';
+        });
 
-            el.addEventListener('dragend', (e) => {
-                e.target.style.opacity = '';
-                e.target.style.cursor = 'grab';
-                if (this.dropIndicator && this.dropIndicator.parentNode) {
-                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
-                }
-                this.draggedElement = null;
-            });
+        el.addEventListener('dragend', (e) => {
+            e.target.style.opacity = '';
+            e.target.style.cursor = 'grab';
+            if (this.dropIndicator && this.dropIndicator.parentNode) {
+                this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+            }
+            this.draggedElement = null;
+        });
 
-            el.addEventListener('dragover', (e) => {
-                if (!this.draggedElement || this.draggedElement === e.target) return;
+        el.addEventListener('dragover', (e) => {
+            if (!this.draggedElement || this.draggedElement === e.target) return;
 
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
 
-                const parent = e.target.parentNode;
-                const draggedParent = this.draggedElement.parentNode;
+            const parent = e.target.parentNode;
+            const draggedParent = this.draggedElement.parentNode;
 
-                // Only allow reordering within same parent or into container elements
-                if (parent === draggedParent || this.isContainer(e.target)) {
-                    const rect = e.target.getBoundingClientRect();
-                    const midpoint = rect.top + rect.height / 2;
+            // Only allow reordering within same parent or into container elements
+            if (parent === draggedParent || this.isContainer(e.target)) {
+                const rect = e.target.getBoundingClientRect();
+                const midpoint = rect.top + rect.height / 2;
 
-                    if (this.isContainer(e.target)) {
-                        // Drop inside container
-                        if (e.target.children.length === 0) {
-                            e.target.appendChild(this.dropIndicator);
-                        } else {
-                            e.target.insertBefore(this.dropIndicator, e.target.firstChild);
-                        }
-                    } else if (e.clientY < midpoint) {
-                        // Drop before element
-                        parent.insertBefore(this.dropIndicator, e.target);
+                if (this.isContainer(e.target)) {
+                    // Drop inside container
+                    if (e.target.children.length === 0) {
+                        e.target.appendChild(this.dropIndicator);
                     } else {
-                        // Drop after element
-                        parent.insertBefore(this.dropIndicator, e.target.nextSibling);
+                        e.target.insertBefore(this.dropIndicator, e.target.firstChild);
                     }
+                } else if (e.clientY < midpoint) {
+                    // Drop before element
+                    parent.insertBefore(this.dropIndicator, e.target);
+                } else {
+                    // Drop after element
+                    parent.insertBefore(this.dropIndicator, e.target.nextSibling);
                 }
-            });
+            }
+        });
 
-            el.addEventListener('drop', (e) => {
-                if (!this.draggedElement) return;
+        el.addEventListener('drop', (e) => {
+            if (!this.draggedElement) return;
 
-                e.preventDefault();
-                e.stopPropagation();
+            e.preventDefault();
+            e.stopPropagation();
 
-                const parent = e.target.parentNode;
-                const draggedParent = this.draggedElement.parentNode;
+            const parent = e.target.parentNode;
+            const draggedParent = this.draggedElement.parentNode;
 
-                // Perform the move
-                if (this.dropIndicator && this.dropIndicator.parentNode) {
-                    const dropParent = this.dropIndicator.parentNode;
-                    const nextSibling = this.dropIndicator.nextSibling;
+            // Perform the move
+            if (this.dropIndicator && this.dropIndicator.parentNode) {
+                const dropParent = this.dropIndicator.parentNode;
+                const nextSibling = this.dropIndicator.nextSibling;
 
-                    // Remove drop indicator
-                    this.dropIndicator.parentNode.removeChild(this.dropIndicator);
+                // Remove drop indicator
+                this.dropIndicator.parentNode.removeChild(this.dropIndicator);
 
-                    // Insert element at new position
-                    if (nextSibling) {
-                        dropParent.insertBefore(this.draggedElement, nextSibling);
-                    } else {
-                        dropParent.appendChild(this.draggedElement);
-                    }
-
-                    this.updateHTML('Reorder element');
-                    this.buildLayersTree(doc); // Update layers tree
-                    this.showToast('✅ Element repositioned', 'success');
+                // Insert element at new position
+                if (nextSibling) {
+                    dropParent.insertBefore(this.draggedElement, nextSibling);
+                } else {
+                    dropParent.appendChild(this.draggedElement);
                 }
-            });
+
+                this.updateHTML('Reorder element');
+                this.buildLayersTree(doc); // Update layers tree
+                this.showToast('✅ Element repositioned', 'success');
+            }
+        });
     }
 
     isContainer(element) {
@@ -3077,7 +3110,7 @@ if (validationForm) {
         const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
         previewWindow.document.write(this.currentHTML);
         previewWindow.document.close();
-        
+
         this.showToast('👁️ Preview opened in new window', 'success');
     }
 
