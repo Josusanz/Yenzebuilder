@@ -1651,6 +1651,26 @@ class YenzeBuilder {
                 <div class="prop-header">Typography</div>
                 <div class="prop-row">
                     <div class="prop-col">
+                        <label class="prop-label">Font Family</label>
+                        <select id="propFontFamily" class="prop-select">
+                            <option value="Inter" ${typography.family === 'Inter' ? 'selected' : ''}>Inter</option>
+                            <option value="Roboto" ${typography.family === 'Roboto' ? 'selected' : ''}>Roboto</option>
+                            <option value="Open Sans" ${typography.family === 'Open Sans' ? 'selected' : ''}>Open Sans</option>
+                            <option value="Lato" ${typography.family === 'Lato' ? 'selected' : ''}>Lato</option>
+                            <option value="Montserrat" ${typography.family === 'Montserrat' ? 'selected' : ''}>Montserrat</option>
+                            <option value="Playfair Display" ${typography.family === 'Playfair Display' ? 'selected' : ''}>Playfair Display</option>
+                            <option value="Merriweather" ${typography.family === 'Merriweather' ? 'selected' : ''}>Merriweather</option>
+                            <option value="Arial" ${typography.family === 'Arial' ? 'selected' : ''}>Arial</option>
+                            <option value="Helvetica" ${typography.family === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
+                            <option value="Times New Roman" ${typography.family === 'Times New Roman' ? 'selected' : ''}>Times New Roman</option>
+                            <option value="Courier New" ${typography.family === 'Courier New' ? 'selected' : ''}>Courier New</option>
+                            <option value="${typography.family}" ${!['Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Playfair Display', 'Merriweather', 'Arial', 'Helvetica', 'Times New Roman', 'Courier New'].includes(typography.family) ? 'selected' : ''}>Current (${typography.family})</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="prop-row">
+                    <div class="prop-col">
                         <label class="prop-label">Font Size</label>
                         <select id="propFontSize" class="prop-select">
                             <option value="12" ${typography.size === 12 ? 'selected' : ''}>Small (12px)</option>
@@ -1784,6 +1804,15 @@ class YenzeBuilder {
         });
 
         // Typography
+        const fontFamilyInput = document.getElementById('propFontFamily');
+        if (fontFamilyInput) {
+            fontFamilyInput.addEventListener('change', (e) => {
+                const fontName = e.target.value;
+                this.applyFontFamily(element, fontName);
+                this.updateHTML('Update font family');
+            });
+        }
+
         const fontSizeInput = document.getElementById('propFontSize');
         if (fontSizeInput) {
             fontSizeInput.addEventListener('change', (e) => {
@@ -1799,201 +1828,230 @@ class YenzeBuilder {
                 this.updateHTML('Update font weight');
             });
         }
-
-        // Image
-        const imgSrcInput = document.getElementById('propImgSrc');
-        if (imgSrcInput) {
-            imgSrcInput.addEventListener('change', (e) => {
-                element.src = e.target.value;
-                this.updateHTML('Update image src');
-            });
-        }
-
-        // Advanced
-        const classesInput = document.getElementById('propClasses');
-        if (classesInput) {
-            classesInput.addEventListener('change', (e) => {
-                element.className = e.target.value;
-                this.updateHTML('Update classes');
-            });
-        }
-
-        const idInput = document.getElementById('propId');
-        if (idInput) {
-            idInput.addEventListener('change', (e) => {
-                element.id = e.target.value;
-                this.updateHTML('Update ID');
-            });
-        }
     }
 
-    applyStyle(prop, value) {
-        if (this.selectedElement) {
-            this.selectedElement.style[prop] = value;
-            this.updateHTML(`Update ${prop}`);
-            // Refresh panel to show active state
-            this.showProperties(this.selectedElement);
-        }
-    }
+    applyFontFamily(element, fontName) {
+        // System fonts don't need loading
+        const systemFonts = ['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana', 'sans-serif', 'serif', 'monospace'];
 
-    // Deprecated but kept for compatibility if called elsewhere, redirecting to new logic
-    applyProperties(element, saveToHistory = true) {
-        // This is now handled by individual event listeners in attachPropertyListeners
-        // But if needed, we can trigger a refresh
-        if (element) this.showProperties(element);
-    }
-
-    deleteElement(element) {
-        // Don't allow deleting the body element
-        if (element.tagName === 'BODY') {
-            this.showToast('❌ Cannot delete body element', 'error');
-            return;
+        if (!systemFonts.includes(fontName)) {
+            this.loadGoogleFont(fontName);
         }
 
-        const parent = element.parentNode;
-        if (parent) {
-            parent.removeChild(element);
+        element.style.fontFamily = `"${fontName}", sans-serif`;
+    }
 
-            // Clear selection
-            this.selectedElement = null;
+    loadGoogleFont(fontName) {
+        const iframe = document.getElementById('canvas');
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
 
-            // Get iframe doc
-            const canvas = document.getElementById('canvas');
-            const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+        // Check if already loaded
+        const id = `font-${fontName.replace(/\s+/g, '-').toLowerCase()}`;
+        if (doc.getElementById(id)) return;
 
-            // Update HTML and layers
-            this.updateHTML('Delete element');
-            this.buildLayersTree(iframeDoc);
+        const link = doc.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`;
 
-            // Clear properties panel
-            const panel = document.getElementById('propertiesPanel');
-            panel.innerHTML = `
+        doc.head.appendChild(link);
+        console.log(`[Fonts] Loaded ${fontName}`);
+    }
+
+    // Image
+    const imgSrcInput = document.getElementById('propImgSrc');
+    if(imgSrcInput) {
+        imgSrcInput.addEventListener('change', (e) => {
+            element.src = e.target.value;
+            this.updateHTML('Update image src');
+        });
+    }
+
+    // Advanced
+    const classesInput = document.getElementById('propClasses');
+    if(classesInput) {
+        classesInput.addEventListener('change', (e) => {
+            element.className = e.target.value;
+            this.updateHTML('Update classes');
+        });
+    }
+
+    const idInput = document.getElementById('propId');
+    if(idInput) {
+        idInput.addEventListener('change', (e) => {
+            element.id = e.target.value;
+            this.updateHTML('Update ID');
+        });
+    }
+}
+
+applyStyle(prop, value) {
+    if (this.selectedElement) {
+        this.selectedElement.style[prop] = value;
+        this.updateHTML(`Update ${prop}`);
+        // Refresh panel to show active state
+        this.showProperties(this.selectedElement);
+    }
+}
+
+// Deprecated but kept for compatibility if called elsewhere, redirecting to new logic
+applyProperties(element, saveToHistory = true) {
+    // This is now handled by individual event listeners in attachPropertyListeners
+    // But if needed, we can trigger a refresh
+    if (element) this.showProperties(element);
+}
+
+deleteElement(element) {
+    // Don't allow deleting the body element
+    if (element.tagName === 'BODY') {
+        this.showToast('❌ Cannot delete body element', 'error');
+        return;
+    }
+
+    const parent = element.parentNode;
+    if (parent) {
+        parent.removeChild(element);
+
+        // Clear selection
+        this.selectedElement = null;
+
+        // Get iframe doc
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        // Update HTML and layers
+        this.updateHTML('Delete element');
+        this.buildLayersTree(iframeDoc);
+
+        // Clear properties panel
+        const panel = document.getElementById('propertiesPanel');
+        panel.innerHTML = `
                 <p style="color: var(--text-secondary); font-size: 0.875rem; text-align: center; padding: 2rem 1rem;">
                     Select an element to edit
                 </p>
             `;
 
-            this.showToast('✅ Element deleted', 'success');
-        }
+        this.showToast('✅ Element deleted', 'success');
+    }
+}
+
+deleteSelectedElement() {
+    if (!this.selectedElement) {
+        return;
     }
 
-    deleteSelectedElement() {
-        if (!this.selectedElement) {
-            return;
-        }
-
-        // Don't allow deleting the body element
-        if (this.selectedElement.tagName === 'BODY') {
-            this.showToast('❌ Cannot delete body element', 'error');
-            return;
-        }
-
-        // Store element info for the toast message
-        const elementName = this.selectedElement.tagName.toLowerCase();
-
-        // Delete the element
-        this.deleteElement(this.selectedElement);
-
-        console.log('🗑️ Deleted element:', elementName);
+    // Don't allow deleting the body element
+    if (this.selectedElement.tagName === 'BODY') {
+        this.showToast('❌ Cannot delete body element', 'error');
+        return;
     }
 
-    buildLayersTree(doc) {
-        const tree = document.getElementById('layersTree');
-        tree.innerHTML = '';
+    // Store element info for the toast message
+    const elementName = this.selectedElement.tagName.toLowerCase();
 
-        const buildNode = (element, level = 0) => {
-            const tagName = element.tagName.toLowerCase();
+    // Delete the element
+    this.deleteElement(this.selectedElement);
 
-            // Skip script and style tags
-            if (tagName === 'script' || tagName === 'style') return;
+    console.log('🗑️ Deleted element:', elementName);
+}
 
-            const li = document.createElement('li');
-            li.className = 'layer-item';
-            li.style.paddingLeft = `${level * 0.875}rem`;
-            li.draggable = true;
-            li.dataset.elementId = this.generateElementId(element);
+buildLayersTree(doc) {
+    const tree = document.getElementById('layersTree');
+    tree.innerHTML = '';
 
-            const hasChildren = Array.from(element.children).some(child =>
-                child.tagName && child.tagName.toLowerCase() !== 'script' && child.tagName.toLowerCase() !== 'style'
-            );
+    const buildNode = (element, level = 0) => {
+        const tagName = element.tagName.toLowerCase();
 
-            const icon = this.getElementIcon(tagName);
+        // Skip script and style tags
+        if (tagName === 'script' || tagName === 'style') return;
 
-            // Add collapse/expand toggle if element has children
-            const collapseToggle = hasChildren ?
-                `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▸</span>` :
-                '<span class="layer-toggle-spacer"></span>';
+        const li = document.createElement('li');
+        li.className = 'layer-item';
+        li.style.paddingLeft = `${level * 0.875}rem`;
+        li.draggable = true;
+        li.dataset.elementId = this.generateElementId(element);
 
-            li.innerHTML = `
+        const hasChildren = Array.from(element.children).some(child =>
+            child.tagName && child.tagName.toLowerCase() !== 'script' && child.tagName.toLowerCase() !== 'style'
+        );
+
+        const icon = this.getElementIcon(tagName);
+
+        // Add collapse/expand toggle if element has children
+        const collapseToggle = hasChildren ?
+            `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▸</span>` :
+            '<span class="layer-toggle-spacer"></span>';
+
+        li.innerHTML = `
                 ${collapseToggle}
                 <span class="layer-icon">${icon}</span>
                 <span class="layer-name">${tagName}</span>
             `;
 
-            // Store element reference
-            li._element = element;
+        // Store element reference
+        li._element = element;
 
-            // Toggle collapse/expand
-            const toggle = li.querySelector('.layer-toggle');
-            if (toggle) {
-                // Set initial rotation based on collapsed state
-                const elementId = this.generateElementId(element);
-                const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
-                toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
+        // Toggle collapse/expand
+        const toggle = li.querySelector('.layer-toggle');
+        if (toggle) {
+            // Set initial rotation based on collapsed state
+            const elementId = this.generateElementId(element);
+            const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
+            toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
 
-                toggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleLayerCollapse(element);
-                });
-            }
-
-            // Click to select
-            li.addEventListener('click', (e) => {
+            toggle.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.selectElement(element);
-
-                // Highlight in tree
-                document.querySelectorAll('.layer-item').forEach(item => {
-                    item.classList.remove('selected');
-                });
-                li.classList.add('selected');
+                this.toggleLayerCollapse(element);
             });
+        }
 
-            // Drag and drop in layers
-            li.addEventListener('dragstart', (e) => {
-                e.stopPropagation();
-                this.draggedLayerElement = element;
-                li.style.opacity = '0.5';
+        // Click to select
+        li.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.selectElement(element);
+
+            // Highlight in tree
+            document.querySelectorAll('.layer-item').forEach(item => {
+                item.classList.remove('selected');
             });
+            li.classList.add('selected');
+        });
 
-            li.addEventListener('dragend', (e) => {
-                li.style.opacity = '1';
-                this.draggedLayerElement = null;
+        // Drag and drop in layers
+        li.addEventListener('dragstart', (e) => {
+            e.stopPropagation();
+            this.draggedLayerElement = element;
+            li.style.opacity = '0.5';
+        });
 
-                // Clean up all drop indicators
-                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
-                document.querySelectorAll('.layer-item').forEach(item => {
-                    item.style.background = '';
-                });
+        li.addEventListener('dragend', (e) => {
+            li.style.opacity = '1';
+            this.draggedLayerElement = null;
+
+            // Clean up all drop indicators
+            document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+            document.querySelectorAll('.layer-item').forEach(item => {
+                item.style.background = '';
             });
+        });
 
-            li.addEventListener('dragover', (e) => {
-                if (!this.draggedLayerElement) return;
-                e.preventDefault();
-                e.stopPropagation();
+        li.addEventListener('dragover', (e) => {
+            if (!this.draggedLayerElement) return;
+            e.preventDefault();
+            e.stopPropagation();
 
-                // Remove any existing drop indicators
-                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+            // Remove any existing drop indicators
+            document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
 
-                // Determine drop position based on mouse Y position
-                const rect = li.getBoundingClientRect();
-                const midpoint = rect.top + rect.height / 2;
-                const isContainer = this.isContainer(element);
+            // Determine drop position based on mouse Y position
+            const rect = li.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            const isContainer = this.isContainer(element);
 
-                // Create drop indicator line
-                const dropLine = document.createElement('div');
-                dropLine.className = 'layer-drop-indicator';
-                dropLine.style.cssText = `
+            // Create drop indicator line
+            const dropLine = document.createElement('div');
+            dropLine.className = 'layer-drop-indicator';
+            dropLine.style.cssText = `
                     height: 2px;
                     background: #0EA5E9;
                     position: absolute;
@@ -2004,510 +2062,510 @@ class YenzeBuilder {
                     box-shadow: 0 0 4px rgba(14, 165, 233, 0.5);
                 `;
 
-                if (isContainer && e.clientY > midpoint) {
-                    // Drop inside container (indent the line more)
-                    dropLine.style.left = `${(level + 1) * 1.5}rem`;
-                    dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
-                    this.dropPosition = 'inside';
-                    li.style.background = 'rgba(14, 165, 233, 0.05)';
-                } else if (e.clientY < midpoint) {
+            if (isContainer && e.clientY > midpoint) {
+                // Drop inside container (indent the line more)
+                dropLine.style.left = `${(level + 1) * 1.5}rem`;
+                dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
+                this.dropPosition = 'inside';
+                li.style.background = 'rgba(14, 165, 233, 0.05)';
+            } else if (e.clientY < midpoint) {
+                // Drop before element
+                dropLine.style.top = `${rect.top - li.parentElement.getBoundingClientRect().top}px`;
+                this.dropPosition = 'before';
+            } else {
+                // Drop after element
+                dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
+                this.dropPosition = 'after';
+            }
+
+            li.parentElement.appendChild(dropLine);
+        });
+
+        li.addEventListener('dragleave', (e) => {
+            // Only remove if actually leaving (not entering child)
+            const relatedTarget = e.relatedTarget;
+            if (!li.contains(relatedTarget)) {
+                li.style.background = '';
+            }
+        });
+
+        li.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Clean up visual indicators
+            li.style.background = '';
+            document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
+
+            if (this.draggedLayerElement && this.draggedLayerElement !== element) {
+                // Don't allow element to be dropped into itself or its children
+                let checkParent = element;
+                while (checkParent) {
+                    if (checkParent === this.draggedLayerElement) {
+                        this.showToast('❌ Cannot drop element into itself', 'error');
+                        return;
+                    }
+                    checkParent = checkParent.parentNode;
+                }
+
+                const parent = element.parentNode;
+                if (!parent) return;
+
+                // Execute the drop based on the determined position
+                if (this.dropPosition === 'inside' && this.isContainer(element)) {
+                    // Drop inside container as first child
+                    element.insertBefore(this.draggedLayerElement, element.firstChild);
+                } else if (this.dropPosition === 'before') {
                     // Drop before element
-                    dropLine.style.top = `${rect.top - li.parentElement.getBoundingClientRect().top}px`;
-                    this.dropPosition = 'before';
+                    parent.insertBefore(this.draggedLayerElement, element);
                 } else {
                     // Drop after element
-                    dropLine.style.top = `${rect.bottom - li.parentElement.getBoundingClientRect().top}px`;
-                    this.dropPosition = 'after';
+                    parent.insertBefore(this.draggedLayerElement, element.nextSibling);
                 }
 
-                li.parentElement.appendChild(dropLine);
-            });
+                // Get the iframe doc for rebuilding layers
+                const canvas = document.getElementById('canvas');
+                const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
 
-            li.addEventListener('dragleave', (e) => {
-                // Only remove if actually leaving (not entering child)
-                const relatedTarget = e.relatedTarget;
-                if (!li.contains(relatedTarget)) {
-                    li.style.background = '';
+                this.updateHTML('Reorder in layers');
+                this.buildLayersTree(iframeDoc); // Rebuild layers to show new order
+
+                // Re-highlight the moved element
+                if (this.selectedElement) {
+                    this.highlightInLayers(this.selectedElement);
                 }
-            });
 
-            li.addEventListener('drop', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                // Clean up visual indicators
-                li.style.background = '';
-                document.querySelectorAll('.layer-drop-indicator').forEach(indicator => indicator.remove());
-
-                if (this.draggedLayerElement && this.draggedLayerElement !== element) {
-                    // Don't allow element to be dropped into itself or its children
-                    let checkParent = element;
-                    while (checkParent) {
-                        if (checkParent === this.draggedLayerElement) {
-                            this.showToast('❌ Cannot drop element into itself', 'error');
-                            return;
-                        }
-                        checkParent = checkParent.parentNode;
-                    }
-
-                    const parent = element.parentNode;
-                    if (!parent) return;
-
-                    // Execute the drop based on the determined position
-                    if (this.dropPosition === 'inside' && this.isContainer(element)) {
-                        // Drop inside container as first child
-                        element.insertBefore(this.draggedLayerElement, element.firstChild);
-                    } else if (this.dropPosition === 'before') {
-                        // Drop before element
-                        parent.insertBefore(this.draggedLayerElement, element);
-                    } else {
-                        // Drop after element
-                        parent.insertBefore(this.draggedLayerElement, element.nextSibling);
-                    }
-
-                    // Get the iframe doc for rebuilding layers
-                    const canvas = document.getElementById('canvas');
-                    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-                    this.updateHTML('Reorder in layers');
-                    this.buildLayersTree(iframeDoc); // Rebuild layers to show new order
-
-                    // Re-highlight the moved element
-                    if (this.selectedElement) {
-                        this.highlightInLayers(this.selectedElement);
-                    }
-
-                    this.showToast('✅ Element reordered', 'success');
-                }
-            });
-
-            tree.appendChild(li);
-
-            // Add children
-            Array.from(element.children).forEach(child => {
-                buildNode(child, level + 1);
-            });
-        };
-
-        if (doc.body) {
-            buildNode(doc.body);
-        }
-    }
-
-    generateElementId(element) {
-        if (!element._yenzeId) {
-            element._yenzeId = 'el_' + Math.random().toString(36).substr(2, 9);
-        }
-        return element._yenzeId;
-    }
-
-    addElement(type) {
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-        const newElement = iframeDoc.createElement(type);
-        newElement.textContent = `New ${type}`;
-        newElement.style.padding = '1rem';
-        newElement.style.margin = '0.5rem 0';
-        newElement.style.background = '#f0f0f0';
-        newElement.style.borderRadius = '4px';
-        newElement.style.minHeight = '50px'; // Ensure it's visible and can receive drops
-        newElement.style.border = '1px dashed #ccc'; // Visual indicator that it's empty
-
-        // Insert based on selected element
-        if (this.selectedElement) {
-            // If selected element is a container, add inside it
-            if (this.isContainer(this.selectedElement)) {
-                this.selectedElement.appendChild(newElement);
-            } else {
-                // Otherwise, add after the selected element (as sibling)
-                const parent = this.selectedElement.parentNode;
-                if (parent) {
-                    parent.insertBefore(newElement, this.selectedElement.nextSibling);
-                } else {
-                    iframeDoc.body.appendChild(newElement);
-                }
+                this.showToast('✅ Element reordered', 'success');
             }
-        } else {
-            // No selection, add to body
-            iframeDoc.body.appendChild(newElement);
-        }
-
-        // Make the new element editable
-        this.makeElementEditable(newElement, iframeDoc);
-
-        this.updateHTML(`Add ${type}`);
-        this.buildLayersTree(iframeDoc); // Rebuild layers to show new element
-
-        // Select the new element
-        this.selectElement(newElement);
-
-        this.showToast(`✅ ${type} added`, 'success');
-    }
-
-    addColumns() {
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-        const row = iframeDoc.createElement('div');
-        row.style.display = 'flex';
-        row.style.gap = '1rem';
-        row.style.margin = '1rem 0';
-        row.style.minHeight = '100px'; // Ensure visible
-
-        const col1 = iframeDoc.createElement('div');
-        col1.style.flex = '1';
-        col1.style.padding = '1rem';
-        col1.style.minHeight = '80px'; // Ensure can receive drops
-        col1.style.border = '1px dashed #ccc';
-        // No text content - empty column
-        // No background - inherits from parent
-
-        const col2 = iframeDoc.createElement('div');
-        col2.style.flex = '1';
-        col2.style.padding = '1rem';
-        col2.style.minHeight = '80px'; // Ensure can receive drops
-        col2.style.border = '1px dashed #ccc';
-        // No text content - empty column
-        // No background - inherits from parent
-
-        row.appendChild(col1);
-        row.appendChild(col2);
-
-        // Insert based on selected element
-        if (this.selectedElement) {
-            // If selected element is a container, add inside it
-            if (this.isContainer(this.selectedElement)) {
-                this.selectedElement.appendChild(row);
-            } else {
-                // Otherwise, add after the selected element (as sibling)
-                const parent = this.selectedElement.parentNode;
-                if (parent) {
-                    parent.insertBefore(row, this.selectedElement.nextSibling);
-                } else {
-                    iframeDoc.body.appendChild(row);
-                }
-            }
-        } else {
-            // No selection, add to body
-            iframeDoc.body.appendChild(row);
-        }
-
-        // Make the new elements editable
-        this.makeElementEditable(row, iframeDoc);
-        this.makeElementEditable(col1, iframeDoc);
-        this.makeElementEditable(col2, iframeDoc);
-
-        this.updateHTML('Add columns');
-        this.buildLayersTree(iframeDoc); // Rebuild layers to show new elements
-
-        // Select the row
-        this.selectElement(row);
-
-        this.showToast('✅ 2 columns added', 'success');
-    }
-
-    insertElementTemplate(elementType) {
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-        if (!iframeDoc || !iframeDoc.body) {
-            this.showToast('⚠️ Please import HTML first', 'error');
-            return;
-        }
-
-        let template = ELEMENT_TEMPLATES[elementType];
-        if (!template) {
-            this.showToast('⚠️ Template not found', 'error');
-            return;
-        }
-
-        // For form integrations, adapt to current page styles
-        if (elementType === 'contact-form' || elementType === 'newsletter-form') {
-            const pageStyles = this.extractPageStyles(iframeDoc);
-            template = this.adaptFormTemplate(elementType, pageStyles);
-        }
-
-        // Create a temporary container to parse the HTML
-        const tempDiv = iframeDoc.createElement('div');
-        tempDiv.innerHTML = template.trim();
-        const newElement = tempDiv.firstElementChild;
-
-        // Insert based on selected element
-        if (this.selectedElement) {
-            // If selected element is a container, add inside it
-            if (this.isContainer(this.selectedElement)) {
-                this.selectedElement.appendChild(newElement);
-            } else {
-                // Otherwise, add after the selected element (as sibling)
-                const parent = this.selectedElement.parentNode;
-                if (parent) {
-                    parent.insertBefore(newElement, this.selectedElement.nextSibling);
-                } else {
-                    iframeDoc.body.appendChild(newElement);
-                }
-            }
-        } else {
-            // No selection, add to body
-            iframeDoc.body.appendChild(newElement);
-        }
-
-        // Make the new element and its children editable
-        this.makeElementEditable(newElement, iframeDoc);
-
-        // Make all descendant elements editable too
-        newElement.querySelectorAll('*').forEach(child => {
-            this.makeElementEditable(child, iframeDoc);
         });
 
-        this.updateHTML(`Add ${elementType}`);
-        this.buildLayersTree(iframeDoc);
+        tree.appendChild(li);
 
-        // Select the new element
-        this.selectElement(newElement);
-
-        // Switch to Layers tab to show the new element
-        this.switchTab('layers', 'left');
-
-        const elementNames = {
-            'contact-form': 'Contact Form',
-            'newsletter-form': 'Newsletter Form',
-            'mailchimp-form': 'Mailchimp Newsletter',
-            'convertkit-form': 'ConvertKit Newsletter',
-            'navbar': 'Navigation Bar',
-            'footer': 'Footer',
-            'hero': 'Hero Section',
-            'card': 'Card Grid',
-            'cta': 'Call to Action',
-            'two-columns': '2 Columns',
-            'three-columns': '3 Columns'
-        };
-
-        this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
-    }
-
-    insertElementTemplateAtPosition(elementType, targetElement, position) {
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-        if (!iframeDoc || !iframeDoc.body) {
-            this.showToast('⚠️ Please import HTML first', 'error');
-            return;
-        }
-
-        let template = ELEMENT_TEMPLATES[elementType];
-        if (!template) {
-            this.showToast('⚠️ Template not found', 'error');
-            return;
-        }
-
-        // For form integrations, adapt to current page styles
-        if (elementType === 'contact-form' || elementType === 'newsletter-form') {
-            const pageStyles = this.extractPageStyles(iframeDoc);
-            template = this.adaptFormTemplate(elementType, pageStyles);
-        }
-
-        // Create a temporary container to parse the HTML
-        const tempDiv = iframeDoc.createElement('div');
-        tempDiv.innerHTML = template.trim();
-        const newElement = tempDiv.firstElementChild;
-
-        // Insert at the specific position
-        if (!targetElement || targetElement === iframeDoc.body) {
-            // If no target or target is body, append to body
-            iframeDoc.body.appendChild(newElement);
-        } else {
-            const parent = targetElement.parentNode;
-            if (position === 'before') {
-                parent.insertBefore(newElement, targetElement);
-            } else {
-                // Insert after
-                parent.insertBefore(newElement, targetElement.nextSibling);
-            }
-        }
-
-        // Make the new element and its children editable
-        this.makeElementEditable(newElement, iframeDoc);
-
-        // Make all descendant elements editable too
-        newElement.querySelectorAll('*').forEach(child => {
-            this.makeElementEditable(child, iframeDoc);
+        // Add children
+        Array.from(element.children).forEach(child => {
+            buildNode(child, level + 1);
         });
+    };
 
-        this.updateHTML(`Add ${elementType}`);
-        this.buildLayersTree(iframeDoc);
+    if (doc.body) {
+        buildNode(doc.body);
+    }
+}
 
-        // Select the new element
-        this.selectElement(newElement);
+generateElementId(element) {
+    if (!element._yenzeId) {
+        element._yenzeId = 'el_' + Math.random().toString(36).substr(2, 9);
+    }
+    return element._yenzeId;
+}
 
-        // Switch to Layers tab to show the new element
-        this.switchTab('layers', 'left');
+addElement(type) {
+    const canvas = document.getElementById('canvas');
+    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
 
-        const elementNames = {
-            'contact-form': 'Contact Form',
-            'newsletter-form': 'Newsletter Form',
-            'mailchimp-form': 'Mailchimp Newsletter',
-            'convertkit-form': 'ConvertKit Newsletter',
-            'navbar': 'Navigation Bar',
-            'footer': 'Footer',
-            'hero': 'Hero Section',
-            'card': 'Card Grid',
-            'cta': 'Call to Action',
-            'two-columns': '2 Columns',
-            'three-columns': '3 Columns'
-        };
+    const newElement = iframeDoc.createElement(type);
+    newElement.textContent = `New ${type}`;
+    newElement.style.padding = '1rem';
+    newElement.style.margin = '0.5rem 0';
+    newElement.style.background = '#f0f0f0';
+    newElement.style.borderRadius = '4px';
+    newElement.style.minHeight = '50px'; // Ensure it's visible and can receive drops
+    newElement.style.border = '1px dashed #ccc'; // Visual indicator that it's empty
 
-        this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+    // Insert based on selected element
+    if (this.selectedElement) {
+        // If selected element is a container, add inside it
+        if (this.isContainer(this.selectedElement)) {
+            this.selectedElement.appendChild(newElement);
+        } else {
+            // Otherwise, add after the selected element (as sibling)
+            const parent = this.selectedElement.parentNode;
+            if (parent) {
+                parent.insertBefore(newElement, this.selectedElement.nextSibling);
+            } else {
+                iframeDoc.body.appendChild(newElement);
+            }
+        }
+    } else {
+        // No selection, add to body
+        iframeDoc.body.appendChild(newElement);
     }
 
-    extractPageStyles(iframeDoc) {
-        const styles = {
-            primaryColor: '#667eea',
-            secondaryColor: '#764ba2',
-            textColor: '#1a1a2e',
-            labelColor: '#374151',
-            backgroundColor: '#ffffff',
-            sectionBgColor: '#f9fafb',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            borderRadius: '8px',
-            inputBorderColor: '#d1d5db',
-            inputPadding: '0.75rem',
-            headingColor: '#1a1a2e',
-            headingFontWeight: '700',
-            buttonStyle: 'solid',
-            isDarkMode: false
-        };
+    // Make the new element editable
+    this.makeElementEditable(newElement, iframeDoc);
 
-        try {
-            const body = iframeDoc.body;
-            const computedBody = iframeDoc.defaultView.getComputedStyle(body);
+    this.updateHTML(`Add ${type}`);
+    this.buildLayersTree(iframeDoc); // Rebuild layers to show new element
 
-            // Get font family
-            styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
+    // Select the new element
+    this.selectElement(newElement);
 
-            // Get background color and detect dark mode
-            const bodyBg = computedBody.backgroundColor;
-            if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
-                styles.backgroundColor = bodyBg;
-                // Detect dark mode by checking if background is dark
-                const rgb = bodyBg.match(/\d+/g);
-                if (rgb && rgb.length >= 3) {
-                    const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
-                    styles.isDarkMode = brightness < 128;
-                }
+    this.showToast(`✅ ${type} added`, 'success');
+}
+
+addColumns() {
+    const canvas = document.getElementById('canvas');
+    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+    const row = iframeDoc.createElement('div');
+    row.style.display = 'flex';
+    row.style.gap = '1rem';
+    row.style.margin = '1rem 0';
+    row.style.minHeight = '100px'; // Ensure visible
+
+    const col1 = iframeDoc.createElement('div');
+    col1.style.flex = '1';
+    col1.style.padding = '1rem';
+    col1.style.minHeight = '80px'; // Ensure can receive drops
+    col1.style.border = '1px dashed #ccc';
+    // No text content - empty column
+    // No background - inherits from parent
+
+    const col2 = iframeDoc.createElement('div');
+    col2.style.flex = '1';
+    col2.style.padding = '1rem';
+    col2.style.minHeight = '80px'; // Ensure can receive drops
+    col2.style.border = '1px dashed #ccc';
+    // No text content - empty column
+    // No background - inherits from parent
+
+    row.appendChild(col1);
+    row.appendChild(col2);
+
+    // Insert based on selected element
+    if (this.selectedElement) {
+        // If selected element is a container, add inside it
+        if (this.isContainer(this.selectedElement)) {
+            this.selectedElement.appendChild(row);
+        } else {
+            // Otherwise, add after the selected element (as sibling)
+            const parent = this.selectedElement.parentNode;
+            if (parent) {
+                parent.insertBefore(row, this.selectedElement.nextSibling);
+            } else {
+                iframeDoc.body.appendChild(row);
             }
+        }
+    } else {
+        // No selection, add to body
+        iframeDoc.body.appendChild(row);
+    }
 
-            // Find primary color from buttons, links, or accent elements
-            const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"], a[class*="btn"]');
-            if (buttons.length > 0) {
-                for (const btn of buttons) {
-                    const btnStyle = iframeDoc.defaultView.getComputedStyle(btn);
-                    const bgColor = btnStyle.backgroundColor;
-                    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent' && bgColor !== 'rgb(255, 255, 255)') {
-                        styles.primaryColor = bgColor;
-                        styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
-                        break;
-                    }
-                }
+    // Make the new elements editable
+    this.makeElementEditable(row, iframeDoc);
+    this.makeElementEditable(col1, iframeDoc);
+    this.makeElementEditable(col2, iframeDoc);
+
+    this.updateHTML('Add columns');
+    this.buildLayersTree(iframeDoc); // Rebuild layers to show new elements
+
+    // Select the row
+    this.selectElement(row);
+
+    this.showToast('✅ 2 columns added', 'success');
+}
+
+insertElementTemplate(elementType) {
+    const canvas = document.getElementById('canvas');
+    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+    if (!iframeDoc || !iframeDoc.body) {
+        this.showToast('⚠️ Please import HTML first', 'error');
+        return;
+    }
+
+    let template = ELEMENT_TEMPLATES[elementType];
+    if (!template) {
+        this.showToast('⚠️ Template not found', 'error');
+        return;
+    }
+
+    // For form integrations, adapt to current page styles
+    if (elementType === 'contact-form' || elementType === 'newsletter-form') {
+        const pageStyles = this.extractPageStyles(iframeDoc);
+        template = this.adaptFormTemplate(elementType, pageStyles);
+    }
+
+    // Create a temporary container to parse the HTML
+    const tempDiv = iframeDoc.createElement('div');
+    tempDiv.innerHTML = template.trim();
+    const newElement = tempDiv.firstElementChild;
+
+    // Insert based on selected element
+    if (this.selectedElement) {
+        // If selected element is a container, add inside it
+        if (this.isContainer(this.selectedElement)) {
+            this.selectedElement.appendChild(newElement);
+        } else {
+            // Otherwise, add after the selected element (as sibling)
+            const parent = this.selectedElement.parentNode;
+            if (parent) {
+                parent.insertBefore(newElement, this.selectedElement.nextSibling);
+            } else {
+                iframeDoc.body.appendChild(newElement);
             }
+        }
+    } else {
+        // No selection, add to body
+        iframeDoc.body.appendChild(newElement);
+    }
 
-            // Check links for accent color if no button found
-            if (styles.primaryColor === '#667eea') {
-                const links = iframeDoc.querySelectorAll('a');
-                for (const link of links) {
-                    const linkStyle = iframeDoc.defaultView.getComputedStyle(link);
-                    const color = linkStyle.color;
-                    if (color && color !== 'rgb(0, 0, 238)' && color !== 'rgb(0, 0, 0)') {
-                        styles.primaryColor = color;
-                        break;
-                    }
-                }
+    // Make the new element and its children editable
+    this.makeElementEditable(newElement, iframeDoc);
+
+    // Make all descendant elements editable too
+    newElement.querySelectorAll('*').forEach(child => {
+        this.makeElementEditable(child, iframeDoc);
+    });
+
+    this.updateHTML(`Add ${elementType}`);
+    this.buildLayersTree(iframeDoc);
+
+    // Select the new element
+    this.selectElement(newElement);
+
+    // Switch to Layers tab to show the new element
+    this.switchTab('layers', 'left');
+
+    const elementNames = {
+        'contact-form': 'Contact Form',
+        'newsletter-form': 'Newsletter Form',
+        'mailchimp-form': 'Mailchimp Newsletter',
+        'convertkit-form': 'ConvertKit Newsletter',
+        'navbar': 'Navigation Bar',
+        'footer': 'Footer',
+        'hero': 'Hero Section',
+        'card': 'Card Grid',
+        'cta': 'Call to Action',
+        'two-columns': '2 Columns',
+        'three-columns': '3 Columns'
+    };
+
+    this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+}
+
+insertElementTemplateAtPosition(elementType, targetElement, position) {
+    const canvas = document.getElementById('canvas');
+    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+    if (!iframeDoc || !iframeDoc.body) {
+        this.showToast('⚠️ Please import HTML first', 'error');
+        return;
+    }
+
+    let template = ELEMENT_TEMPLATES[elementType];
+    if (!template) {
+        this.showToast('⚠️ Template not found', 'error');
+        return;
+    }
+
+    // For form integrations, adapt to current page styles
+    if (elementType === 'contact-form' || elementType === 'newsletter-form') {
+        const pageStyles = this.extractPageStyles(iframeDoc);
+        template = this.adaptFormTemplate(elementType, pageStyles);
+    }
+
+    // Create a temporary container to parse the HTML
+    const tempDiv = iframeDoc.createElement('div');
+    tempDiv.innerHTML = template.trim();
+    const newElement = tempDiv.firstElementChild;
+
+    // Insert at the specific position
+    if (!targetElement || targetElement === iframeDoc.body) {
+        // If no target or target is body, append to body
+        iframeDoc.body.appendChild(newElement);
+    } else {
+        const parent = targetElement.parentNode;
+        if (position === 'before') {
+            parent.insertBefore(newElement, targetElement);
+        } else {
+            // Insert after
+            parent.insertBefore(newElement, targetElement.nextSibling);
+        }
+    }
+
+    // Make the new element and its children editable
+    this.makeElementEditable(newElement, iframeDoc);
+
+    // Make all descendant elements editable too
+    newElement.querySelectorAll('*').forEach(child => {
+        this.makeElementEditable(child, iframeDoc);
+    });
+
+    this.updateHTML(`Add ${elementType}`);
+    this.buildLayersTree(iframeDoc);
+
+    // Select the new element
+    this.selectElement(newElement);
+
+    // Switch to Layers tab to show the new element
+    this.switchTab('layers', 'left');
+
+    const elementNames = {
+        'contact-form': 'Contact Form',
+        'newsletter-form': 'Newsletter Form',
+        'mailchimp-form': 'Mailchimp Newsletter',
+        'convertkit-form': 'ConvertKit Newsletter',
+        'navbar': 'Navigation Bar',
+        'footer': 'Footer',
+        'hero': 'Hero Section',
+        'card': 'Card Grid',
+        'cta': 'Call to Action',
+        'two-columns': '2 Columns',
+        'three-columns': '3 Columns'
+    };
+
+    this.showToast(`✅ ${elementNames[elementType] || elementType} added`, 'success');
+}
+
+extractPageStyles(iframeDoc) {
+    const styles = {
+        primaryColor: '#667eea',
+        secondaryColor: '#764ba2',
+        textColor: '#1a1a2e',
+        labelColor: '#374151',
+        backgroundColor: '#ffffff',
+        sectionBgColor: '#f9fafb',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        borderRadius: '8px',
+        inputBorderColor: '#d1d5db',
+        inputPadding: '0.75rem',
+        headingColor: '#1a1a2e',
+        headingFontWeight: '700',
+        buttonStyle: 'solid',
+        isDarkMode: false
+    };
+
+    try {
+        const body = iframeDoc.body;
+        const computedBody = iframeDoc.defaultView.getComputedStyle(body);
+
+        // Get font family
+        styles.fontFamily = computedBody.fontFamily || styles.fontFamily;
+
+        // Get background color and detect dark mode
+        const bodyBg = computedBody.backgroundColor;
+        if (bodyBg && bodyBg !== 'rgba(0, 0, 0, 0)' && bodyBg !== 'transparent') {
+            styles.backgroundColor = bodyBg;
+            // Detect dark mode by checking if background is dark
+            const rgb = bodyBg.match(/\d+/g);
+            if (rgb && rgb.length >= 3) {
+                const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+                styles.isDarkMode = brightness < 128;
             }
-
-            // Check for existing forms to match their style
-            const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
-            if (existingInputs.length > 0) {
-                const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
-                if (inputStyle.borderRadius && inputStyle.borderRadius !== '0px') {
-                    styles.borderRadius = inputStyle.borderRadius;
-                }
-                if (inputStyle.borderColor) {
-                    styles.inputBorderColor = inputStyle.borderColor;
-                }
-                if (inputStyle.padding) {
-                    styles.inputPadding = inputStyle.padding;
-                }
-            }
-
-            // Get text color from paragraphs or body
-            const paragraphs = iframeDoc.querySelectorAll('p');
-            if (paragraphs.length > 0) {
-                const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
-                if (pStyle.color) {
-                    styles.textColor = pStyle.color;
-                }
-            }
-
-            // Get heading styles
-            const headings = iframeDoc.querySelectorAll('h1, h2, h3');
-            if (headings.length > 0) {
-                const hStyle = iframeDoc.defaultView.getComputedStyle(headings[0]);
-                if (hStyle.color) {
-                    styles.headingColor = hStyle.color;
-                }
-                if (hStyle.fontWeight) {
-                    styles.headingFontWeight = hStyle.fontWeight;
-                }
-            }
-
-            // Get label styles
-            const labels = iframeDoc.querySelectorAll('label');
-            if (labels.length > 0) {
-                const labelStyle = iframeDoc.defaultView.getComputedStyle(labels[0]);
-                if (labelStyle.color) {
-                    styles.labelColor = labelStyle.color;
-                }
-            }
-
-            // Check sections for background
-            const sections = iframeDoc.querySelectorAll('section, .section, [class*="section"]');
-            if (sections.length > 0) {
-                const secStyle = iframeDoc.defaultView.getComputedStyle(sections[0]);
-                if (secStyle.backgroundColor && secStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
-                    styles.sectionBgColor = secStyle.backgroundColor;
-                }
-            }
-
-            // Adjust colors for dark mode
-            if (styles.isDarkMode) {
-                styles.labelColor = styles.textColor;
-                styles.inputBorderColor = 'rgba(255,255,255,0.2)';
-            }
-
-        } catch (error) {
-            console.log('Could not extract all page styles, using defaults');
         }
 
-        return styles;
+        // Find primary color from buttons, links, or accent elements
+        const buttons = iframeDoc.querySelectorAll('button, .btn, [class*="button"], a[class*="btn"]');
+        if (buttons.length > 0) {
+            for (const btn of buttons) {
+                const btnStyle = iframeDoc.defaultView.getComputedStyle(btn);
+                const bgColor = btnStyle.backgroundColor;
+                if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent' && bgColor !== 'rgb(255, 255, 255)') {
+                    styles.primaryColor = bgColor;
+                    styles.borderRadius = btnStyle.borderRadius || styles.borderRadius;
+                    break;
+                }
+            }
+        }
+
+        // Check links for accent color if no button found
+        if (styles.primaryColor === '#667eea') {
+            const links = iframeDoc.querySelectorAll('a');
+            for (const link of links) {
+                const linkStyle = iframeDoc.defaultView.getComputedStyle(link);
+                const color = linkStyle.color;
+                if (color && color !== 'rgb(0, 0, 238)' && color !== 'rgb(0, 0, 0)') {
+                    styles.primaryColor = color;
+                    break;
+                }
+            }
+        }
+
+        // Check for existing forms to match their style
+        const existingInputs = iframeDoc.querySelectorAll('input[type="text"], input[type="email"], textarea');
+        if (existingInputs.length > 0) {
+            const inputStyle = iframeDoc.defaultView.getComputedStyle(existingInputs[0]);
+            if (inputStyle.borderRadius && inputStyle.borderRadius !== '0px') {
+                styles.borderRadius = inputStyle.borderRadius;
+            }
+            if (inputStyle.borderColor) {
+                styles.inputBorderColor = inputStyle.borderColor;
+            }
+            if (inputStyle.padding) {
+                styles.inputPadding = inputStyle.padding;
+            }
+        }
+
+        // Get text color from paragraphs or body
+        const paragraphs = iframeDoc.querySelectorAll('p');
+        if (paragraphs.length > 0) {
+            const pStyle = iframeDoc.defaultView.getComputedStyle(paragraphs[0]);
+            if (pStyle.color) {
+                styles.textColor = pStyle.color;
+            }
+        }
+
+        // Get heading styles
+        const headings = iframeDoc.querySelectorAll('h1, h2, h3');
+        if (headings.length > 0) {
+            const hStyle = iframeDoc.defaultView.getComputedStyle(headings[0]);
+            if (hStyle.color) {
+                styles.headingColor = hStyle.color;
+            }
+            if (hStyle.fontWeight) {
+                styles.headingFontWeight = hStyle.fontWeight;
+            }
+        }
+
+        // Get label styles
+        const labels = iframeDoc.querySelectorAll('label');
+        if (labels.length > 0) {
+            const labelStyle = iframeDoc.defaultView.getComputedStyle(labels[0]);
+            if (labelStyle.color) {
+                styles.labelColor = labelStyle.color;
+            }
+        }
+
+        // Check sections for background
+        const sections = iframeDoc.querySelectorAll('section, .section, [class*="section"]');
+        if (sections.length > 0) {
+            const secStyle = iframeDoc.defaultView.getComputedStyle(sections[0]);
+            if (secStyle.backgroundColor && secStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                styles.sectionBgColor = secStyle.backgroundColor;
+            }
+        }
+
+        // Adjust colors for dark mode
+        if (styles.isDarkMode) {
+            styles.labelColor = styles.textColor;
+            styles.inputBorderColor = 'rgba(255,255,255,0.2)';
+        }
+
+    } catch (error) {
+        console.log('Could not extract all page styles, using defaults');
     }
 
-    getAdaptedWeb3FormTemplate(templateType, styles) {
-        const {
-            primaryColor,
-            textColor,
-            labelColor,
-            fontFamily,
-            borderRadius,
-            inputBorderColor,
-            isDarkMode
-        } = styles;
+    return styles;
+}
 
-        // Use transparent/inherit backgrounds to blend with the site's design
-        const inputBg = isDarkMode ? 'rgba(255,255,255,0.1)' : 'white';
+getAdaptedWeb3FormTemplate(templateType, styles) {
+    const {
+        primaryColor,
+        textColor,
+        labelColor,
+        fontFamily,
+        borderRadius,
+        inputBorderColor,
+        isDarkMode
+    } = styles;
 
-        // All templates now use minimal styling - just the form elements without decorative containers
-        const templates = {
-            basic: `
+    // Use transparent/inherit backgrounds to blend with the site's design
+    const inputBg = isDarkMode ? 'rgba(255,255,255,0.1)' : 'white';
+
+    // All templates now use minimal styling - just the form elements without decorative containers
+    const templates = {
+        basic: `
 <form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2521,7 +2579,7 @@ class YenzeBuilder {
     <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
 </form>`,
 
-            tailwind: `
+        tailwind: `
 <form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2546,7 +2604,7 @@ class YenzeBuilder {
     <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
 </form>`,
 
-            ajax: `
+        ajax: `
 <form action="https://api.web3forms.com/submit" method="POST" id="ajaxContactForm" style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2605,7 +2663,7 @@ if (ajaxForm) {
 }
 </script>`,
 
-            multicolumn: `
+        multicolumn: `
 <form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2640,7 +2698,7 @@ if (ajaxForm) {
     <button type="submit" style="width: 100%; padding: 0.85rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: ${borderRadius}; font-size: 1rem; font-weight: 600; font-family: inherit; cursor: pointer;">Send Message</button>
 </form>`,
 
-            validation: `
+        validation: `
 <form action="https://api.web3forms.com/submit" method="POST" id="validationForm" novalidate style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2728,7 +2786,7 @@ if (validationForm) {
 }
 </script>`,
 
-            raw: `
+        raw: `
 <form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
@@ -2749,16 +2807,16 @@ if (validationForm) {
     </div>
     <button type="submit" style="padding: 0.75rem 1.5rem; background: ${primaryColor}; color: white; border: none; border-radius: 4px; font-family: inherit; cursor: pointer;">Submit Form</button>
 </form>`
-        };
+    };
 
-        return templates[templateType] || null;
-    }
+    return templates[templateType] || null;
+}
 
-    adaptFormTemplate(elementType, pageStyles) {
-        const { primaryColor, textColor, backgroundColor, fontFamily, borderRadius } = pageStyles;
+adaptFormTemplate(elementType, pageStyles) {
+    const { primaryColor, textColor, backgroundColor, fontFamily, borderRadius } = pageStyles;
 
-        if (elementType === 'contact-form') {
-            return `
+    if (elementType === 'contact-form') {
+        return `
         <div class="yenze-form-wrapper" style="font-family: inherit;">
             <div class="yenze-form-container">
                 <h2 class="yenze-form-heading">Get in Touch</h2>
@@ -2827,8 +2885,8 @@ if (validationForm) {
             </style>
         </div>
             `;
-        } else if (elementType === 'newsletter-form') {
-            return `
+    } else if (elementType === 'newsletter-form') {
+        return `
         <div class="yenze-newsletter-wrapper" style="font-family: inherit; text-align: inherit;">
             <div class="yenze-newsletter-container">
                 <h3 class="yenze-newsletter-heading">Subscribe to our Newsletter</h3>
@@ -2917,927 +2975,927 @@ if (validationForm) {
             </style>
         </div>
             `;
-        }
-
-        return ELEMENT_TEMPLATES[elementType];
     }
 
-    filterElements(searchTerm) {
-        const term = searchTerm.toLowerCase().trim();
-        const categories = document.querySelectorAll('.element-category');
+    return ELEMENT_TEMPLATES[elementType];
+}
 
-        categories.forEach(category => {
-            const cards = category.querySelectorAll('.element-card');
-            let visibleCards = 0;
+filterElements(searchTerm) {
+    const term = searchTerm.toLowerCase().trim();
+    const categories = document.querySelectorAll('.element-category');
 
-            cards.forEach(card => {
-                const elementName = card.querySelector('.element-name').textContent.toLowerCase();
-                const elementType = card.dataset.element.toLowerCase();
+    categories.forEach(category => {
+        const cards = category.querySelectorAll('.element-card');
+        let visibleCards = 0;
 
-                if (elementName.includes(term) || elementType.includes(term)) {
-                    card.style.display = 'flex';
-                    visibleCards++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+        cards.forEach(card => {
+            const elementName = card.querySelector('.element-name').textContent.toLowerCase();
+            const elementType = card.dataset.element.toLowerCase();
 
-            // Hide category if no visible cards
-            if (visibleCards === 0 && term !== '') {
-                category.style.display = 'none';
+            if (elementName.includes(term) || elementType.includes(term)) {
+                card.style.display = 'flex';
+                visibleCards++;
             } else {
-                category.style.display = 'flex';
+                card.style.display = 'none';
             }
         });
-    }
 
-    getElementIcon(tagName) {
-        const icons = {
-            'body': '□',
-            'html': '□',
-            'head': '⊙',
-            'header': '▭',
-            'nav': '≡',
-            'section': '▢',
-            'article': '▢',
-            'div': '▪',
-            'span': '▸',
-            'p': '¶',
-            'h1': 'H1',
-            'h2': 'H2',
-            'h3': 'H3',
-            'h4': 'H4',
-            'h5': 'H5',
-            'h6': 'H6',
-            'button': '▭',
-            'a': '⎋',
-            'img': '▨',
-            'svg': '◊',
-            'footer': '▭',
-            'ul': '≡',
-            'ol': '≡',
-            'li': '·',
-            'form': '▢',
-            'input': '▭',
-            'textarea': '▭',
-            'select': '▭',
-            'table': '▦',
-            'tr': '─',
-            'td': '□',
-            'th': '■',
-        };
-        return icons[tagName] || '○';
-    }
-
-    toggleCodeEditor() {
-        const editor = document.getElementById('codeEditor');
-        const isActive = editor.classList.contains('active');
-
-        if (isActive) {
-            editor.classList.remove('active');
+        // Hide category if no visible cards
+        if (visibleCards === 0 && term !== '') {
+            category.style.display = 'none';
         } else {
-            document.getElementById('codeContent').value = this.currentHTML;
-            editor.classList.add('active');
+            category.style.display = 'flex';
         }
-    }
+    });
+}
 
-    preview() {
-        // Open in new window
-        const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
-        previewWindow.document.write(this.currentHTML);
-        previewWindow.document.close();
+getElementIcon(tagName) {
+    const icons = {
+        'body': '□',
+        'html': '□',
+        'head': '⊙',
+        'header': '▭',
+        'nav': '≡',
+        'section': '▢',
+        'article': '▢',
+        'div': '▪',
+        'span': '▸',
+        'p': '¶',
+        'h1': 'H1',
+        'h2': 'H2',
+        'h3': 'H3',
+        'h4': 'H4',
+        'h5': 'H5',
+        'h6': 'H6',
+        'button': '▭',
+        'a': '⎋',
+        'img': '▨',
+        'svg': '◊',
+        'footer': '▭',
+        'ul': '≡',
+        'ol': '≡',
+        'li': '·',
+        'form': '▢',
+        'input': '▭',
+        'textarea': '▭',
+        'select': '▭',
+        'table': '▦',
+        'tr': '─',
+        'td': '□',
+        'th': '■',
+    };
+    return icons[tagName] || '○';
+}
 
-        this.showToast('👁️ Preview opened in new window', 'success');
+toggleCodeEditor() {
+    const editor = document.getElementById('codeEditor');
+    const isActive = editor.classList.contains('active');
+
+    if (isActive) {
+        editor.classList.remove('active');
+    } else {
+        document.getElementById('codeContent').value = this.currentHTML;
+        editor.classList.add('active');
     }
+}
+
+preview() {
+    // Open in new window
+    const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
+    previewWindow.document.write(this.currentHTML);
+    previewWindow.document.close();
+
+    this.showToast('👁️ Preview opened in new window', 'success');
+}
 
     async publish() {
-        if (!this.currentHTML) {
-            this.showToast('⚠️ No content to publish', 'error');
-            return;
-        }
-
-        // Check if user is authenticated (with session refresh)
-        const isAuth = await this.checkAuthentication();
-        if (!isAuth) {
-            // Set flag so we know to show pricing modal after login
-            this.pendingPublish = true;
-            // Show auth modal first
-            authUI.showAuthModal('login');
-            this.showToast('Please log in to publish your website', 'info');
-            return;
-        }
-
-        // If project already has an ID, it's been published before - just update it
-        if (this.projectData.id) {
-            await this.updateExistingProject();
-        } else {
-            // New project - check user's plan and show appropriate modal
-            const { data: subscription, error: subError } = await supabaseClient.client
-                .from('subscriptions')
-                .select('plan, status')
-                .eq('user_id', supabaseClient.currentUser.id)
-                .eq('status', 'active')
-                .single();
-
-            console.log('[Publish] Subscription query result:', {
-                subscription,
-                error: subError,
-                userId: supabaseClient.currentUser.id,
-                userEmail: supabaseClient.currentUser.email
-            });
-
-            // Determine current plan
-            let currentPlan = 'free';
-            if (subscription?.plan) {
-                currentPlan = subscription.plan.toLowerCase();
-            } else if (subError) {
-                console.warn('[Publish] Could not fetch subscription:', subError.message);
-                // Check if there's a cached plan in localStorage
-                const cachedPlan = localStorage.getItem('yenze_user_plan');
-                if (cachedPlan) {
-                    console.log('[Publish] Using cached plan:', cachedPlan);
-                    currentPlan = cachedPlan.toLowerCase();
-                }
-            }
-
-            this.currentUserPlan = currentPlan;
-
-            // Cache the plan for future use
-            localStorage.setItem('yenze_user_plan', currentPlan);
-
-            console.log('[Publish] Final user plan:', currentPlan);
-
-            // Show appropriate modal based on current plan
-            if (currentPlan === 'free') {
-                // FREE: Show path-based slug modal
-                this.showSlugModal();
-            } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
-                // PAID: Show subdomain modal
-                this.showSubdomainModal();
-            } else {
-                // Unknown plan or no subscription - show pricing options
-                console.warn('[Publish] Unknown plan, showing pricing options');
-                this.showPublishOptionsModal();
-            }
-        }
+    if (!this.currentHTML) {
+        this.showToast('⚠️ No content to publish', 'error');
+        return;
     }
 
-    async checkAuthentication() {
-        try {
-            // First, ensure Supabase is fully initialized
-            await supabaseClient.init();
-
-            // Check if we have a cached user
-            if (supabaseClient.isAuthenticated()) {
-                return true;
-            }
-
-            // If not, try to refresh the session
-            const { data: { session } } = await supabaseClient.client.auth.getSession();
-            if (session && session.user) {
-                supabaseClient.currentUser = session.user;
-                console.log('Session refreshed for user:', session.user.email);
-                return true;
-            }
-        } catch (error) {
-            console.error('Error checking authentication:', error);
-        }
-
-        return false;
+    // Check if user is authenticated (with session refresh)
+    const isAuth = await this.checkAuthentication();
+    if (!isAuth) {
+        // Set flag so we know to show pricing modal after login
+        this.pendingPublish = true;
+        // Show auth modal first
+        authUI.showAuthModal('login');
+        this.showToast('Please log in to publish your website', 'info');
+        return;
     }
 
-    showPublishOptionsModal() {
-        const modal = document.getElementById('publishOptionsModal');
-        if (!modal) {
-            console.error('Publish options modal not found');
-            return;
-        }
-
-        // Generate subdomain preview
-        const subdomainSlug = this.generateSubdomainSlug(this.projectData.name);
-        const subdomainPreview = document.getElementById('subdomainPreview');
-        if (subdomainPreview) {
-            subdomainPreview.textContent = `${subdomainSlug}.yenze.io`;
-        }
-
-        modal.style.display = 'flex';
-    }
-
-    closePublishOptionsModal() {
-        const modal = document.getElementById('publishOptionsModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Web3Forms Modal Functions
-    showWeb3FormsModal() {
-        const modal = document.getElementById('web3formsModal');
-        if (modal) {
-            modal.style.display = 'flex';
-        }
-    }
-
-    closeWeb3FormsModal() {
-        const modal = document.getElementById('web3formsModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    insertWeb3FormTemplate(templateType) {
-        // Close the modal first
-        this.closeWeb3FormsModal();
-
-        // Insert the template into the canvas
-        const canvas = document.getElementById('canvas');
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-
-        if (!iframeDoc || !iframeDoc.body) {
-            this.showToast('⚠️ Please import HTML first', 'error');
-            return;
-        }
-
-        // Extract current page styles to adapt the form
-        const pageStyles = this.extractPageStyles(iframeDoc);
-
-        // Get the appropriate template with adapted styles
-        const template = this.getAdaptedWeb3FormTemplate(templateType, pageStyles);
-
-        if (!template) {
-            this.showToast('⚠️ Template not found', 'error');
-            return;
-        }
-
-        // Create element from template
-        const tempDiv = iframeDoc.createElement('div');
-        tempDiv.innerHTML = template.trim();
-        const newElement = tempDiv.firstElementChild;
-
-        // Insert the element
-        if (this.selectedElement && this.isContainer(this.selectedElement)) {
-            this.selectedElement.appendChild(newElement);
-        } else {
-            iframeDoc.body.appendChild(newElement);
-        }
-
-        // Make editable
-        this.makeElementEditable(newElement, iframeDoc);
-        newElement.querySelectorAll('*').forEach(child => {
-            this.makeElementEditable(child, iframeDoc);
-        });
-
-        this.updateHTML('Add Web3Forms Contact Form');
-        this.buildLayersTree(iframeDoc);
-        this.selectElement(newElement);
-        this.switchTab('layers', 'left');
-
-        this.showToast('✅ Web3Forms contact form added', 'success');
-    }
-
-    // Legacy function kept for backwards compatibility - now uses getAdaptedWeb3FormTemplate
-    getWeb3FormsTemplates() {
-        // Extract styles from current page if available
-        const canvas = document.getElementById('canvas');
-        if (canvas) {
-            const iframeDoc = canvas.contentDocument || canvas.contentWindow?.document;
-            if (iframeDoc && iframeDoc.body) {
-                const styles = this.extractPageStyles(iframeDoc);
-                return {
-                    basic: this.getAdaptedWeb3FormTemplate('basic', styles),
-                    tailwind: this.getAdaptedWeb3FormTemplate('tailwind', styles),
-                    ajax: this.getAdaptedWeb3FormTemplate('ajax', styles),
-                    multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', styles),
-                    validation: this.getAdaptedWeb3FormTemplate('validation', styles),
-                    raw: this.getAdaptedWeb3FormTemplate('raw', styles)
-                };
-            }
-        }
-        // Fallback to default styles
-        const defaultStyles = this.extractPageStyles({ body: document.body, defaultView: window, querySelectorAll: () => [] });
-        return {
-            basic: this.getAdaptedWeb3FormTemplate('basic', defaultStyles),
-            tailwind: this.getAdaptedWeb3FormTemplate('tailwind', defaultStyles),
-            ajax: this.getAdaptedWeb3FormTemplate('ajax', defaultStyles),
-            multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', defaultStyles),
-            validation: this.getAdaptedWeb3FormTemplate('validation', defaultStyles),
-            raw: this.getAdaptedWeb3FormTemplate('raw', defaultStyles)
-        };
-    }
-
-    async selectPlanAndPublish(selectedPlan) {
-        // Get user's current subscription
-        const { data: subscription } = await supabaseClient.client
+    // If project already has an ID, it's been published before - just update it
+    if (this.projectData.id) {
+        await this.updateExistingProject();
+    } else {
+        // New project - check user's plan and show appropriate modal
+        const { data: subscription, error: subError } = await supabaseClient.client
             .from('subscriptions')
-            .select('plan')
+            .select('plan, status')
             .eq('user_id', supabaseClient.currentUser.id)
             .eq('status', 'active')
             .single();
 
-        const currentPlan = subscription?.plan || 'free';
+        console.log('[Publish] Subscription query result:', {
+            subscription,
+            error: subError,
+            userId: supabaseClient.currentUser.id,
+            userEmail: supabaseClient.currentUser.email
+        });
 
-        // Close pricing modal
-        this.closePublishOptionsModal();
-
-        // If selecting FREE or user already has the selected plan, handle appropriately
-        if (selectedPlan === 'free' || selectedPlan === currentPlan) {
-            // Set current plan for modal
-            this.currentUserPlan = selectedPlan;
-
-            // Show appropriate modal based on plan
-            if (selectedPlan === 'free') {
-                // FREE plan: Show path-based slug modal (yenze.io/s/slug)
-                this.showSlugModal();
-            } else if (selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'business') {
-                // PAID plans: Show subdomain modal (slug.yenze.io)
-                this.showSubdomainModal();
+        // Determine current plan
+        let currentPlan = 'free';
+        if (subscription?.plan) {
+            currentPlan = subscription.plan.toLowerCase();
+        } else if (subError) {
+            console.warn('[Publish] Could not fetch subscription:', subError.message);
+            // Check if there's a cached plan in localStorage
+            const cachedPlan = localStorage.getItem('yenze_user_plan');
+            if (cachedPlan) {
+                console.log('[Publish] Using cached plan:', cachedPlan);
+                currentPlan = cachedPlan.toLowerCase();
             }
-        } else {
-            // User wants to upgrade - redirect to Stripe
-            await this.initializeStripeAndCheckout(selectedPlan);
         }
-    }
 
-    async initializeStripeAndCheckout(plan) {
-        console.log('[initializeStripeAndCheckout] Called with plan:', plan);
-        console.log('[initializeStripeAndCheckout] All payment links:', STRIPE_CONFIG.paymentLinks);
+        this.currentUserPlan = currentPlan;
 
-        // Show loading message
-        this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
+        // Cache the plan for future use
+        localStorage.setItem('yenze_user_plan', currentPlan);
 
-        try {
-            // Get the payment link from config
-            const planKey = plan.toLowerCase();
-            console.log('[initializeStripeAndCheckout] Looking for plan key:', planKey);
+        console.log('[Publish] Final user plan:', currentPlan);
 
-            const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
-            console.log('[initializeStripeAndCheckout] Payment link found:', paymentLink);
-
-            if (!paymentLink) {
-                console.error('[App] No payment link found for plan:', plan);
-                this.showToast('❌ Payment link not configured for this plan.', 'error');
-                return;
-            }
-
-            // Add customer email as prefill if user is authenticated
-            if (supabaseClient.isAuthenticated()) {
-                const userEmail = supabaseClient.currentUser.email;
-                const userId = supabaseClient.currentUser.id;
-                const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
-
-                console.log('[initializeStripeAndCheckout] Final redirect URL:', urlWithEmail);
-                window.location.href = urlWithEmail;
-            } else {
-                console.log('[initializeStripeAndCheckout] User not authenticated, redirecting to:', paymentLink);
-                window.location.href = paymentLink;
-            }
-        } catch (error) {
-            console.error('Failed to start checkout:', error);
-            this.showToast('❌ Failed to start checkout. Please try again.', 'error');
-        }
-    }
-
-    async publishFree() {
-        this.closePublishOptionsModal();
-        // Show subdomain selection modal for free plan
-        this.showSubdomainModal('free');
-    }
-
-    async selectPaidPlan(plan) {
-        this.closePublishOptionsModal();
-        await this.initializeStripeAndCheckout(plan);
-    }
-
-    async upgradeFromModal(plan) {
-        this.closeSubdomainModal();
-
-        console.log('[upgradeFromModal] Called with plan:', plan);
-        console.log('[upgradeFromModal] All payment links:', STRIPE_CONFIG.paymentLinks);
-
-        // Show loading message
-        this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
-
-        try {
-            // Get the payment link from config
-            const planKey = plan.toLowerCase();
-            console.log('[upgradeFromModal] Looking for plan key:', planKey);
-
-            const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
-            console.log('[upgradeFromModal] Payment link found:', paymentLink);
-
-            if (!paymentLink) {
-                console.error('[App] No payment link found for plan:', plan);
-                this.showToast('❌ Payment link not configured for this plan.', 'error');
-                return;
-            }
-
-            // Add customer email as prefill if user is authenticated
-            if (supabaseClient.isAuthenticated()) {
-                const userEmail = supabaseClient.currentUser.email;
-                const userId = supabaseClient.currentUser.id;
-                const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
-
-                console.log('[upgradeFromModal] Final redirect URL:', urlWithEmail);
-                window.location.href = urlWithEmail;
-            } else {
-                console.log('[upgradeFromModal] User not authenticated, redirecting to:', paymentLink);
-                window.location.href = paymentLink;
-            }
-        } catch (error) {
-            console.error('Failed to start checkout:', error);
-            this.showToast('❌ Failed to start checkout. Please try again.', 'error');
-        }
-    }
-
-    showPublishModal(userPlan) {
-        // Store the user's plan
-        this.currentUserPlan = userPlan;
-
-        if (userPlan === 'free') {
-            // FREE: Show slug modal for /s/slug format
+        // Show appropriate modal based on current plan
+        if (currentPlan === 'free') {
+            // FREE: Show path-based slug modal
             this.showSlugModal();
-        } else if (userPlan === 'starter' || userPlan === 'pro' || userPlan === 'business') {
-            // STARTER/PRO/BUSINESS: Show subdomain modal for slug.yenze.io
+        } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
+            // PAID: Show subdomain modal
+            this.showSubdomainModal();
+        } else {
+            // Unknown plan or no subscription - show pricing options
+            console.warn('[Publish] Unknown plan, showing pricing options');
+            this.showPublishOptionsModal();
+        }
+    }
+}
+
+    async checkAuthentication() {
+    try {
+        // First, ensure Supabase is fully initialized
+        await supabaseClient.init();
+
+        // Check if we have a cached user
+        if (supabaseClient.isAuthenticated()) {
+            return true;
+        }
+
+        // If not, try to refresh the session
+        const { data: { session } } = await supabaseClient.client.auth.getSession();
+        if (session && session.user) {
+            supabaseClient.currentUser = session.user;
+            console.log('Session refreshed for user:', session.user.email);
+            return true;
+        }
+    } catch (error) {
+        console.error('Error checking authentication:', error);
+    }
+
+    return false;
+}
+
+showPublishOptionsModal() {
+    const modal = document.getElementById('publishOptionsModal');
+    if (!modal) {
+        console.error('Publish options modal not found');
+        return;
+    }
+
+    // Generate subdomain preview
+    const subdomainSlug = this.generateSubdomainSlug(this.projectData.name);
+    const subdomainPreview = document.getElementById('subdomainPreview');
+    if (subdomainPreview) {
+        subdomainPreview.textContent = `${subdomainSlug}.yenze.io`;
+    }
+
+    modal.style.display = 'flex';
+}
+
+closePublishOptionsModal() {
+    const modal = document.getElementById('publishOptionsModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Web3Forms Modal Functions
+showWeb3FormsModal() {
+    const modal = document.getElementById('web3formsModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+closeWeb3FormsModal() {
+    const modal = document.getElementById('web3formsModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+insertWeb3FormTemplate(templateType) {
+    // Close the modal first
+    this.closeWeb3FormsModal();
+
+    // Insert the template into the canvas
+    const canvas = document.getElementById('canvas');
+    const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+    if (!iframeDoc || !iframeDoc.body) {
+        this.showToast('⚠️ Please import HTML first', 'error');
+        return;
+    }
+
+    // Extract current page styles to adapt the form
+    const pageStyles = this.extractPageStyles(iframeDoc);
+
+    // Get the appropriate template with adapted styles
+    const template = this.getAdaptedWeb3FormTemplate(templateType, pageStyles);
+
+    if (!template) {
+        this.showToast('⚠️ Template not found', 'error');
+        return;
+    }
+
+    // Create element from template
+    const tempDiv = iframeDoc.createElement('div');
+    tempDiv.innerHTML = template.trim();
+    const newElement = tempDiv.firstElementChild;
+
+    // Insert the element
+    if (this.selectedElement && this.isContainer(this.selectedElement)) {
+        this.selectedElement.appendChild(newElement);
+    } else {
+        iframeDoc.body.appendChild(newElement);
+    }
+
+    // Make editable
+    this.makeElementEditable(newElement, iframeDoc);
+    newElement.querySelectorAll('*').forEach(child => {
+        this.makeElementEditable(child, iframeDoc);
+    });
+
+    this.updateHTML('Add Web3Forms Contact Form');
+    this.buildLayersTree(iframeDoc);
+    this.selectElement(newElement);
+    this.switchTab('layers', 'left');
+
+    this.showToast('✅ Web3Forms contact form added', 'success');
+}
+
+// Legacy function kept for backwards compatibility - now uses getAdaptedWeb3FormTemplate
+getWeb3FormsTemplates() {
+    // Extract styles from current page if available
+    const canvas = document.getElementById('canvas');
+    if (canvas) {
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow?.document;
+        if (iframeDoc && iframeDoc.body) {
+            const styles = this.extractPageStyles(iframeDoc);
+            return {
+                basic: this.getAdaptedWeb3FormTemplate('basic', styles),
+                tailwind: this.getAdaptedWeb3FormTemplate('tailwind', styles),
+                ajax: this.getAdaptedWeb3FormTemplate('ajax', styles),
+                multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', styles),
+                validation: this.getAdaptedWeb3FormTemplate('validation', styles),
+                raw: this.getAdaptedWeb3FormTemplate('raw', styles)
+            };
+        }
+    }
+    // Fallback to default styles
+    const defaultStyles = this.extractPageStyles({ body: document.body, defaultView: window, querySelectorAll: () => [] });
+    return {
+        basic: this.getAdaptedWeb3FormTemplate('basic', defaultStyles),
+        tailwind: this.getAdaptedWeb3FormTemplate('tailwind', defaultStyles),
+        ajax: this.getAdaptedWeb3FormTemplate('ajax', defaultStyles),
+        multicolumn: this.getAdaptedWeb3FormTemplate('multicolumn', defaultStyles),
+        validation: this.getAdaptedWeb3FormTemplate('validation', defaultStyles),
+        raw: this.getAdaptedWeb3FormTemplate('raw', defaultStyles)
+    };
+}
+
+    async selectPlanAndPublish(selectedPlan) {
+    // Get user's current subscription
+    const { data: subscription } = await supabaseClient.client
+        .from('subscriptions')
+        .select('plan')
+        .eq('user_id', supabaseClient.currentUser.id)
+        .eq('status', 'active')
+        .single();
+
+    const currentPlan = subscription?.plan || 'free';
+
+    // Close pricing modal
+    this.closePublishOptionsModal();
+
+    // If selecting FREE or user already has the selected plan, handle appropriately
+    if (selectedPlan === 'free' || selectedPlan === currentPlan) {
+        // Set current plan for modal
+        this.currentUserPlan = selectedPlan;
+
+        // Show appropriate modal based on plan
+        if (selectedPlan === 'free') {
+            // FREE plan: Show path-based slug modal (yenze.io/s/slug)
+            this.showSlugModal();
+        } else if (selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'business') {
+            // PAID plans: Show subdomain modal (slug.yenze.io)
             this.showSubdomainModal();
         }
+    } else {
+        // User wants to upgrade - redirect to Stripe
+        await this.initializeStripeAndCheckout(selectedPlan);
     }
+}
 
-    showSlugModal() {
-        const modal = document.getElementById('subdomainModal');
-        if (!modal) {
-            console.error('Subdomain modal not found');
+    async initializeStripeAndCheckout(plan) {
+    console.log('[initializeStripeAndCheckout] Called with plan:', plan);
+    console.log('[initializeStripeAndCheckout] All payment links:', STRIPE_CONFIG.paymentLinks);
+
+    // Show loading message
+    this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
+
+    try {
+        // Get the payment link from config
+        const planKey = plan.toLowerCase();
+        console.log('[initializeStripeAndCheckout] Looking for plan key:', planKey);
+
+        const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
+        console.log('[initializeStripeAndCheckout] Payment link found:', paymentLink);
+
+        if (!paymentLink) {
+            console.error('[App] No payment link found for plan:', plan);
+            this.showToast('❌ Payment link not configured for this plan.', 'error');
             return;
         }
 
-        // Update modal UI for FREE plan (yenze.io/s/slug)
-        const modalHeader = modal.querySelector('.subdomain-modal-header h2');
-        const modalDesc = modal.querySelector('.subdomain-modal-header p');
-        const suffix = modal.querySelector('.subdomain-suffix');
-        const upgradeSection = modal.querySelector('.subdomain-upgrade-section');
-        const inputLabel = modal.querySelector('.subdomain-input-group label');
+        // Add customer email as prefill if user is authenticated
+        if (supabaseClient.isAuthenticated()) {
+            const userEmail = supabaseClient.currentUser.email;
+            const userId = supabaseClient.currentUser.id;
+            const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
 
-        if (modalHeader) modalHeader.textContent = '🆓 Choose Your Site Name';
-        if (modalDesc) modalDesc.textContent = 'Your site will be available at yenze.io/s/your-name';
-        if (suffix) suffix.style.display = 'none'; // Hide suffix for FREE
-        if (upgradeSection) upgradeSection.style.display = 'block'; // Show upgrade options
-        if (inputLabel) inputLabel.textContent = 'Your Site Name';
-
-        // Generate default slug from project name
-        const defaultSlug = this.generateSubdomainSlug(this.projectData.name);
-        const subdomainInput = document.getElementById('subdomainInput');
-        if (subdomainInput) {
-            subdomainInput.value = defaultSlug;
-            // Update preview for FREE plan
-            this.updateSlugPreview();
+            console.log('[initializeStripeAndCheckout] Final redirect URL:', urlWithEmail);
+            window.location.href = urlWithEmail;
+        } else {
+            console.log('[initializeStripeAndCheckout] User not authenticated, redirecting to:', paymentLink);
+            window.location.href = paymentLink;
         }
-
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            subdomainInput?.focus();
-            subdomainInput?.select();
-        }, 100);
+    } catch (error) {
+        console.error('Failed to start checkout:', error);
+        this.showToast('❌ Failed to start checkout. Please try again.', 'error');
     }
+}
 
-    showSubdomainModal() {
-        const modal = document.getElementById('subdomainModal');
-        if (!modal) {
-            console.error('Subdomain modal not found');
+    async publishFree() {
+    this.closePublishOptionsModal();
+    // Show subdomain selection modal for free plan
+    this.showSubdomainModal('free');
+}
+
+    async selectPaidPlan(plan) {
+    this.closePublishOptionsModal();
+    await this.initializeStripeAndCheckout(plan);
+}
+
+    async upgradeFromModal(plan) {
+    this.closeSubdomainModal();
+
+    console.log('[upgradeFromModal] Called with plan:', plan);
+    console.log('[upgradeFromModal] All payment links:', STRIPE_CONFIG.paymentLinks);
+
+    // Show loading message
+    this.showToast(`Redirecting to checkout for ${plan.toUpperCase()} plan...`, 'info');
+
+    try {
+        // Get the payment link from config
+        const planKey = plan.toLowerCase();
+        console.log('[upgradeFromModal] Looking for plan key:', planKey);
+
+        const paymentLink = STRIPE_CONFIG.paymentLinks[planKey];
+        console.log('[upgradeFromModal] Payment link found:', paymentLink);
+
+        if (!paymentLink) {
+            console.error('[App] No payment link found for plan:', plan);
+            this.showToast('❌ Payment link not configured for this plan.', 'error');
             return;
         }
 
-        // Update modal UI for STARTER/PRO plan (slug.yenze.io)
-        const modalHeader = modal.querySelector('.subdomain-modal-header h2');
-        const modalDesc = modal.querySelector('.subdomain-modal-header p');
-        const suffix = modal.querySelector('.subdomain-suffix');
-        const upgradeSection = modal.querySelector('.subdomain-upgrade-section');
-        const inputLabel = modal.querySelector('.subdomain-input-group label');
+        // Add customer email as prefill if user is authenticated
+        if (supabaseClient.isAuthenticated()) {
+            const userEmail = supabaseClient.currentUser.email;
+            const userId = supabaseClient.currentUser.id;
+            const urlWithEmail = `${paymentLink}?prefilled_email=${encodeURIComponent(userEmail)}&client_reference_id=${userId}`;
 
-        if (modalHeader) modalHeader.textContent = '🌐 Choose Your Subdomain';
-        if (modalDesc) modalDesc.textContent = 'Select a unique name for your website URL';
-        if (suffix) {
-            suffix.textContent = '.yenze.io';
-            suffix.style.display = 'inline'; // Show suffix for STARTER/PRO
+            console.log('[upgradeFromModal] Final redirect URL:', urlWithEmail);
+            window.location.href = urlWithEmail;
+        } else {
+            console.log('[upgradeFromModal] User not authenticated, redirecting to:', paymentLink);
+            window.location.href = paymentLink;
         }
-        if (upgradeSection) upgradeSection.style.display = 'none'; // Hide upgrade for paid users
-        if (inputLabel) inputLabel.textContent = 'Your Subdomain';
+    } catch (error) {
+        console.error('Failed to start checkout:', error);
+        this.showToast('❌ Failed to start checkout. Please try again.', 'error');
+    }
+}
 
-        // Generate default subdomain from project name
-        const defaultSlug = this.generateSubdomainSlug(this.projectData.name);
-        const subdomainInput = document.getElementById('subdomainInput');
-        if (subdomainInput) {
-            subdomainInput.value = defaultSlug;
-            // Update preview
-            this.updateSubdomainPreview();
-        }
+showPublishModal(userPlan) {
+    // Store the user's plan
+    this.currentUserPlan = userPlan;
 
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            subdomainInput?.focus();
-            subdomainInput?.select();
-        }, 100);
+    if (userPlan === 'free') {
+        // FREE: Show slug modal for /s/slug format
+        this.showSlugModal();
+    } else if (userPlan === 'starter' || userPlan === 'pro' || userPlan === 'business') {
+        // STARTER/PRO/BUSINESS: Show subdomain modal for slug.yenze.io
+        this.showSubdomainModal();
+    }
+}
+
+showSlugModal() {
+    const modal = document.getElementById('subdomainModal');
+    if (!modal) {
+        console.error('Subdomain modal not found');
+        return;
     }
 
-    closeSubdomainModal() {
-        const modal = document.getElementById('subdomainModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
+    // Update modal UI for FREE plan (yenze.io/s/slug)
+    const modalHeader = modal.querySelector('.subdomain-modal-header h2');
+    const modalDesc = modal.querySelector('.subdomain-modal-header p');
+    const suffix = modal.querySelector('.subdomain-suffix');
+    const upgradeSection = modal.querySelector('.subdomain-upgrade-section');
+    const inputLabel = modal.querySelector('.subdomain-input-group label');
+
+    if (modalHeader) modalHeader.textContent = '🆓 Choose Your Site Name';
+    if (modalDesc) modalDesc.textContent = 'Your site will be available at yenze.io/s/your-name';
+    if (suffix) suffix.style.display = 'none'; // Hide suffix for FREE
+    if (upgradeSection) upgradeSection.style.display = 'block'; // Show upgrade options
+    if (inputLabel) inputLabel.textContent = 'Your Site Name';
+
+    // Generate default slug from project name
+    const defaultSlug = this.generateSubdomainSlug(this.projectData.name);
+    const subdomainInput = document.getElementById('subdomainInput');
+    if (subdomainInput) {
+        subdomainInput.value = defaultSlug;
+        // Update preview for FREE plan
+        this.updateSlugPreview();
     }
 
-    updateSubdomainPreview() {
-        const input = document.getElementById('subdomainInput');
-        const preview = document.getElementById('subdomainLivePreview');
-        if (input && preview) {
-            const slug = input.value || 'your-project';
-            preview.textContent = `${slug}.yenze.io`;
-        }
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        subdomainInput?.focus();
+        subdomainInput?.select();
+    }, 100);
+}
+
+showSubdomainModal() {
+    const modal = document.getElementById('subdomainModal');
+    if (!modal) {
+        console.error('Subdomain modal not found');
+        return;
     }
 
-    updateSlugPreview() {
-        const input = document.getElementById('subdomainInput');
-        const preview = document.getElementById('subdomainLivePreview');
-        if (input && preview) {
-            const slug = input.value || 'your-site';
-            preview.textContent = `yenze.io/s/${slug}`;
-        }
+    // Update modal UI for STARTER/PRO plan (slug.yenze.io)
+    const modalHeader = modal.querySelector('.subdomain-modal-header h2');
+    const modalDesc = modal.querySelector('.subdomain-modal-header p');
+    const suffix = modal.querySelector('.subdomain-suffix');
+    const upgradeSection = modal.querySelector('.subdomain-upgrade-section');
+    const inputLabel = modal.querySelector('.subdomain-input-group label');
+
+    if (modalHeader) modalHeader.textContent = '🌐 Choose Your Subdomain';
+    if (modalDesc) modalDesc.textContent = 'Select a unique name for your website URL';
+    if (suffix) {
+        suffix.textContent = '.yenze.io';
+        suffix.style.display = 'inline'; // Show suffix for STARTER/PRO
     }
+    if (upgradeSection) upgradeSection.style.display = 'none'; // Hide upgrade for paid users
+    if (inputLabel) inputLabel.textContent = 'Your Subdomain';
+
+    // Generate default subdomain from project name
+    const defaultSlug = this.generateSubdomainSlug(this.projectData.name);
+    const subdomainInput = document.getElementById('subdomainInput');
+    if (subdomainInput) {
+        subdomainInput.value = defaultSlug;
+        // Update preview
+        this.updateSubdomainPreview();
+    }
+
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        subdomainInput?.focus();
+        subdomainInput?.select();
+    }, 100);
+}
+
+closeSubdomainModal() {
+    const modal = document.getElementById('subdomainModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+updateSubdomainPreview() {
+    const input = document.getElementById('subdomainInput');
+    const preview = document.getElementById('subdomainLivePreview');
+    if (input && preview) {
+        const slug = input.value || 'your-project';
+        preview.textContent = `${slug}.yenze.io`;
+    }
+}
+
+updateSlugPreview() {
+    const input = document.getElementById('subdomainInput');
+    const preview = document.getElementById('subdomainLivePreview');
+    if (input && preview) {
+        const slug = input.value || 'your-site';
+        preview.textContent = `yenze.io/s/${slug}`;
+    }
+}
 
     async checkSubdomainAvailability() {
-        const input = document.getElementById('subdomainInput');
-        const availabilityMessage = document.getElementById('availabilityMessage');
-        const publishButton = document.getElementById('confirmPublishBtn');
+    const input = document.getElementById('subdomainInput');
+    const availabilityMessage = document.getElementById('availabilityMessage');
+    const publishButton = document.getElementById('confirmPublishBtn');
 
-        if (!input || !availabilityMessage || !publishButton) return;
+    if (!input || !availabilityMessage || !publishButton) return;
 
-        const slug = input.value.trim();
+    const slug = input.value.trim();
 
-        // Validate slug format
-        if (!slug) {
-            availabilityMessage.textContent = '⚠️ Please enter a name';
+    // Validate slug format
+    if (!slug) {
+        availabilityMessage.textContent = '⚠️ Please enter a name';
+        availabilityMessage.className = 'availability-message warning';
+        publishButton.disabled = true;
+        return;
+    }
+
+    // For paid plans, use subdomain-utils validation
+    if (this.currentUserPlan !== 'free' && window.subdomainUtils) {
+        const validation = window.subdomainUtils.validate(slug);
+        if (!validation.valid) {
+            availabilityMessage.textContent = '❌ ' + validation.error;
+            availabilityMessage.className = 'availability-message error';
+            publishButton.disabled = true;
+            return;
+        }
+    } else {
+        // Basic validation for free plan
+        if (!/^[a-z0-9-]+$/.test(slug)) {
+            availabilityMessage.textContent = '⚠️ Only lowercase letters, numbers, and hyphens allowed';
             availabilityMessage.className = 'availability-message warning';
             publishButton.disabled = true;
             return;
         }
 
-        // For paid plans, use subdomain-utils validation
-        if (this.currentUserPlan !== 'free' && window.subdomainUtils) {
-            const validation = window.subdomainUtils.validate(slug);
-            if (!validation.valid) {
-                availabilityMessage.textContent = '❌ ' + validation.error;
-                availabilityMessage.className = 'availability-message error';
-                publishButton.disabled = true;
-                return;
-            }
-        } else {
-            // Basic validation for free plan
-            if (!/^[a-z0-9-]+$/.test(slug)) {
-                availabilityMessage.textContent = '⚠️ Only lowercase letters, numbers, and hyphens allowed';
-                availabilityMessage.className = 'availability-message warning';
-                publishButton.disabled = true;
-                return;
-            }
-
-            if (slug.length < 3) {
-                availabilityMessage.textContent = '⚠️ Name must be at least 3 characters';
-                availabilityMessage.className = 'availability-message warning';
-                publishButton.disabled = true;
-                return;
-            }
+        if (slug.length < 3) {
+            availabilityMessage.textContent = '⚠️ Name must be at least 3 characters';
+            availabilityMessage.className = 'availability-message warning';
+            publishButton.disabled = true;
+            return;
         }
+    }
 
-        // Check availability in database
-        availabilityMessage.textContent = '🔍 Checking availability...';
-        availabilityMessage.className = 'availability-message checking';
+    // Check availability in database
+    availabilityMessage.textContent = '🔍 Checking availability...';
+    availabilityMessage.className = 'availability-message checking';
 
-        try {
-            // Check based on user plan
-            const fieldToCheck = this.currentUserPlan === 'free' ? 'public_slug' : 'subdomain_slug';
+    try {
+        // Check based on user plan
+        const fieldToCheck = this.currentUserPlan === 'free' ? 'public_slug' : 'subdomain_slug';
 
-            const { data: existing } = await supabaseClient.client
-                .from('projects')
-                .select('id')
-                .eq(fieldToCheck, slug)
-                .neq('id', this.projectData.id || 'none')
-                .single();
+        const { data: existing } = await supabaseClient.client
+            .from('projects')
+            .select('id')
+            .eq(fieldToCheck, slug)
+            .neq('id', this.projectData.id || 'none')
+            .single();
 
-            if (existing) {
-                availabilityMessage.textContent = '❌ This name is already taken. Try another one.';
-                availabilityMessage.className = 'availability-message error';
-                publishButton.disabled = true;
-            } else {
-                availabilityMessage.textContent = '✅ Available! Ready to publish.';
-                availabilityMessage.className = 'availability-message success';
-                publishButton.disabled = false;
-            }
-        } catch (error) {
-            // If no existing found, it's available
+        if (existing) {
+            availabilityMessage.textContent = '❌ This name is already taken. Try another one.';
+            availabilityMessage.className = 'availability-message error';
+            publishButton.disabled = true;
+        } else {
             availabilityMessage.textContent = '✅ Available! Ready to publish.';
             availabilityMessage.className = 'availability-message success';
             publishButton.disabled = false;
         }
+    } catch (error) {
+        // If no existing found, it's available
+        availabilityMessage.textContent = '✅ Available! Ready to publish.';
+        availabilityMessage.className = 'availability-message success';
+        publishButton.disabled = false;
     }
+}
 
     async confirmPublish() {
-        const input = document.getElementById('subdomainInput');
-        const slug = input?.value.trim();
+    const input = document.getElementById('subdomainInput');
+    const slug = input?.value.trim();
 
-        if (!slug) {
-            this.showToast('Please enter a name', 'error');
-            return;
-        }
-
-        // Close modal and publish with the chosen slug
-        this.closeSubdomainModal();
-        await this.publishWithSlug(slug);
+    if (!slug) {
+        this.showToast('Please enter a name', 'error');
+        return;
     }
+
+    // Close modal and publish with the chosen slug
+    this.closeSubdomainModal();
+    await this.publishWithSlug(slug);
+}
 
     async publishWithSlug(slug) {
-        try {
-            this.showToast('Publishing your website...', 'info');
+    try {
+        this.showToast('Publishing your website...', 'info');
 
-            const plan = this.currentUserPlan || 'free';
+        const plan = this.currentUserPlan || 'free';
 
-            // Validate subdomain for paid plans
-            if (plan !== 'free' && window.subdomainUtils) {
-                const validation = window.subdomainUtils.validate(slug);
-                if (!validation.valid) {
-                    this.showToast('❌ ' + validation.error, 'error');
-                    return;
-                }
-
-                // Check availability
-                const available = await window.subdomainUtils.checkAvailability(slug, supabaseClient);
-                if (!available) {
-                    this.showToast('❌ This subdomain is already taken', 'error');
-                    return;
-                }
+        // Validate subdomain for paid plans
+        if (plan !== 'free' && window.subdomainUtils) {
+            const validation = window.subdomainUtils.validate(slug);
+            if (!validation.valid) {
+                this.showToast('❌ ' + validation.error, 'error');
+                return;
             }
 
-            // Prepare project data based on plan
-            const projectData = {
-                name: this.projectData.name,
-                html: this.currentHTML,
-                published: true
-            };
-
-            // Generate deployment URL based on plan
-            let publishedUrl;
-
-            if (plan === 'free') {
-                // FREE: Use /s/slug format
-                projectData.public_slug = slug;
-                publishedUrl = `https://yenze.io/s/${slug}`;
-            } else if (plan === 'starter' || plan === 'pro' || plan === 'business') {
-                // STARTER/PRO/BUSINESS: Use subdomain format
-                projectData.subdomain_slug = slug;
-                publishedUrl = `https://${slug}.yenze.io`;
+            // Check availability
+            const available = await window.subdomainUtils.checkAvailability(slug, supabaseClient);
+            if (!available) {
+                this.showToast('❌ This subdomain is already taken', 'error');
+                return;
             }
-
-            // Save project to database
-            const { data: project, error: saveError } = await supabaseClient.saveProject(projectData);
-
-            if (saveError) {
-                throw new Error('Failed to save project: ' + saveError.message);
-            }
-
-            // Update project with published URL
-            const { error: updateError } = await supabaseClient.updateProjectUrl(
-                project.id,
-                publishedUrl
-            );
-
-            if (updateError) {
-                throw new Error('Failed to update project URL: ' + updateError.message);
-            }
-
-            this.projectData.publishedUrl = publishedUrl;
-            if (plan === 'free') {
-                this.projectData.publicSlug = slug;
-            } else {
-                this.projectData.subdomainSlug = slug;
-            }
-            this.saveProject(); // Save to localStorage as well
-
-            // Create deployment record
-            await supabaseClient.client
-                .from('deployments')
-                .insert({
-                    project_id: project.id,
-                    user_id: supabaseClient.currentUser.id,
-                    deployment_url: publishedUrl,
-                    status: 'ready'
-                });
-
-            // Show professional popup with the URL
-            showPublishPopup(publishedUrl, plan);
-            this.showToast('🚀 Website published!', 'success');
-
-        } catch (error) {
-            console.error('Publish error:', error);
-            this.showToast('❌ Failed to publish: ' + error.message, 'error');
         }
-    }
 
-    async updateExistingProject() {
-        try {
-            this.showToast('Updating your website...', 'info');
+        // Prepare project data based on plan
+        const projectData = {
+            name: this.projectData.name,
+            html: this.currentHTML,
+            published: true
+        };
 
-            // Update the existing project in the database
-            const { error: updateError } = await supabaseClient.client
-                .from('projects')
-                .update({
-                    html: this.currentHTML,
-                    name: this.projectData.name,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', this.projectData.id)
-                .eq('user_id', supabaseClient.currentUser.id);
+        // Generate deployment URL based on plan
+        let publishedUrl;
 
-            if (updateError) {
-                throw new Error('Failed to update project: ' + updateError.message);
-            }
-
-            // Save to localStorage
-            this.saveProject();
-
-            // Create a new deployment record
-            const { data: project } = await supabaseClient.client
-                .from('projects')
-                .select('published_url, plan, subdomain_slug')
-                .eq('id', this.projectData.id)
-                .single();
-
-            if (project) {
-                await supabaseClient.client
-                    .from('deployments')
-                    .insert({
-                        project_id: this.projectData.id,
-                        user_id: supabaseClient.currentUser.id,
-                        deployment_url: project.published_url,
-                        status: 'ready'
-                    });
-
-                // Show success popup with the URL
-                showPublishPopup(project.published_url, project.plan || 'free');
-                this.showToast('✅ Website updated successfully!', 'success');
-            }
-
-        } catch (error) {
-            console.error('Update error:', error);
-            this.showToast('❌ Failed to update: ' + error.message, 'error');
+        if (plan === 'free') {
+            // FREE: Use /s/slug format
+            projectData.public_slug = slug;
+            publishedUrl = `https://yenze.io/s/${slug}`;
+        } else if (plan === 'starter' || plan === 'pro' || plan === 'business') {
+            // STARTER/PRO/BUSINESS: Use subdomain format
+            projectData.subdomain_slug = slug;
+            publishedUrl = `https://${slug}.yenze.io`;
         }
-    }
 
-    async publishWithPlan(plan) {
-        try {
-            this.showToast('Publishing your website...', 'info');
+        // Save project to database
+        const { data: project, error: saveError } = await supabaseClient.saveProject(projectData);
 
-            // Generate subdomain slug from project name
-            // Generate unique subdomain slug
-            const subdomainSlug = await this.generateUniqueSubdomainSlug(this.projectData.name);
+        if (saveError) {
+            throw new Error('Failed to save project: ' + saveError.message);
+        }
 
-            // Save project to database with subdomain_slug
-            const { data: project, error: saveError } = await supabaseClient.saveProject({
-                name: this.projectData.name,
-                html: this.currentHTML,
-                plan: plan,
-                subdomain_slug: subdomainSlug
+        // Update project with published URL
+        const { error: updateError } = await supabaseClient.updateProjectUrl(
+            project.id,
+            publishedUrl
+        );
+
+        if (updateError) {
+            throw new Error('Failed to update project URL: ' + updateError.message);
+        }
+
+        this.projectData.publishedUrl = publishedUrl;
+        if (plan === 'free') {
+            this.projectData.publicSlug = slug;
+        } else {
+            this.projectData.subdomainSlug = slug;
+        }
+        this.saveProject(); // Save to localStorage as well
+
+        // Create deployment record
+        await supabaseClient.client
+            .from('deployments')
+            .insert({
+                project_id: project.id,
+                user_id: supabaseClient.currentUser.id,
+                deployment_url: publishedUrl,
+                status: 'ready'
             });
 
-            if (saveError) {
-                throw new Error('Failed to save project: ' + saveError.message);
-            }
+        // Show professional popup with the URL
+        showPublishPopup(publishedUrl, plan);
+        this.showToast('🚀 Website published!', 'success');
 
-            // Generate deployment URL based on plan
-            let publishedUrl;
+    } catch (error) {
+        console.error('Publish error:', error);
+        this.showToast('❌ Failed to publish: ' + error.message, 'error');
+    }
+}
 
-            if (plan === 'free' || plan === 'starter') {
-                // FREE & STARTER: Use subdomain
-                publishedUrl = `https://${subdomainSlug}.yenze.io`;
-            } else if (plan === 'pro') {
-                // PRO: Can use custom domain (to be implemented) or subdomain for now
-                publishedUrl = `https://${subdomainSlug}.yenze.io`;
-            }
+    async updateExistingProject() {
+    try {
+        this.showToast('Updating your website...', 'info');
 
-            // Update project with published URL
-            const { error: updateError } = await supabaseClient.updateProjectUrl(
-                project.id,
-                publishedUrl
-            );
+        // Update the existing project in the database
+        const { error: updateError } = await supabaseClient.client
+            .from('projects')
+            .update({
+                html: this.currentHTML,
+                name: this.projectData.name,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', this.projectData.id)
+            .eq('user_id', supabaseClient.currentUser.id);
 
-            if (updateError) {
-                throw new Error('Failed to update project URL: ' + updateError.message);
-            }
+        if (updateError) {
+            throw new Error('Failed to update project: ' + updateError.message);
+        }
 
-            this.projectData.publishedUrl = publishedUrl;
-            this.projectData.subdomainSlug = subdomainSlug;
-            this.saveProject(); // Save to localStorage as well
+        // Save to localStorage
+        this.saveProject();
 
-            // Create deployment record
+        // Create a new deployment record
+        const { data: project } = await supabaseClient.client
+            .from('projects')
+            .select('published_url, plan, subdomain_slug')
+            .eq('id', this.projectData.id)
+            .single();
+
+        if (project) {
             await supabaseClient.client
                 .from('deployments')
                 .insert({
-                    project_id: project.id,
+                    project_id: this.projectData.id,
                     user_id: supabaseClient.currentUser.id,
-                    deployment_url: publishedUrl,
+                    deployment_url: project.published_url,
                     status: 'ready'
                 });
 
-            // Show professional popup with the URL
-            showPublishPopup(publishedUrl, plan);
-            this.showToast('🚀 Website published!', 'success');
-
-        } catch (error) {
-            console.error('Publish error:', error);
-            this.showToast('❌ Failed to publish: ' + error.message, 'error');
+            // Show success popup with the URL
+            showPublishPopup(project.published_url, project.plan || 'free');
+            this.showToast('✅ Website updated successfully!', 'success');
         }
-    }
 
-    generateSubdomainSlug(projectName) {
-        // Convert project name to valid subdomain slug
-        // Examples:
-        // "My Portfolio" → "my-portfolio"
-        // "Empresa XYZ!" → "empresa-xyz"
-        // "José's Site" → "joses-site"
-
-        return projectName
-            .toLowerCase()
-            .normalize('NFD') // Normalize accents
-            .replace(/[\u0300-\u036f]/g, '') // Remove accents
-            .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
-            .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
-            .substring(0, 63); // Max length for subdomain
+    } catch (error) {
+        console.error('Update error:', error);
+        this.showToast('❌ Failed to update: ' + error.message, 'error');
     }
+}
+
+    async publishWithPlan(plan) {
+    try {
+        this.showToast('Publishing your website...', 'info');
+
+        // Generate subdomain slug from project name
+        // Generate unique subdomain slug
+        const subdomainSlug = await this.generateUniqueSubdomainSlug(this.projectData.name);
+
+        // Save project to database with subdomain_slug
+        const { data: project, error: saveError } = await supabaseClient.saveProject({
+            name: this.projectData.name,
+            html: this.currentHTML,
+            plan: plan,
+            subdomain_slug: subdomainSlug
+        });
+
+        if (saveError) {
+            throw new Error('Failed to save project: ' + saveError.message);
+        }
+
+        // Generate deployment URL based on plan
+        let publishedUrl;
+
+        if (plan === 'free' || plan === 'starter') {
+            // FREE & STARTER: Use subdomain
+            publishedUrl = `https://${subdomainSlug}.yenze.io`;
+        } else if (plan === 'pro') {
+            // PRO: Can use custom domain (to be implemented) or subdomain for now
+            publishedUrl = `https://${subdomainSlug}.yenze.io`;
+        }
+
+        // Update project with published URL
+        const { error: updateError } = await supabaseClient.updateProjectUrl(
+            project.id,
+            publishedUrl
+        );
+
+        if (updateError) {
+            throw new Error('Failed to update project URL: ' + updateError.message);
+        }
+
+        this.projectData.publishedUrl = publishedUrl;
+        this.projectData.subdomainSlug = subdomainSlug;
+        this.saveProject(); // Save to localStorage as well
+
+        // Create deployment record
+        await supabaseClient.client
+            .from('deployments')
+            .insert({
+                project_id: project.id,
+                user_id: supabaseClient.currentUser.id,
+                deployment_url: publishedUrl,
+                status: 'ready'
+            });
+
+        // Show professional popup with the URL
+        showPublishPopup(publishedUrl, plan);
+        this.showToast('🚀 Website published!', 'success');
+
+    } catch (error) {
+        console.error('Publish error:', error);
+        this.showToast('❌ Failed to publish: ' + error.message, 'error');
+    }
+}
+
+generateSubdomainSlug(projectName) {
+    // Convert project name to valid subdomain slug
+    // Examples:
+    // "My Portfolio" → "my-portfolio"
+    // "Empresa XYZ!" → "empresa-xyz"
+    // "José's Site" → "joses-site"
+
+    return projectName
+        .toLowerCase()
+        .normalize('NFD') // Normalize accents
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents
+        .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
+        .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+        .substring(0, 63); // Max length for subdomain
+}
 
     async generateUniqueSubdomainSlug(projectName) {
-        // Generate base slug from project name
-        let baseSlug = this.generateSubdomainSlug(projectName);
+    // Generate base slug from project name
+    let baseSlug = this.generateSubdomainSlug(projectName);
 
-        // If slug is empty (project name had no valid chars), use default
-        if (!baseSlug) {
-            baseSlug = 'project';
-        }
+    // If slug is empty (project name had no valid chars), use default
+    if (!baseSlug) {
+        baseSlug = 'project';
+    }
 
-        let uniqueSlug = baseSlug;
-        let attempt = 1;
-        const maxAttempts = 100;
+    let uniqueSlug = baseSlug;
+    let attempt = 1;
+    const maxAttempts = 100;
 
-        // Keep trying until we find a unique slug
-        while (attempt < maxAttempts) {
-            // Check if this slug is available
-            const { data: existing } = await supabaseClient.client
-                .from('projects')
-                .select('id')
-                .eq('subdomain_slug', uniqueSlug)
-                .neq('id', this.projectData.id || 'none')
-                .single();
+    // Keep trying until we find a unique slug
+    while (attempt < maxAttempts) {
+        // Check if this slug is available
+        const { data: existing } = await supabaseClient.client
+            .from('projects')
+            .select('id')
+            .eq('subdomain_slug', uniqueSlug)
+            .neq('id', this.projectData.id || 'none')
+            .single();
 
-            if (!existing) {
-                // Slug is available!
-                if (attempt > 1) {
-                    // Show message that we auto-generated a unique slug
-                    this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
-                }
-                return uniqueSlug;
+        if (!existing) {
+            // Slug is available!
+            if (attempt > 1) {
+                // Show message that we auto-generated a unique slug
+                this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
             }
-
-            // Slug is taken, try adding a number
-            attempt++;
-            uniqueSlug = `${baseSlug}-${attempt}`;
+            return uniqueSlug;
         }
 
-        // If we couldn't find a unique slug after 100 attempts, use timestamp
-        const timestamp = Date.now().toString().slice(-6);
-        uniqueSlug = `${baseSlug}-${timestamp}`;
-        this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
-
-        return uniqueSlug;
+        // Slug is taken, try adding a number
+        attempt++;
+        uniqueSlug = `${baseSlug}-${attempt}`;
     }
 
-    handleAssetUpload(files) {
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const asset = {
-                    name: file.name,
-                    url: e.target.result,
-                    type: file.type
-                };
-                this.projectData.assets.push(asset);
-                this.renderAssets();
-                this.saveProject();
+    // If we couldn't find a unique slug after 100 attempts, use timestamp
+    const timestamp = Date.now().toString().slice(-6);
+    uniqueSlug = `${baseSlug}-${timestamp}`;
+    this.showToast(`Project name was modified to "${uniqueSlug}" to ensure uniqueness`, 'info');
+
+    return uniqueSlug;
+}
+
+handleAssetUpload(files) {
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const asset = {
+                name: file.name,
+                url: e.target.result,
+                type: file.type
             };
-            reader.readAsDataURL(file);
-        });
-    }
+            this.projectData.assets.push(asset);
+            this.renderAssets();
+            this.saveProject();
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
-    renderAssets() {
-        const assetsList = document.getElementById('assetsList');
-        assetsList.innerHTML = '';
+renderAssets() {
+    const assetsList = document.getElementById('assetsList');
+    assetsList.innerHTML = '';
 
-        this.projectData.assets.forEach((asset, index) => {
-            const assetEl = document.createElement('div');
-            assetEl.style.cssText = `
+    this.projectData.assets.forEach((asset, index) => {
+        const assetEl = document.createElement('div');
+        assetEl.style.cssText = `
                 background: var(--bg);
                 border: 1px solid var(--border);
                 border-radius: 6px;
@@ -3846,235 +3904,235 @@ if (validationForm) {
                 cursor: pointer;
                 transition: all 0.15s;
             `;
-            assetEl.innerHTML = `
+        assetEl.innerHTML = `
                 <img src="${asset.url}" style="width: 100%; border-radius: 4px; margin-bottom: 0.5rem;">
                 <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${asset.name}</div>
             `;
 
-            assetEl.addEventListener('mouseenter', () => {
-                assetEl.style.background = 'var(--bg-secondary)';
-                assetEl.style.borderColor = 'var(--accent)';
-            });
-
-            assetEl.addEventListener('mouseleave', () => {
-                assetEl.style.background = 'var(--bg)';
-                assetEl.style.borderColor = 'var(--border)';
-            });
-
-            assetEl.addEventListener('click', () => {
-                navigator.clipboard.writeText(asset.url);
-                this.showToast('📋 Asset URL copied!', 'success');
-            });
-
-            assetsList.appendChild(assetEl);
+        assetEl.addEventListener('mouseenter', () => {
+            assetEl.style.background = 'var(--bg-secondary)';
+            assetEl.style.borderColor = 'var(--accent)';
         });
-    }
 
-    saveProject() {
-        localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
-    }
+        assetEl.addEventListener('mouseleave', () => {
+            assetEl.style.background = 'var(--bg)';
+            assetEl.style.borderColor = 'var(--border)';
+        });
+
+        assetEl.addEventListener('click', () => {
+            navigator.clipboard.writeText(asset.url);
+            this.showToast('📋 Asset URL copied!', 'success');
+        });
+
+        assetsList.appendChild(assetEl);
+    });
+}
+
+saveProject() {
+    localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
+}
 
     async loadProject() {
-        // Check if there's a project ID in the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const projectId = urlParams.get('project');
-        const isNewProject = urlParams.get('new') === 'true';
-        const isPasteMode = urlParams.get('paste') === 'true';
-        const isTemplateMode = urlParams.get('template') === 'true';
+    // Check if there's a project ID in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('project');
+    const isNewProject = urlParams.get('new') === 'true';
+    const isPasteMode = urlParams.get('paste') === 'true';
+    const isTemplateMode = urlParams.get('template') === 'true';
 
-        console.log('[LoadProject] Project ID from URL:', projectId);
-        console.log('[LoadProject] New project flag:', isNewProject);
-        console.log('[LoadProject] Paste mode:', isPasteMode);
-        console.log('[LoadProject] Template mode:', isTemplateMode);
+    console.log('[LoadProject] Project ID from URL:', projectId);
+    console.log('[LoadProject] New project flag:', isNewProject);
+    console.log('[LoadProject] Paste mode:', isPasteMode);
+    console.log('[LoadProject] Template mode:', isTemplateMode);
 
-        // Check for template HTML from templates page
-        if (isTemplateMode && localStorage.getItem('templateHTML')) {
-            const templateHTML = localStorage.getItem('templateHTML');
-            const templateName = localStorage.getItem('templateName') || 'Template Website';
-            console.log('[LoadProject] Loading template from templates page');
+    // Check for template HTML from templates page
+    if (isTemplateMode && localStorage.getItem('templateHTML')) {
+        const templateHTML = localStorage.getItem('templateHTML');
+        const templateName = localStorage.getItem('templateName') || 'Template Website';
+        console.log('[LoadProject] Loading template from templates page');
 
-            // Clear the template HTML from localStorage
-            localStorage.removeItem('templateHTML');
-            localStorage.removeItem('templateName');
+        // Clear the template HTML from localStorage
+        localStorage.removeItem('templateHTML');
+        localStorage.removeItem('templateName');
 
-            // Clear existing project to start fresh
-            localStorage.removeItem('yenzeProject');
+        // Clear existing project to start fresh
+        localStorage.removeItem('yenzeProject');
 
-            // Load the template HTML
-            this.projectData = {
-                name: templateName,
-                html: templateHTML,
-                assets: [],
-                publishedUrl: null
-            };
+        // Load the template HTML
+        this.projectData = {
+            name: templateName,
+            html: templateHTML,
+            assets: [],
+            publishedUrl: null
+        };
 
-            document.getElementById('projectName').value = this.projectData.name;
-            this.loadHTML(templateHTML);
-            this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
+        document.getElementById('projectName').value = this.projectData.name;
+        this.loadHTML(templateHTML);
+        this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
 
-            // Remove the template parameter from URL
-            window.history.replaceState({}, '', window.location.pathname);
-            return;
-        }
+        // Remove the template parameter from URL
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+    }
 
-        // Check for pasted HTML from landing page
-        if (isPasteMode && localStorage.getItem('pastedHTML')) {
-            const pastedHTML = localStorage.getItem('pastedHTML');
-            const timestamp = localStorage.getItem('pastedHTML_timestamp');
-            console.log('[LoadProject] Loading pasted HTML from landing page');
+    // Check for pasted HTML from landing page
+    if (isPasteMode && localStorage.getItem('pastedHTML')) {
+        const pastedHTML = localStorage.getItem('pastedHTML');
+        const timestamp = localStorage.getItem('pastedHTML_timestamp');
+        console.log('[LoadProject] Loading pasted HTML from landing page');
 
-            // Clear the pasted HTML from localStorage
-            localStorage.removeItem('pastedHTML');
-            localStorage.removeItem('pastedHTML_timestamp');
+        // Clear the pasted HTML from localStorage
+        localStorage.removeItem('pastedHTML');
+        localStorage.removeItem('pastedHTML_timestamp');
 
-            // Clear existing project to start fresh
-            localStorage.removeItem('yenzeProject');
+        // Clear existing project to start fresh
+        localStorage.removeItem('yenzeProject');
 
-            // Load the pasted HTML
-            this.projectData = {
-                name: 'Pasted Website',
-                html: pastedHTML,
-                assets: [],
-                publishedUrl: null
-            };
+        // Load the pasted HTML
+        this.projectData = {
+            name: 'Pasted Website',
+            html: pastedHTML,
+            assets: [],
+            publishedUrl: null
+        };
 
-            document.getElementById('projectName').value = this.projectData.name;
-            this.loadHTML(pastedHTML);
-            this.showToast('✨ HTML loaded! Ready to customize.', 'success');
+        document.getElementById('projectName').value = this.projectData.name;
+        this.loadHTML(pastedHTML);
+        this.showToast('✨ HTML loaded! Ready to customize.', 'success');
 
-            // Remove the paste parameter from URL
-            window.history.replaceState({}, '', window.location.pathname);
-            return;
-        }
+        // Remove the paste parameter from URL
+        window.history.replaceState({}, '', window.location.pathname);
+        return;
+    }
 
-        // If new project flag is set, clear everything and start fresh
-        if (isNewProject) {
-            console.log('[LoadProject] Creating new project from scratch');
-            console.log('[LoadProject] Current user:', supabaseClient.currentUser?.email || 'Not logged in');
-            localStorage.removeItem('yenzeProject');
-            this.currentHTML = '';
-            this.projectData = {
-                name: 'My Website',
-                html: '',
-                assets: [],
-                publishedUrl: null
-            };
-            document.getElementById('projectName').value = this.projectData.name;
-            this.renderPreview();
-            return;
-        }
+    // If new project flag is set, clear everything and start fresh
+    if (isNewProject) {
+        console.log('[LoadProject] Creating new project from scratch');
+        console.log('[LoadProject] Current user:', supabaseClient.currentUser?.email || 'Not logged in');
+        localStorage.removeItem('yenzeProject');
+        this.currentHTML = '';
+        this.projectData = {
+            name: 'My Website',
+            html: '',
+            assets: [],
+            publishedUrl: null
+        };
+        document.getElementById('projectName').value = this.projectData.name;
+        this.renderPreview();
+        return;
+    }
 
-        if (projectId) {
-            // Load project from public API (no authentication required)
-            try {
-                console.log('[LoadProject] Fetching project from API...');
+    if (projectId) {
+        // Load project from public API (no authentication required)
+        try {
+            console.log('[LoadProject] Fetching project from API...');
 
-                const response = await fetch(`/api/get-project?id=${encodeURIComponent(projectId)}`);
+            const response = await fetch(`/api/get-project?id=${encodeURIComponent(projectId)}`);
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('[LoadProject] API error:', errorData);
-                    throw new Error(errorData.error || 'Failed to load project');
-                }
-
-                const result = await response.json();
-                console.log('[LoadProject] API response:', result);
-
-                if (!result.success || !result.project) {
-                    throw new Error('Invalid API response');
-                }
-
-                const project = result.project;
-
-                if (project) {
-                    console.log('[LoadProject] Project loaded successfully:', project.name);
-
-                    this.projectData = {
-                        id: project.id,
-                        name: project.name || 'Untitled Project',
-                        html: project.html || '',
-                        assets: project.assets || []
-                    };
-
-                    document.getElementById('projectName').value = this.projectData.name;
-
-                    if (this.projectData.html) {
-                        console.log('[LoadProject] Loading HTML into canvas...');
-                        this.loadHTML(this.projectData.html);
-                    } else {
-                        console.warn('[LoadProject] Project has no HTML content');
-                    }
-
-                    if (this.projectData.assets.length > 0) {
-                        this.renderAssets();
-                    }
-
-                    // Save to localStorage for future edits
-                    localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
-
-                    this.showToast('Project loaded successfully', 'success');
-                    return;
-                }
-            } catch (error) {
-                console.error('Error loading project from database:', error);
-                this.showToast('Failed to load project', 'error');
-            }
-        }
-
-        // Fall back to loading from localStorage
-        const saved = localStorage.getItem('yenzeProject');
-        if (saved) {
-            this.projectData = JSON.parse(saved);
-            document.getElementById('projectName').value = this.projectData.name;
-
-            if (this.projectData.html) {
-                this.loadHTML(this.projectData.html);
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('[LoadProject] API error:', errorData);
+                throw new Error(errorData.error || 'Failed to load project');
             }
 
-            if (this.projectData.assets.length > 0) {
-                this.renderAssets();
+            const result = await response.json();
+            console.log('[LoadProject] API response:', result);
+
+            if (!result.success || !result.project) {
+                throw new Error('Invalid API response');
             }
+
+            const project = result.project;
+
+            if (project) {
+                console.log('[LoadProject] Project loaded successfully:', project.name);
+
+                this.projectData = {
+                    id: project.id,
+                    name: project.name || 'Untitled Project',
+                    html: project.html || '',
+                    assets: project.assets || []
+                };
+
+                document.getElementById('projectName').value = this.projectData.name;
+
+                if (this.projectData.html) {
+                    console.log('[LoadProject] Loading HTML into canvas...');
+                    this.loadHTML(this.projectData.html);
+                } else {
+                    console.warn('[LoadProject] Project has no HTML content');
+                }
+
+                if (this.projectData.assets.length > 0) {
+                    this.renderAssets();
+                }
+
+                // Save to localStorage for future edits
+                localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
+
+                this.showToast('Project loaded successfully', 'success');
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading project from database:', error);
+            this.showToast('Failed to load project', 'error');
         }
     }
 
-    // Utility functions
-    rgbToHex(rgb) {
-        if (rgb.startsWith('#')) return rgb;
+    // Fall back to loading from localStorage
+    const saved = localStorage.getItem('yenzeProject');
+    if (saved) {
+        this.projectData = JSON.parse(saved);
+        document.getElementById('projectName').value = this.projectData.name;
 
-        // Check for transparent
-        if (rgb === 'transparent' || rgb === 'rgba(0, 0, 0, 0)') {
-            return '#ffffff';  // Default to white for transparent
+        if (this.projectData.html) {
+            this.loadHTML(this.projectData.html);
         }
 
-        const values = rgb.match(/[\d.]+/g);
-        if (!values) return '#ffffff';
-
-        // Check if alpha channel is 0 (transparent)
-        if (values.length === 4 && parseFloat(values[3]) === 0) {
-            return '#ffffff';  // Transparent, return white
+        if (this.projectData.assets.length > 0) {
+            this.renderAssets();
         }
+    }
+}
 
-        return '#' + values.slice(0, 3).map(x => {
-            const hex = parseInt(x).toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        }).join('');
+// Utility functions
+rgbToHex(rgb) {
+    if (rgb.startsWith('#')) return rgb;
+
+    // Check for transparent
+    if (rgb === 'transparent' || rgb === 'rgba(0, 0, 0, 0)') {
+        return '#ffffff';  // Default to white for transparent
     }
 
-    showToast(message, type = 'success') {
-        const existingToast = document.querySelector('.toast');
-        if (existingToast) {
-            existingToast.remove();
-        }
+    const values = rgb.match(/[\d.]+/g);
+    if (!values) return '#ffffff';
 
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.remove();
-        }, 4000);
+    // Check if alpha channel is 0 (transparent)
+    if (values.length === 4 && parseFloat(values[3]) === 0) {
+        return '#ffffff';  // Transparent, return white
     }
+
+    return '#' + values.slice(0, 3).map(x => {
+        const hex = parseInt(x).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    }).join('');
+}
+
+showToast(message, type = 'success') {
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 4000);
+}
 
 }
 
