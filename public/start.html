@@ -1,503 +1,291 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YENZE - Comienza tu Proyecto</title>
+    <title>Start New Project - YENZE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #0066FF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --bg-light: #FAFAFA;
+            --surface: #FFFFFF;
+            --border: #E2E8F0;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0066FF;
-            --text: #1a1a1a;
-            --text-muted: #666;
-            --border: #e0e0e0;
-            --bg: #ffffff;
-            --bg-secondary: #f8f9fa;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-light);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            flex-direction: column;
         }
 
-        .container {
+        /* Navbar */
+        .nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-content {
             max-width: 1000px;
-            width: 100%;
-            background: white;
-            border-radius: 24px;
-            padding: 60px 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+
+        .back-link {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
+            max-width: 600px;
         }
 
-        .logo {
-            font-size: 36px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
             margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-muted);
+            line-height: 1.5;
         }
 
-        .options-container {
+        /* Options Grid */
+        .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .option-box {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 32px 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option-box:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
-        }
-
-        .option-box.featured {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-color: var(--primary);
-        }
-
-        .option-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .option-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .option-description {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .option-btn {
-            background: var(--text);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            max-width: 1000px;
             width: 100%;
         }
 
-        .option-btn:hover {
-            background: #000;
-            transform: scale(1.02);
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
         }
 
-        .option-btn.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
         }
 
-        .option-btn.primary:hover {
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            background: #F1F5F9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            transition: all 0.2s;
         }
 
+        .card:hover .icon-box {
+            background: #E5F0FF;
+            color: var(--primary);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .card-action {
+            margin-top: auto;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Badge */
         .badge {
             position: absolute;
             top: 12px;
             right: 12px;
             background: var(--primary);
             color: white;
-            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 8px;
             border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* Import HTML Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            margin-bottom: 30px;
-        }
-
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .modal-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-muted);
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-            background: var(--bg-secondary);
-            color: var(--text);
-        }
-
-        .import-section {
-            margin-bottom: 30px;
-        }
-
-        .section-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 12px;
-        }
-
-        .drop-zone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            background: var(--bg-secondary);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .drop-zone:hover,
-        .drop-zone.dragover {
-            border-color: var(--primary);
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .drop-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .drop-text {
-            font-size: 16px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .choose-file-btn {
-            background: var(--text);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .choose-file-btn:hover {
-            background: #000;
-        }
-
-        .paste-area {
-            width: 100%;
-            min-height: 200px;
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            resize: vertical;
-            transition: all 0.2s;
-        }
-
-        .paste-area:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .load-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .load-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .load-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 24px;
-            }
-
-            .options-container {
+            .options-grid {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                padding: 30px 24px;
+            .main {
+                padding: 40px 20px;
+                justify-content: flex-start;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                YENZE
+            </a>
+            <a href="/" class="back-link">Back to Home</a>
+        </div>
+    </nav>
+
+    <main class="main">
         <div class="header">
-            <div class="logo">YENZE</div>
-            <div class="subtitle">¿Cómo quieres empezar tu proyecto?</div>
+            <h1>Start your project</h1>
+            <p class="subtitle">Choose the best way to build your website. <br>From AI generation to custom code.</p>
         </div>
 
-        <div class="options-container">
+        <div class="options-grid">
             <!-- Option 1: Import HTML -->
-            <div class="option-box" onclick="openImportModal()">
-                <div class="option-icon">📄</div>
-                <div class="option-title">Import HTML</div>
-                <div class="option-description">Sube o pega tu código HTML existente</div>
-                <button class="option-btn">Importar →</button>
-            </div>
+            <a href="https://builder.yenze.io" class="card">
+                <div class="icon-box">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div class="card-title">Import HTML</div>
+                <div class="card-desc">Have existing code? Jump directly into the builder and start editing.</div>
+                <div class="card-action">Open Builder →</div>
+            </a>
 
             <!-- Option 2: AI Prompt Generator -->
-            <div class="option-box featured">
+            <a href="/prompt-generator.html" class="card">
                 <div class="badge">Popular</div>
-                <div class="option-icon">✨</div>
-                <div class="option-title">AI Prompt Generator</div>
-                <div class="option-description">Genera prompts para crear tu web con IA</div>
-                <button class="option-btn primary" onclick="window.location.href='/prompt-generator.html'">Crear Prompt
-                    →</button>
-            </div>
+                <div class="icon-box">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="card-title">AI Prompt Generator</div>
+                <div class="card-desc">Create the perfect prompt to generate a professional website with AI.</div>
+                <div class="card-action">Generate Prompt →</div>
+            </a>
 
             <!-- Option 3: Templates -->
-            <div class="option-box" onclick="window.location.href='/templates.html'">
-                <div class="option-icon">🎨</div>
-                <div class="option-title">Templates</div>
-                <div class="option-description">Comienza con plantillas profesionales</div>
-                <button class="option-btn">Ver Templates →</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Import HTML Modal -->
-    <div class="modal" id="importModal">
-        <div class="modal-content" style="position: relative;">
-            <button class="close-btn" onclick="closeImportModal()">×</button>
-
-            <div class="modal-header">
-                <div class="modal-title">Import HTML</div>
-                <div class="modal-subtitle">Sube un archivo HTML o pega tu código</div>
-            </div>
-
-            <!-- Drop Zone -->
-            <div class="import-section">
-                <div class="section-label">Subir Archivo</div>
-                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                    <div class="drop-icon">📁</div>
-                    <div class="drop-text">Arrastra tu archivo HTML aquí o haz clic para seleccionar</div>
-                    <button class="choose-file-btn">Choose File</button>
-                    <input type="file" id="fileInput" class="file-input" accept=".html,.htm"
-                        onchange="handleFileSelect(event)">
+            <a href="/templates.html" class="card">
+                <div class="icon-box">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
                 </div>
-            </div>
-
-            <!-- Paste Area -->
-            <div class="import-section">
-                <div class="section-label">Pegar Código HTML</div>
-                <textarea class="paste-area" id="htmlPaste" placeholder="Paste HTML code here..."
-                    oninput="checkPasteContent()"></textarea>
-            </div>
-
-            <!-- Load Button -->
-            <button class="load-btn" id="loadBtn" onclick="loadHTML()" disabled>Load HTML</button>
+                <div class="card-title">Templates</div>
+                <div class="card-desc">Start with a professionally designed template and customize it.</div>
+                <div class="card-action">Browse Templates →</div>
+            </a>
         </div>
-    </div>
+    </main>
 
-    <script>
-        // Import Modal Functions
-        function openImportModal() {
-            document.getElementById('importModal').classList.add('active');
-        }
-
-        function closeImportModal() {
-            document.getElementById('importModal').classList.remove('active');
-            document.getElementById('htmlPaste').value = '';
-            document.getElementById('loadBtn').disabled = true;
-        }
-
-        // Drag and Drop
-        const dropZone = document.getElementById('dropZone');
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
-
-        // File Selection
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        }
-
-        function handleFile(file) {
-            if (file.type === 'text/html' || file.name.endsWith('.html') || file.name.endsWith('.htm')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('htmlPaste').value = e.target.result;
-                    document.getElementById('loadBtn').disabled = false;
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Por favor, selecciona un archivo HTML válido');
-            }
-        }
-
-        // Check Paste Content
-        function checkPasteContent() {
-            const content = document.getElementById('htmlPaste').value.trim();
-            document.getElementById('loadBtn').disabled = content.length === 0;
-        }
-
-        // Load HTML
-        function loadHTML() {
-            const htmlContent = document.getElementById('htmlPaste').value.trim();
-
-            if (!htmlContent) {
-                alert('Por favor, pega o sube código HTML primero');
-                return;
-            }
-
-            // Store HTML in localStorage
-            localStorage.setItem('importedHTML', htmlContent);
-
-            // Redirect to builder with import flag
-            window.location.href = 'https://builder.yenze.io?import=true';
-        }
-
-        // Close modal on outside click
-        document.getElementById('importModal').addEventListener('click', (e) => {
-            if (e.target.id === 'importModal') {
-                closeImportModal();
-            }
-        });
-
-        // Close modal on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeImportModal();
-            }
-        });
-    </script>
 </body>
 
 </html>
