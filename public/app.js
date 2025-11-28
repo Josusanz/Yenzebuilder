@@ -1706,20 +1706,8 @@ class YenzeBuilder {
 
                 <div class="prop-row">
                     <div class="prop-col">
-                        <label class="prop-label">Font Size</label>
-                        <select id="propFontSize" class="prop-select">
-                            <option value="12" ${typography.size === 12 ? 'selected' : ''}>Small (12px)</option>
-                            <option value="14" ${typography.size === 14 ? 'selected' : ''}>Normal (14px)</option>
-                            <option value="16" ${typography.size === 16 ? 'selected' : ''}>Medium (16px)</option>
-                            <option value="18" ${typography.size === 18 ? 'selected' : ''}>Large (18px)</option>
-                            <option value="20" ${typography.size === 20 ? 'selected' : ''}>XL (20px)</option>
-                            <option value="24" ${typography.size === 24 ? 'selected' : ''}>2XL (24px)</option>
-                            <option value="30" ${typography.size === 30 ? 'selected' : ''}>3XL (30px)</option>
-                            <option value="36" ${typography.size === 36 ? 'selected' : ''}>4XL (36px)</option>
-                            <option value="48" ${typography.size === 48 ? 'selected' : ''}>5XL (48px)</option>
-                            <option value="60" ${typography.size === 60 ? 'selected' : ''}>6XL (60px)</option>
-                            <option value="${typography.size}" ${![12, 14, 16, 18, 20, 24, 30, 36, 48, 60].includes(typography.size) ? 'selected' : ''}>Custom (${typography.size}px)</option>
-                        </select>
+                        <label class="prop-label">Font Size (px)</label>
+                        <input type="number" id="propFontSize" class="prop-input" value="${typography.size}" placeholder="16">
                     </div>
                     <div class="prop-col">
                         <label class="prop-label">Weight</label>
@@ -1850,8 +1838,10 @@ class YenzeBuilder {
 
         const fontSizeInput = document.getElementById('propFontSize');
         if (fontSizeInput) {
-            fontSizeInput.addEventListener('change', (e) => {
+            fontSizeInput.addEventListener('input', (e) => {
                 element.style.fontSize = e.target.value + 'px';
+            });
+            fontSizeInput.addEventListener('change', (e) => {
                 this.updateHTML('Update font size');
             });
         }
