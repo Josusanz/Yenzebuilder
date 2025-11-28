@@ -3283,10 +3283,16 @@ if (validationForm) {
         // Check if user is authenticated (with session refresh)
         const isAuth = await this.checkAuthentication();
         if (!isAuth) {
+            console.log('[Publish] User not authenticated, showing auth modal');
             // Set flag so we know to show pricing modal after login
             this.pendingPublish = true;
             // Show auth modal first
-            authUI.showAuthModal('login');
+            if (window.authUI) {
+                window.authUI.showAuthModal('login');
+            } else {
+                console.error('AuthUI not found!');
+                this.showToast('Authentication system not loaded. Please refresh.', 'error');
+            }
             return;
         }
 

@@ -482,4 +482,4 @@ class AuthUI {
 }
 
 // Create singleton instance
-const authUI = new AuthUI();
+window.authUI = new AuthUI();
