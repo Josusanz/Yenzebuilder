@@ -34,8 +34,8 @@ class DashboardApp {
             this.updateUserProfile();
             this.loadCurrentPlan();
 
-            // Load unread messages count for badge
-            this.loadUnreadCount();
+            // Load unread messages count for badge immediately
+            await this.loadUnreadCount();
 
             // Load initial section (projects)
             this.switchSection('projects');
