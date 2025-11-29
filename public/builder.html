@@ -2976,12 +2976,23 @@
                     <div
                         style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; background: var(--bg-tertiary); padding: 0.25rem; border-radius: var(--radius-md);">
                         <button class="import-tab-btn" data-import-tab="upload"
-                            style="flex: 1; padding: 0.5rem; background: transparent; border: none; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-secondary);">
-                            📁 Upload File
+                            style="flex: 1; padding: 0.5rem; background: transparent; border: none; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            Upload File
                         </button>
                         <button class="import-tab-btn active" data-import-tab="paste"
-                            style="flex: 1; padding: 0.5rem; background: var(--bg-secondary); border: none; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                            📝 Paste Code
+                            style="flex: 1; padding: 0.5rem; background: var(--bg-secondary); border: none; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            Paste Code
                         </button>
                     </div>
 
@@ -3008,13 +3019,13 @@
                                 style="min-height: 200px; font-family: monospace; font-size: 11px; margin-bottom: 1rem; width: 100%; resize: vertical;"></textarea>
 
                             <button class="btn btn-primary"
-                                style="width: 100%; font-size: 0.75rem; padding: 0.625rem; background-color: var(--primary); border-color: var(--primary);"
+                                style="width: 100%; font-size: 0.75rem; padding: 0.625rem; background-color: #000000; border-color: #000000; color: white;"
                                 id="loadHtmlBtn">
                                 Load HTML
                             </button>
                             <div
                                 style="text-align: center; margin-top: 0.5rem; font-size: 0.65rem; color: var(--text-tertiary);">
-                                v1.7.7</div>
+                                v1.7.8</div>
                         </div>
                     </div>
 
