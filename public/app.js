@@ -2159,57 +2159,33 @@ class YenzeBuilder {
         console.log('🗑️ Deleted element:', elementName);
     }
 
-    getElementIcon(element) {
-        const tagName = element.tagName.toLowerCase();
-
-        // Check for specific types
-        if (tagName === 'img') return '🖼️';
-        if (tagName === 'a') return '🔗';
-        if (tagName === 'button') return '🔘';
-        if (tagName === 'input') return '⌨️';
-        if (tagName === 'form') return '📝';
-        if (tagName === 'ul' || tagName === 'ol') return '📋';
-        if (tagName === 'li') return '•';
-        if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3' || tagName === 'h4' || tagName === 'h5' || tagName === 'h6') return 'T';
-        if (tagName === 'p') return '¶';
-        if (tagName === 'span') return 'Aa';
-        if (tagName === 'div') {
-            // Try to guess if it's a special div
-            if (element.classList.contains('container')) return '📦';
-            if (element.classList.contains('row')) return '↔️';
-            if (element.classList.contains('col')) return '⬇️';
-            if (element.classList.contains('card')) return '🃏';
-            if (element.classList.contains('btn') || element.getAttribute('role') === 'button') return '🔘';
-            return '▭';
+    // Helper to get an icon for the element type
+    _getIconForTagName(tagName) {
+        switch (tagName) {
+            case 'img': return '🖼️';
+            case 'a': return '🔗';
+            case 'button': return '🔘';
+            case 'input': return '⌨️';
+            case 'form': return '📝';
+            case 'ul':
+            case 'ol': return '📋';
+            case 'li': return '•';
+            case 'h1':
+            case 'h2':
+            case 'h3':
+            case 'h4':
+            case 'h5':
+            case 'h6': return 'T';
+            case 'p': return '¶';
+            case 'span': return 'Aa';
+            case 'div': return '▭';
+            case 'section': return 'S';
+            case 'header': return 'H';
+            case 'footer': return 'F';
+            case 'nav': return 'N';
+            case 'body': return '📄';
+            default: return '◻️';
         }
-        if (tagName === 'section') return 'S';
-        if (tagName === 'header') return 'H';
-        if (tagName === 'footer') return 'F';
-        if (tagName === 'nav') return 'N';
-
-        return '◻️';
-    }
-
-    getElementName(element) {
-        const tagName = element.tagName.toLowerCase();
-
-        // Check for ID
-        if (element.id) return `#${element.id}`;
-
-        // Check for specific classes that might be useful names
-        if (element.classList.contains('btn')) return 'Button';
-        if (element.classList.contains('container')) return 'Container';
-        if (element.classList.contains('row')) return 'Row';
-        if (element.classList.contains('col')) return 'Column';
-        if (element.classList.contains('card')) return 'Card';
-
-        // Check for text content for some elements
-        if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'button', 'a'].includes(tagName)) {
-            const text = element.innerText.trim();
-            if (text) return text.substring(0, 20) + (text.length > 20 ? '...' : '');
-        }
-
-        return tagName;
     }
 
     buildLayersTree(doc) {
@@ -2232,8 +2208,7 @@ class YenzeBuilder {
                 child.tagName && child.tagName.toLowerCase() !== 'script' && child.tagName.toLowerCase() !== 'style'
             );
 
-            const icon = this.getElementIcon(element);
-            const name = this.getElementName(element);
+            const icon = this.getElementIcon(tagName);
 
             // Add collapse/expand toggle if element has children
             const collapseToggle = hasChildren ?
@@ -2243,7 +2218,7 @@ class YenzeBuilder {
             li.innerHTML = `
                 ${collapseToggle}
                 <span class="layer-icon">${icon}</span>
-                <span class="layer-name">${name}</span>
+                <span class="layer-name">${tagName}</span>
             `;
 
             // Store element reference
