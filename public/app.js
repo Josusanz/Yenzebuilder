@@ -3280,80 +3280,67 @@ if (validationForm) {
             return;
         }
 
-        // Ensure authUI is ready
-        if (!window.authUI && typeof AuthUI !== 'undefined') {
-            console.log('[Publish] Initializing AuthUI fallback');
-            window.authUI = new AuthUI();
-        }
-
-        // Check if user is authenticated (with session refresh)
-        const isAuth = await this.checkAuthentication();
-        if (!isAuth) {
-            console.log('[Publish] User not authenticated, showing auth modal');
-            // Set flag so we know to show pricing modal after login
-            this.pendingPublish = true;
-            // Show auth modal first
-            if (window.authUI) {
-                window.authUI.showAuthModal('login');
-            } else {
-                console.error('AuthUI not found even after fallback check!');
-                alert('Authentication system not loaded. Please refresh the page.');
+        try {
+            // Ensure authUI is ready
+            if (!window.authUI && typeof AuthUI !== 'undefined') {
+                console.log('[Publish] Initializing AuthUI fallback');
+                window.authUI = new AuthUI();
             }
-            return;
-        }
 
-        // If project already has an ID, it's been published before - just update it
-        if (this.projectData.id) {
-            await this.updateExistingProject();
-        } else {
-            // New project - check user's plan and show appropriate modal
-            const { data: subscription, error: subError } = await supabaseClient.client
-                .from('subscriptions')
-                .select('plan, status')
-                .eq('user_id', supabaseClient.currentUser.id)
-                .eq('status', 'active')
-                .single();
+            // Check if user is authenticated (with session refresh)
+            const isAuth = await this.checkAuthentication();
+            if (!isAuth) {
+                console.log('[Publish] User not authenticated, showing auth modal');
+                // Set flag so we know to show pricing modal after login
+                this.pendingPublish = true;
+                // Show auth modal first
+                if (window.authUI) {
+                    window.authUI.showAuthModal('login');
+                } else {
+                    console.error('AuthUI not found even after fallback check!');
+                    alert('Authentication system not loaded. Please refresh the page.');
+                }
+                return;
+            }
 
-            console.log('[Publish] Subscription query result:', {
-                subscription,
-                error: subError,
-                userId: supabaseClient.currentUser.id,
-                userEmail: supabaseClient.currentUser.email
-            });
+            // If project already has an ID, it's been published before - just update it
+            if (this.projectData.id) {
+                await this.updateExistingProject();
+            } else {
+                // New project - check user's plan and show appropriate modal
+                const { data: subscription, error: subError } = await window.supabaseClient.client
+                    .from('subscriptions')
+                    .select('plan, status')
+                    .eq('user_id', window.supabaseClient.currentUser.id)
+                    .eq('status', 'active')
+                    .maybeSingle();
 
-            // Determine current plan
-            let currentPlan = 'free';
-            if (subscription?.plan) {
-                currentPlan = subscription.plan.toLowerCase();
-            } else if (subError) {
-                console.warn('[Publish] Could not fetch subscription:', subError.message);
-                // Check if there's a cached plan in localStorage
-                const cachedPlan = localStorage.getItem('yenze_user_plan');
-                if (cachedPlan) {
-                    console.log('[Publish] Using cached plan:', cachedPlan);
-                    currentPlan = cachedPlan.toLowerCase();
+                if (subError) {
+                    console.error('Error checking subscription:', subError);
+                    // Default to free plan behavior on error
+                    this.showSlugModal();
+                    return;
+                }
+
+                // Determine plan
+                const currentPlan = subscription ? subscription.plan.toLowerCase() : 'free';
+                console.log('[Publish] User plan:', currentPlan);
+
+                if (currentPlan === 'free') {
+                    // FREE: Show path-based slug modal
+                    this.showSlugModal();
+                } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
+                    // PAID: Show subdomain modal
+                    this.showSubdomainModal();
+                } else {
+                    // Unknown plan or no subscription - show pricing options
+                    console.warn('[Publish] Unknown plan, showing pricing options');
+                    this.showPublishOptionsModal();
                 }
             }
-
-            this.currentUserPlan = currentPlan;
-
-            // Cache the plan for future use
-            localStorage.setItem('yenze_user_plan', currentPlan);
-
-            console.log('[Publish] Final user plan:', currentPlan);
-
-            // Show appropriate modal based on current plan
-            if (currentPlan === 'free') {
-                // FREE: Show path-based slug modal
-                this.showSlugModal();
-            } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
-                // PAID: Show subdomain modal
-                this.showSubdomainModal();
-            } else {
-                // Unknown plan or no subscription - show pricing options
-                console.warn('[Publish] Unknown plan, showing pricing options');
-                this.showPublishOptionsModal();
-            }
+        } catch (err) {
+            console.error('[Publish] Critical error:', err);
+            alert('Publish failed: ' + err.message);
         }
     }
 

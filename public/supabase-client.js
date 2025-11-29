@@ -252,7 +252,7 @@ class SupabaseClient {
         }
 
         try {
-            const { data, error} = await this.client
+            const { data, error } = await this.client
                 .from('projects')
                 .upsert({
                     user_id: this.currentUser.id,
@@ -445,4 +445,4 @@ class SupabaseClient {
 }
 
 // Create singleton instance
-const supabaseClient = new SupabaseClient();
+window.supabaseClient = new SupabaseClient();
