@@ -453,7 +453,10 @@
             }
         }
     </style>
-</head>
+    <!-- Supabase & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js?v=1.6.0"></script>
+    <script src="supabase-client.js?v=1.9.1"></script>
 
 <body>
     <nav class="navbar">
@@ -737,28 +740,60 @@
         <a href="https://builder.yenze.io" class="btn btn-secondary">Open Editor</a>
         </div>
 
-        <!-- Settings Modal -->
+        <!-- Settings Modal (Wizard Style) -->
         <div id="settingsModal"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
             <div
-                style="background: white; padding: 24px; border-radius: 16px; width: 90%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
-                <h3 style="margin-bottom: 16px; font-size: 18px;">Connect Gemini AI</h3>
-                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
-                    To generate websites directly in this window, you need a free Google Gemini API Key.
-                    <br><br>
-                    1. Go to <a href="https://aistudio.google.com/app/apikey" target="_blank"
-                        style="color: #3b82f6;">Google AI Studio</a> to get your key.<br>
-                    2. Paste it below.
-                </p>
-                <input type="password" id="apiKeyInput" placeholder="Paste your API Key here (AIza...)"
-                    style="width: 100%; padding: 12px; border: 1px solid #eaeaea; border-radius: 8px; margin-bottom: 16px; font-family: monospace;">
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="saveApiKey()" class="btn btn-primary">Save Key</button>
-                    <button onclick="toggleSettingsModal()" class="btn btn-secondary">Cancel</button>
+                style="background: white; padding: 32px; border-radius: 20px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
+                <button onclick="toggleSettingsModal()"
+                    style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 30px;">
+                        ✨</div>
+                    <h3 style="font-size: 24px; font-weight: 700; color: #0a0a0a; margin-bottom: 8px;">Connect Gemini AI
+                    </h3>
+                    <p style="color: #666; font-size: 15px;">Generate unlimited websites for free using your own Google
+                        API Key.</p>
                 </div>
-                <p style="margin-top: 12px; font-size: 12px; color: #999;">Your key is stored locally in your browser.
-                    We never see it.</p>
+
+                <div
+                    style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                        <div
+                            style="width: 28px; height: 28px; background: #0a0a0a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+                            1</div>
+                        <div>
+                            <h4 style="font-weight: 600; margin-bottom: 4px;">Get your free API Key</h4>
+                            <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Go to Google AI Studio and
+                                create a new key.</p>
+                            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn btn-secondary"
+                                style="display: inline-block; padding: 6px 12px; font-size: 12px;">Get API Key ↗</a>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div
+                            style="width: 28px; height: 28px; background: #0a0a0a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
+                            2</div>
+                        <div style="width: 100%;">
+                            <h4 style="font-weight: 600; margin-bottom: 8px;">Paste it here</h4>
+                            <input type="text" id="apiKeyInput" placeholder="AIzaSy..."
+                                style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: monospace; font-size: 13px;">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="saveApiKey()" class="btn btn-primary"
+                    style="width: 100%; padding: 16px; font-size: 16px;">Connect & Save</button>
+
+                <div id="loginNotice"
+                    style="text-align: center; margin-top: 16px; font-size: 13px; color: #666; display: none;">
+                    <span style="color: #10b981;">✓ You are logged in.</span> We'll save this key to your account so you
+                    don't have to do this again.
+                </div>
             </div>
+        </div>
         </div>
 
         <!-- Loading Overlay -->
@@ -801,7 +836,17 @@
         </style>
     </main>
 
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- YENZE Supabase Client (assuming this is a custom client wrapper) -->
+    <script src="https://builder.yenze.io/supabase-client.js"></script>
+
     <script>
+        // Supabase Initialization (replace with your actual project URL and ANON KEY)
+        // const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        // const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        // let supabaseClient = null; // Will be initialized on DOMContentLoaded
+
         const state = {
             type: '',
             style: '',
@@ -1110,45 +1155,130 @@ Ensure the code is complete and functional.
         // Settings Modal Logic
         function toggleSettingsModal() {
             const modal = document.getElementById('settingsModal');
-            modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+            const isHidden = modal.style.display === 'none';
+            modal.style.display = isHidden ? 'flex' : 'none';
 
-            // Pre-fill key if exists
-            const key = localStorage.getItem('gemini_api_key');
-            if (key) document.getElementById('apiKeyInput').value = key;
+            if (isHidden) {
+                // Check if we have a key
+                checkStoredKey().then(key => {
+                    if (key) document.getElementById('apiKeyInput').value = key;
+                });
+
+                // Focus input
+                setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
+            }
         }
 
-        function saveApiKey() {
-            const key = document.getElementById('apiKeyInput').value.trim();
+        async function checkStoredKey() {
+            // 1. Check local storage first
+            let key = localStorage.getItem('gemini_api_key');
+            if (key) return key;
+
+            // 2. Check Supabase if logged in
+            if (supabaseClient && supabaseClient.isAuthenticated()) {
+                const user = supabaseClient.getUser();
+                try {
+                    const { data, error } = await supabaseClient.client
+                        .from('user_integrations')
+                        .select('api_key')
+                        .eq('user_id', user.id)
+                        .eq('service', 'gemini')
+                        .single();
+
+                    if (data && data.api_key) {
+                        // Cache it locally for speed
+                        localStorage.setItem('gemini_api_key', data.api_key);
+                        return data.api_key;
+                    }
+                } catch (e) {
+                    console.error('Error fetching key:', e);
+                }
+            }
+            return null;
+        }
+
+        async function saveApiKey() {
+            const keyInput = document.getElementById('apiKeyInput');
+            const key = keyInput.value.trim();
+
             if (!key) {
                 alert('Please enter a valid API key');
+                keyInput.focus();
                 return;
             }
+
+            if (!key.startsWith('AIza')) {
+                if (!confirm('This key doesn\'t look like a standard Google API Key (usually starts with AIza). Do you want to save it anyway?')) {
+                    return;
+                }
+            }
+
+            // Save locally
             localStorage.setItem('gemini_api_key', key);
+
+            // Save to Supabase if logged in
+            if (supabaseClient && supabaseClient.isAuthenticated()) {
+                const user = supabaseClient.getUser();
+                const btn = document.querySelector('#settingsModal .btn-primary');
+                const originalText = btn.textContent;
+                btn.textContent = 'Saving to account...';
+                btn.disabled = true;
+
+                try {
+                    await supabaseClient.client
+                        .from('user_integrations')
+                        .upsert({
+                            user_id: user.id,
+                            service: 'gemini',
+                            api_key: key,
+                            updated_at: new Date().toISOString()
+                        }, { onConflict: 'user_id,service' });
+                } catch (e) {
+                    console.error('Error saving to account:', e);
+                }
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+
             toggleSettingsModal();
-            updateConnectButton();
-            alert('API Key saved! You can now generate websites.');
+            updateConnectButton(true);
+            alert('Connected! You can now generate websites.');
         }
 
-        function updateConnectButton() {
-            const key = localStorage.getItem('gemini_api_key');
+        async function updateConnectButton(forceActive = false) {
             const btn = document.getElementById('settingsBtn');
-            if (key) {
+            const key = await checkStoredKey();
+
+            if (key || forceActive) {
                 btn.textContent = '✅ Gemini Connected';
                 btn.style.color = '#16a34a';
+                btn.style.fontWeight = '600';
             } else {
                 btn.textContent = '⚙️ Connect Gemini';
                 btn.style.color = '#666';
+                btn.style.fontWeight = 'normal';
             }
         }
 
-        // Initialize button state
-        updateConnectButton();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Init Supabase
+            if (window.supabaseClient) {
+                await window.supabaseClient.init();
+
+                if (window.supabaseClient.isAuthenticated()) {
+                    document.getElementById('loginNotice').style.display = 'block';
+                }
+            }
+
+            updateConnectButton();
+        });
 
         // Gemini Generation Logic
         let generatedCode = '';
 
         async function generateWithGemini() {
-            const apiKey = localStorage.getItem('gemini_api_key');
+            const apiKey = await checkStoredKey();
             if (!apiKey) {
                 toggleSettingsModal();
                 return;
@@ -1181,7 +1311,13 @@ Ensure the code is complete and functional.
                             topK: 40,
                             topP: 0.95,
                             maxOutputTokens: 8192,
-                        }
+                        },
+                        safetySettings: [
+                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                        ]
                     })
                 });
 
@@ -1191,6 +1327,10 @@ Ensure the code is complete and functional.
                 }
 
                 const data = await response.json();
+
+                if (!data.candidates || data.candidates.length === 0) {
+                    throw new Error('No content generated. Please try again.');
+                }
 
                 // Extract text
                 let text = data.candidates[0].content.parts[0].text;
@@ -1230,6 +1370,7 @@ Ensure the code is complete and functional.
                 alert('Error saving code: ' + e.message);
             }
         }
-</body >
+    </script>
+</body>
 
-</html >
+</html>
