@@ -3280,6 +3280,12 @@ if (validationForm) {
             return;
         }
 
+        // Ensure authUI is ready
+        if (!window.authUI && typeof AuthUI !== 'undefined') {
+            console.log('[Publish] Initializing AuthUI fallback');
+            window.authUI = new AuthUI();
+        }
+
         // Check if user is authenticated (with session refresh)
         const isAuth = await this.checkAuthentication();
         if (!isAuth) {
@@ -3290,8 +3296,8 @@ if (validationForm) {
             if (window.authUI) {
                 window.authUI.showAuthModal('login');
             } else {
-                console.error('AuthUI not found!');
-                this.showToast('Authentication system not loaded. Please refresh.', 'error');
+                console.error('AuthUI not found even after fallback check!');
+                alert('Authentication system not loaded. Please refresh the page.');
             }
             return;
         }
