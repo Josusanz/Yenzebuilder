@@ -1187,7 +1187,7 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 ### 1. PROJECT OVERVIEW
 - **Brand Identity**: **${state.brandName || 'Top-Tier Startup'}**
 - **Role/Theme**: "${typeLabels[state.type] || 'Premium Brand Website'}"
-- **Structure**: ${state.structure === 'multi' ? 'Client-Side Routing Single Page Application (SPA) in one file' : 'High-Conversion Landing Page'}
+- **Structure**: **${state.structure === 'multi' ? 'SINGLE PAGE APPLICATION (SPA) - Javascript Router Required' : 'ONE-PAGE LANDING SITE - Scroll Navigation Only'}**
 - **Core Aesthetic**: "${styleLabels[state.style] || 'Modern & Clean'}"
 - **Brand Palette**: "${colorLabels[state.color] || 'Premium Palette'}"
 
@@ -1205,8 +1205,8 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
 - **Performance**: The Hero Section image and critical CSS must be optimized for **near-instant loading** (Lighthouse score of 95+). Use **CSS for background images** where possible, and ensure the main content is above the fold.
 - **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**.
-- **Images**: Use high-quality Unsplash source URLs that MATCH the industry ("${state.type}").
-- **Icons**: Use this exact CDN link: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`. **DO NOT use 'integrity' or 'crossorigin' attributes.**
+- **Images (RELIABILITY CHECK)**: Use extremely high-confidence Unsplash IDs. **If you are not 100% sure an image ID exists, usage of `https://placehold.co/WIDTHxHEIGHT?text=Topic` is PREFERRED over a broken Unsplash link.**
+- ** Icons **: Use this exact CDN link: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`. **DO NOT use 'integrity' or 'crossorigin' attributes.**
 - **Scroll**: \`html { scroll-behavior: smooth; }\`
 
 ### 3.1 MANDATORY CSS STYLING (CRITICAL FOR PREMIUM LOOK)
@@ -1257,8 +1257,22 @@ ${state.structure === 'multi' ?
 The main content of the site MUST be organized into these distinct pages (views):
 ${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}
 
-**CRITICAL SPA RULE**: If content for a specific page is not available, you MUST generate a full-height, high-fidelity placeholder page with a large headline, strong CTA, and a relevant image that matches the ${state.style} aesthetic. **DO NOT leave any page content empty.**` :
-                    `Build these premium sections in order with smooth transitions:
+**CRITICAL SPA RULE**: If content for a specific page is not available, you MUST generate a full-height, high-fidelity placeholder page with a large headline, strong CTA, and a relevant image that matches the ${state.style} aesthetic. **DO NOT leave any page content empty.**
+
+### 5.1 SPA ARCHITECTURE & ROUTING (MANDATORY)
+Since this is a single file, you must implement a **Custom Client-Side Router** using Vanilla JS.
+1. **HTML Structure**: Wrap EACH "page" content in a container: \`<section id="page-home" class="page-view">...</section>\`.
+2. **CSS State**: All \`.page-view\` elements should be \`display: none;\` by default, except the active one.
+3. **Navigation**: The Navbar links MUST call the router. Example: \`<a href="#" onclick="router.navigate('home'); return false;">Home</a>\`.
+4. **Router Logic**:
+   - Create a \`const router = { ... }\` object.
+   - Implement function \`navigate(pageId)\` that hides all pages and shows the target page with a **smooth fade-in animation**.
+   - Update the active state of the navbar links.` :
+                    `Build these premium sections as a **Vertical Scroll Layout** (Single long page).
+**STRICT PROHIBITION**: Do NOT use a JavaScript Router or separate "views".
+**NAVIGATION**: Use standard anchor links (e.g., \`href="#services"\`) that scroll smoothly to the section ID.
+
+Sections to build in order:
 ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Immersive Hero, High-Impact Features, Detailed About, Contact Form'}`
                 }
 
