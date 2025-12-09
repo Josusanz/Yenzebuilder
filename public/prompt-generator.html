@@ -1068,16 +1068,16 @@
             const defaultFontVariables = '--font-heading: "Inter", sans-serif; \n    --font-body: "Inter", sans-serif;';
 
             const featureLabels = {
-                hero: 'Immersive Hero Section (Large visuals, strong value prop, primary CTA)',
-                about: 'About/Story Section (Grid layout with images)',
-                services: 'Bento-Grid Services Section (Interactive cards)',
-                portfolio: 'Masonry Portfolio Gallery (Hover reveals details)',
-                testimonials: 'Social Proof Carousel (Modern card design)',
-                pricing: 'Tiered Pricing Table (Highlighting "Pro" plan)',
-                contact: 'Minimalist Contact Area (Clean layout)',
-                faq: 'Accordion FAQ (Smooth expanding details)',
-                team: 'Team Showcase (Profile cards with social overlays)',
-                blog: 'Editorial Blog Grid (Featured article + recent posts)'
+                hero: 'Immersive Full-Screen Hero (Cinematic aspect ratio, central punchy headline, dual premium CTAs)',
+                about: 'Narrative-Driven About Section (Asymmetrical grid, high-contrast imagery vs text)',
+                services: 'Interactive Bento-Grid Services (Mixed-size cards, subtle hover glow effect, detailed iconography)',
+                portfolio: 'Masonry Portfolio Gallery with Hover Overlays (Asymmetrical image grid, title/category overlay reveal on hover)',
+                testimonials: 'Social Proof Carousel (Modern card design, large quotes, subtle auto-slide)',
+                pricing: 'Tiered Pricing Table (Highlight the "Pro" plan with a scale effect, clear feature list)',
+                contact: 'Minimalist Contact Area (Clean layout, contact form must use YENZE API)',
+                faq: 'Accordion FAQ (Smooth expanding details, clear use of the accent color)',
+                team: 'Team Showcase (Profile cards with subtle dark-mode social links overlay)',
+                blog: 'Editorial Blog Grid (Featured article + recent posts, focus on high-quality typography)'
             };
 
             const pageLabels = {
@@ -1109,11 +1109,13 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 - **Brand Palette**: "${colorLabels[state.color] || 'Premium Palette'}"
 
 ### 2. DESIGN & AESTHETICS (CRITICAL)
-- **Quality Standard**: Aim for **Pixel Perfect UI**. Use a strict **Grid System** (e.g., 12-column) for perfect alignment.
-- **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Use distinct weights.
-- **Whitespace**: Utilize **MAXIMALIST negative space**. Do not crowd elements.
-- **Micro-Interactions**: All interactive elements (buttons, cards) must have smooth transition timing.
-- **Visual Depth**: Use **Glassmorphism** (\`backdrop-filter: blur(10px)\`) for the sticky header/navbar. Apply **Luxury Shadows** (multi-layered, soft, diffused) for a premium, lifted feel.
+- **Design Methodology**: Strict **Atomic Design** principles must be followed. Layouts must be based on a **Mobile-First 12-Column Grid** system (enforced by CSS Grid/Flexbox).
+- **Quality Standard**: Aim for **Pixel Perfect UI**. Every element must align perfectly to the grid.
+- **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Establish a clear **Typographic Hierarchy** where H1-H3 use large, tight, editorial spacing.
+- **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
+- **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
+- **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background) on the main background for a high-end, filmic look.
+- **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement.
 
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
@@ -1234,6 +1236,16 @@ async function submitForm(e) {
 \`\`\`
 `;
             }
+
+            prompt += `
+### 8. PROHIBITED PATTERNS (DO NOT USE)
+The goal is to create a unique, non-generic look. You must strictly avoid the following elements:
+- Generic stock icons (use FontAwesome creatively).
+- Cliché flat buttons (all buttons must have depth via shadow/lift).
+- Overly bright, distracting gradients.
+- Horizontal rule dividers (\`<hr>\`). Use subtle borders or margin/padding for separation.
+- Generic "OUR SERVICES" or "LOREM IPSUM" copy.
+`;
 
             prompt += `
 ### FINAL OUTPUT FORMAT
