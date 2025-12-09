@@ -15,6 +15,11 @@ const STRIPE_CONFIG = {
     }
 };
 
+// Google Auth Configuration
+// Replace with your Google Cloud Client ID (same as used for Supabase Auth)
+// IMPORTANT: Add https://yenze.io to "Authorized Javascript Origins" in Google Cloud Console
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+
 // Plans Configuration - Ultra-Competitive Pricing
 const PLANS = {
     FREE: {

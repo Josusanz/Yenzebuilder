@@ -4180,6 +4180,7 @@ if (validationForm) {
         const isNewProject = urlParams.get('new') === 'true';
         const isPasteMode = urlParams.get('paste') === 'true';
         const isTemplateMode = urlParams.get('template') === 'true';
+        const isImportMode = urlParams.get('import') === 'true';
 
         console.log('[LoadProject] Project ID from URL:', projectId);
         console.log('[LoadProject] New project flag:', isNewProject);
@@ -4212,6 +4213,35 @@ if (validationForm) {
             this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
 
             // Remove the template parameter from URL
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+        }
+
+        // Check for imported HTML from prompt generator
+        if (isImportMode && localStorage.getItem('yenze_imported_code')) {
+            const importedHTML = localStorage.getItem('yenze_imported_code');
+            console.log('[LoadProject] Loading imported HTML from prompt generator');
+
+            // Clear the imported HTML from localStorage
+            localStorage.removeItem('yenze_imported_code');
+            localStorage.removeItem('yenze_load_import');
+
+            // Clear existing project to start fresh
+            localStorage.removeItem('yenzeProject');
+
+            // Load the imported HTML
+            this.projectData = {
+                name: 'Imported Website',
+                html: importedHTML,
+                assets: [],
+                publishedUrl: null
+            };
+
+            document.getElementById('projectName').value = this.projectData.name;
+            this.loadHTML(importedHTML);
+            this.showToast('✨ Code imported successfully!', 'success');
+
+            // Remove the import parameter from URL
             window.history.replaceState({}, '', window.location.pathname);
             return;
         }

@@ -398,17 +398,42 @@
             margin-top: 24px;
         }
 
-        .btn {
+        .action-group {
             flex: 1;
-            padding: 14px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-badge {
+            width: 24px;
+            height: 24px;
+            background: #eaeaea;
+            color: #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 12px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             text-decoration: none;
             text-align: center;
             transition: all 0.15s;
             border: none;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .btn-primary {
@@ -431,6 +456,17 @@
             background: #fafafa;
         }
 
+        .btn-accent {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-accent:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 640px) {
             .main {
                 padding: 32px 16px 60px;
@@ -446,6 +482,13 @@
 
             .actions {
                 flex-direction: column;
+                gap: 24px;
+            }
+
+            .action-group {
+                width: 100%;
+                flex-direction: row;
+                gap: 12px;
             }
 
             .nav-links .nav-link:not(.primary) {
@@ -463,7 +506,7 @@
         <a href="/" class="nav-brand">YENZE</a>
         <div class="nav-links">
             <a href="/dashboard" class="nav-link">Dashboard</a>
-            <button onclick="toggleSettingsModal()" class="nav-link" id="settingsBtn">⚙️ Connect Gemini</button>
+            <a href="/dashboard" class="nav-link">Dashboard</a>
             <a href="https://builder.yenze.io" class="nav-link primary">Open Editor</a>
         </div>
     </nav>
@@ -483,12 +526,12 @@
             <div class="step-line"></div>
             <div class="step">
                 <div class="step-number">2</div>
-                <div class="step-text">Copy the prompt and paste it into Gemini, ChatGPT or Claude</div>
+                <div class="step-text">Click 'Open Gemini' and paste the prompt</div>
             </div>
             <div class="step-line"></div>
             <div class="step">
                 <div class="step-number">3</div>
-                <div class="step-text">Copy the generated HTML code and paste it in YENZE Editor</div>
+                <div class="step-text">Copy the generated HTML code and import it in the Builder</div>
             </div>
         </div>
 
@@ -733,107 +776,31 @@
         </div>
 
         <!-- Actions -->
-        <button onclick="generateWithGemini()" class="btn btn-primary" id="generateBtn"
-            style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border: none;">✨ Generate Website with
-            Gemini</button>
-        <a href="https://gemini.google.com" target="_blank" class="btn btn-secondary">Open Gemini Web</a>
-        <a href="https://builder.yenze.io" class="btn btn-secondary">Open Editor</a>
-        </div>
-
-        <!-- Settings Modal (Wizard Style) -->
-        <div id="settingsModal"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-            <div
-                style="background: white; padding: 32px; border-radius: 20px; width: 90%; max-width: 550px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative;">
-                <button onclick="toggleSettingsModal()"
-                    style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999;">&times;</button>
-
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <div
-                        style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 30px;">
-                        ✨</div>
-                    <h3 style="font-size: 24px; font-weight: 700; color: #0a0a0a; margin-bottom: 8px;">Connect Gemini AI
-                    </h3>
-                    <p style="color: #666; font-size: 15px;">Generate unlimited websites for free using your own Google
-                        API Key.</p>
-                </div>
-
-                <div
-                    style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-                    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-                        <div
-                            style="width: 28px; height: 28px; background: #0a0a0a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
-                            1</div>
-                        <div>
-                            <h4 style="font-weight: 600; margin-bottom: 4px;">Get your free API Key</h4>
-                            <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Go to Google AI Studio and
-                                create a new key.</p>
-                            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn btn-secondary"
-                                style="display: inline-block; padding: 6px 12px; font-size: 12px;">Get API Key ↗</a>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 16px;">
-                        <div
-                            style="width: 28px; height: 28px; background: #0a0a0a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0;">
-                            2</div>
-                        <div style="width: 100%;">
-                            <h4 style="font-weight: 600; margin-bottom: 8px;">Paste it here</h4>
-                            <input type="text" id="apiKeyInput" placeholder="AIzaSy..."
-                                style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: monospace; font-size: 13px;">
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="saveApiKey()" class="btn btn-primary"
-                    style="width: 100%; padding: 16px; font-size: 16px;">Connect & Save</button>
-
-                <div id="loginNotice"
-                    style="text-align: center; margin-top: 16px; font-size: 13px; color: #666; display: none;">
-                    <span style="color: #10b981;">✓ You are logged in.</span> We'll save this key to your account so you
-                    don't have to do this again.
-                </div>
+        <div class="actions">
+            <!-- Step 1 -->
+            <div class="action-group">
+                <div class="step-badge">1</div>
+                <button id="actionCopyBtn" class="btn btn-primary">📋 Copy Prompt</button>
             </div>
-        </div>
-        </div>
 
-        <!-- Loading Overlay -->
-        <div id="loadingOverlay"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column;">
-            <div
-                style="width: 40px; height: 40px; border: 3px solid #eaeaea; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;">
+            <!-- Step 2 -->
+            <div class="action-group">
+                <div class="step-badge">2</div>
+                <a href="https://gemini.google.com/app" target="_blank" class="btn btn-secondary">Open Gemini ↗</a>
             </div>
-            <h3 style="font-size: 18px; font-weight: 600; color: #0a0a0a;">Generating your website...</h3>
-            <p style="color: #666; margin-top: 8px;">This usually takes about 30-60 seconds.</p>
-        </div>
 
-        <!-- Result Modal -->
-        <div id="resultModal"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-            <div
-                style="background: white; padding: 24px; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
-                <div style="text-align: center; margin-bottom: 24px;">
-                    <div
-                        style="width: 48px; height: 48px; background: #dcfce7; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px;">
-                        ✓</div>
-                    <h3 style="font-size: 20px; font-weight: 700;">Website Generated!</h3>
-                    <p style="color: #666; margin-top: 8px;">Your code is ready to be edited.</p>
-                </div>
-
-                <div style="display: flex; gap: 12px; margin-top: auto;">
-                    <button onclick="openInEditor()" class="btn btn-primary"
-                        style="background: #16a34a; border: none;">Open in YENZE Editor</button>
-                    <button onclick="closeResultModal()" class="btn btn-secondary">Close</button>
-                </div>
+            <!-- Step 3 -->
+            <div class="action-group">
+                <div class="step-badge">3</div>
+                <a href="builder.html" class="btn btn-accent">Open Builder & Paste HTML ↗</a>
             </div>
         </div>
 
-        <style>
-            @keyframes spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-        </style>
+        <!-- Instructions -->
+        <div class="instructions-footer" style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
+            <p><strong>How to use:</strong> Copy the prompt, paste it into Gemini, copy the HTML code it generates, then
+                open the Builder and paste the code in the "Import" tab.</p>
+        </div>
     </main>
 
     <!-- Supabase CDN -->
@@ -973,104 +940,179 @@
 
             const typeLabels = {
                 landing: 'High-Conversion Landing Page',
-                business: 'Corporate Business Website',
-                portfolio: 'Creative Professional Portfolio',
-                store: 'Modern E-commerce Storefront',
-                saas: 'SaaS Product Landing Page',
-                restaurant: 'Premium Restaurant Website',
-                agency: 'Digital Agency Website',
-                blog: 'Editorial/Magazine Style Blog',
-                personal: 'Personal Brand Website',
-                event: 'Event & Conference Website'
+                business: 'Premium Corporate Business Website',
+                portfolio: 'Award-Winning Creative Folio',
+                store: 'Luxury E-commerce Storefront',
+                saas: 'Modern SaaS Product Platform',
+                restaurant: 'High-End Culinary Experience Website',
+                agency: 'Creative Digital Agency Platform',
+                blog: 'Minimalist Editorial Magazine',
+                personal: 'Personal Brand Identity Site',
+                event: 'Immersive Event Experience Site'
             };
 
             const styleLabels = {
-                minimal: 'Minimalist Luxury (High whitespace, clean typography, subtle details)',
-                modern: 'Modern Tech (Glassmorphism, gradients, rounded corners, smooth animations)',
-                bold: 'Brutalism/Bold (Large typography, high contrast, sharp edges)',
-                elegant: 'Classic Elegance (Serif fonts, gold/muted accents, sophisticated layout)',
-                playful: 'Playful & Creative (Vibrant colors, organic shapes, bounce animations)',
-                dark: 'Premium Dark Mode (Deep backgrounds, neon/glow accents, high contrast)'
+                minimal: 'Ultra-Minimalist (Swiss, massive whitespace, sophisticated typography)',
+                modern: 'Bento-Box Modern (Grid layouts, glassmorphism, blurred gradients)',
+                bold: 'Neo-Brutalism (High contrast, large typography, stark outlines)',
+                elegant: 'Timeless Luxury (Serif headings, gold/cream accents, delicate lines)',
+                playful: 'Dopamine Design (Vibrant, rounded shapes, micro-interactions)',
+                dark: 'Cyber-Premium Dark (Deep blacks, neon gradients, glowing elements)'
             };
 
             const colorLabels = {
-                monochrome: 'Monochromatic (Black, White, and varying shades of Gray)',
-                blue: 'Trust & Tech (Deep Blues, Electric Purples, and cool gradients)',
-                green: 'Nature & Growth (Emerald Greens, Teals, and fresh accents)',
-                warm: 'Energy & Warmth (Sunset Oranges, Pinks, and warm gradients)',
-                earth: 'Organic & Earthy (Beige, Terracotta, Olive, and natural tones)',
-                neon: 'Cyberpunk/Neon (Dark background with bright Neon Green/Pink/Blue)'
+                monochrome: 'Monochromatic Luxury (Zinc/Slate scales with one accent)',
+                blue: 'Deep Ocean Tech (Royal blues, electric indigos, clean whites)',
+                green: 'Organic Modern (Forest greens, sage, cream, earthy browns)',
+                warm: 'Sunset Premium (Rich oranges, warm greys, soft pink gradients)',
+                earth: 'Natural Aesthetics (Stone, sand, clay, charcoal)',
+                neon: 'High-Voltage Digital (Almost black backgrounds, neon lime/cyan accents)'
+            };
+
+            // Mapping for specific color palettes based on selection
+            const colorPalettes = {
+                monochrome: `
+    --bg-main: 0 0% 100%;
+    --bg-secondary: 0 0% 98%;
+    --text-main: 0 0% 9%;
+    --text-muted: 0 0% 45%;
+    --accent: 0 0% 9%;
+    --accent-contrast: 0 0% 100%;
+    --border: 0 0% 90%;`,
+                blue: `
+    --bg-main: 220 30% 98%;
+    --bg-secondary: 220 30% 96%;
+    --text-main: 222 47% 11%;
+    --text-muted: 215 25% 40%;
+    --accent: 221 83% 53%;
+    --accent-contrast: 0 0% 100%;
+    --border: 220 20% 90%;`,
+                green: `
+    --bg-main: 150 15% 98%;
+    --bg-secondary: 150 15% 96%;
+    --text-main: 164 45% 10%;
+    --text-muted: 160 15% 40%;
+    --accent: 158 64% 35%;
+    --accent-contrast: 0 0% 100%;
+    --border: 150 10% 88%;`,
+                warm: `
+    --bg-main: 25 30% 98%;
+    --bg-secondary: 25 30% 96%;
+    --text-main: 20 20% 10%;
+    --text-muted: 20 10% 40%;
+    --accent: 12 76% 61%;
+    --accent-contrast: 0 0% 100%;
+    --border: 20 15% 90%;`,
+                earth: `
+    --bg-main: 35 25% 96%;
+    --bg-secondary: 35 20% 92%;
+    --text-main: 30 15% 15%;
+    --text-muted: 30 10% 40%;
+    --accent: 28 35% 45%;
+    --accent-contrast: 35 25% 96%;
+    --border: 30 10% 85%;`,
+                neon: `
+    --bg-main: 240 10% 4%;
+    --bg-secondary: 240 10% 8%;
+    --text-main: 0 0% 100%;
+    --text-muted: 240 10% 65%;
+    --accent: 142 77% 53%;
+    --accent-contrast: 0 0% 0%;
+    --border: 240 10% 20%;`
+            };
+
+            // Font recommendations based on style
+            const fonts = {
+                minimal: 'font-family: "Inter", sans-serif; (Heading: "Inter", Body: "Inter")',
+                modern: 'font-family: "Plus Jakarta Sans", sans-serif; (Heading: "Plus Jakarta Sans", Body: "Inter")',
+                bold: 'font-family: "Oswald", sans-serif; (Heading: "Oswald", Body: "Roboto")',
+                elegant: 'font-family: "Playfair Display", serif; (Heading: "Playfair Display", Body: "Lato")',
+                playful: 'font-family: "Quicksand", sans-serif; (Heading: "Quicksand", Body: "Nunito")',
+                dark: 'font-family: "Space Grotesk", sans-serif; (Heading: "Space Grotesk", Body: "Inter")'
             };
 
             const featureLabels = {
-                hero: 'Hero Section (Immersive background, strong headline, clear CTA)',
-                about: 'About Section (Storytelling approach with image/text layout)',
-                services: 'Services Grid (Cards with icons and hover effects)',
-                portfolio: 'Project Gallery (Masonry or Grid layout with filtering)',
-                testimonials: 'Social Proof/Testimonials (Carousel or Grid)',
-                pricing: 'Pricing Tables (Comparison view with "Recommended" highlight)',
-                contact: 'Contact Section (Form + Map + Info)',
-                faq: 'FAQ Accordion (Smooth expand/collapse)',
-                team: 'Team Members (Profile cards with social links)',
-                blog: 'Latest Articles (Grid of blog post previews)'
+                hero: 'Immersive Hero Section (Large visuals, strong value prop, primary CTA)',
+                about: 'About/Story Section (Grid layout with images)',
+                services: 'Bento-Grid Services Section (Interactive cards)',
+                portfolio: 'Masonry Portfolio Gallery (Hover reveals details)',
+                testimonials: 'Social Proof Carousel (Modern card design)',
+                pricing: 'Tiered Pricing Table (Highlighting "Pro" plan)',
+                contact: 'Minimalist Contact Area (Clean layout)',
+                faq: 'Accordion FAQ (Smooth expanding details)',
+                team: 'Team Showcase (Profile cards with social overlays)',
+                blog: 'Editorial Blog Grid (Featured article + recent posts)'
             };
 
             const pageLabels = {
                 home: 'Home Page',
-                about: 'About Us',
-                services: 'Services/Products',
-                portfolio: 'Portfolio/Work',
-                blog: 'Blog/News',
-                contact: 'Contact Us',
+                about: 'About',
+                services: 'Services',
+                portfolio: 'Work',
+                blog: 'Journal',
+                contact: 'Contact',
                 pricing: 'Pricing',
                 team: 'Team',
                 faq: 'FAQ',
-                testimonials: 'Testimonials'
+                testimonials: 'Reviews'
             };
 
-            // Constructing the "Mega Prompt"
-            let prompt = `ACT AS A WORLD-CLASS WEB DEVELOPER AND UI/UX DESIGNER.
-Your task is to code a COMPLETE, PRODUCTION-READY website in a SINGLE HTML FILE.
+            // Constructing the "Mega Prompt" for Premium Results
+            let prompt = `ACT AS A SENIOR FRONTEND ENGINEER & AWARD-WINNING UI/UX DESIGNER.
+Your goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website possible for the user.
+The output must be a single, production-ready \`index.html\` file that feels like a top-tier startup or luxury brand site.
 
-### PROJECT OVERVIEW
-- **Type**: ${typeLabels[state.type] || 'Professional Website'}
-- **Structure**: ${state.structure === 'multi' ? 'Multi-Page Application (SPA) in one file' : 'Single Page Landing Page'}
-- **Design Style**: ${styleLabels[state.style] || 'Modern & Professional'}
-- **Color Palette**: ${colorLabels[state.color] || 'Professional Color Scheme'}
+### 1. PROJECT SPECIFICATIONS
+- **Theme**: "${typeLabels[state.type] || 'Premium Brand Website'}"
+- **Structure**: ${state.structure === 'multi' ? 'Single Page Application (SPA) architecture in one file' : 'High-Conversion Landing Page'}
+- **Visual Style**: ${styleLabels[state.style] || 'Modern & Clean'}
+- **Color Theme**: ${colorLabels[state.color] || 'Premium Palette'}
 
-### CRITICAL REQUIREMENTS (DO NOT IGNORE)
-1. **Single File Only**: All HTML, CSS, and JavaScript must be contained in ONE \`index.html\` file.
-2. **Modern Design**: Use a sophisticated design system. No "default" looking HTML. It must look like a 2025 award-winning website.
-3. **Responsive**: Fully responsive mobile-first design using CSS Grid and Flexbox.
-4. **Images**: Use high-quality Unsplash source URLs (e.g., \`https://images.unsplash.com/photo-...\`) relevant to the industry.
-5. **Icons**: Use FontAwesome (via CDN) or inline SVGs for all icons.
-6. **Fonts**: Use professional Google Fonts (e.g., Inter, Plus Jakarta Sans, Playfair Display) appropriate for the style.
+### 2. DESIGN & AESTHETICS (CRITICAL)
+- **Quality Standard**: Aim for "Awwwards" Site of the Day quality. No generic Bootstrap looks.
+- **Typography**: Use Google Fonts: ${fonts[state.style] || 'Inter'}. Use distinct weights (light for details, bold for headings).
+- **Whitespace**: Use generous padding/margin (80px-120px between sections). Do not crowd elements.
+- **Micro-Interactions**: Add \`transition: all 0.3s ease\` to interactive elements. Buttons should lift/glow on hover. Cards should scale slightly.
+- **Glassmorphism**: Use \`backdrop-filter: blur(10px)\` for sticky navbars or overlay cards.
+- **Gradients**: Use subtle, noise-textured, or mesh gradients for backgrounds, not flat colors.
+- **Shadows**: Use multi-layered, soft shadows (e.g., \`box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 24px 48px -12px rgba(0,0,0,0.1)\`).
 
-### CONTENT STRATEGY
-- Write **REAL, ENGAGING COPY** tailored to the "${state.type}" industry. Do NOT use "Lorem Ipsum".
-- Use persuasive headlines and clear calls-to-action (CTAs).
+### 3. TECHNICAL REQUIREMENTS
+- **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
+- **Responsive**: Mobile-first approach using CSS Grid and Flexbox.
+- **Images**: Use high-quality Unsplash source URLs (e.g., \`https://images.unsplash.com/photo-1...\`) that MATCH the industry ("${state.type}").
+- **Icons**: Use FontAwesome via CDN (\`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`).
+- **Scroll Behavior**: \`html { scroll-behavior: smooth; }\`
+- **Navigation**: Sticky, blurred header with a mobile hamburger menu.
 
-### CSS STYLING INSTRUCTIONS
-- Use **CSS Variables** (:root) for colors, spacing, and fonts to ensure consistency.
-- Implement **smooth scrolling** (\`html { scroll-behavior: smooth; }\`).
-- Add **hover effects** to buttons, cards, and links (transform, shadow, opacity).
-- Use **Glassmorphism** or subtle shadows for depth where appropriate.
-- Ensure accessible contrast ratios.
+### 4. COLOR PALETTE (USE THESE CSS VARIABLES)
+Use HSL values for flexibility. Put this in your \`:root\`:
+\`\`\`css
+:root {
+${colorPalettes[state.color] || colorPalettes.blue}
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 24px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+\`\`\`
 
-### JAVASCRIPT FUNCTIONALITY
-- **Navbar**: Sticky on scroll, mobile hamburger menu.
-- **Animations**: Use IntersectionObserver to fade-in elements as the user scrolls down.
-${state.structure === 'multi' ? `- **Routing**: Implement a client-side router to switch "pages" (sections) instantly without reload. Handle active states in the navbar.` : ''}
-
-### SECTIONS TO BUILD
+### 5. SECTIONS TO BUILD
 ${state.structure === 'multi' ?
-                    `Create the following "pages" (hidden/shown via JS):
+                    `Implement a client-side router to switch these "pages" instantly without reload (fadeIn animation):
 ${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}` :
-                    `Include the following sections in order:
+                    `Build these sections in order with smooth transitions:
 ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Hero, Features, About, Contact'}`
                 }
 
-${state.details ? `### SPECIFIC USER INSTRUCTIONS\n${state.details}` : ''}
+### 6. CONTENT GUIDELINES
+- Write **PROFESSIONAL, COMPELLING COPY**. No "Lorem Ipsum".
+- Headlines should be punchy and large (e.g., 3.5rem+ on desktop).
+- Buttons should have clear actions ("Get Started", "View Portfolio").
+
+${state.details ? `### SPECIFIC USER REQUESTS\n${state.details}` : ''}
 
 `;
 
@@ -1152,215 +1194,54 @@ Ensure the code is complete and functional.
             return prompt;
         }
 
-        // Settings Modal Logic
-        function toggleSettingsModal() {
-            const modal = document.getElementById('settingsModal');
-            const isHidden = modal.style.display === 'none';
-            modal.style.display = isHidden ? 'flex' : 'none';
-
-            if (isHidden) {
-                // Check if we have a key
-                checkStoredKey().then(key => {
-                    if (key) document.getElementById('apiKeyInput').value = key;
-                });
-
-                // Focus input
-                setTimeout(() => document.getElementById('apiKeyInput').focus(), 100);
-            }
-        }
-
-        async function checkStoredKey() {
-            // 1. Check local storage first
-            let key = localStorage.getItem('gemini_api_key');
-            if (key) return key;
-
-            // 2. Check Supabase if logged in
-            if (supabaseClient && supabaseClient.isAuthenticated()) {
-                const user = supabaseClient.getUser();
-                try {
-                    const { data, error } = await supabaseClient.client
-                        .from('user_integrations')
-                        .select('api_key')
-                        .eq('user_id', user.id)
-                        .eq('service', 'gemini')
-                        .single();
-
-                    if (data && data.api_key) {
-                        // Cache it locally for speed
-                        localStorage.setItem('gemini_api_key', data.api_key);
-                        return data.api_key;
-                    }
-                } catch (e) {
-                    console.error('Error fetching key:', e);
-                }
-            }
-            return null;
-        }
-
-        async function saveApiKey() {
-            const keyInput = document.getElementById('apiKeyInput');
-            const key = keyInput.value.trim();
-
-            if (!key) {
-                alert('Please enter a valid API key');
-                keyInput.focus();
-                return;
-            }
-
-            if (!key.startsWith('AIza')) {
-                if (!confirm('This key doesn\'t look like a standard Google API Key (usually starts with AIza). Do you want to save it anyway?')) {
-                    return;
-                }
-            }
-
-            // Save locally
-            localStorage.setItem('gemini_api_key', key);
-
-            // Save to Supabase if logged in
-            if (supabaseClient && supabaseClient.isAuthenticated()) {
-                const user = supabaseClient.getUser();
-                const btn = document.querySelector('#settingsModal .btn-primary');
-                const originalText = btn.textContent;
-                btn.textContent = 'Saving to account...';
-                btn.disabled = true;
-
-                try {
-                    await supabaseClient.client
-                        .from('user_integrations')
-                        .upsert({
-                            user_id: user.id,
-                            service: 'gemini',
-                            api_key: key,
-                            updated_at: new Date().toISOString()
-                        }, { onConflict: 'user_id,service' });
-                } catch (e) {
-                    console.error('Error saving to account:', e);
-                }
-                btn.textContent = originalText;
-                btn.disabled = false;
-            }
-
-            toggleSettingsModal();
-            updateConnectButton(true);
-            alert('Connected! You can now generate websites.');
-        }
-
-        async function updateConnectButton(forceActive = false) {
-            const btn = document.getElementById('settingsBtn');
-            const key = await checkStoredKey();
-
-            if (key || forceActive) {
-                btn.textContent = '✅ Gemini Connected';
-                btn.style.color = '#16a34a';
-                btn.style.fontWeight = '600';
-            } else {
-                btn.textContent = '⚙️ Connect Gemini';
-                btn.style.color = '#666';
-                btn.style.fontWeight = 'normal';
-            }
-        }
-
         // Initialize
         document.addEventListener('DOMContentLoaded', async () => {
             // Init Supabase
             if (window.supabaseClient) {
                 await window.supabaseClient.init();
-
-                if (window.supabaseClient.isAuthenticated()) {
-                    document.getElementById('loginNotice').style.display = 'block';
-                }
             }
-
-            updateConnectButton();
         });
 
-        // Gemini Generation Logic
-        let generatedCode = '';
+    </script>
 
-        async function generateWithGemini() {
-            const apiKey = await checkStoredKey();
-            if (!apiKey) {
-                toggleSettingsModal();
-                return;
-            }
+    <script>
+        // Link the main action copy button to the same logic
+        const actionCopyBtn = document.getElementById('actionCopyBtn');
+        if (actionCopyBtn) {
+            actionCopyBtn.addEventListener('click', () => {
+                document.getElementById('copyBtn').click();
 
-            // Get the prompt
-            const prompt = updatePrompt();
-            if (!prompt || prompt === 'Select options above to generate your prompt...') {
-                alert('Please select some options first');
-                return;
-            }
-
-            // Show loading
-            document.getElementById('loadingOverlay').style.display = 'flex';
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt + "\n\nIMPORTANT: Return ONLY the HTML code. Do not include markdown formatting like ```html or ```. Just the raw HTML code."
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            topK: 40,
-                            topP: 0.95,
-                            maxOutputTokens: 8192,
-                        },
-                        safetySettings: [
-                            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                        ]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'Failed to generate content');
-                }
-
-                const data = await response.json();
-
-                if (!data.candidates || data.candidates.length === 0) {
-                    throw new Error('No content generated. Please try again.');
-                }
-
-                // Extract text
-                let text = data.candidates[0].content.parts[0].text;
-
-                // Clean up markdown if present (despite instructions)
-                text = text.replace(/```html/g, '').replace(/```/g, '').trim();
-
-                generatedCode = text;
-
-                // Show success
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('resultModal').style.display = 'flex';
-
-            } catch (error) {
-                console.error('Generation Error:', error);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert('Error generating website: ' + error.message);
-            }
+                // Visual feedback on the big button too
+                const originalText = actionCopyBtn.innerHTML;
+                actionCopyBtn.innerHTML = '✅ Copied!';
+                actionCopyBtn.classList.add('copied');
+                setTimeout(() => {
+                    actionCopyBtn.innerHTML = originalText;
+                    actionCopyBtn.classList.remove('copied');
+                }, 2000);
+            });
         }
 
-        function closeResultModal() {
-            document.getElementById('resultModal').style.display = 'none';
+        function processManualCode() {
+            const code = document.getElementById('manualCodeInput').value.trim();
+            if (!code) {
+                alert('Please paste some code first');
+                return;
+            }
+            // Basic validation
+            if (!code.includes('<html') && !code.includes('<body') && !code.includes('<div')) {
+                if (!confirm('This doesn\'t look like HTML code. Import anyway?')) return;
+            }
+            saveAndRedirect(code);
         }
 
-        function openInEditor() {
-            if (!generatedCode) return;
+        function saveAndRedirect(code) {
+            // Clean up markdown if present
+            code = code.replace(/```html/g, '').replace(/```/g, '').trim();
 
             // Store code in localStorage to pass to builder
             try {
-                localStorage.setItem('yenze_imported_code', generatedCode);
+                localStorage.setItem('yenze_imported_code', code);
                 // Also set a flag to tell builder to load it
                 localStorage.setItem('yenze_load_import', 'true');
 
