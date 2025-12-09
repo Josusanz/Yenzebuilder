@@ -1147,10 +1147,12 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 - **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
 - **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
 - **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background). **IMPORTANT: Do NOT generate long Base64 data URIs.** Use a simple CSS \`opacity\` overlay or a short external URL.
+- **Placeholder Aesthetics (CRITICAL)**: All background images (Hero, About section images, Portfolio items) sourced from Unsplash **MUST** have a **subtle filter applied** to match the site's atmosphere. Use a combination of \`filter: grayscale(80%) sepia(20%);\` or \`filter: brightness(0.8) contrast(1.2);\` to create a cohesive, editorial, and branded look.
 - **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement. **Implement a single, repeated, subtle parallax or Lottie-style animation in the Hero or Feature section for visual polish.**
 
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
+- **Performance**: The Hero Section image and critical CSS must be optimized for **near-instant loading** (Lighthouse score of 95+). Use **CSS for background images** where possible, and ensure the main content is above the fold.
 - **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**.
 - **Images**: Use high-quality Unsplash source URLs that MATCH the industry ("${state.type}").
 - **Icons**: Use this exact CDN link: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`. **DO NOT use 'integrity' or 'crossorigin' attributes.**
@@ -1231,7 +1233,7 @@ HTML:
         <label>Message</label>
         <textarea name="message" placeholder="We're interested in scaling our user activation flow." required></textarea>
     </div>
-    <button type="submit" class="btn-submit">Send Secure Inquiry</button>
+    <button type="submit" class="btn-submit">Secure Your Discovery Session</button>
 </form>
 \`\`\`
 
