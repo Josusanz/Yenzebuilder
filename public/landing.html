@@ -12,6 +12,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
+    <script>
+        // Subdomain Router for Builder
+        // If user visits builder.yenze.io (root), redirect to the actual builder app
+        if (window.location.hostname === 'builder.yenze.io' && window.location.pathname === '/') {
+            window.location.replace('/builder.html' + window.location.search + window.location.hash);
+        }
+    </script>
+
     <style>
         :root {
             --primary: #0066FF;

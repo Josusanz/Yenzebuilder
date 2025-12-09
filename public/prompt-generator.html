@@ -500,13 +500,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js?v=1.6.0"></script>
     <script src="supabase-client.js?v=1.9.1"></script>
+</head>
 
 <body>
     <nav class="navbar">
         <a href="/" class="nav-brand">YENZE</a>
         <div class="nav-links">
-            <a href="/dashboard" class="nav-link">Dashboard</a>
-            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="https://builder.yenze.io/dashboard.html" class="nav-link">Dashboard</a>
             <a href="https://builder.yenze.io" class="nav-link primary">Open Editor</a>
         </div>
     </nav>
@@ -617,10 +617,16 @@
         <div class="section">
             <div class="section-label">Color Palette</div>
             <div class="color-grid" id="colorOptions">
+                <div class="color-option" data-value="white">
+                    <div class="color-preview"
+                        style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); border: 1px solid #e2e8f0;">
+                    </div>
+                    <div class="color-label">Pure White</div>
+                </div>
                 <div class="color-option" data-value="monochrome">
                     <div class="color-preview" style="background: linear-gradient(135deg, #0a0a0a 0%, #404040 100%);">
                     </div>
-                    <div class="color-label">Monochrome</div>
+                    <div class="color-label">Dark Mono</div>
                 </div>
                 <div class="color-option" data-value="blue">
                     <div class="color-preview" style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);">
@@ -939,46 +945,55 @@
             }
 
             const typeLabels = {
-                landing: 'High-Conversion Landing Page',
-                business: 'Premium Corporate Business Website',
-                portfolio: 'Award-Winning Creative Folio',
-                store: 'Luxury E-commerce Storefront',
-                saas: 'Modern SaaS Product Platform',
-                restaurant: 'High-End Culinary Experience Website',
-                agency: 'Creative Digital Agency Platform',
-                blog: 'Minimalist Editorial Magazine',
-                personal: 'Personal Brand Identity Site',
-                event: 'Immersive Event Experience Site'
+                landing: 'High-Fidelity, Zero-Distraction Landing Page (A/B Test Ready)',
+                business: 'Global B2B/Corporate Authority Site (Enterprise Ready)',
+                portfolio: 'Interactive, Narrative-Driven Creative Folio (Visual Storytelling)',
+                store: 'Direct-to-Consumer (DTC) Luxury E-commerce Storefront',
+                saas: 'Product-Led Growth (PLG) Platform (User-Centric Design)',
+                restaurant: 'High-End Culinary Experience Site (Focus on Gastronomic Imagery)',
+                agency: 'Boutique Digital Agency Showcase (High-Impact Case Studies)',
+                blog: 'Minimalist Editorial Magazine (Focus on Reading Experience)',
+                personal: 'Personal Brand Identity Site (High-Impact Biography)',
+                event: 'Immersive Event Experience Site (Animated Countdown, Ticket CTA)'
             };
 
             const styleLabels = {
-                minimal: 'Ultra-Minimalist (Swiss, massive whitespace, sophisticated typography)',
-                modern: 'Bento-Box Modern (Grid layouts, glassmorphism, blurred gradients)',
-                bold: 'Neo-Brutalism (High contrast, large typography, stark outlines)',
-                elegant: 'Timeless Luxury (Serif headings, gold/cream accents, delicate lines)',
-                playful: 'Dopamine Design (Vibrant, rounded shapes, micro-interactions)',
-                dark: 'Cyber-Premium Dark (Deep blacks, neon gradients, glowing elements)'
+                minimal: 'Swiss Grid Purity (Maximalist Whitespace, Editorial Typography)',
+                modern: 'Bento Box Grid & Glassmorphism (Fluid motion, layered depth)',
+                bold: 'Neo-Brutalism 3.0 (Asymmetrical layout, high-contrast negative space)',
+                elegant: 'Timeless Luxury/Editorial (Serif headlines, delicate lines, sophisticated animation)',
+                playful: 'Dopamine Design (3D elements, vibrant colors, organic shapes)',
+                dark: 'Premium Dark Mode (OLED black, neon accents, cinematic atmosphere)'
             };
 
             const colorLabels = {
-                monochrome: 'Monochromatic Luxury (Zinc/Slate scales with one accent)',
-                blue: 'Deep Ocean Tech (Royal blues, electric indigos, clean whites)',
-                green: 'Organic Modern (Forest greens, sage, cream, earthy browns)',
+                white: 'Pure Clean White (Minimalist, Apple-style, Zero distractions)',
+                monochrome: 'Luxury Dark Monochromatic (Zinc/Slate scales, 1% Gold accent)',
+                blue: 'Deep Tech Ocean (Electric Indigo/Royal Blue, Trust-focused)',
+                green: 'Organic Modern Earth Tones (Sage, Cream, Natural Linen Textures)',
                 warm: 'Sunset Premium (Rich oranges, warm greys, soft pink gradients)',
                 earth: 'Natural Aesthetics (Stone, sand, clay, charcoal)',
-                neon: 'High-Voltage Digital (Almost black backgrounds, neon lime/cyan accents)'
+                neon: 'High-Voltage Cyberpunk (Pure black background, Lime/Cyan glowing accents)'
             };
 
             // Mapping for specific color palettes based on selection
             const colorPalettes = {
-                monochrome: `
+                white: `
     --bg-main: 0 0% 100%;
     --bg-secondary: 0 0% 98%;
-    --text-main: 0 0% 9%;
-    --text-muted: 0 0% 45%;
-    --accent: 0 0% 9%;
+    --text-main: 0 0% 0%;
+    --text-muted: 0 0% 40%;
+    --accent: 0 0% 0%;
     --accent-contrast: 0 0% 100%;
-    --border: 0 0% 90%;`,
+    --border: 0 0% 92%;`,
+                monochrome: `
+    --bg-main: 240 10% 4%;
+    --bg-secondary: 240 10% 8%;
+    --text-main: 0 0% 100%;
+    --text-muted: 240 5% 65%;
+    --accent: 0 0% 100%;
+    --accent-contrast: 0 0% 0%;
+    --border: 240 5% 15%;`,
                 blue: `
     --bg-main: 220 30% 98%;
     --bg-secondary: 220 30% 96%;
@@ -1022,14 +1037,35 @@
             };
 
             // Font recommendations based on style
+            // Font recommendations based on style
             const fonts = {
-                minimal: 'font-family: "Inter", sans-serif; (Heading: "Inter", Body: "Inter")',
-                modern: 'font-family: "Plus Jakarta Sans", sans-serif; (Heading: "Plus Jakarta Sans", Body: "Inter")',
-                bold: 'font-family: "Oswald", sans-serif; (Heading: "Oswald", Body: "Roboto")',
-                elegant: 'font-family: "Playfair Display", serif; (Heading: "Playfair Display", Body: "Lato")',
-                playful: 'font-family: "Quicksand", sans-serif; (Heading: "Quicksand", Body: "Nunito")',
-                dark: 'font-family: "Space Grotesk", sans-serif; (Heading: "Space Grotesk", Body: "Inter")'
+                minimal: {
+                    description: 'font-family: "Inter", sans-serif; (Heading: "Inter", Body: "Inter")',
+                    variables: '--font-heading: "Inter", sans-serif; \n    --font-body: "Inter", sans-serif;',
+                },
+                modern: {
+                    description: 'font-family: "Plus Jakarta Sans", sans-serif; (Heading: "Plus Jakarta Sans", Body: "Inter")',
+                    variables: '--font-heading: "Plus Jakarta Sans", sans-serif; \n    --font-body: "Inter", sans-serif;',
+                },
+                bold: {
+                    description: 'font-family: "Oswald", sans-serif; (Heading: "Oswald", Body: "Roboto")',
+                    variables: '--font-heading: "Oswald", sans-serif; \n    --font-body: "Roboto", sans-serif;',
+                },
+                elegant: {
+                    description: 'font-family: "Playfair Display", serif; (Heading: "Playfair Display", Body: "Lato")',
+                    variables: '--font-heading: "Playfair Display", serif; \n    --font-body: "Lato", sans-serif;',
+                },
+                playful: {
+                    description: 'font-family: "Quicksand", sans-serif; (Heading: "Quicksand", Body: "Nunito")',
+                    variables: '--font-heading: "Quicksand", sans-serif; \n    --font-body: "Nunito", sans-serif;',
+                },
+                dark: {
+                    description: 'font-family: "Space Grotesk", sans-serif; (Heading: "Space Grotesk", Body: "Inter")',
+                    variables: '--font-heading: "Space Grotesk", sans-serif; \n    --font-body: "Inter", sans-serif;',
+                }
             };
+
+            const defaultFontVariables = '--font-heading: "Inter", sans-serif; \n    --font-body: "Inter", sans-serif;';
 
             const featureLabels = {
                 hero: 'Immersive Hero Section (Large visuals, strong value prop, primary CTA)',
@@ -1057,39 +1093,57 @@
                 testimonials: 'Reviews'
             };
 
-            // Constructing the "Mega Prompt" for Premium Results
-            let prompt = `ACT AS A SENIOR FRONTEND ENGINEER & AWARD-WINNING UI/UX DESIGNER.
-Your goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website possible for the user.
-The output must be a single, production-ready \`index.html\` file that feels like a top-tier startup or luxury brand site.
+            const selectedFontVariables = state.style ? fonts[state.style].variables : defaultFontVariables;
 
-### 1. PROJECT SPECIFICATIONS
-- **Theme**: "${typeLabels[state.type] || 'Premium Brand Website'}"
-- **Structure**: ${state.structure === 'multi' ? 'Single Page Application (SPA) architecture in one file' : 'High-Conversion Landing Page'}
-- **Visual Style**: ${styleLabels[state.style] || 'Modern & Clean'}
-- **Color Theme**: ${colorLabels[state.color] || 'Premium Palette'}
+            // Constructing the "Mega Prompt" for Premium Results
+            let prompt = `ACT AS A **SENIOR FRONTEND ENGINEER, AWARD-WINNING UI/UX DESIGNER, AND BRAND STRATEGIST**.
+
+Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website possible, adhering to **Awwwards "Site of the Day" quality standards**. The final output MUST be a single, production-ready \`index.html\` file that feels like a top-tier startup or luxury brand site.
+
+---
+
+### 1. PROJECT OVERVIEW
+- **Role/Theme**: "${typeLabels[state.type] || 'Premium Brand Website'}"
+- **Structure**: ${state.structure === 'multi' ? 'Client-Side Routing Single Page Application (SPA) in one file' : 'High-Conversion Landing Page'}
+- **Core Aesthetic**: "${styleLabels[state.style] || 'Modern & Clean'}"
+- **Brand Palette**: "${colorLabels[state.color] || 'Premium Palette'}"
 
 ### 2. DESIGN & AESTHETICS (CRITICAL)
-- **Quality Standard**: Aim for "Awwwards" Site of the Day quality. No generic Bootstrap looks.
-- **Typography**: Use Google Fonts: ${fonts[state.style] || 'Inter'}. Use distinct weights (light for details, bold for headings).
-- **Whitespace**: Use generous padding/margin (80px-120px between sections). Do not crowd elements.
-- **Micro-Interactions**: Add \`transition: all 0.3s ease\` to interactive elements. Buttons should lift/glow on hover. Cards should scale slightly.
-- **Glassmorphism**: Use \`backdrop-filter: blur(10px)\` for sticky navbars or overlay cards.
-- **Gradients**: Use subtle, noise-textured, or mesh gradients for backgrounds, not flat colors.
-- **Shadows**: Use multi-layered, soft shadows (e.g., \`box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 24px 48px -12px rgba(0,0,0,0.1)\`).
+- **Quality Standard**: Aim for **Pixel Perfect UI**. Use a strict **Grid System** (e.g., 12-column) for perfect alignment.
+- **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Use distinct weights.
+- **Whitespace**: Utilize **MAXIMALIST negative space**. Do not crowd elements.
+- **Micro-Interactions**: All interactive elements (buttons, cards) must have smooth transition timing.
+- **Visual Depth**: Use **Glassmorphism** (\`backdrop-filter: blur(10px)\`) for the sticky header/navbar. Apply **Luxury Shadows** (multi-layered, soft, diffused) for a premium, lifted feel.
 
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
-- **Responsive**: Mobile-first approach using CSS Grid and Flexbox.
-- **Images**: Use high-quality Unsplash source URLs (e.g., \`https://images.unsplash.com/photo-1...\`) that MATCH the industry ("${state.type}").
-- **Icons**: Use FontAwesome via CDN (\`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`).
-- **Scroll Behavior**: \`html { scroll-behavior: smooth; }\`
-- **Navigation**: Sticky, blurred header with a mobile hamburger menu.
+- **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**.
+- **Images**: Use high-quality Unsplash source URLs that MATCH the industry ("${state.type}").
+- **Icons**: Use FontAwesome via CDN.
+- **Scroll**: \`html { scroll-behavior: smooth; }\`
+
+### 3.1 MANDATORY CSS STYLING (CRITICAL FOR PREMIUM LOOK)
+You must include the following CSS rules at the beginning of the <style> block to establish the professional foundation:
+
+1. **Reset & Box Sizing**: \`*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\`
+2. **Smooth Scroll**: \`html { scroll-behavior: smooth; }\`
+3. **Primary Typography**: \`body { font-family: var(--font-body), sans-serif; color: var(--text-main); background: var(--bg-main); line-height: 1.6; }\`
+4. **Heading Styles**: \`h1, h2, h3 { font-family: var(--font-heading), sans-serif; font-weight: 700; letter-spacing: -0.05em; }\`
+5. **Link Styling**: \`a { color: var(--accent); text-decoration: none; transition: color 0.3s; }\`
+6. **Button Base**: \`.btn { cursor: pointer; border: none; padding: 0.8rem 1.8rem; border-radius: var(--radius-md); font-weight: 600; text-align: center; display: inline-flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }\`
+7. **Main Container**: \`.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }\`
+8. **Section Spacing (MAXIMALIST WHITESPACE)**: \`section { padding: 6rem 0; /* Min 96px vertical padding */ }\`
+
+### 3.2 ANIMATION & INTERACTION BASE
+All cards and interactive elements must use: \`.card, .feature { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: var(--shadow-md); }\`
+On hover: \`.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }\`
 
 ### 4. COLOR PALETTE (USE THESE CSS VARIABLES)
 Use HSL values for flexibility. Put this in your \`:root\`:
 \`\`\`css
 :root {
 ${colorPalettes[state.color] || colorPalettes.blue}
+    ${selectedFontVariables}
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 24px;
@@ -1101,19 +1155,17 @@ ${colorPalettes[state.color] || colorPalettes.blue}
 
 ### 5. SECTIONS TO BUILD
 ${state.structure === 'multi' ?
-                    `Implement a client-side router to switch these "pages" instantly without reload (fadeIn animation):
+                    `Implement a client-side router (pure JS) to switch these "pages" instantly without reload (with a smooth fade-in animation):
 ${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}` :
-                    `Build these sections in order with smooth transitions:
-${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Hero, Features, About, Contact'}`
+                    `Build these premium sections in order with smooth transitions:
+${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Immersive Hero, High-Impact Features, Detailed About, Contact Form'}`
                 }
 
 ### 6. CONTENT GUIDELINES
-- Write **PROFESSIONAL, COMPELLING COPY**. No "Lorem Ipsum".
-- Headlines should be punchy and large (e.g., 3.5rem+ on desktop).
-- Buttons should have clear actions ("Get Started", "View Portfolio").
+- Write **PROFESSIONAL, COMPELLING, AND VALUE-DRIVEN COPY**. No "Lorem Ipsum".
+- Headlines should be punchy and large (e.g., 3.8rem+ on desktop).
 
-${state.details ? `### SPECIFIC USER REQUESTS\n${state.details}` : ''}
-
+${state.details ? `### 7. SPECIFIC USER REQUESTS\n${state.details}` : ''}
 `;
 
             // Contact Form Logic
