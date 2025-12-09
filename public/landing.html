@@ -18,6 +18,13 @@
         if (window.location.hostname === 'builder.yenze.io' && window.location.pathname === '/') {
             window.location.replace('/builder.html' + window.location.search + window.location.hash);
         }
+
+        // Auth Redirect Handler (Fix for Safari/Mobile OAuth callback)
+        // If we land on root with an access_token, it means we just logged in.
+        // Redirect to dashboard immediately to consume the token.
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            window.location.replace('/dashboard.html' + window.location.hash);
+        }
     </script>
 
     <style>
