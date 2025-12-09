@@ -1223,7 +1223,7 @@ You MUST use these code patterns for "Site of the Day" quality.
     gap: 2rem;
 }
 - **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Establish a clear **Typographic Hierarchy** where H1-H3 use large, tight, editorial spacing.
-- **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
+- **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections). **For content blocks, use the \`.content-v-stack\` class to enforce consistent vertical margins.**
 - **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
 - **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background). **IMPORTANT: Do NOT generate long Base64 data URIs.** Use a simple CSS \`opacity\` overlay or a short external URL.
 - **Placeholder Aesthetics (CRITICAL)**: All background images (Hero, About section images, Portfolio items) sourced from Unsplash **MUST** use the following style for uniform color grading: **\`filter: grayscale(80%) sepia(20%) brightness(0.9) contrast(1.1);\`**
@@ -1248,6 +1248,12 @@ You must include the following CSS rules at the beginning of the <style> block t
 6. **Button Base**: \`.btn { cursor: pointer; border: none; padding: 0.8rem 1.8rem; border-radius: var(--radius-md); font-weight: 600; text-align: center; display: inline-flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }\`
 7. **Main Container (CRITICAL)**: \`.container { max-width: 1200px; margin: 0 auto; **padding: 0 2rem;** }\`
 8. **Section Spacing (MAXIMALIST WHITESPACE)**: \`section { padding: 6rem 0; /* Min 96px vertical padding */ }\`
+9. **Image Proportions (CRITICAL)**:
+    - \`.img-portrait { width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius-lg); }\`
+    - \`.img-landscape { width: 100%; height: 350px; object-fit: cover; border-radius: var(--radius-lg); }\`
+    - \`.img-circle { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; }\`
+10. **Vertical Spacing Helper**: \`.content-v-stack > * { margin-bottom: 1.5rem; }\`
+11. **Headline Accent (Aesthetic)**: \`.headline-accent { color: var(--accent); font-weight: 800; }\`
 
 ### 3.2 ANIMATION & INTERACTION BASE
 All cards and interactive elements must use: \`.card, .feature { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: var(--shadow-md); }\`
@@ -1305,7 +1311,8 @@ ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).j
                 }
 
 ### 6. CONTENT GUIDELINES (USE THIS CONTEXT)
-- You MUST act as an **elite B2B/B2C copywriter**. Headlines must be **benefit-driven, punchy, and large** (e.g., 3.8rem+ on desktop).
+### 6. CONTENT GUIDELINES (USE THIS CONTEXT)
+- You MUST act as an **elite B2B/B2C copywriter**. Headlines must be **benefit-driven, punchy, and large** (e.g., 3.8rem+ on desktop). **To highlight specific words in a headline, wrap them in a <span> tag with the class \`.headline-accent\` (e.g., \`<h1>...<span class="headline-accent">Word</span>...</h1>\`) and DO NOT apply gradient text effects to the entire H tag.**
 - The website's copy should be based on the following user-provided business context. **DO NOT USE PLACEHOLDERS LIKE 'Your Name', 'How can we help?'.** Use contextually relevant, professional, and slightly aggressive microcopy.
 - **CONTENT COMPLETENESS (CRITICAL)**: If a selected page/section lacks specific instructions in USER CONTEXT, you MUST fill it with detailed, professional content related to the **Brand Identity** and **Role/Theme**, using appropriate H2/H3 tags and text blocks to demonstrate structure.
 - **USER CONTEXT**: "${state.businessContext || 'The business is focused on delivering a high-value, measurable result to modern enterprises through sophisticated technology. Focus on trust, scale, and clear ROI.'}"
