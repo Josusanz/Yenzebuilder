@@ -1262,8 +1262,8 @@ You MUST apply one of these specific CSS classes to relevant <img> tags to enfor
 All images must use the Aesthetic Filter defined in Section 2, e.g., \`<img src="..." class="img-portrait" style="filter: grayscale(80%) sepia(20%);">\`
 
 ### 4. COLOR PALETTE (USE THESE CSS VARIABLES)
-Use HSL values for flexibility. Put this in your \`:root\`:
-\`\`\`css
+Use HSL values for flexibility. Put this in your :root:
+CSS:
 :root {
 ${colorPalettes[state.color] || colorPalettes.blue}
     ${selectedFontVariables}
@@ -1274,7 +1274,7 @@ ${colorPalettes[state.color] || colorPalettes.blue}
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
-\`\`\`
+(End CSS Variables)
 
 ### 5. SECTIONS TO BUILD
 The structure MUST be a Single Page Application (SPA) using the classes '.page-view' and '.page-view.active'.
@@ -1326,7 +1326,6 @@ You MUST implement the contact form exactly as follows using the YENZE API.
 Do NOT use any other service.
 
 HTML:
-\`\`\`html
 <form id="contactForm" onsubmit="submitForm(event)" class="contact-form">
     <div class="form-group">
         <label>Name</label>
@@ -1342,10 +1341,8 @@ HTML:
     </div>
     <button type="submit" class="btn-submit">Secure Your Discovery Session</button>
 </form>
-\`\`\`
 
 JAVASCRIPT:
-\`\`\`javascript
 async function submitForm(e) {
     e.preventDefault();
     const form = e.target;
@@ -1382,7 +1379,6 @@ async function submitForm(e) {
         btn.textContent = originalText;
     }
 }
-\`\`\`
 `;
             }
 
@@ -1401,7 +1397,7 @@ The goal is to create a unique, non-generic look. You must strictly avoid the fo
             prompt += `
 ### FINAL OUTPUT FORMAT
 Please provide the complete code in a single HTML file.
-Wrap the code in a markdown code block (e.g., \`\`\`html ... \`\`\`).
+Wrap the code in a standard markdown code block.
 Ensure the code is complete and functional.
 `;
 
