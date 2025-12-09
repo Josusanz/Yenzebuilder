@@ -314,25 +314,35 @@
             font-weight: 500;
         }
 
-        /* Textarea */
-        .textarea {
+        /* Textarea & Inputs */
+        .textarea,
+        .text-input {
             width: 100%;
             padding: 14px 16px;
             border: 1px solid #eaeaea;
             border-radius: 12px;
             font-size: 14px;
             font-family: inherit;
-            resize: vertical;
-            min-height: 80px;
             transition: border-color 0.15s;
         }
 
-        .textarea:focus {
+        .textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .text-input {
+            height: 48px;
+        }
+
+        .textarea:focus,
+        .text-input:focus {
             outline: none;
             border-color: #0a0a0a;
         }
 
-        .textarea::placeholder {
+        .textarea::placeholder,
+        .text-input::placeholder {
             color: #999;
         }
 
@@ -765,11 +775,25 @@
             </div>
         </div>
 
-        <!-- Additional Details -->
+        <!-- Brand Identity & Context -->
         <div class="section">
-            <div class="section-label">Additional Details (Optional)</div>
-            <textarea class="textarea" id="details"
-                placeholder="e.g., Use Montserrat font, include animations, add a map section..."></textarea>
+            <div class="section-label">Brand Identity & Content</div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label
+                        style="font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; color: #666;">Brand
+                        Name / Project Title</label>
+                    <input type="text" id="brandName" class="text-input"
+                        placeholder="e.g. Nexus AI, The Coffee House...">
+                </div>
+                <div>
+                    <label style="font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; color: #666;">
+                        What is your website about? (Paste your text here)
+                    </label>
+                    <textarea class="textarea" id="businessContext"
+                        placeholder="Describe your business, target audience, and paste any specific text/copy you want the website to include. The AI will use this to generate high-quality content..."></textarea>
+                </div>
+            </div>
         </div>
 
         <!-- Output -->
@@ -821,13 +845,14 @@
         // let supabaseClient = null; // Will be initialized on DOMContentLoaded
 
         const state = {
-            type: '',
-            style: '',
-            color: '',
+            type: 'landing',
+            style: 'modern',
+            color: 'blue',
             structure: 'single',
             pages: ['home'],
             features: [],
-            details: ''
+            brandName: '',
+            businessContext: ''
         };
 
         // Type options
@@ -914,9 +939,15 @@
             });
         });
 
-        // Details textarea
-        document.getElementById('details').addEventListener('input', (e) => {
-            state.details = e.target.value;
+        // Brand Name Input
+        document.getElementById('brandName').addEventListener('input', (e) => {
+            state.brandName = e.target.value;
+            updatePrompt();
+        });
+
+        // Business Context Textarea
+        document.getElementById('businessContext').addEventListener('input', (e) => {
+            state.businessContext = e.target.value;
             updatePrompt();
         });
 
@@ -939,7 +970,7 @@
         });
 
         function updatePrompt() {
-            if (!state.type && !state.style && !state.color && state.features.length === 0 && state.pages.length <= 1) {
+            if (!state.type && !state.style && !state.color && state.features.length === 0 && state.pages.length <= 1 && !state.brandName && !state.businessContext) {
                 document.getElementById('output').textContent = 'Select options above to generate your prompt...';
                 return;
             }
@@ -1096,13 +1127,14 @@
             const selectedFontVariables = state.style ? fonts[state.style].variables : defaultFontVariables;
 
             // Constructing the "Mega Prompt" for Premium Results
-            let prompt = `ACT AS A **SENIOR FRONTEND ENGINEER, AWARD-WINNING UI/UX DESIGNER, AND BRAND STRATEGIST**.
+            let prompt = `ACT AS A **SENIOR FRONTEND ENGINEER, AWARD-WINNING UI/UX DESIGNER, AND ELITE B2B COPYWRITER (FOCUS ON PSYCHOLOGY)**.
 
 Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website possible, adhering to **Awwwards "Site of the Day" quality standards**. The final output MUST be a single, production-ready \`index.html\` file that feels like a top-tier startup or luxury brand site.
 
 ---
 
 ### 1. PROJECT OVERVIEW
+- **Brand Identity**: **${state.brandName || 'Top-Tier Startup'}**
 - **Role/Theme**: "${typeLabels[state.type] || 'Premium Brand Website'}"
 - **Structure**: ${state.structure === 'multi' ? 'Client-Side Routing Single Page Application (SPA) in one file' : 'High-Conversion Landing Page'}
 - **Core Aesthetic**: "${styleLabels[state.style] || 'Modern & Clean'}"
@@ -1110,12 +1142,12 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 
 ### 2. DESIGN & AESTHETICS (CRITICAL)
 - **Design Methodology**: Strict **Atomic Design** principles must be followed. Layouts must be based on a **Mobile-First 12-Column Grid** system (enforced by CSS Grid/Flexbox).
-- **Quality Standard**: Aim for **Pixel Perfect UI**. Every element must align perfectly to the grid.
+- **Quality Standard**: Aim for **Pixel Perfect UI**. Every element must align perfectly to the grid. **Apply the 8pt/16pt grid system for spacing.**
 - **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Establish a clear **Typographic Hierarchy** where H1-H3 use large, tight, editorial spacing.
 - **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
 - **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
 - **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background) on the main background for a high-end, filmic look.
-- **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement.
+- **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement. **Implement a single, repeated, subtle parallax or Lottie-style animation in the Hero or Feature section for visual polish.**
 
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
@@ -1163,11 +1195,16 @@ ${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}` :
 ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Immersive Hero, High-Impact Features, Detailed About, Contact Form'}`
                 }
 
-### 6. CONTENT GUIDELINES
-- Write **PROFESSIONAL, COMPELLING, AND VALUE-DRIVEN COPY**. No "Lorem Ipsum".
-- Headlines should be punchy and large (e.g., 3.8rem+ on desktop).
+### 6. CONTENT GUIDELINES (USE THIS CONTEXT)
+- You MUST act as an **elite B2B/B2C copywriter**. Headlines must be **benefit-driven, punchy, and large** (e.g., 3.8rem+ on desktop).
+- The website's copy should be based on the following user-provided business context. **DO NOT USE PLACEHOLDERS LIKE 'Your Name', 'How can we help?'.** Use contextually relevant, professional, and slightly aggressive microcopy.
+- **USER CONTEXT**: "${state.businessContext || 'The business is focused on delivering a high-value, measurable result to modern enterprises through sophisticated technology. Focus on trust, scale, and clear ROI.'}"
 
 ${state.details ? `### 7. SPECIFIC USER REQUESTS\n${state.details}` : ''}
+${state.brandName || state.businessContext ? `### 8. BRAND IDENTITY & CONTENT CHECK
+- **Brand Name**: "${state.brandName || 'My Brand'}"
+- **Context Verified**: The AI will generating copy based on the User Context provided above.
+` : ''}
 `;
 
             // Contact Form Logic
@@ -1184,17 +1221,17 @@ HTML:
 <form id="contactForm" onsubmit="submitForm(event)" class="contact-form">
     <div class="form-group">
         <label>Name</label>
-        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="text" name="name" placeholder="E.g., Amelia K." required>
     </div>
     <div class="form-group">
         <label>Email</label>
-        <input type="email" name="email" placeholder="john@example.com" required>
+        <input type="email" name="email" placeholder="e.g., productvp@synapselabs.com" required>
     </div>
     <div class="form-group">
         <label>Message</label>
-        <textarea name="message" placeholder="How can we help?" required></textarea>
+        <textarea name="message" placeholder="We're interested in scaling our user activation flow." required></textarea>
     </div>
-    <button type="submit" class="btn-submit">Send Message</button>
+    <button type="submit" class="btn-submit">Send Secure Inquiry</button>
 </form>
 \`\`\`
 
@@ -1203,14 +1240,10 @@ JAVASCRIPT:
 async function submitForm(e) {
     e.preventDefault();
     const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
+    const btn = form.querySelector('.btn-submit');
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Sending...';
-
-    try {
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
 
         const response = await fetch('https://yenze.io/api/submit-form', {
             method: 'POST',
