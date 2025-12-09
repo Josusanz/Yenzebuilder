@@ -1241,20 +1241,14 @@ ${colorPalettes[state.color] || colorPalettes.blue}
 \`\`\`
 
 ### 5. SECTIONS TO BUILD
-${state.structure === 'multi' ?
-                    `**CRITICAL: You are building a Single Page Application (SPA) that BEHAVES like a multi-page site.**
-You MUST implement the following "pages" as distinct views:
-${state.pages.map(p => `- ${pageLabels[p]} (ID: #${p})`).join('\n')}
+The structure MUST be a Single Page Application (SPA) using the classes '.page-view' and '.page-view.active'.
 
-### 5.1 SPA ARCHITECTURE & ROUTING (MANDATORY)
-Since this is a single file, you must implement a **Custom Client-Side Router** using Vanilla JS.
-1. **HTML Structure**: Wrap EACH "page" content in a container: \`<section id="page-home" class="page-view">...</section>\`.
-2. **CSS State**: All \`.page-view\` elements should be \`display: none;\` by default, except the active one.
-3. **Navigation**: The Navbar links MUST call the router. Example: \`<a href="#" onclick="router.navigate('home'); return false;">Home</a>\`.
-4. **Router Logic**:
-   - Create a \`const router = { ... }\` object.
-   - Implement function \`navigate(pageId)\` that hides all pages and shows the target page with a **smooth fade-in animation**.
-   - Update the active state of the navbar links.` :
+${state.structure === 'multi' ?
+                    `For each requested page, generate a full, distinct HTML content block wrapped in <section id="page-[PAGE_ID]" class="page-view">.
+The main content of the site MUST be organized into these distinct pages (views):
+${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}
+
+**CRITICAL SPA RULE**: If content for a specific page is not available, you MUST generate a full-height, high-fidelity placeholder page with a large headline, strong CTA, and a relevant image that matches the ${state.style} aesthetic. **DO NOT leave any page content empty.**` :
                     `Build these premium sections in order with smooth transitions:
 ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Immersive Hero, High-Impact Features, Detailed About, Contact Form'}`
                 }
@@ -1262,6 +1256,7 @@ ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).j
 ### 6. CONTENT GUIDELINES (USE THIS CONTEXT)
 - You MUST act as an **elite B2B/B2C copywriter**. Headlines must be **benefit-driven, punchy, and large** (e.g., 3.8rem+ on desktop).
 - The website's copy should be based on the following user-provided business context. **DO NOT USE PLACEHOLDERS LIKE 'Your Name', 'How can we help?'.** Use contextually relevant, professional, and slightly aggressive microcopy.
+- **CONTENT COMPLETENESS (CRITICAL)**: If a selected page/section lacks specific instructions in USER CONTEXT, you MUST fill it with detailed, professional content related to the **Brand Identity** and **Role/Theme**, using appropriate H2/H3 tags and text blocks to demonstrate structure.
 - **USER CONTEXT**: "${state.businessContext || 'The business is focused on delivering a high-value, measurable result to modern enterprises through sophisticated technology. Focus on trust, scale, and clear ROI.'}"
 
 ${state.details ? `### 7. SPECIFIC USER REQUESTS\n${state.details}` : ''}
@@ -1306,29 +1301,36 @@ async function submitForm(e) {
     const form = e.target;
     const btn = form.querySelector('.btn-submit');
     const originalText = btn.textContent;
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
     btn.disabled = true;
     btn.textContent = 'Sending...';
 
+    try {
         const response = await fetch('https://yenze.io/api/submit-form', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
 
+        // Simulate JSON response if no network error
         const result = await response.json();
 
-        if (result.success) {
-            alert('Message sent successfully!');
+        if (response.ok && result.success) {
+            alert('Inquiry received. We will be in touch shortly.');
             form.reset();
         } else {
-            alert('Error: ' + (result.error || 'Could not send'));
+            alert('Error: ' + (result.error || 'Could not send. Please check your fields.'));
         }
     } catch (error) {
         alert('Connection error. Please try again.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
     }
-
-    btn.disabled = false;
-    btn.textContent = originalText;
 }
 \`\`\`
 `;
