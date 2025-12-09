@@ -1146,14 +1146,14 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 - **Typography**: Use Google Fonts: ${state.style ? fonts[state.style].description : defaultFontVariables}. Establish a clear **Typographic Hierarchy** where H1-H3 use large, tight, editorial spacing.
 - **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
 - **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
-- **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background) on the main background for a high-end, filmic look.
+- **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background). **IMPORTANT: Do NOT generate long Base64 data URIs.** Use a simple CSS \`opacity\` overlay or a short external URL.
 - **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement. **Implement a single, repeated, subtle parallax or Lottie-style animation in the Hero or Feature section for visual polish.**
 
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
 - **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**.
 - **Images**: Use high-quality Unsplash source URLs that MATCH the industry ("${state.type}").
-- **Icons**: Use FontAwesome via CDN.
+- **Icons**: Use this exact CDN link: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`. **DO NOT use 'integrity' or 'crossorigin' attributes.**
 - **Scroll**: \`html { scroll-behavior: smooth; }\`
 
 ### 3.1 MANDATORY CSS STYLING (CRITICAL FOR PREMIUM LOOK)
@@ -1278,6 +1278,8 @@ The goal is to create a unique, non-generic look. You must strictly avoid the fo
 - Overly bright, distracting gradients.
 - Horizontal rule dividers (\`<hr>\`). Use subtle borders or margin/padding for separation.
 - Generic "OUR SERVICES" or "LOREM IPSUM" copy.
+- **Complex 'integrity' hashes in CDN links (causes generation errors).**
+- **Long Base64 data URIs for images/backgrounds.**
 `;
 
             prompt += `
