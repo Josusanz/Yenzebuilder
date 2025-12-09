@@ -4,12 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prompt Builder - YENZE</title>
-    <meta name="description" content="Generate professional prompts to create websites with AI">
+    <title>YENZE | Quantum Prompt Architect</title>
+    <meta name="description" content="Generate elite-grade prompts for AI web development.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg-body: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --text-main: #18181B;
+            --text-muted: #71717A;
+            --accent: #18181B;
+            --accent-hover: #000000;
+            --border: #E4E4E7;
+            --border-active: #18181B;
+            --ring-focus: rgba(24, 24, 27, 0.1);
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,395 +39,321 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #fafafa;
-            color: #0a0a0a;
+            font-family: var(--font-body);
+            background: var(--bg-body);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
             min-height: 100vh;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 15px;
+            line-height: 1.6;
+            padding-bottom: 80px;
         }
 
         /* Navbar */
         .navbar {
-            background: #fff;
-            border-bottom: 1px solid #eaeaea;
-            padding: 0 24px;
-            height: 56px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 10%;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .nav-brand {
-            font-size: 18px;
+            font-family: var(--font-display);
             font-weight: 700;
-            color: #0a0a0a;
+            font-size: 20px;
+            color: var(--text-main);
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.02em;
         }
 
         .nav-links {
             display: flex;
-            gap: 8px;
+            gap: 12px;
         }
 
         .nav-link {
-            padding: 8px 16px;
-            border-radius: 8px;
             text-decoration: none;
-            font-size: 13px;
+            color: var(--text-muted);
             font-weight: 500;
-            color: #666;
-            transition: all 0.15s;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
         }
 
         .nav-link:hover {
-            color: #0a0a0a;
-            background: #f5f5f5;
+            color: var(--text-main);
+            background: #f4f4f5;
         }
 
         .nav-link.primary {
-            background: #0a0a0a;
-            color: #fff;
+            background: var(--accent);
+            color: white;
         }
 
         .nav-link.primary:hover {
-            background: #333;
+            background: var(--accent-hover);
+            transform: translateY(-1px);
         }
 
-        /* Main Container */
+        /* Main Layout */
         .main {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 48px 24px 80px;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 24px;
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 60px;
         }
 
         .header h1 {
-            font-size: 32px;
+            font-family: var(--font-display);
+            font-size: 42px;
             font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #000 0%, #444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
         }
 
         .header p {
-            color: #666;
-            font-size: 16px;
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        /* How it works */
+        /* How it Works */
         .how-it-works {
             display: flex;
-            align-items: flex-start;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 48px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            gap: 24px;
+            margin-bottom: 56px;
         }
 
-        .step {
-            flex: 1;
-            text-align: center;
+        .step-pill {
             display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 12px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: transform 0.2s;
         }
 
-        .step-number {
-            width: 32px;
-            height: 32px;
-            background: #0a0a0a;
-            color: white;
+        .step-pill:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .step-num {
+            background: #F4F4F5;
+            color: var(--text-main);
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 11px;
             font-weight: 700;
-            font-size: 14px;
-            flex-shrink: 0;
         }
 
-        .step-text {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .step-line {
-            width: 40px;
-            height: 1px;
-            background: #eaeaea;
-            margin-top: 16px;
-        }
-
-        @media (max-width: 640px) {
-            .how-it-works {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 24px;
-                padding: 20px;
-                background: #fff;
-                border-radius: 12px;
-                border: 1px solid #eaeaea;
-            }
-
-            .step {
-                flex-direction: row;
-                text-align: left;
-                width: 100%;
-            }
-
-            .step-line {
-                display: none;
-            }
-        }
-
-        /* Section */
+        /* Sections */
         .section {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
         .section-label {
-            font-size: 12px;
-            font-weight: 600;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #999;
-            margin-bottom: 16px;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
         }
 
-        /* Options Grid */
+        /* Option Cards */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
         }
 
-        .option {
-            background: #fff;
-            border: 1px solid #eaeaea;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
+        .option,
+        .feature {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
         }
 
-        .option:hover {
-            border-color: #ccc;
-            transform: translateY(-1px);
+        .option:hover,
+        .feature:hover {
+            border-color: #d4d4d8;
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .option.selected {
-            border-color: #0a0a0a;
-            background: #0a0a0a;
-            color: #fff;
+        .option.selected,
+        .feature.selected {
+            border-color: var(--accent);
+            background: #FAFAFA;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .option.selected::after,
+        .feature.selected::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 0, 0, 0.03) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .option-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 12px;
             display: block;
+            color: var(--text-main);
         }
 
         .option-label {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* Color Grid */
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-        }
-
-        .color-option {
-            background: #fff;
-            border: 1px solid #eaeaea;
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .color-option:hover {
-            border-color: #ccc;
-        }
-
-        .color-option.selected {
-            border-color: #0a0a0a;
-            border-width: 2px;
-        }
-
-        .color-preview {
-            height: 40px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .color-label {
-            font-size: 11px;
-            font-weight: 500;
-            text-align: center;
-            color: #666;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main);
         }
 
         .feature {
-            background: #fff;
-            border: 1px solid #eaeaea;
-            border-radius: 10px;
-            padding: 12px 14px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-        }
-
-        .feature:hover {
-            border-color: #ccc;
-        }
-
-        .feature.selected {
-            border-color: #0a0a0a;
-            background: #f5f5f5;
+            padding: 16px;
+            gap: 12px;
         }
 
         .feature-check {
-            width: 18px;
-            height: 18px;
-            border: 1.5px solid #ccc;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 11px;
-            color: transparent;
+            display: none;
         }
 
-        .feature.selected .feature-check {
-            background: #0a0a0a;
-            border-color: #0a0a0a;
-            color: #fff;
+        /* Simplified visually */
+        .feature.selected .option-icon {
+            color: var(--accent);
         }
 
-        .feature-label {
-            font-size: 13px;
-            font-weight: 500;
+        /* Color Grid specifics */
+        .color-grid {
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
         }
 
-        /* Textarea & Inputs */
-        .textarea,
-        .text-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid #eaeaea;
-            border-radius: 12px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.15s;
+        .color-option {
+            padding: 12px;
+            border-radius: var(--radius-md);
         }
 
-        .textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .text-input {
+        .color-preview {
             height: 48px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .textarea:focus,
-        .text-input:focus {
+        /* Inputs */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 16px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
             outline: none;
-            border-color: #0a0a0a;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--ring-focus);
         }
 
-        .textarea::placeholder,
-        .text-input::placeholder {
-            color: #999;
+        label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-main);
+            margin-bottom: 8px;
         }
 
-        /* Output Section */
+        /* Output Terminal */
         .output-section {
-            background: #0a0a0a;
-            border-radius: 16px;
-            padding: 24px;
-            margin-top: 40px;
+            background: #09090b;
+            border-radius: var(--radius-lg);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            margin-top: 60px;
+            border: 1px solid #27272a;
         }
 
         .output-header {
+            background: #18181b;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            border-bottom: 1px solid #27272a;
         }
 
         .output-title {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .copy-btn {
-            background: #fff;
-            color: #0a0a0a;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            font-family: var(--font-mono);
+            color: #e4e4e7;
             font-size: 13px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
         }
 
-        .copy-btn:hover {
-            background: #f0f0f0;
-        }
-
-        .copy-btn.copied {
-            background: #10b981;
-            color: #fff;
-        }
-
-        .output-text {
-            background: #1a1a1a;
-            border-radius: 10px;
-            padding: 16px;
-            color: #a0a0a0;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 12px;
+        .output-content {
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: #d4d4d8;
             line-height: 1.7;
             white-space: pre-wrap;
-            max-height: 300px;
+            max-height: 500px;
             overflow-y: auto;
-        }
-
-        /* Action Buttons */
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
         }
 
         .action-group {
@@ -523,133 +471,130 @@
 
     <main class="main">
         <div class="header">
-            <h1>AI Prompt Builder</h1>
-            <p>Create the perfect prompt to generate your website</p>
+            <h1>Quantum Prompt Architect</h1>
+            <p>Craft elite-grade prompt specifications for the YENZE AI Engine.</p>
         </div>
 
-        <!-- How it works -->
+        <!-- How it works (New Look) -->
         <div class="how-it-works">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-text">Select your options below to generate a professional prompt</div>
+            <div class="step-pill">
+                <div class="step-num">1</div>
+                <span>Configure</span>
             </div>
-            <div class="step-line"></div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-text">Click 'Open Gemini' and paste the prompt</div>
+            <div class="step-pill">
+                <div class="step-num">2</div>
+                <span>Generate</span>
             </div>
-            <div class="step-line"></div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-text">Copy the generated HTML code and import it in the Builder</div>
+            <div class="step-pill">
+                <div class="step-num">3</div>
+                <span>Build</span>
             </div>
         </div>
 
         <!-- Website Type -->
         <div class="section">
-            <div class="section-label">Website Type</div>
+            <div class="section-label">1. Project Artifact</div>
             <div class="options-grid" id="typeOptions">
                 <div class="option" data-value="landing">
-                    <span class="option-icon">🚀</span>
+                    <i class="fa-solid fa-rocket option-icon"></i>
                     <span class="option-label">Landing Page</span>
                 </div>
                 <div class="option" data-value="business">
-                    <span class="option-icon">💼</span>
+                    <i class="fa-solid fa-briefcase option-icon"></i>
                     <span class="option-label">Business</span>
                 </div>
                 <div class="option" data-value="portfolio">
-                    <span class="option-icon">🎨</span>
+                    <i class="fa-solid fa-layer-group option-icon"></i>
                     <span class="option-label">Portfolio</span>
                 </div>
                 <div class="option" data-value="store">
-                    <span class="option-icon">🛍️</span>
-                    <span class="option-label">Store</span>
+                    <i class="fa-solid fa-store option-icon"></i>
+                    <span class="option-label">Storefront</span>
                 </div>
                 <div class="option" data-value="saas">
-                    <span class="option-icon">⚡</span>
-                    <span class="option-label">SaaS</span>
+                    <i class="fa-solid fa-cloud option-icon"></i>
+                    <span class="option-label">SaaS Platform</span>
                 </div>
                 <div class="option" data-value="restaurant">
-                    <span class="option-icon">🍕</span>
+                    <i class="fa-solid fa-utensils option-icon"></i>
                     <span class="option-label">Restaurant</span>
                 </div>
                 <div class="option" data-value="agency">
-                    <span class="option-icon">🏢</span>
+                    <i class="fa-solid fa-building option-icon"></i>
                     <span class="option-label">Agency</span>
                 </div>
                 <div class="option" data-value="blog">
-                    <span class="option-icon">📝</span>
-                    <span class="option-label">Blog</span>
+                    <i class="fa-solid fa-pen-nib option-icon"></i>
+                    <span class="option-label">Editorial</span>
                 </div>
                 <div class="option" data-value="personal">
-                    <span class="option-icon">👤</span>
-                    <span class="option-label">Personal</span>
+                    <i class="fa-solid fa-user-astronaut option-icon"></i>
+                    <span class="option-label">Personal Identity</span>
                 </div>
                 <div class="option" data-value="event">
-                    <span class="option-icon">🎉</span>
-                    <span class="option-label">Event</span>
+                    <i class="fa-solid fa-ticket option-icon"></i>
+                    <span class="option-label">Event/Summit</span>
                 </div>
             </div>
         </div>
 
         <!-- Design Style -->
         <div class="section">
-            <div class="section-label">Design Style</div>
+            <div class="section-label">2. Visual Language</div>
             <div class="options-grid" id="styleOptions">
                 <div class="option" data-value="minimal">
-                    <span class="option-icon">⬜</span>
-                    <span class="option-label">Minimal</span>
+                    <i class="fa-solid fa-circle-notch option-icon"></i>
+                    <span class="option-label">Swiss Minimal</span>
                 </div>
                 <div class="option" data-value="modern">
-                    <span class="option-icon">✨</span>
-                    <span class="option-label">Modern</span>
+                    <i class="fa-solid fa-cube option-icon"></i>
+                    <span class="option-label">Modern Glass</span>
                 </div>
                 <div class="option" data-value="bold">
-                    <span class="option-icon">💪</span>
-                    <span class="option-label">Bold</span>
+                    <i class="fa-solid fa-square-full option-icon"></i>
+                    <span class="option-label">Neo-Brutalism</span>
                 </div>
                 <div class="option" data-value="elegant">
-                    <span class="option-icon">💎</span>
-                    <span class="option-label">Elegant</span>
+                    <i class="fa-solid fa-gem option-icon"></i>
+                    <span class="option-label">Luxury Serif</span>
                 </div>
                 <div class="option" data-value="playful">
-                    <span class="option-icon">🎪</span>
-                    <span class="option-label">Playful</span>
+                    <i class="fa-solid fa-shapes option-icon"></i>
+                    <span class="option-label">Playful 3D</span>
                 </div>
                 <div class="option" data-value="dark">
-                    <span class="option-icon">🌙</span>
-                    <span class="option-label">Dark</span>
+                    <i class="fa-solid fa-moon option-icon"></i>
+                    <span class="option-label">Pro Dark</span>
                 </div>
             </div>
         </div>
 
         <!-- Color Palette -->
         <div class="section">
-            <div class="section-label">Color Palette</div>
+            <div class="section-label">3. Color System</div>
             <div class="color-grid" id="colorOptions">
                 <div class="color-option" data-value="white">
-                    <div class="color-preview"
-                        style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); border: 1px solid #e2e8f0;">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);">
                     </div>
                     <div class="color-label">Pure White</div>
                 </div>
                 <div class="color-option" data-value="monochrome">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #0a0a0a 0%, #404040 100%);">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #09090b 0%, #27272a 100%);">
                     </div>
                     <div class="color-label">Dark Mono</div>
                 </div>
                 <div class="color-option" data-value="blue">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
                     </div>
-                    <div class="color-label">Blue/Purple</div>
+                    <div class="color-label">Electric Blue</div>
                 </div>
                 <div class="color-option" data-value="green">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
                     </div>
-                    <div class="color-label">Green/Teal</div>
+                    <div class="color-label">Emerald</div>
                 </div>
                 <div class="color-option" data-value="warm">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);">
                     </div>
                     <div class="color-label">Warm</div>
                 </div>
@@ -667,131 +612,117 @@
         </div>
 
         <!-- Multi-page Option -->
+        <!-- Multi-page Option -->
         <div class="section">
-            <div class="section-label">Website Structure</div>
+            <div class="section-label">4. Architecture</div>
             <div class="options-grid" id="structureOptions" style="grid-template-columns: repeat(2, 1fr);">
                 <div class="option selected" data-value="single">
-                    <span class="option-icon">📄</span>
-                    <span class="option-label">Single Page</span>
+                    <i class="fa-solid fa-file option-icon"></i>
+                    <span class="option-label">Landing Page</span>
                 </div>
                 <div class="option" data-value="multi">
-                    <span class="option-icon">📚</span>
-                    <span class="option-label">Multi-page</span>
+                    <i class="fa-solid fa-layer-group option-icon"></i>
+                    <span class="option-label">Multi-Page SPA</span>
                 </div>
             </div>
         </div>
 
         <!-- Pages to Include (only shown for multipage) -->
         <div class="section" id="pagesSection" style="display: none;">
-            <div class="section-label">Pages to Include</div>
+            <div class="section-label">5. Site Map (Pages)</div>
             <div class="features-grid" id="pageOptions">
                 <div class="feature selected" data-value="home">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">Home</span>
                 </div>
                 <div class="feature" data-value="about">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">About</span>
                 </div>
                 <div class="feature" data-value="services">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">Services</span>
                 </div>
                 <div class="feature" data-value="portfolio">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Portfolio</span>
+                    <span class="feature-label">Work</span>
                 </div>
                 <div class="feature" data-value="blog">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Blog</span>
+                    <span class="feature-label">Journal</span>
                 </div>
                 <div class="feature" data-value="contact">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">Contact</span>
                 </div>
                 <div class="feature" data-value="pricing">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">Pricing</span>
                 </div>
                 <div class="feature" data-value="team">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">Team</span>
                 </div>
                 <div class="feature" data-value="faq">
-                    <div class="feature-check">✓</div>
                     <span class="feature-label">FAQ</span>
                 </div>
                 <div class="feature" data-value="testimonials">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Testimonials</span>
+                    <span class="feature-label">Reviews</span>
                 </div>
             </div>
         </div>
 
         <!-- Sections (only shown for single page) -->
         <div class="section" id="sectionsSection">
-            <div class="section-label">Sections to Include</div>
+            <div class="section-label">5. Key Modules</div>
             <div class="features-grid" id="featureOptions">
                 <div class="feature" data-value="hero">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Hero</span>
+                    <i class="fa-solid fa-star option-icon" style="font-size: 16px;"></i>
+                    <span class="feature-label">Hero Header</span>
                 </div>
                 <div class="feature" data-value="about">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-user option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">About</span>
                 </div>
                 <div class="feature" data-value="services">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-list-check option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">Services</span>
                 </div>
                 <div class="feature" data-value="portfolio">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Portfolio</span>
+                    <i class="fa-solid fa-images option-icon" style="font-size: 16px;"></i>
+                    <span class="feature-label">Gallery</span>
                 </div>
                 <div class="feature" data-value="testimonials">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-quote-right option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">Testimonials</span>
                 </div>
                 <div class="feature" data-value="pricing">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-tags option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">Pricing</span>
                 </div>
                 <div class="feature" data-value="contact">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-envelope option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">Contact Form</span>
                 </div>
                 <div class="feature" data-value="faq">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-circle-question option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">FAQ</span>
                 </div>
                 <div class="feature" data-value="team">
-                    <div class="feature-check">✓</div>
+                    <i class="fa-solid fa-users option-icon" style="font-size: 16px;"></i>
                     <span class="feature-label">Team</span>
                 </div>
                 <div class="feature" data-value="blog">
-                    <div class="feature-check">✓</div>
-                    <span class="feature-label">Blog Preview</span>
+                    <i class="fa-solid fa-newspaper option-icon" style="font-size: 16px;"></i>
+                    <span class="feature-label">Latest News</span>
                 </div>
             </div>
         </div>
 
         <!-- Brand Identity & Context -->
         <div class="section">
-            <div class="section-label">Brand Identity & Content</div>
-            <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="section-label">6. Brand DNA</div>
+            <div style="display: flex; flex-direction: column; gap: 24px;">
                 <div>
-                    <label
-                        style="font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; color: #666;">Brand
-                        Name / Project Title</label>
-                    <input type="text" id="brandName" class="text-input"
-                        placeholder="e.g. Nexus AI, The Coffee House...">
+                    <label>Brand Name / Project Title</label>
+                    <input type="text" id="brandName" placeholder="e.g. Nexus AI, The Coffee House...">
                 </div>
                 <div>
-                    <label style="font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; color: #666;">
-                        What is your website about? (Paste your text here)
-                    </label>
-                    <textarea class="textarea" id="businessContext"
-                        placeholder="Describe your business, target audience, and paste any specific text/copy you want the website to include. The AI will use this to generate high-quality content..."></textarea>
+                    <label>Business Context & Copy (The "Source of Truth")</label>
+                    <textarea class="textarea" id="businessContext" style="min-height: 140px;"
+                        placeholder="Paste your business description, value proposition, or existing copy here. The AI will use this to write professional, high-converting content..."></textarea>
                 </div>
             </div>
         </div>
@@ -799,39 +730,38 @@
         <!-- Output -->
         <div class="output-section">
             <div class="output-header">
-                <span class="output-title">Generated Prompt</span>
-                <button class="copy-btn" id="copyBtn">Copy</button>
+                <span class="output-title"><i class="fa-solid fa-terminal" style="margin-right: 8px;"></i>
+                    PROMPT_TERMINAL</span>
+                <button class="copy-btn" id="copyBtn">
+                    <i class="fa-regular fa-clone" style="margin-right: 6px;"></i> Copy Code
+                </button>
             </div>
-            <div class="output-text" id="output">Select options above to generate your prompt...</div>
+            <div class="output-content" id="output">
+                // Configure options above to initialize prompt generation sequence...
+            </div>
         </div>
 
         <!-- Actions -->
-        <div class="actions">
-            <!-- Step 1 -->
-            <div class="action-group">
-                <div class="step-badge">1</div>
-                <button id="actionCopyBtn" class="btn btn-primary">📋 Copy Prompt</button>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="action-group">
-                <div class="step-badge">2</div>
-                <a href="https://gemini.google.com/app" target="_blank" class="btn btn-secondary">Open Gemini ↗</a>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="action-group">
-                <div class="step-badge">3</div>
-                <a href="builder.html" class="btn btn-accent">Open Builder & Paste HTML ↗</a>
-            </div>
+        <div class="actions" style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <a href="https://gemini.google.com/app" target="_blank" class="nav-link primary"
+                style="text-align: center; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                <i class="fa-solid fa-robot" style="margin-right: 10px;"></i> Open Gemini
+            </a>
+            <a href="builder.html" class="nav-link"
+                style="text-align: center; height: 56px; background: white; border: 1px solid var(--border); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                <i class="fa-solid fa-code" style="margin-right: 10px;"></i> Go to Builder
+            </a>
         </div>
 
-        <!-- Instructions -->
-        <div class="instructions-footer" style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-            <p><strong>How to use:</strong> Copy the prompt, paste it into Gemini, copy the HTML code it generates, then
-                open the Builder and paste the code in the "Import" tab.</p>
-        </div>
+        <div style="height: 60px;"></div> <!-- Spacer -->
+
     </main>
+
+    <!-- Floating Action Button -->
+    <button class="fab-generate" id="actionCopyBtn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Copy Prompt
+    </button>
 
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -954,16 +884,17 @@
         // Copy button
         document.getElementById('copyBtn').addEventListener('click', () => {
             const text = document.getElementById('output').textContent;
-            if (text === 'Select options above to generate your prompt...') {
+            if (text.includes('// Configure options')) {
                 alert('Please select some options first');
                 return;
             }
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copyBtn');
-                btn.textContent = 'Copied!';
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.textContent = 'Copy';
+                    btn.innerHTML = originalContent;
                     btn.classList.remove('copied');
                 }, 2000);
             });
@@ -971,7 +902,7 @@
 
         function updatePrompt() {
             if (!state.type && !state.style && !state.color && state.features.length === 0 && state.pages.length <= 1 && !state.brandName && !state.businessContext) {
-                document.getElementById('output').textContent = 'Select options above to generate your prompt...';
+                document.getElementById('output').textContent = '// Configure options above to initialize prompt generation sequence...';
                 return;
             }
 
@@ -1191,8 +1122,19 @@ ${colorPalettes[state.color] || colorPalettes.blue}
 
 ### 5. SECTIONS TO BUILD
 ${state.structure === 'multi' ?
-                    `Implement a client-side router (pure JS) to switch these "pages" instantly without reload (with a smooth fade-in animation):
-${state.pages.map(p => `- ${pageLabels[p]}`).join('\n')}` :
+                    `**CRITICAL: You are building a Single Page Application (SPA) that BEHAVES like a multi-page site.**
+You MUST implement the following "pages" as distinct views:
+${state.pages.map(p => `- ${pageLabels[p]} (ID: #${p})`).join('\n')}
+
+### 5.1 SPA ARCHITECTURE & ROUTING (MANDATORY)
+Since this is a single file, you must implement a **Custom Client-Side Router** using Vanilla JS.
+1. **HTML Structure**: Wrap EACH "page" content in a container: \`<section id="page-home" class="page-view">...</section>\`.
+2. **CSS State**: All \`.page-view\` elements should be \`display: none;\` by default, except the active one.
+3. **Navigation**: The Navbar links MUST call the router. Example: \`<a href="#" onclick="router.navigate('home'); return false;">Home</a>\`.
+4. **Router Logic**:
+   - Create a \`const router = { ... }\` object.
+   - Implement function \`navigate(pageId)\` that hides all pages and shows the target page with a **smooth fade-in animation**.
+   - Update the active state of the navbar links.` :
                     `Build these premium sections in order with smooth transitions:
 ${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\n') : '- Immersive Hero, High-Impact Features, Detailed About, Contact Form'}`
                 }
