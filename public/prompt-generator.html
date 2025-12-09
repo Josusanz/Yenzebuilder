@@ -1198,7 +1198,7 @@ Your primary goal is to build the MOST BEAUTIFUL, PREMIUM, and POLISHED website 
 - **Whitespace**: Utilize **MAXIMALIST negative space**. The padding must be generous (\`6rem\` / \`96px\` minimum between sections).
 - **Visual Depth**: Use **Glassmorphism** for sticky elements. Apply **Luxury Shadows** for a lifted, multi-layered feel (use \`var(--shadow-lg)\`).
 - **Texture/Detail**: Implement a very **Subtle Noise Texture Overlay** (via CSS pseudo-element or background). **IMPORTANT: Do NOT generate long Base64 data URIs.** Use a simple CSS \`opacity\` overlay or a short external URL.
-- **Placeholder Aesthetics (CRITICAL)**: All background images (Hero, About section images, Portfolio items) sourced from Unsplash **MUST** have a **subtle filter applied** to match the site's atmosphere. Use a combination of \`filter: grayscale(80%) sepia(20%);\` or \`filter: brightness(0.8) contrast(1.2);\` to create a cohesive, editorial, and branded look.
+- **Placeholder Aesthetics (CRITICAL)**: All background images (Hero, About section images, Portfolio items) sourced from Unsplash **MUST** use the following style for uniform color grading: **\`filter: grayscale(80%) sepia(20%) brightness(0.9) contrast(1.1);\`**
 - **Micro-Interactions**: All interactive elements (buttons, cards) must use the defined \`cubic-bezier\` transition for professional, smooth movement. **Implement a single, repeated, subtle parallax or Lottie-style animation in the Hero or Feature section for visual polish.**
 
 ### 3. TECHNICAL REQUIREMENTS
@@ -1214,16 +1214,25 @@ You must include the following CSS rules at the beginning of the <style> block t
 
 1. **Reset & Box Sizing**: \`*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }\`
 2. **Smooth Scroll**: \`html { scroll-behavior: smooth; }\`
-3. **Primary Typography**: \`body { font-family: var(--font-body), sans-serif; color: var(--text-main); background: var(--bg-main); line-height: 1.6; }\`
+3. **Primary Typography**: \`body { font-family: var(--font-body), sans-serif; color: var(--text-main); background: var(--bg-main); line-height: 1.6; **overflow-x: hidden;** }\`
 4. **Heading Styles**: \`h1, h2, h3 { font-family: var(--font-heading), sans-serif; font-weight: 700; letter-spacing: -0.05em; }\`
 5. **Link Styling**: \`a { color: var(--accent); text-decoration: none; transition: color 0.3s; }\`
 6. **Button Base**: \`.btn { cursor: pointer; border: none; padding: 0.8rem 1.8rem; border-radius: var(--radius-md); font-weight: 600; text-align: center; display: inline-flex; align-items: center; justify-content: center; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }\`
-7. **Main Container**: \`.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }\`
+7. **Main Container (CRITICAL)**: \`.container { max-width: 1200px; margin: 0 auto; **padding: 0 2rem;** }\`
 8. **Section Spacing (MAXIMALIST WHITESPACE)**: \`section { padding: 6rem 0; /* Min 96px vertical padding */ }\`
 
 ### 3.2 ANIMATION & INTERACTION BASE
 All cards and interactive elements must use: \`.card, .feature { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: var(--shadow-md); }\`
 On hover: \`.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }\`
+
+### 3.3 CRITICAL IMAGE PROPORTIONS (MANDATORY FOR AESTHETICS)
+You MUST apply one of these specific CSS classes to relevant <img> tags to enforce layout stability and visual uniformity, in addition to the aesthetic filter:
+
+1. **Editorial Portrait**: \`.img-portrait { width: 100%; height: 500px; object-fit: cover; }\`
+2. **Editorial Landscape**: \`.img-landscape { width: 100%; height: 350px; object-fit: cover; }\`
+3. **Team Circle**: \`.img-circle { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; }\`
+
+All images must use the Aesthetic Filter defined in Section 2, e.g., \`<img src="..." class="img-portrait" style="filter: grayscale(80%) sepia(20%);">\`
 
 ### 4. COLOR PALETTE (USE THESE CSS VARIABLES)
 Use HSL values for flexibility. Put this in your \`:root\`:
