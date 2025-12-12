@@ -1232,10 +1232,11 @@ You MUST use these code patterns for "Site of the Day" quality.
 ### 3. TECHNICAL REQUIREMENTS
 - **Single File**: Everything (HTML, CSS, JS) must be in ONE file.
 - **Performance**: The Hero Section image and critical CSS must be optimized for **near-instant loading** (Lighthouse score of 95+). Use **CSS for background images** where possible, and ensure the main content is above the fold.
-- **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**.
+- **Responsive**: Mandatory Mobile-First approach. Use **CSS Grid and Flexbox**. **You MUST implement a functional Mobile Hamburger Menu for screens under 768px.**
 - **Images (RELIABILITY CHECK)**: Use extremely high-confidence Unsplash IDs. **If you are not 100% sure an image ID exists, usage of 'https://placehold.co/WIDTHxHEIGHT?text=Topic' is PREFERRED over a broken Unsplash link.**
 - ** Icons **: Use this exact CDN link: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`. **DO NOT use 'integrity' or 'crossorigin' attributes.**
 - **Scroll**: \`html { scroll-behavior: smooth; }\`
+- **Interactivity**: **Scroll Reveal Animations are MANDATORY.** Elements must fade in as they enter the viewport.
 
 ### 3.1 MANDATORY CSS STYLING (CRITICAL FOR PREMIUM LOOK)
 You must include the following CSS rules at the beginning of the <style> block to establish the professional foundation:
@@ -1255,9 +1256,10 @@ You must include the following CSS rules at the beginning of the <style> block t
 10. **Vertical Spacing Helper**: \`.content-v-stack > * { margin-bottom: 1.5rem; }\`
 11. **Headline Accent (Aesthetic)**: \`.headline-accent { color: var(--accent); font-weight: 800; }\`
 
-### 3.2 ANIMATION & INTERACTION BASE
-All cards and interactive elements must use: \`.card, .feature { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: var(--shadow-md); }\`
-On hover: \`.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }\`
+### 3.2 INTERACTIVITY & ANIMATION STANDARDS (MANDATORY)
+1. **Scroll Reveal Class**: Create a class \`.reveal\` with \`opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);\` and a class \`.reveal.active\` with \`opacity: 1; transform: translateY(0);\`.
+2. **Hover Effects**: \`.card:hover, .btn:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }\`
+3. **Mobile Menu**: You MUST include a \`.mobile-menu-toggle\` button (display: none on desktop) and a responsive navigation pane that slides/fades in.
 
 ### 3.3 CRITICAL IMAGE PROPORTIONS (MANDATORY FOR AESTHETICS)
 You MUST apply one of these specific CSS classes to relevant <img> tags to enforce layout stability and visual uniformity, in addition to the aesthetic filter:
