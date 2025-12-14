@@ -1444,10 +1444,10 @@ class YenzeBuilder {
             // Check if this parent is hidden
             const computedStyle = iframeWindow.getComputedStyle(parent);
 
-            if (computedStyle.display === 'none') {
+            if (computedStyle.display === 'none' || computedStyle.opacity === '0' || computedStyle.visibility === 'hidden') {
                 // It's hidden. Is it a page or section?
-                // We check for 'page' class OR 'section' tag OR just generic 'section' id
-                if (parent.classList.contains('page') || parent.tagName === 'SECTION' || parent.id) {
+                // We check for 'page' class OR 'section' tag OR just generic 'page-view' class (used in the user's example)
+                if (parent.classList.contains('page') || parent.classList.contains('page-view') || parent.tagName === 'SECTION' || parent.id) {
                     hiddenPage = parent;
                     break;
                 }
@@ -1459,23 +1459,56 @@ class YenzeBuilder {
         // If we found a hidden page, try to activate it
         if (hiddenPage && hiddenPage.id) {
 
-            // 1. Try iframe's switchPage function (SPA Router)
+            // 1. Try iframe's switchPage function (Explicit Builder Helper)
             if (typeof iframeWindow.switchPage === 'function') {
                 iframeWindow.switchPage(hiddenPage.id);
             }
-            // 2. Fallback: Manually show it if it looks like a crude tab system
-            else {
-                // Hide siblings?
-                // This is risky without knowing the structure.
-                // But simplified "show" might be enough for the builder
-                hiddenPage.style.display = 'block';
-                // Try to hide other pages if they share a class
-                if (hiddenPage.classList.contains('page')) {
-                    element.ownerDocument.querySelectorAll('.page').forEach(p => {
-                        if (p !== hiddenPage) p.style.display = 'none';
-                    });
+            // 2. Try changing hash (Standard SPA Router) - This triggers the site's own routing logic
+            else if (element.ownerDocument.getElementById(hiddenPage.id)) {
+                // Only change if different to avoid reloading/jumping if already there but visually hidden for some other reason
+                if (iframeWindow.location.hash !== '#' + hiddenPage.id) {
+                    iframeWindow.location.hash = '#' + hiddenPage.id;
+
+                    // Small delay to allow router to react, then force fallback if still hidden
+                    setTimeout(() => {
+                        const style = iframeWindow.getComputedStyle(hiddenPage);
+                        if (style.display === 'none' || style.opacity === '0') {
+                            this.forceShowElement(hiddenPage, element.ownerDocument);
+                        }
+                    }, 50);
+                    return;
+                } else {
+                    // Hash matches but it's hidden? Force show.
+                    this.forceShowElement(hiddenPage, element.ownerDocument);
                 }
             }
+            // 3. Fallback: Manually show it
+            else {
+                this.forceShowElement(hiddenPage, element.ownerDocument);
+            }
+        }
+    }
+
+    forceShowElement(element, doc) {
+        // 1. Reset display
+        element.style.display = 'block';
+        element.style.visibility = 'visible';
+
+        // 2. Add 'active' class (Common convention)
+        element.classList.add('active');
+
+        // 3. Force opacity if it was 0
+        element.style.opacity = '1';
+
+        // 4. Hide siblings if they look like pages (Exclusive visibility)
+        if (element.classList.contains('page') || element.classList.contains('page-view')) {
+            const className = element.classList.contains('page') ? '.page' : '.page-view';
+            doc.querySelectorAll(className).forEach(p => {
+                if (p !== element) {
+                    p.style.display = 'none';
+                    p.classList.remove('active');
+                }
+            });
         }
     }
 

@@ -1233,7 +1233,7 @@ The Output MUST be a single, production-ready \`index.html\` file containing HTM
 - **User Context**: ${state.businessContext ? `"${state.businessContext}"` : '"Create a high-trust, authority-building presence."'}
 
 ### 2. DESIGN SYSTEM & AESTHETICS (NON-NEGOTIABLE)
-- **Grid & Layout**: Use a strict **12-column grid**. All spacing must follow an **8pt scaling system** (8, 16, 24, 32, 48, 64, 96, 128px).
+- **Grid & Layout**: Use a strict **12-column grid** (\`.grid-12\`). All spacing must follow an **8pt scaling system** (8, 16, 24, 32, 48, 64, 96, 128px) via CSS variables.
 - **Typography**:
   - Fonts: ${state.style ? fonts[state.style].description : 'Standard Modern Sans'}.
   - **Headings MUST use \`text-wrap: balance;\`** for perfect editorial readability.
@@ -1243,11 +1243,11 @@ The Output MUST be a single, production-ready \`index.html\` file containing HTM
   - Shadows should be **layered and diffused**: \`box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 20px 25px -5px rgba(0,0,0,0.05);\`. Avoid harsh black shadows.
 - **Borders**: Use subtle, high-class borders (e.g., \`1px solid rgba(0,0,0,0.08)\`) to define structure without clutter.
 - **Images**:
-  - Use **Unsplash** source URLs.
+  - Use **Unsplash** source URLs with semantic keywords (e.g., architecture, tech, office, portrait).
   - **MANDATORY**: Apply this CSS filter to ALL background/decorative images to unify them: \`filter: grayscale(20%) contrast(1.05) brightness(1.02);\`.
   - **Rounded Corners**: Consistent use of \`border-radius: var(--radius-md)\` on all cards and images.
 
-### 3. COMPONENT LIBRARY SPECIFICATIONS
+### 3. COMPONENT LIBRARY SPECIFICATIONS (PREMIUM FEEL)
 Implement these exact premium behaviors:
 - **Buttons**: NO default browser styles. Use \`padding: 12px 24px\`, font-weight 600, transitions on transform and shadow. Hover should lift the button (\`translateY(-2px)\`).
 - **Cards**: White/Glass background, subtle border, soft shadow. **Hover effect**: Transform translateY(-4px) + increased shadow.
@@ -1255,6 +1255,7 @@ Implement these exact premium behaviors:
 - **Animations**:
   - **Scroll Reveal**: Elements must fade in and move up (\`translateY(20px) -> 0\`) as they enter the viewport using IntersectionObserver.
   - **Micro-interactions**: Subtle scale on card hover (1.02).
+  - **Loading**: No complex loaders, just fade-in content smoothly.
 
 ### 4. TECHNICAL CONSTRAINTS
 - **Single File**: Output ONE \`index.html\` file with \`<style>\` and \`<script>\`.
@@ -1301,7 +1302,9 @@ ${state.structure === 'multi' ?
 1. Create a container \`#app\`.
 2. Inside, create \`<section id="page-name" class="page-view">\` for each page:
 ${state.pages.map(p => `   - **${pageLabels[p]}**: Full content block.`).join('\\n')}
-3. Implement a \`Router\` class in JS that listens to hash changes or clicks, hides all pages, and fades in the active one.` :
+3. Implement a \`Router\` class in JS that listens to hash changes or clicks, hides all pages, and fades in the active one.
+4. **BUILDER COMPATIBILITY Helper**: You MUST include this functions for the Visual Builder compatibility:
+   \`window.switchPage = (id) => { window.location.hash = id; };\`` :
                     `**ARCHITECTURE: LONG-SCROLL LANDING**
 Build these sections in order (vertical stack):
 ${state.features.length > 0 ? state.features.map(f => `
@@ -1315,8 +1318,8 @@ ${state.details ? `### 7. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.d
 - **Headlines Structure**:
     - **MUST** include a muted, upper-cased \`<p class="text-muted mb-2">— PRE-HEADLINE</p>\` above all major \`<h2>\` headings.
     - **h2/h1 Weight**: Use \`font-weight: 900\` to maximize visual impact.
-- **Tone**: Professional, confident, and specific to the industry of "${state.type}".
-- **Call-to-Action**: Every section should conclude with a prominent CTA button that uses the accent color.
+- **Tone**: Professional, confident, and specific to the industry of "${state.type}". Avoid cliches like "Unleash your potential" or "We are the best". Focus on value and specifics.
+- **Call-to-Action**: Every section should conclude with a prominent CTA button.
 
 ### 9. CONTACT FORM LOGIC (MANDATORY)
 ${hasContactForm ? `
