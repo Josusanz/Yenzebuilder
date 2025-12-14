@@ -1376,10 +1376,16 @@ async function handleFormSubmit(e) {
 
 ### 10. FINAL CODE EXECUTION
 - **Output**: A single markdown code block with the complete \`index.html\`.
-- **Validation**: Ensure all tags are closed. Ensure all JS is inside \`<script>\`.
-- **Images**: If you need a placeholder, use \`https://placehold.co/600x400/eee/31343C?text=Image\` BUT prefer Unsplash keywords if semantic.
+- **Validation**: 
+  - **MUST** close all HTML tags (e.g., \`</div>\`, \`</section>\`). 
+  - **MUST** include the FontAwesome CDN in \`<head>\`: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
+  - **NO** placeholders like \`[Insert Content]\`. Fill EVERYTHING with real, professional copy.
+- **Images**: 
+  - **NEVER** use broken links. 
+  - Use \`https://source.unsplash.com/featured/?keyword\` format or specific high-quality Unsplash URLs (e.g., \`https://images.unsplash.com/photo-...\`).
+  - **ALWAYS** include \`alt\` attributes.
 
-Generate the "Site of the Day" worthy code now.
+Generate the "Site of the Day" worthy code now. Ensure it is **PERFECT** and **PRODUCTION-READY**.
 `;
 
             document.getElementById('output').textContent = prompt;
