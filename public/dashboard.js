@@ -322,7 +322,8 @@ class DashboardApp {
             'domains': 'domainsSection',
             'billing': 'billingSection',
             'integrations': 'integrationsSection',
-            'payments': 'paymentsSection'
+            'payments': 'paymentsSection',
+            'seo': 'seoSection'
         };
 
         const targetSection = document.getElementById(sectionMap[section]);
