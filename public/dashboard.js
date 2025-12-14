@@ -381,15 +381,77 @@ class DashboardApp {
         const metadata = this.currentUser?.user_metadata?.seo_defaults || {};
         const authorInput = document.querySelector('#seoDefaultsForm input[placeholder*="Author"]');
         const twitterInput = document.querySelector('#seoDefaultsForm input[placeholder*="Twitter"]');
+        const gscInput = document.getElementById('gscVerificationId');
 
         if (authorInput) authorInput.value = metadata.author || '';
         if (twitterInput) twitterInput.value = metadata.twitter || '';
+        if (gscInput) gscInput.value = metadata.gsc_id || '';
+
+        // Update connection status visual
+        if (metadata.gsc_id) {
+            const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"]');
+            if (statusBadge) {
+                statusBadge.textContent = 'CONNECTED';
+                statusBadge.style.background = '#dcfce7';
+                statusBadge.style.color = '#166534';
+            }
+        }
 
         // Setup listeners if not already done
         const defaultsForm = document.getElementById('seoDefaultsForm');
         if (defaultsForm && !defaultsForm.dataset.initialized) {
             defaultsForm.addEventListener('submit', (e) => this.saveSEODefaults(e));
             defaultsForm.dataset.initialized = 'true';
+        }
+    }
+
+    async saveGSCVerification() {
+        const input = document.getElementById('gscVerificationId');
+        const btn = event.target;
+        const originalText = btn.textContent;
+
+        const gscId = input.value.trim();
+
+        if (!gscId) {
+            this.showToast('Please enter a verification ID', 'error');
+            return;
+        }
+
+        btn.textContent = 'Verifying...';
+        btn.disabled = true;
+
+        try {
+            // Get existing metadata or init empty
+            const currentDefaults = this.currentUser?.user_metadata?.seo_defaults || {};
+
+            const { error } = await supabaseClient.client.auth.updateUser({
+                data: {
+                    seo_defaults: { ...currentDefaults, gsc_id: gscId }
+                }
+            });
+
+            if (error) throw error;
+
+            // Update local user object
+            if (this.currentUser.user_metadata) {
+                this.currentUser.user_metadata.seo_defaults = { ...currentDefaults, gsc_id: gscId };
+            }
+
+            // Update UI
+            const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"]');
+            if (statusBadge) {
+                statusBadge.textContent = 'CONNECTED';
+                statusBadge.style.background = '#dcfce7';
+                statusBadge.style.color = '#166534';
+            }
+
+            this.showToast('GSC Verification ID saved! We will inject it into your sites.', 'success');
+        } catch (error) {
+            console.error('Save SEO Error:', error);
+            this.showToast('Error saving GSC ID: ' + error.message, 'error');
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
     }
 
