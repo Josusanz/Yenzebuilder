@@ -1275,6 +1275,23 @@ ${colorPalettes[state.color] || colorPalettes.blue}
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+    --space-4: 32px;
+}
+
+/* MANDATORY UTILITY CLASSES */
+.grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-4);
+}
+.card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.img-filter {
+    filter: grayscale(20%) contrast(1.05) brightness(1.02);
 }
 \`\`\`
 
@@ -1287,16 +1304,19 @@ ${state.pages.map(p => `   - **${pageLabels[p]}**: Full content block.`).join('\
 3. Implement a \`Router\` class in JS that listens to hash changes or clicks, hides all pages, and fades in the active one.` :
                     `**ARCHITECTURE: LONG-SCROLL LANDING**
 Build these sections in order (vertical stack):
-${state.features.length > 0 ? state.features.map(f => `- ${featureLabels[f]}`).join('\\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
+${state.features.length > 0 ? state.features.map(f => `
+- **REQUIRED SECTION**: Must be wrapped in \`<section id="${f}">\` and implement the look of: ${featureLabels[f]}`).join('\\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
                 }
 
 ${state.details ? `### 7. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.details}` : ''}
 
-### 8. MANDATORY COPYWRITING RULES
-- **No Templates**: Do NOT use "Lorem Ipsum" or "Welcome to our website".
+### 8. MANDATORY COPYWRITING RULES (ANTI-GENERIC)
+- **Primary Source**: The content from **User Context** is the sole source of truth. All headlines and body copy must be a confident, professional re-write of that source.
+- **Headlines Structure**:
+    - **MUST** include a muted, upper-cased \`<p class="text-muted mb-2">— PRE-HEADLINE</p>\` above all major \`<h2>\` headings.
+    - **h2/h1 Weight**: Use \`font-weight: 900\` to maximize visual impact.
 - **Tone**: Professional, confident, and specific to the industry of "${state.type}".
-- **Headlines**: Use "Display" sizes (e.g., 3.5rem+). Break text into digestible chunks.
-- **Call-to-Action**: Every section should have a clear purpose or next step.
+- **Call-to-Action**: Every section should conclude with a prominent CTA button that uses the accent color.
 
 ### 9. CONTACT FORM LOGIC (MANDATORY)
 ${hasContactForm ? `
