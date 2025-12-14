@@ -600,6 +600,10 @@ class YenzeBuilder {
         this.currentHTML = html;
         this.projectData.html = html;
 
+        // Reset state
+        this.selectedElement = null;
+        if (this.updateLayerTree) this.updateLayerTree(); // Clear layers if possible immediately
+
         // Add to history only if requested
         if (addToHistory) {
             this.addToHistory(html, 'Import HTML');
@@ -608,9 +612,16 @@ class YenzeBuilder {
         // Hide empty state
         document.getElementById('emptyState').style.display = 'none';
 
-        // Show canvas
-        const canvas = document.getElementById('canvas');
-        canvas.style.display = 'block';
+        // FORCE RESET IFRAME: Clone and replace to clear all internal state/listeners
+        const oldCanvas = document.getElementById('canvas');
+        const newCanvas = oldCanvas.cloneNode(false);
+        newCanvas.style.display = 'block';
+
+        // Replace in DOM
+        oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+
+        // Get fresh reference
+        const canvas = newCanvas;
 
         // Write HTML to iframe
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
