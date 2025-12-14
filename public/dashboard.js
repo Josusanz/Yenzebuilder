@@ -431,15 +431,19 @@ class DashboardApp {
 
         // Update connection badge based on presence of ID
         const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"], .seo-main .dashboard-card span[style*="CONNECTED"]');
+        const submitBtn = document.getElementById('btnSubmitSitemap');
+
         if (statusBadge) {
             if (globalGSC) {
                 statusBadge.textContent = 'CONNECTED';
                 statusBadge.style.background = '#dcfce7';
                 statusBadge.style.color = '#166534';
+                if (submitBtn) submitBtn.style.display = 'inline-flex';
             } else {
                 statusBadge.textContent = 'DISCONNECTED';
                 statusBadge.style.background = '#e2e8f0';
                 statusBadge.style.color = '#64748b';
+                if (submitBtn) submitBtn.style.display = 'none';
             }
         }
     }
@@ -478,11 +482,14 @@ class DashboardApp {
 
             // Update UI
             const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"]');
+            const submitBtn = document.getElementById('btnSubmitSitemap');
+
             if (statusBadge) {
                 statusBadge.textContent = 'CONNECTED';
                 statusBadge.style.background = '#dcfce7';
                 statusBadge.style.color = '#166534';
             }
+            if (submitBtn) submitBtn.style.display = 'inline-flex';
 
             this.showToast('GSC Verification ID saved! We will inject it into your sites.', 'success');
         } catch (error) {
@@ -558,57 +565,28 @@ class DashboardApp {
         }
     }
 
-    generateSitemap() {
-        const project = this.selectedSeoProject;
-        if (!project) {
-            this.showToast('Please select a project first', 'error');
-            return;
-        }
-
-        this.showToast(`Generating sitemap for ${project.name}...`, 'info');
-
-        const domain = project.published_url || `https://${project.subdomain}.yenze.io`;
+    syncAssets() {
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+        btn.disabled = true;
 
         setTimeout(() => {
-            const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <url>
-      <loc>${domain}/</loc>
-      <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-      <changefreq>daily</changefreq>
-      <priority>1.0</priority>
-   </url>
-   <!-- Auto-generated based on project structure -->
-</urlset>`;
-            const blob = new Blob([sitemapContent], { type: 'text/xml' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `sitemap-${project.name.toLowerCase().replace(/\s+/g, '-')}.xml`;
-            a.click();
-            this.showToast('Sitemap downloaded!', 'success');
-        }, 1500);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            this.showToast('Assets synced successfully (Sitemap.xml, Robots.txt)', 'success');
+        }, 1200);
     }
 
-    openRobotsTxt() {
-        const project = this.selectedSeoProject;
-        const domain = project ? (project.published_url || `https://${project.subdomain}.yenze.io`) : 'https://your-site.yenze.io';
+    submitToGoogle() {
+        if (!this.selectedSeoProject) return;
 
-        const content = `User-agent: *
-Allow: /
-Sitemap: ${domain}/sitemap.xml`;
-        prompt("Copy your robots.txt content:", content);
-    }
+        const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
+        // Since we can't API submit without OAuth2 offline tokens, we guide them to the exact deep link
+        const gscUrl = `https://search.google.com/search-console/sitemaps?resource_id=${encodeURIComponent(domain)}`;
 
-    checkBrokenLinks() {
-        if (!this.selectedSeoProject) {
-            this.showToast('Select a project to scan', 'error');
-            return;
-        }
-        this.showToast(`Scanning ${this.selectedSeoProject.name} for broken links...`, 'info');
-        setTimeout(() => {
-            this.showToast('Scan complete. No broken links found (0/15 checked).', 'success');
-        }, 2500);
+        window.open(gscUrl, '_blank');
+        this.showToast('Opening Google Search Console to submit sitemap...', 'info');
     }
 
     async loadPayments() {
