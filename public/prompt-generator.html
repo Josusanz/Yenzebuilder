@@ -1233,6 +1233,9 @@ The Output MUST be a single, production-ready \`index.html\` file containing HTM
 - **User Context**: ${state.businessContext ? `"${state.businessContext}"` : '"Create a high-trust, authority-building presence."'}
 
 ### 2. DESIGN SYSTEM & AESTHETICS (NON-NEGOTIABLE)
+- **Viewport Layout**: 
+  - \`body, html { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }\` to prevent any cutting off.
+  - \`.container { max-width: 1440px; margin: 0 auto; width: 92%; }\` for proper centering.
 - **Grid & Layout**: Use a strict **12-column grid** (\`.grid-12\`). All spacing must follow an **8pt scaling system** (8, 16, 24, 32, 48, 64, 96, 128px) via CSS variables.
 - **Typography**:
   - Fonts: ${state.style ? fonts[state.style].description : 'Standard Modern Sans'}.
@@ -1277,6 +1280,13 @@ ${colorPalettes[state.color] || colorPalettes.blue}
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
     --space-4: 32px;
+}
+
+body, html {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 /* MANDATORY UTILITY CLASSES */
