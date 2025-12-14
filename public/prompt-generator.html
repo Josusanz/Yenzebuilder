@@ -1215,6 +1215,8 @@
 
             const selectedFontVariables = state.style ? fonts[state.style].variables : defaultFontVariables;
 
+            const hasContactForm = state.structure === 'multi' ? state.pages.includes('contact') : state.features.includes('contact');
+
             // Constructing the "Mega Prompt" for Premium Results
             let prompt = `ACT AS A **SENIOR FRONTEND ARCHITECT, AWWWARDS JURY MEMBER, AND EXPERT UI/UX DESIGNER**.
 Your task is to build a **WORLD-CLASS, PREMIUM WEBSITE** that could win "Site of the Day".
@@ -1357,6 +1359,7 @@ Generate the "Site of the Day" worthy code now.
             if (window.supabaseClient) {
                 await window.supabaseClient.init();
             }
+            updatePrompt();
         });
 
     </script>
