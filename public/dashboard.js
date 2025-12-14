@@ -919,24 +919,11 @@ class DashboardApp {
             const hasAnalytics = PlanUtils.hasFeature('hasAnalytics', this.userPlan);
 
             // Render projects
-            const projectsHTML = await Promise.all(this.projects.map(async (project) => {
-                // Get analytics for this project
-                const stats = await this.getProjectStats(project.id);
-
+            const projectsHTML = this.projects.map((project) => {
                 // Determine project plan and URL based on whether it has a custom domain
                 const customDomain = domainMap[project.id];
                 const projectPlan = customDomain ? this.userPlan : 'free';
                 const projectUrl = customDomain ? `https://${customDomain}` : project.published_url;
-
-                // Debug logging for Yenze project
-                if (project.name === 'Yenze') {
-                    console.log('[Dashboard] Yenze project details:');
-                    console.log('  Project ID:', project.id);
-                    console.log('  Custom domain:', customDomain);
-                    console.log('  Project plan:', projectPlan);
-                    console.log('  User plan:', this.userPlan);
-                    console.log('  Project URL:', projectUrl);
-                }
 
                 // Create a data URL for the preview iframe
                 const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(project.html)}`;
@@ -944,10 +931,11 @@ class DashboardApp {
                 return `
                     <div class="project-card">
                         <div class="project-thumbnail" onclick="dashboardApp.viewProject('${project.id}')" style="cursor: pointer;">
-                            <iframe
-                                src="${previewDataUrl}"
-                                sandbox="allow-same-origin"
+                            <iframe 
+                                src="${previewDataUrl}" 
+                                sandbox="allow-same-origin" 
                                 scrolling="no"
+                                loading="lazy"
                                 style="width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0; width: 333.33%; height: 333.33%;">
                             </iframe>
                         </div>
@@ -971,16 +959,16 @@ class DashboardApp {
 
                             <div class="project-stats">
                                 <div class="project-stat">
-                                    <span>${hasAnalytics ? stats.views : '—'}</span>
+                                    <span id="views-${project.id}">${hasAnalytics ? '...' : '—'}</span>
                                     <span>Views</span>
                                 </div>
                                 <div class="project-stat">
-                                    <span>${hasAnalytics ? stats.visitors : '—'}</span>
+                                    <span id="visitors-${project.id}">${hasAnalytics ? '...' : '—'}</span>
                                     <span>Visitors</span>
                                 </div>
                                 ${!hasAnalytics ? `
                                     <div style="grid-column: 1 / -1; text-align: center; margin-top: 8px;">
-                                        <button
+                                        <button 
                                             onclick="event.stopPropagation(); if(typeof pricingModal !== 'undefined') { pricingModal.show(); } else { alert('Please wait, loading pricing...'); }"
                                             style="
                                                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1028,9 +1016,21 @@ class DashboardApp {
                         </div>
                     </div>
                 `;
-            }));
+            }).join('');
 
-            grid.innerHTML = projectsHTML.join('');
+            grid.innerHTML = projectsHTML;
+
+            // Fetch stats asynchronously after rendering
+            if (hasAnalytics) {
+                this.projects.forEach(async (project) => {
+                    const stats = await this.getProjectStats(project.id);
+                    const viewsEl = document.getElementById(`views-${project.id}`);
+                    const visitorsEl = document.getElementById(`visitors-${project.id}`);
+                    
+                    if (viewsEl) viewsEl.textContent = stats.views;
+                    if (visitorsEl) visitorsEl.textContent = stats.visitors;
+                });
+            }
 
         } catch (error) {
             console.error('Error loading projects:', error);
