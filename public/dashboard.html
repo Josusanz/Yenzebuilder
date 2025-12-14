@@ -188,15 +188,25 @@
 
             <!-- SEO Tools Section -->
             <section id="seoSection" class="dashboard-section">
-                <div class="section-header">
-                    <div>
-                        <h2>SEO Center</h2>
-                        <p class="text-muted">Optimize your websites for search engines and social media.</p>
+                <!-- Enhanced Header with Project Selector on Left -->
+                <div class="section-header" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+                    <div style="width: 100%;">
+                        <label
+                            style="display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Select
+                            Website to Optimize</label>
+                        <div style="position: relative; max-width: 400px;">
+                            <select id="seoProjectFilter" class="filter-select"
+                                onchange="dashboardApp.loadProjectSEO(this.value)"
+                                style="width: 100%; padding: 12px 16px; font-size: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 12px center;">
+                                <option value="">Select a Project...</option>
+                            </select>
+                        </div>
                     </div>
-                    <select id="seoProjectFilter" class="filter-select"
-                        onchange="dashboardApp.loadProjectSEO(this.value)">
-                        <option value="">Select a Project...</option>
-                    </select>
+                    <div>
+                        <h2 style="margin-bottom: 4px;">SEO Center</h2>
+                        <p class="text-muted" style="margin: 0;">Audit, optimize, and submit your websites to search
+                            engines.</p>
+                    </div>
                 </div>
 
                 <div class="seo-dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
@@ -231,7 +241,8 @@
                                     <p class="text-muted" style="font-size: 13px; margin: 0 0 12px 0; color: #64748b;">
                                         Your site
                                         structure and metadata are looking good. Room for improvement in load speed.</p>
-                                    <button class="btn-primary" style="padding: 6px 16px; font-size: 14px;">Run New
+                                    <button id="btnRunAudit" class="btn-primary"
+                                        style="padding: 6px 16px; font-size: 14px;">Run New
                                         Audit</button>
                                 </div>
                             </div>

@@ -74,7 +74,8 @@ class DashboardApp {
 
         // SEO Audit Button
         document.addEventListener('click', (e) => {
-            if (e.target.matches('.seo-main button') && e.target.textContent.includes('Run New Audit')) {
+            // Check for specific ID or fallback to class/text match
+            if (e.target.id === 'btnRunAudit' || (e.target.matches('.seo-main button') && e.target.textContent.includes('Run New Audit'))) {
                 this.runSEOAudit();
             }
             if (e.target.textContent.includes('Generate Sitemap')) {
@@ -382,7 +383,7 @@ class DashboardApp {
         if (selector && this.projects.length > 0) {
             // Keep the default option
             selector.innerHTML = '<option value="">Select a Project...</option>';
-            
+
             this.projects.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p.id;
@@ -415,7 +416,7 @@ class DashboardApp {
 
     loadProjectSEO(projectId) {
         if (!projectId) return;
-        
+
         this.selectedSeoProject = this.projects.find(p => p.id === projectId);
         if (!this.selectedSeoProject) return;
 
@@ -426,8 +427,8 @@ class DashboardApp {
         const gscInput = document.getElementById('gscVerificationId');
         // If project has specific GSC override, load it. Otherwise check global.
         const globalGSC = this.currentUser?.user_metadata?.seo_defaults?.gsc_id || '';
-        if (gscInput) gscInput.value = globalGSC; 
-        
+        if (gscInput) gscInput.value = globalGSC;
+
         // Update connection badge based on presence of ID
         const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"], .seo-main .dashboard-card span[style*="CONNECTED"]');
         if (statusBadge) {
@@ -565,7 +566,7 @@ class DashboardApp {
         }
 
         this.showToast(`Generating sitemap for ${project.name}...`, 'info');
-        
+
         const domain = project.published_url || `https://${project.subdomain}.yenze.io`;
 
         setTimeout(() => {
@@ -592,7 +593,7 @@ class DashboardApp {
     openRobotsTxt() {
         const project = this.selectedSeoProject;
         const domain = project ? (project.published_url || `https://${project.subdomain}.yenze.io`) : 'https://your-site.yenze.io';
-        
+
         const content = `User-agent: *
 Allow: /
 Sitemap: ${domain}/sitemap.xml`;
