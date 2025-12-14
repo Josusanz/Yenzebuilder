@@ -1375,8 +1375,32 @@ class YenzeBuilder {
             return;
         }
 
-        // First, ensure the element's page is visible (for multi-page SPAs)
+        // 1. Ensure the element ITSELF is visible
         this.ensureElementPageVisible(element);
+
+        // 2. If element is a navigation link, show its TARGET
+        if (element.tagName === 'A') {
+            const href = element.getAttribute('href');
+            if (href && href.startsWith('#') && href.length > 1) {
+                const targetId = href.substring(1);
+                const iframeDoc = element.ownerDocument;
+                const targetEl = iframeDoc.getElementById(targetId);
+
+                if (targetEl) {
+                    // Show the target page/section
+                    this.ensureElementPageVisible(targetEl);
+
+                    // Scroll target into view after a short delay to allow partial visibility updates
+                    setTimeout(() => {
+                        targetEl.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                            inline: 'center'
+                        });
+                    }, 100);
+                }
+            }
+        }
 
         // Highlight selected element with Framer-style selection
         this.selectedElement = element;
@@ -1387,12 +1411,18 @@ class YenzeBuilder {
             element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
         }
 
-        // Scroll element into view in the canvas
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
-        });
+        // Scroll element into view in the canvas (unless we just scrolled to its target!)
+        // We prioritize showing the element we selected, unless it's a nav link where we probably want to see the result.
+        // But if we scroll the target into view, the nav link might go out of view (if sticky, it stays).
+        // Let's scroll the element into view ONLY if it's NOT a nav link that successfully found a target
+        const isNavLink = element.tagName === 'A' && element.getAttribute('href')?.startsWith('#');
+        if (!isNavLink) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center'
+            });
+        }
 
         // Highlight in layers panel
         this.highlightInLayers(element);
@@ -1408,14 +1438,19 @@ class YenzeBuilder {
         // Check if element is inside a hidden page/section
         let parent = element;
         let hiddenPage = null;
+        const iframeWindow = element.ownerDocument.defaultView;
 
         while (parent && parent !== element.ownerDocument.body) {
-            // Check if this parent is a hidden page (common class names: .page, .section, etc.)
-            const computedStyle = element.ownerDocument.defaultView.getComputedStyle(parent);
+            // Check if this parent is hidden
+            const computedStyle = iframeWindow.getComputedStyle(parent);
 
-            if (computedStyle.display === 'none' && parent.classList.contains('page')) {
-                hiddenPage = parent;
-                break;
+            if (computedStyle.display === 'none') {
+                // It's hidden. Is it a page or section?
+                // We check for 'page' class OR 'section' tag OR just generic 'section' id
+                if (parent.classList.contains('page') || parent.tagName === 'SECTION' || parent.id) {
+                    hiddenPage = parent;
+                    break;
+                }
             }
 
             parent = parent.parentElement;
@@ -1423,22 +1458,23 @@ class YenzeBuilder {
 
         // If we found a hidden page, try to activate it
         if (hiddenPage && hiddenPage.id) {
-            // Look for a switchPage function in the iframe
-            const iframeWindow = element.ownerDocument.defaultView;
 
+            // 1. Try iframe's switchPage function (SPA Router)
             if (typeof iframeWindow.switchPage === 'function') {
-                // Call the page's switchPage function
                 iframeWindow.switchPage(hiddenPage.id);
-
-                // Wait a bit for the transition
-                setTimeout(() => {
-                    // Re-scroll after page switch
-                    element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center',
-                        inline: 'center'
+            }
+            // 2. Fallback: Manually show it if it looks like a crude tab system
+            else {
+                // Hide siblings?
+                // This is risky without knowing the structure.
+                // But simplified "show" might be enough for the builder
+                hiddenPage.style.display = 'block';
+                // Try to hide other pages if they share a class
+                if (hiddenPage.classList.contains('page')) {
+                    element.ownerDocument.querySelectorAll('.page').forEach(p => {
+                        if (p !== hiddenPage) p.style.display = 'none';
                     });
-                }, 100);
+                }
             }
         }
     }

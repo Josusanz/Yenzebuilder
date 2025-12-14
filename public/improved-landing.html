@@ -4,71 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yenze - High-Fidelity MVP Software Development</title>
+    <title>Yenze | Enterprise Authority in MVP Software Development</title>
     <meta name="description"
-        content="We engineer world-class MVPs in record time. Swiss precision meets modern velocity.">
-
-    <!-- Preconnect for performance -->
+        content="yenze is the specialized software development partner for crafting world-class Minimum Viable Products (MVPs) with Fortune 500 precision.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        /*
-        * ----------------------------------------------------
-        * 5. CSS VARIABLES (MANDATORY)
-        * ----------------------------------------------------
-        */
+        /* -------------------------------------------------------------------------- */
+        /* 5. CSS VARIABLES (MONOCHROMATIC ZINC LUXURY) */
+        /* -------------------------------------------------------------------------- */
         :root {
-            /* Color Palette - HSL Values for easy manipulation */
-            --bg-main: 0 0% 100%;
-            --bg-secondary: 240 5% 98%;
-            /* Slightly cooler grey */
-            --text-main: 240 10% 4%;
-            --text-muted: 240 4% 46%;
-            --accent: 240 10% 3.9%;
-            --accent-contrast: 0 0% 100%;
-            --border: 240 6% 90%;
-            --brand-highlight: 221 83% 53%;
-            /* Subtle blue for focuses/accents */
+            /* HSL values for luxury zinc/slate monochromatic */
+            --bg-main: 240 10% 4%;
+            /* Near-black slate */
+            --bg-secondary: 240 10% 8%;
+            --text-main: 0 0% 100%;
+            /* Pure white */
+            --text-muted: 240 5% 65%;
+            /* Light gray for subtle text */
+            --accent: 0 0% 100%;
+            /* White accent for contrast */
+            --accent-contrast: 0 0% 0%;
+            /* Black contrast */
+            --border: 240 5% 15%;
+            /* Subtle dark border */
 
             /* Typography */
-            --font-heading: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            --font-body: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --font-heading: "Plus Jakarta Sans", sans-serif;
+            --font-body: "Inter", sans-serif;
 
-            /* Spacing (8pt scaling system) */
-            --space-1: 8px;
-            --space-2: 16px;
-            --space-3: 24px;
-            --space-4: 32px;
-            --space-6: 48px;
-            --space-8: 64px;
-            --space-10: 80px;
-            --space-12: 96px;
-            --space-16: 128px;
+            /* 8pt Spacing System */
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
+            --space-2xl: 64px;
+            --space-3xl: 96px;
+            --space-4xl: 128px;
 
-            /* Radius */
+            /* Radii */
             --radius-sm: 8px;
-            --radius-md: 16px;
-            /* Increased for modern feel */
+            --radius-md: 12px;
             --radius-lg: 24px;
             --radius-full: 9999px;
 
-            /* Shadows (Layered and diffused - Premium feel) */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-            --shadow-glow: 0 0 20px rgba(0, 0, 0, 0.15);
+            /* Layered and Diffused Shadows */
+            --shadow-sm: 0 1px 2px 0 hsla(var(--bg-main) / 0.1);
+            --shadow-md: 0 4px 6px -1px hsla(var(--bg-main) / 0.1), 0 2px 4px -2px hsla(var(--bg-main) / 0.1);
+            --shadow-lg: 0 10px 15px -3px hsla(var(--bg-main) / 0.1), 0 4px 6px -2px hsla(var(--bg-main) / 0.05);
+            --shadow-xl: 0 20px 25px -5px hsla(var(--bg-main) / 0.1), 0 10px 10px -5px hsla(var(--bg-main) / 0.04);
         }
 
-        /*
-        * ----------------------------------------------------
-        * GLOBAL RESET & TYPOGRAPHY
-        * ----------------------------------------------------
-        */
+        /* Reset and Base Styles */
         *,
         *::before,
         *::after {
@@ -79,182 +71,210 @@
 
         html {
             scroll-behavior: smooth;
+            /* Mantiene el scroll suave para el long-scroll */
         }
 
         body {
             font-family: var(--font-body);
-            background-color: hsl(var(--bg-main));
-            color: hsl(var(--text-main));
             line-height: 1.6;
+            color: hsl(var(--text-main));
+            background-color: hsl(var(--bg-main));
+            min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            /* CV features for "Pro" Inter look */
-            font-feature-settings: 'calt' 1, 'tnum' 1, 'cv05' 1, 'cv06' 1;
-            overflow-x: hidden;
-            width: 100%;
         }
 
-        /* Gradient Selection */
-        ::selection {
-            background-color: hsl(var(--accent));
-            color: hsl(var(--accent-contrast));
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: hsl(var(--bg-main));
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #d4d4d8;
-            border-radius: 5px;
-            border: 2px solid hsl(var(--bg-main));
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a1a1aa;
-        }
-
+        /* Typography Styles */
         h1,
         h2,
-        h3,
-        h4,
-        h5,
-        h6 {
+        h3 {
             font-family: var(--font-heading);
-            color: hsl(var(--accent));
+            font-weight: 900;
             line-height: 1.1;
-            font-weight: 800;
-            /* Stricter weight */
-            letter-spacing: -0.02em;
-            /* Tighter tracking for headings */
+            color: hsl(var(--text-main));
             text-wrap: balance;
         }
 
-        p {
-            color: hsl(var(--text-muted));
-            font-weight: 400;
+        h1 {
+            font-size: clamp(3rem, 5vw + 1rem, 5rem);
         }
 
+        h2 {
+            font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 3vw + 1rem, 2rem);
+        }
+
+        p,
+        a,
+        li {
+            font-size: 1rem;
+            color: hsl(var(--text-muted));
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* 5. MANDATORY UTILITY CLASSES (Grid & Layout) */
+        /* -------------------------------------------------------------------------- */
+        .container {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+        }
+
+        .grid-12 {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--space-lg);
+        }
+
+        @media (max-width: 767px) {
+            .grid-12 {
+                grid-template-columns: 1fr;
+                gap: var(--space-xl);
+            }
+        }
+
+        .col-span-12 {
+            grid-column: span 12;
+        }
+
+        .col-span-6 {
+            grid-column: span 6;
+        }
+
+        .col-span-4 {
+            grid-column: span 4;
+        }
+
+        @media (min-width: 768px) {
+            .md-col-span-6 {
+                grid-column: span 6;
+            }
+
+            .md-col-span-4 {
+                grid-column: span 4;
+            }
+
+            .md-col-start-6 {
+                grid-column-start: 6;
+            }
+        }
+
+        /* Card and Glassmorphism */
+        .card-glass {
+            background: hsla(0, 0%, 100%, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid hsla(var(--border), 0.5);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Image Filter (MANDATORY) */
+        .img-filter {
+            filter: grayscale(20%) contrast(1.05) brightness(1.02);
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Spacing Utilities */
+        /* FIX: Reajustamos las secciones para el long-scroll */
+        section {
+            padding-top: var(--space-3xl);
+            padding-bottom: var(--space-3xl);
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: var(--space-4xl);
+            /* Ajuste para navbar fijo */
+            padding-bottom: var(--space-4xl);
+        }
+
+        .mb-2 {
+            margin-bottom: var(--space-sm);
+        }
+
+        .mb-4 {
+            margin-bottom: var(--space-lg);
+        }
+
+        .mt-4 {
+            margin-top: var(--space-lg);
+        }
+
+        .mt-6 {
+            margin-top: var(--space-xl);
+        }
+
+        /* Text Utilities */
         .text-muted {
             color: hsl(var(--text-muted));
         }
 
-        .text-sm {
-            font-size: 0.875rem;
+        .text-center {
+            text-align: center;
         }
 
-        .mb-2 {
-            margin-bottom: var(--space-1);
+        .uppercase {
+            text-transform: uppercase;
         }
 
-        .mb-4 {
-            margin-bottom: var(--space-4);
+        .tracking-wide {
+            letter-spacing: 0.1em;
         }
 
-        .mt-2 {
-            margin-top: var(--space-1);
-        }
-
-        .mt-4 {
-            margin-top: var(--space-4);
-        }
-
-        .mt-8 {
-            margin-top: var(--space-8);
-        }
-
-        .ml-2 {
-            margin-left: 8px;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-            transition: color 0.3s cubic-bezier(0.2, 0, 0, 1);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1280px;
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: var(--space-3);
-            padding-right: var(--space-3);
-        }
-
-        /*
-        * ----------------------------------------------------
-        * GRID & LAYOUT (12-COLUMN)
-        * ----------------------------------------------------
-        */
-        .grid-12 {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: var(--space-4);
-        }
-
-        /* Spacing Utilities */
-        .py-16 {
-            padding-top: var(--space-16);
-            padding-bottom: var(--space-16);
-        }
-
-        .py-12 {
-            padding-top: var(--space-12);
-            padding-bottom: var(--space-12);
-        }
-
-        .py-8 {
-            padding-top: var(--space-8);
-            padding-bottom: var(--space-8);
-        }
-
-        /*
-        * ----------------------------------------------------
-        * 3. COMPONENT LIBRARY & AESTHETICS
-        * ----------------------------------------------------
-        */
-
-        /* Buttons - Modernized */
+        /* -------------------------------------------------------------------------- */
+        /* 3. COMPONENT LIBRARY (Buttons) */
+        /* -------------------------------------------------------------------------- */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 14px 28px;
-            /* Slightly larger targets */
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
             font-weight: 600;
-            font-size: 15px;
-            /* Precise sizing */
-            border: 1px solid transparent;
-            border-radius: 10px;
-            /* Modern chic radius */
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-            letter-spacing: -0.01em;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-shadow: var(--shadow-md);
         }
 
         .btn-primary {
             background-color: hsl(var(--accent));
             color: hsl(var(--accent-contrast));
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
         }
 
         .btn-secondary {
             background-color: transparent;
-            color: hsl(var(--accent));
-            border-color: #e4e4e7;
-            background: white;
+            color: hsl(var(--text-main));
+            border: 1px solid hsla(var(--border), 0.8);
         }
 
         .btn:hover {
@@ -262,83 +282,22 @@
             box-shadow: var(--shadow-lg);
         }
 
-        /* Cards - Defined with subtle depth */
-        .card {
-            background-color: hsl(var(--bg-main));
-            border: 1px solid hsl(var(--border));
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            padding: var(--space-4);
-            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
-            position: relative;
-            z-index: 1;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: #d4d4d8;
-            box-shadow: var(--shadow-xl);
-        }
-
-        /* Glassmorphism Refined */
-        .card-glass {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-top: 1px solid rgba(255, 255, 255, 0.8);
-            /* Top highlight */
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-
-        /* Image Filter (Mandatory) */
-        .img-filter {
-            filter: grayscale(10%) contrast(1.03) brightness(1.02);
-            border-radius: var(--radius-md);
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: filter 0.5s ease;
-        }
-
-        /* Interactive hint on images */
-        .img-container:hover .img-filter {
-            filter: grayscale(0%) contrast(1.05) brightness(1.05);
-        }
-
-        /* Animation Utilities */
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(30px) scale(0.98);
-            transition: opacity 0.8s cubic-bezier(0.2, 0, 0, 1), transform 0.8s cubic-bezier(0.2, 0, 0, 1);
-            will-change: opacity, transform;
-        }
-
-        .scroll-reveal.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /*
-        * ----------------------------------------------------
-        * NAVBAR 
-        * ----------------------------------------------------
-        */
+        /* -------------------------------------------------------------------------- */
+        /* 3. COMPONENT LIBRARY (Navbar & Mobile Menu) */
+        /* -------------------------------------------------------------------------- */
         .header-nav {
-            position: sticky;
+            /* FIXED POSITIONING ES MEJOR para sitios de scroll largo */
+            position: fixed;
             top: 0;
+            left: 0;
+            width: 100%;
             z-index: 1000;
-            padding: var(--space-2) 0;
-            background-color: rgba(255, 255, 255, 0.85);
-            /* Slightly more transparent */
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            /* Softer border */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
+            padding: var(--space-md) 0;
+            background: hsla(var(--bg-main) / 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid hsla(var(--border), 0.5);
         }
-
-        /* Hide navbar on scroll down, show on scroll up (JS needed usually, keep sticky for now) */
 
         .nav-content {
             display: flex;
@@ -346,820 +305,491 @@
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: hsl(var(--accent));
-            letter-spacing: -0.03em;
-            position: relative;
-            z-index: 1001;
-        }
-
         .nav-links {
-            display: none;
-            gap: 40px;
+            display: flex;
+            gap: var(--space-lg);
             list-style: none;
-            margin: 0;
-            padding: 0;
+            /* Añadido para mejor semántica en el flex */
         }
 
-        .nav-link a {
-            font-weight: 500;
-            font-size: 0.9375rem;
-            /* 15px */
+        .nav-link {
+            /* FIX: Targetting solo links dentro de nav-links */
             color: hsl(var(--text-muted));
-            transition: color 0.2s;
+            font-weight: 600;
+            padding: var(--space-sm) 0;
+            position: relative;
         }
 
-        .nav-link a:hover {
-            color: hsl(var(--accent));
+        .nav-link:hover {
+            color: hsl(var(--text-main));
         }
 
-        .hamburger {
-            display: block;
+        /* Hamburger Menu */
+        .menu-toggle {
+            display: none;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            color: hsl(var(--text-main));
+            font-size: var(--space-lg);
             cursor: pointer;
-            color: hsl(var(--accent));
-            padding: 4px;
-            z-index: 1001;
+            padding: var(--space-xs);
         }
 
-        /* Mobile Menu - Staggered entrance */
         .mobile-menu {
+            display: none;
             position: fixed;
-            inset: 0;
-            background-color: hsl(var(--bg-main) / 0.98);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            display: flex;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px);
+            padding: var(--space-lg);
+            background: hsla(var(--bg-main) / 0.98);
+            /* Oscurecer más el móvil */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-menu.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .mobile-menu-links {
+            gap: var(--space-xl);
+            z-index: 999;
             list-style: none;
-            text-align: center;
-            padding: 0;
         }
 
-        .mobile-menu-links li {
-            margin-bottom: var(--space-4);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-
-        /* Stagger Delay logic in CSS or JS? CSS easier */
-        .mobile-menu.open li:nth-child(1) {
-            transition-delay: 0.1s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-menu.open li:nth-child(2) {
-            transition-delay: 0.15s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-menu.open li:nth-child(3) {
-            transition-delay: 0.2s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-menu.open li:nth-child(4) {
-            transition-delay: 0.25s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-menu.open li:nth-child(5) {
-            transition-delay: 0.3s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .mobile-menu-links a {
-            font-size: 2.25rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: hsl(var(--accent));
-            text-decoration: none;
-        }
-
-        .mobile-menu-links a:hover {
-            color: hsl(var(--text-muted));
-            /* Invert interaction */
-        }
-
-        .mobile-menu-close {
-            position: absolute;
-            top: 24px;
-            right: 24px;
+        .mobile-menu a {
             font-size: 1.5rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: hsl(var(--accent));
+            padding: var(--space-sm);
         }
 
-        @media (min-width: 768px) {
-            .nav-links {
-                display: flex;
-            }
+        @media (max-width: 767px) {
 
-            .hamburger {
+            .nav-links,
+            .nav-cta {
                 display: none;
             }
-        }
 
-        /*
-        * ----------------------------------------------------
-        * SECTION STYLES
-        * ----------------------------------------------------
-        */
-        section {
-            padding-top: var(--space-12);
-            padding-bottom: var(--space-12);
-            position: relative;
-        }
-
-        /* Subtle Section Divider */
-        section::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto var(--space-8);
-        }
-
-        .section-header h2 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            margin-bottom: var(--space-2);
-            margin-top: 0;
-            letter-spacing: -0.03em;
-        }
-
-        /* Detailed "Pre-headline" from prompt */
-        .section-header .pre-headline {
-            font-family: var(--font-body);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-weight: 600;
-            color: hsl(var(--text-muted));
-            display: block;
-            margin-bottom: var(--space-2);
-        }
-
-        /* Hero */
-        #hero {
-            min-height: 90vh;
-            /* Better than calc(100vh - 80px) for mobile */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            overflow: hidden;
-            padding-top: 80px;
-            /* Offset fixed header */
-        }
-
-        /* Background Noise Texture */
-        #hero::before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
-            opacity: 0.5;
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .hero-visual {
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            opacity: 0.4;
-            /* Slightly higher base opacity */
-            mix-blend-mode: multiply;
-        }
-
-        .hero-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: grayscale(100%) contrast(1.1);
-            /* Stylized hero bg */
-        }
-
-        #hero h1 {
-            font-size: clamp(3.5rem, 9vw, 6rem);
-            /* Massive impact */
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: var(--space-4);
-            position: relative;
-        }
-
-        .subtitle {
-            font-size: clamp(1.125rem, 2vw, 1.25rem);
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto var(--space-6);
-        }
-
-        /* Bento Grid Services */
-        .bento-grid {
-            display: grid;
-            gap: var(--space-4);
-            grid-template-columns: 1fr;
-        }
-
-        .service-card {
-            min-height: 240px;
-            padding: var(--space-6);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .service-icon {
-            font-size: 2rem;
-            color: hsl(var(--accent));
-            margin-bottom: var(--space-4);
-        }
-
-        @media (min-width: 768px) {
-            .bento-grid {
-                grid-template-columns: repeat(3, 1fr);
-                grid-template-rows: repeat(2, auto);
+            .menu-toggle {
+                display: block;
             }
 
-            /* Bento Layout logic */
-            .bento-item-1 {
-                grid-column: span 1;
-            }
-
-            .bento-item-2 {
-                grid-column: span 2;
-            }
-
-            .bento-item-full {
-                grid-column: span 3;
+            .mobile-menu.open {
+                display: flex;
             }
         }
 
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--space-6);
-            margin-top: var(--space-8);
-            border-top: 1px solid var(--border);
-            padding-top: var(--space-8);
+        /* -------------------------------------------------------------------------- */
+        /* 6. CONTENT ARCHITECTURE (Scroll Reveal - Corregido) */
+        /* -------------------------------------------------------------------------- */
+        /* Eliminamos .page-view y .page-view.active ya que causaban el conflicto SPA */
+
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition-delay: var(--delay, 0s);
         }
 
-        .stat-item h3 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            margin-bottom: 0;
+        .reveal-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .stat-item p {
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-
-        @media (min-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        /* FAQ Accordion - Polished */
-        .accordion-item {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .accordion-item:hover {
-            background-color: rgba(0, 0, 0, 0.02);
-        }
-
-        .accordion-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 1.125rem;
-            padding: var(--space-3);
-        }
-
-        .accordion-content {
-            height: 0;
-            overflow: hidden;
-            transition: height 0.3s cubic-bezier(0.2, 0, 0, 1);
-            padding: 0 var(--space-3);
-            color: hsl(var(--text-muted));
-        }
-
-        .accordion-content.open {
-            height: auto;
-            /* Fallback */
-            padding-bottom: var(--space-3);
-        }
-
-        /* Contact Form Inputs */
-        .form-group {
-            margin-bottom: var(--space-4);
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 16px;
-            background: hsl(var(--bg-secondary));
-            border: 1px solid transparent;
-            border-radius: var(--radius-sm);
-            font-family: var(--font-body);
-            font-size: 1rem;
+        /* Contact Form (Manteniendo estilos) */
+        .contact-form input,
+        .contact-form textarea {
+            background-color: hsl(var(--bg-secondary));
             color: hsl(var(--text-main));
-            transition: all 0.2s;
-        }
-
-        input:focus,
-        textarea:focus {
-            outline: none;
-            background: white;
-            border-color: hsl(var(--text-muted) / 0.3);
-            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
-            /* Focus ring */
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: hsl(var(--text-main));
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0c0c0e;
-            /* Darker than --accent for contrast */
-            color: white;
-            padding: var(--space-12) 0 var(--space-6);
-        }
-
-        .footer-heading {
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: var(--space-4);
-        }
-
-        .footer-links li {
-            list-style: none;
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: #a1a1aa;
-            font-size: 0.9375rem;
-        }
-
-        .footer-links a:hover {
-            color: white;
         }
     </style>
 </head>
 
 <body>
+    <div id="app">
+        <header class="header-nav">
+            <div class="container nav-content">
+                <a href="#home" class="logo">yenze.</a>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenu" class="mobile-menu">
-        <button class="mobile-menu-close" onclick="toggleMenu()" aria-label="Close menu">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul class="mobile-menu-links">
-            <li><a href="#about" onclick="toggleMenu()">About</a></li>
-            <li><a href="#services" onclick="toggleMenu()">Process</a></li>
-            <li><a href="#work" onclick="toggleMenu()">Work</a></li>
-            <li><a href="#journal" onclick="toggleMenu()">Journal</a></li>
-            <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
-        </ul>
-    </div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#home" class="nav-link" data-route="home">Home</a></li>
+                        <li><a href="#our-story" class="nav-link" data-route="our-story">Our Story</a></li>
+                        <li><a href="#capabilities" class="nav-link" data-route="capabilities">Capabilities</a></li>
+                        <li><a href="#case-studies" class="nav-link" data-route="case-studies">Case Studies</a></li>
+                        <li><a href="#plans" class="nav-link" data-route="plans">Plans</a></li>
+                    </ul>
+                </nav>
 
-    <!-- Navigation -->
-    <header class="header-nav">
-        <div class="container nav-content">
-            <a href="#" class="logo">Yenze.</a>
+                <div class="nav-cta">
+                    <a href="#get-in-touch" class="btn btn-primary" data-route="get-in-touch">Get in Touch</a>
+                </div>
 
-            <ul class="nav-links">
-                <li class="nav-link"><a href="#about">About</a></li>
-                <li class="nav-link"><a href="#services">Process</a></li>
-                <li class="nav-link"><a href="#work">Work</a></li>
-                <li class="nav-link"><a href="#journal">Journal</a></li>
-            </ul>
-
-            <div style="display: flex; gap: 16px; align-items: center;">
-                <a href="#contact" class="btn btn-primary" style="display: none /* hidden on mobile initially */;">
-                    Start Project
-                </a>
-                <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
+        </header>
 
-            <!-- Show btn on desktop via media query logic in CSS or inline override for simplicity -->
-            <style>
-                @media(min-width: 768px) {
-                    .btn-primary {
-                        display: inline-flex !important;
-                    }
-                }
-            </style>
-        </div>
-    </header>
+        <ul class="mobile-menu" id="mobileMenu">
+            <li><a href="#home" class="nav-link" data-route="home">Home</a></li>
+            <li><a href="#our-story" class="nav-link" data-route="our-story">Our Story</a></li>
+            <li><a href="#capabilities" class="nav-link" data-route="capabilities">Capabilities</a></li>
+            <li><a href="#case-studies" class="nav-link" data-route="case-studies">Case Studies</a></li>
+            <li><a href="#plans" class="nav-link" data-route="plans">Plans</a></li>
+            <li><a href="#get-in-touch" class="btn btn-primary" data-route="get-in-touch">Get in Touch</a></li>
+        </ul>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="hero">
-            <div class="hero-visual">
-                <!-- Abstract, high-quality monochromatic visual -->
-                <img src="https://images.unsplash.com/photo-1487887235947-a955ef187fcc?q=80&w=2555&auto=format&fit=crop"
-                    alt="Abstract architectural geometry">
-            </div>
-            <div class="container">
-                <div class="scroll-reveal">
-                    <span class="text-sm"
-                        style="text-transform: uppercase; letter-spacing: 0.2em; font-weight: 700; opacity: 0.7; display: block; margin-bottom: 24px;">High-Fidelity
-                        Engineering</span>
-                    <h1>
-                        Ship World-Class<br>
-                        MVPs in Weeks.
-                    </h1>
-                    <p class="subtitle mt-4">
-                        We blend Swiss design precision with rapid development velocity.
-                        Launch high-fidelity software that converts from Day 1.
-                    </p>
-                    <div class="mt-8" style="display: flex; gap: 16px; justify-content: center;">
-                        <a href="#services" class="btn btn-primary">Our Process</a>
-                        <a href="#contact" class="btn btn-secondary">Book Consultation</a>
-                    </div>
+        <section id="home" class="hero-section">
+            <div class="container hero-headline-wrap">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">— SOFTWARE
+                    DEVELOPMENT AUTHORITY</p>
+                <h1 class="reveal-element" style="--delay: 0.1s;">
+                    Engineering <span style="color: hsl(var(--text-muted))">Minimum Viable Products</span> with
+                    Enterprise Precision.
+                </h1>
+                <p class="mt-4 text-muted reveal-element"
+                    style="--delay: 0.2s; max-width: 600px; margin: var(--space-lg) auto;">
+                    yenze is your specialized partner in translating visionary concepts into highly performant,
+                    market-ready MVPs. We deliver quality, speed, and architectural integrity that scales.
+                </p>
+                <div class="mt-6 reveal-element" style="--delay: 0.3s;">
+                    <a href="#get-in-touch" class="btn btn-primary" data-route="get-in-touch">Start Your MVP Project <i
+                            class="fa-solid fa-arrow-right ml-2"></i></a>
                 </div>
             </div>
         </section>
 
-        <!-- About / Stats Section -->
-        <section id="about">
+        <section id="our-story">
             <div class="container">
-                <div class="grid-12" style="align-items: center;">
-                    <div class="scroll-reveal"
-                        style="grid-column: span 12; @media(min-width:1024px){grid-column: span 5;}">
-                        <span class="pre-headline">— THE YENZE METHOD</span>
-                        <h2>Velocity-First<br>Architecture.</h2>
-                        <p class="mt-4" style="font-size: 1.125rem;">
-                            In a market defined by speed, we are your tactical accelerator. Not an agency, but a
-                            dedicated product swat-team. We bypass typical bottlenecks to deliver <strong>Awwwards-grade
-                                interfaces</strong> backed by bulletproof code infrastructure.
+                <div class="grid-12">
+                    <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0s;">
+                        <p class="text-muted mb-2 uppercase tracking-wide">— OUR ARCHITECTURAL DNA</p>
+                        <h2>Built for Scale, Optimized for Velocity.</h2>
+                        <p class="mt-4 text-muted">
+                            The foundation of a successful venture lies in its initial architecture. We don't just code
+                            MVPs; we design platforms. Our team of senior architects ensures every line of code adheres
+                            to best practices, maximizing performance and minimizing future technical debt. This is the
+                            difference between a prototype and a proper product.
                         </p>
-                    </div>
-
-                    <div class="scroll-reveal" style="grid-column: span 12; margin-top: 32px;">
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <h3>21</h3>
-                                <p>Days to Launch</p>
-                            </div>
-                            <div class="stat-item">
-                                <h3>96%</h3>
-                                <p>Retention Rate</p>
-                            </div>
-                            <div class="stat-item">
-                                <h3>300+</h3>
-                                <p>Products Shipped</p>
-                            </div>
-                            <div class="stat-item">
-                                <h3>4.9</h3>
-                                <p>Client Trust Score</p>
-                            </div>
+                        <ul class="mt-4" style="list-style: none;">
+                            <li class="mb-2"><i class="fa-solid fa-check"
+                                    style="color: hsl(var(--text-muted)); margin-right: 8px;"></i> Strict Adherence to
+                                the 8pt Design Grid</li>
+                            <li class="mb-2"><i class="fa-solid fa-check"
+                                    style="color: hsl(var(--text-muted)); margin-right: 8px;"></i> Monochromatic Zinc
+                                Color Logic for Sophistication</li>
+                            <li class="mb-2"><i class="fa-solid fa-check"
+                                    style="color: hsl(var(--text-muted)); margin-right: 8px;"></i> Long-Scroll Layout
+                                for Seamless Content Flow</li>
+                        </ul>
+                        <div class="mt-6">
+                            <a href="#capabilities" class="btn btn-secondary" data-route="capabilities">View Our
+                                Capabilities</a>
                         </div>
+                    </div>
+                    <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0.1s;">
+                        <img src="https://images.unsplash.com/photo-1627398242454-4f2ce47d538d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="Abstract modern code architecture" class="img-filter" style="aspect-ratio: 16/10;"
+                            loading="lazy">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Services (Bento Grid) -->
-        <section id="services" style="background-color: hsl(var(--bg-secondary));">
-            <div class="container">
-                <div class="section-header scroll-reveal">
-                    <span class="pre-headline">— CORE CAPABILITIES</span>
-                    <h2>Precision Engineering.</h2>
+        <section id="capabilities">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">— CORE OFFERING
+                </p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Disciplined Development, Delivered.</h2>
+                <p class="mt-4 text-muted reveal-element"
+                    style="--delay: 0.1s; max-width: 800px; margin: var(--space-lg) auto var(--space-3xl);">
+                    We focus on the critical path to product-market fit, leveraging a full-stack proficiency to launch
+                    viable products, not just prototypes.
+                </p>
+            </div>
+            <div class="container grid-12">
+                <div class="col-span-12 md-col-span-4 card-glass card-hover reveal-element" style="--delay: 0.15s;">
+                    <i class="fa-solid fa-cubes-stacked fa-2x"
+                        style="color: hsl(var(--text-main)); margin-bottom: var(--space-sm);"></i>
+                    <h3 class="mb-2">Strategic MVP Definition</h3>
+                    <p class="text-muted">Laser-focused scope definition to identify and build the most critical feature
+                        set, guaranteeing a rapid and impactful market entry.</p>
                 </div>
+                <div class="col-span-12 md-col-span-4 card-glass card-hover reveal-element" style="--delay: 0.25s;">
+                    <i class="fa-solid fa-gears fa-2x"
+                        style="color: hsl(var(--text-main)); margin-bottom: var(--space-sm);"></i>
+                    <h3 class="mb-2">Flawless Engineering</h3>
+                    <p class="text-muted">Backend and frontend built by senior engineers using modern frameworks,
+                        prioritizing security, scalability, and clean, readable code.</p>
+                </div>
+                <div class="col-span-12 md-col-span-4 card-glass card-hover reveal-element" style="--delay: 0.35s;">
+                    <i class="fa-solid fa-compass-drafting fa-2x"
+                        style="color: hsl(var(--text-main)); margin-bottom: var(--space-sm);"></i>
+                    <h3 class="mb-2">Awwwards-Level Design</h3>
+                    <p class="text-muted">World-class UI/UX that combines high-fidelity design with critical user flows,
+                        ensuring an intuitive and premium user experience.</p>
+                </div>
+            </div>
+        </section>
 
-                <div class="bento-grid">
-                    <!-- Item 1: Large Glass Card -->
-                    <div class="service-card card card-glass scroll-reveal bento-item-2">
-                        <div>
-                            <i class="fas fa-rocket service-icon"></i>
-                            <h3>Rapid MVP Strategy</h3>
-                            <p class="text-muted">Define, prototype, and validate your core product concept in under two
-                                weeks. Zero bloat architecture focusing purely on high-impact features.</p>
-                        </div>
+        <section id="case-studies">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">— RESULTS IN
+                    PRACTICE</p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Case Studies: From Zero to Product.</h2>
+                <p class="mt-4 text-muted reveal-element"
+                    style="--delay: 0.1s; max-width: 800px; margin: var(--space-lg) auto var(--space-3xl);">
+                    Our MVPs are built to attract funding, secure initial users, and validate business models faster and
+                    more reliably than the competition.
+                </p>
+            </div>
+            <div class="container grid-12">
+                <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0.15s;">
+                    <a href="#" class="card-glass card-hover"
+                        style="display: block; padding: var(--space-lg); border-radius: var(--radius-lg);">
+                        <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9d13?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="Code on a screen" class="img-filter"
+                            style="aspect-ratio: 16/9; margin-bottom: var(--space-md);" loading="lazy">
+                        <p class="text-muted uppercase tracking-wide">FinTech Platform | +$5M Seed Round</p>
+                        <h3 class="mt-2" style="font-weight: 900; color: hsl(var(--text-main));">Securing Capital with a
+                            Production-Ready Core.</h3>
+                    </a>
+                </div>
+                <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0.25s;">
+                    <a href="#" class="card-glass card-hover"
+                        style="display: block; padding: var(--space-lg); border-radius: var(--radius-lg);">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt="Software dashboard" class="img-filter"
+                            style="aspect-ratio: 16/9; margin-bottom: var(--space-md);" loading="lazy">
+                        <p class="text-muted uppercase tracking-wide">SaaS Analytics | 10,000 Beta Users in 3 Months</p>
+                        <h3 class="mt-2" style="font-weight: 900; color: hsl(var(--text-main));">Validated UI/UX Drives
+                            Exponential User Adoption.</h3>
+                    </a>
+                </div>
+                <div class="col-span-12 text-center mt-6 reveal-element" style="--delay: 0.35s;">
+                    <a href="#get-in-touch" class="btn btn-primary" data-route="get-in-touch">Discuss Your Product's
+                        Success Story</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="plans">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">— INVESTMENT
+                    LEVELS</p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Pricing for True Business Impact.</h2>
+                <p class="mt-4 text-muted reveal-element"
+                    style="--delay: 0.1s; max-width: 800px; margin: var(--space-lg) auto var(--space-3xl);">
+                    We offer dedicated team structures tailored to the scope and velocity required for your Minimum
+                    Viable Product launch.
+                </p>
+            </div>
+            <div class="container grid-12" style="align-items: stretch;">
+                <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0.15s;">
+                    <div class="card-glass" style="padding: var(--space-xl); height: 100%;">
+                        <h3 class="mb-2">Foundation MVP</h3>
+                        <p class="text-muted">Essential core features, rapid launch, perfect for validating a single key
+                            assumption.</p>
                         <div class="mt-4">
-                            <!-- Tag-like pills for tech -->
-                            <span class="text-sm"
-                                style="border: 1px solid rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 4px; margin-right: 4px;">Validation</span>
-                            <span class="text-sm"
-                                style="border: 1px solid rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 4px;">Prototyping</span>
+                            <span
+                                style="font-size: 3rem; font-weight: 900; color: hsl(var(--text-main));">$XX,XXX</span>
+                            <span class="text-muted"> / Project</span>
                         </div>
+                        <a href="#get-in-touch" class="btn btn-primary mt-6" style="width: 100%;">Get Started with
+                            Foundation</a>
+                        <p class="text-muted mt-4" style="font-size: 0.9rem;">Includes: Technical Discovery, Core UI/UX,
+                            1 Dedicated Developer.</p>
                     </div>
-
-                    <!-- Item 2: Standard Card -->
-                    <div class="service-card card scroll-reveal bento-item-1">
-                        <i class="fas fa-layer-group service-icon"></i>
-                        <h3>Full-Stack DevOps</h3>
-                        <p class="text-muted text-sm">Automated CI/CD pipelines, scalable cloud infrastructure
-                            (AWS/Vercel), and rock-solid backend security.</p>
-                    </div>
-
-                    <!-- Item 3: Standard Card -->
-                    <div class="service-card card scroll-reveal bento-item-1">
-                        <i class="fas fa-paint-brush service-icon"></i>
-                        <h3>UI/UX Systems</h3>
-                        <p class="text-muted text-sm">Conversion-obsessed interface design. We build design systems, not
-                            just pages, ensuring consistent scaling.</p>
-                    </div>
-
-                    <!-- Item 4: Large Card -->
-                    <div class="service-card card bento-item-2 scroll-reveal">
-                        <div>
-                            <i class="fas fa-code-branch service-icon"></i>
-                            <h3>Code Audit & Refactor</h3>
-                            <p class="text-muted">Inherited messy code? We analyze, optimize, and refactor for
-                                performance and maintainability. Technical debt elimination.</p>
+                </div>
+                <div class="col-span-12 md-col-span-6 reveal-element" style="--delay: 0.25s;">
+                    <div class="card-glass"
+                        style="padding: var(--space-xl); height: 100%; border: 2px solid hsl(var(--accent)); box-shadow: var(--shadow-xl);">
+                        <h3 class="mb-2" style="font-weight: 900; color: hsl(var(--accent));">Enterprise Platform</h3>
+                        <p class="text-muted">Fully architected, scalable platform with complex features and robust
+                            infrastructure.</p>
+                        <div class="mt-4">
+                            <span
+                                style="font-size: 3rem; font-weight: 900; color: hsl(var(--text-main));">$XXX,XXX</span>
+                            <span class="text-muted"> / Project</span>
                         </div>
+                        <a href="#get-in-touch" class="btn btn-primary mt-6" style="width: 100%;">Consult on Enterprise
+                            Scope</a>
+                        <p class="text-muted mt-4" style="font-size: 0.9rem;">Includes: Full Design System, Multi-Stack
+                            Architecture, Dedicated Senior Team.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Work Gallery -->
-        <section id="work">
-            <div class="container">
-                <div class="section-header scroll-reveal">
-                    <span class="pre-headline">— SELECTED WORKS</span>
-                    <h2>High-Fidelity Output.</h2>
+        <section id="get-in-touch">
+            <div class="container grid-12">
+                <div class="col-span-12 md-col-span-4 reveal-element" style="--delay: 0s;">
+                    <p class="text-muted mb-2 uppercase tracking-wide">— CONTACT YENZE</p>
+                    <h2>Let's Engineer Your Next Product.</h2>
+                    <p class="mt-4 text-muted">
+                        Connect directly with our senior architectural team to discuss your project's technical and
+                        design requirements. We respect your time and confidentiality.
+                    </p>
+                    <ul class="mt-4" style="list-style: none;">
+                        <li class="mb-2"><i class="fa-solid fa-envelope"
+                                style="color: hsl(var(--text-muted)); margin-right: 8px;"></i> hi@yenze.io</li>
+                        <li class="mb-2"><i class="fa-solid fa-phone"
+                                style="color: hsl(var(--text-muted)); margin-right: 8px;"></i> +1 (800) 555-0199</li>
+                    </ul>
                 </div>
-
-                <div class="grid-12">
-                    <!-- Gallery Items -->
-                    <div class="scroll-reveal img-container"
-                        style="grid-column: span 12; @media(min-width:768px){grid-column: span 6;}">
-                        <div
-                            style="height: 400px; overflow: hidden; border-radius: var(--radius-md); position: relative;">
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
-                                alt="Fintech Dashboard" class="img-filter">
-                            <div style="position: absolute; bottom: 24px; left: 24px; color: white; z-index: 2;">
-                                <h4 style="color: white; margin-bottom: 4px;">Apex FinTech</h4>
-                                <span class="text-sm" style="opacity: 0.8;">Dashboards & Data Viz</span>
+                <div class="col-span-12 md-col-start-6 md-col-span-7 reveal-element" style="--delay: 0.1s;">
+                    <form id="contactForm" onsubmit="handleFormSubmit(event)" class="card-glass contact-form">
+                        <div class="grid-12" style="gap: var(--space-md);">
+                            <div class="col-span-12 md-col-span-6">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" required>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="scroll-reveal img-container"
-                        style="grid-column: span 12; @media(min-width:768px){grid-column: span 6;}">
-                        <div
-                            style="height: 400px; overflow: hidden; border-radius: var(--radius-md); position: relative;">
-                            <img src="https://images.unsplash.com/photo-1555421689-d68471e189f2?q=80&w=2670&auto=format&fit=crop"
-                                alt="SaaS Interface" class="img-filter">
-                            <div style="position: absolute; bottom: 24px; left: 24px; color: white; z-index: 2;">
-                                <h4 style="color: white; margin-bottom: 4px;">Lumina SaaS</h4>
-                                <span class="text-sm" style="opacity: 0.8;">Product Design System</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-8" style="text-align: center;">
-                    <a href="#" class="btn btn-secondary">View Full Portfolio</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" style="background-color: hsl(var(--bg-secondary));">
-            <div class="container">
-                <div class="section-header scroll-reveal">
-                    <span class="pre-headline">— QUESTIONS</span>
-                    <h2>Common Queries.</h2>
-                </div>
-
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <div class="accordion-item scroll-reveal">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            What is a High-Fidelity MVP?
-                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <p class="py-4">It stands for Minimum Viable Product, but executed with maximum quality
-                                constraints. We don't ship broken prototypes. We ship a core set of features that are
-                                polished, stable, and ready for real paying customers.</p>
-                        </div>
-                    </div>
-                    <div class="accordion-item scroll-reveal">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            How does the 21-day cycle work?
-                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <p class="py-4">Week 1 is Discovery & Architecture. Week 2 is Sprint Execution (Coding).
-                                Week 3 is Polish, QA, and Deployment. It's intense, focused, and transparent.</p>
-                        </div>
-                    </div>
-                    <div class="accordion-item scroll-reveal">
-                        <div class="accordion-header" onclick="toggleAccordion(this)">
-                            Do you handle backend and security?
-                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
-                        </div>
-                        <div class="accordion-content">
-                            <p class="py-4">Absolutely. We separate frontend and backend concerns using modern
-                                microservices or serverless architectures (Next.js API routes, Go, Node), ensuring your
-                                data is encrypted and secure.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact">
-            <div class="container">
-                <div class="section-header scroll-reveal">
-                    <span class="pre-headline">— START BUILDING</span>
-                    <h2>Ready to Launch?</h2>
-                </div>
-
-                <div class="grid-12">
-                    <div class="card card-glass scroll-reveal"
-                        style="grid-column: span 12; @media(min-width:768px){grid-column: 4 / span 6;}">
-                        <form id="contactForm" onsubmit="handleFormSubmit(event)">
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" name="name" required placeholder="Jane Doe">
-                            </div>
-                            <div class="form-group">
+                            <div class="col-span-12 md-col-span-6">
                                 <label for="email">Work Email</label>
-                                <input type="email" id="email" name="email" required placeholder="jane@company.com">
+                                <input type="email" id="email" name="email" required>
                             </div>
-                            <div class="form-group">
-                                <label for="message">Project Brief</label>
-                                <textarea id="message" name="message" rows="4" required
-                                    placeholder="Tell us about the problem you are solving..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">
-                                Initiate Sprint
-                            </button>
-                        </form>
-                    </div>
+                        </div>
+                        <label for="subject">Project Subject / Title</label>
+                        <input type="text" id="subject" name="subject" required>
+
+                        <label for="message">Project Scope & Details</label>
+                        <textarea id="message" name="message" required></textarea>
+
+                        <button type="submit" class="btn btn-primary mt-2">Send Message</button>
+                    </form>
                 </div>
             </div>
         </section>
 
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="grid-12"
-                style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 48px; margin-bottom: 48px;">
-                <div style="grid-column: span 12; @media(min-width:768px){grid-column: span 4;}">
-                    <a href="#" class="logo" style="color: white; font-size: 1.5rem;">Yenze.</a>
-                    <p style="color: #a1a1aa; margin-top: 16px; max-width: 300px;">
-                        The high-fidelity software partner for visionary founders. Built in Geneva, shipping globally.
+        <footer
+            style="padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid hsla(var(--border), 0.5);">
+            <div class="container grid-12">
+                <div class="col-span-12 md-col-span-3">
+                    <p class="logo">yenze.</p>
+                    <p class="text-muted" style="font-size: 0.875rem; margin-top: var(--space-sm);">
+                        &copy; 2025 yenze. All Rights Reserved.<br>Engineered for Awwwards SOTD.
                     </p>
                 </div>
-                <div style="grid-column: span 6; @media(min-width:768px){grid-column: span 2;}">
-                    <p class="footer-heading">Company</p>
-                    <ul class="footer-links">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#work">Work</a></li>
-                        <li><a href="#journal">Journal</a></li>
-                    </ul>
-                </div>
-                <div style="grid-column: span 6; @media(min-width:768px){grid-column: span 2;}">
-                    <p class="footer-heading">Services</p>
-                    <ul class="footer-links">
-                        <li><a href="#">MVP Dev</a></li>
-                        <li><a href="#">Code Audit</a></li>
-                        <li><a href="#">Design Systems</a></li>
-                    </ul>
-                </div>
-                <div style="grid-column: span 12; @media(min-width:768px){grid-column: span 4;}">
-                    <p class="footer-heading">Get Updates</p>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="email" placeholder="Enter email"
-                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
-                        <button class="btn btn-primary" style="padding: 0 20px;">Join</button>
-                    </div>
+                <div class="col-span-12 md-col-start-9 md-col-span-4" style="text-align: right;">
+                    <a href="#" class="text-muted" style="margin-left: var(--space-lg);">Privacy Policy</a>
+                    <a href="#" class="text-muted" style="margin-left: var(--space-lg);">Terms of Service</a>
                 </div>
             </div>
-            <div style="text-align: center; color: rgba(255,255,255,0.3); font-size: 0.875rem;">
-                &copy; 2025 Yenze Sàrl. Crafted with precision.
-            </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script>
-        // --- 1. Mobile Menu Logic ---
-        function toggleMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('open');
-            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        /**
+         * 1. CRITICAL FIX: Eliminamos la clase Router que generaba conflicto SPA
+         * El sitio ahora es un LONG-FORM SCROLLING LANDING PAGE como se solicitó.
+         */
+
+        /**
+         * 2. Component Library: Hamburger Menu Logic (Responsive)
+         */
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('open');
+            menuToggle.querySelector('i').classList.toggle('fa-bars');
+            menuToggle.querySelector('i').classList.toggle('fa-xmark');
         }
 
-        // --- 2. Accordion Logic ---
-        function toggleAccordion(header) {
-            const item = header.parentElement;
-            const content = header.nextElementSibling;
-            const icon = header.querySelector('i');
+        menuToggle.addEventListener('click', toggleMobileMenu);
 
-            // Check if open
-            const isOpen = content.style.height && content.style.height !== '0px';
+        // Close menu when a link inside is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
 
-            // Close all
-            document.querySelectorAll('.accordion-content').forEach(c => {
-                c.style.height = '0px';
-                c.parentElement.querySelector('i').classList.remove('fa-minus');
-                c.parentElement.querySelector('i').classList.add('fa-plus');
-            });
-
-            if (!isOpen) {
-                content.style.height = content.scrollHeight + 32 + 'px'; // + padding
-                icon.classList.remove('fa-plus');
-                icon.classList.add('fa-minus');
-            }
-        }
-
-        // --- 3. Scroll Reveal ---
+        /**
+         * 3. Component Library: Scroll Reveal (IntersectionObserver)
+         */
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
+                    // Stop observing once visible to prevent re-animation
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
 
-        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        document.querySelectorAll('.reveal-element').forEach(element => {
+            observer.observe(element);
+        });
 
-        // --- 4. Contact Form Logic ---
+
+        /**
+         * 4. Navigation Active State on Scroll (Long-Scroll Best Practice)
+         * Actualiza el estado activo del link de navegación basado en la sección visible
+         */
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    if (id) {
+                        // Limpia el estado activo en todos los links
+                        navLinks.forEach(link => link.classList.remove('active'));
+
+                        // Establece el estado activo en el link correspondiente
+                        document.querySelectorAll(`a[href="#${id}"]`).forEach(link => {
+                            link.classList.add('active');
+                        });
+                    }
+                }
+            });
+        }, {
+            rootMargin: '-50% 0px -50% 0px', // Activa el cambio cuando la sección está en el centro
+            threshold: 0 // Usamos rootMargin para un mejor control del punto de activación
+        });
+
+        sections.forEach(section => {
+            navObserver.observe(section);
+        });
+
+
+        /**
+         * 9. MANDATORY CONTACT FORM LOGIC (API Simulation)
+         */
         async function handleFormSubmit(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
             btn.disabled = true;
 
-            // Simulate 1.5s delay for "premium" feel (and network simulation)
-            setTimeout(() => {
-                alert('Request received. We will contact you within 24h.');
-                e.target.reset();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                const res = await fetch('https://yenze.io/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const json = { success: true };
+
+                if (json.success) {
+                    alert('Message Sent Successfully! Your commitment to quality is noted.');
+                    e.target.reset();
+                } else {
+                    alert('Error: Submission failed. Please try again.');
+                }
+            } catch (err) {
+                alert('Network Error: Could not reach the server.');
+            } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-            }, 1500);
+            }
         }
     </script>
 </body>
