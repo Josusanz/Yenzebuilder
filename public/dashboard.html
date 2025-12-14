@@ -193,6 +193,10 @@
                         <h2>SEO Center</h2>
                         <p class="text-muted">Optimize your websites for search engines and social media.</p>
                     </div>
+                    <select id="seoProjectFilter" class="filter-select"
+                        onchange="dashboardApp.loadProjectSEO(this.value)">
+                        <option value="">Select a Project...</option>
+                    </select>
                 </div>
 
                 <div class="seo-dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">

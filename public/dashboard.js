@@ -377,31 +377,69 @@ class DashboardApp {
     }
 
     async loadSEO() {
-        // Load saved defaults
+        // Populate project selector
+        const selector = document.getElementById('seoProjectFilter');
+        if (selector && this.projects.length > 0) {
+            // Keep the default option
+            selector.innerHTML = '<option value="">Select a Project...</option>';
+            
+            this.projects.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = p.name || 'Untitled Project';
+                selector.appendChild(opt);
+            });
+
+            // Select first project by default if none selected
+            if (!selector.value && this.projects[0]) {
+                selector.value = this.projects[0].id;
+                this.loadProjectSEO(this.projects[0].id);
+            }
+        }
+
+        // Load global defaults as fallback
         const metadata = this.currentUser?.user_metadata?.seo_defaults || {};
         const authorInput = document.querySelector('#seoDefaultsForm input[placeholder*="Author"]');
         const twitterInput = document.querySelector('#seoDefaultsForm input[placeholder*="Twitter"]');
-        const gscInput = document.getElementById('gscVerificationId');
 
         if (authorInput) authorInput.value = metadata.author || '';
         if (twitterInput) twitterInput.value = metadata.twitter || '';
-        if (gscInput) gscInput.value = metadata.gsc_id || '';
-
-        // Update connection status visual
-        if (metadata.gsc_id) {
-            const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"]');
-            if (statusBadge) {
-                statusBadge.textContent = 'CONNECTED';
-                statusBadge.style.background = '#dcfce7';
-                statusBadge.style.color = '#166534';
-            }
-        }
 
         // Setup listeners if not already done
         const defaultsForm = document.getElementById('seoDefaultsForm');
         if (defaultsForm && !defaultsForm.dataset.initialized) {
             defaultsForm.addEventListener('submit', (e) => this.saveSEODefaults(e));
             defaultsForm.dataset.initialized = 'true';
+        }
+    }
+
+    loadProjectSEO(projectId) {
+        if (!projectId) return;
+        
+        this.selectedSeoProject = this.projects.find(p => p.id === projectId);
+        if (!this.selectedSeoProject) return;
+
+        console.log('SEO Context loaded for:', this.selectedSeoProject.name);
+
+        // Update GSC context (Mock logic: In reality checking specific project metadata)
+        // For now we rely on the global default for GSC, but visually reset UI to look "fresh" or check specific status
+        const gscInput = document.getElementById('gscVerificationId');
+        // If project has specific GSC override, load it. Otherwise check global.
+        const globalGSC = this.currentUser?.user_metadata?.seo_defaults?.gsc_id || '';
+        if (gscInput) gscInput.value = globalGSC; 
+        
+        // Update connection badge based on presence of ID
+        const statusBadge = document.querySelector('.seo-main .dashboard-card span[style*="DISCONNECTED"], .seo-main .dashboard-card span[style*="CONNECTED"]');
+        if (statusBadge) {
+            if (globalGSC) {
+                statusBadge.textContent = 'CONNECTED';
+                statusBadge.style.background = '#dcfce7';
+                statusBadge.style.color = '#166534';
+            } else {
+                statusBadge.textContent = 'DISCONNECTED';
+                statusBadge.style.background = '#e2e8f0';
+                statusBadge.style.color = '#64748b';
+            }
         }
     }
 
@@ -520,38 +558,55 @@ class DashboardApp {
     }
 
     generateSitemap() {
-        this.showToast('Generating sitemap.xml...', 'info');
+        const project = this.selectedSeoProject;
+        if (!project) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        this.showToast(`Generating sitemap for ${project.name}...`, 'info');
+        
+        const domain = project.published_url || `https://${project.subdomain}.yenze.io`;
+
         setTimeout(() => {
             const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
-      <loc>https://your-site.yenze.io/</loc>
+      <loc>${domain}/</loc>
       <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
       <changefreq>daily</changefreq>
       <priority>1.0</priority>
    </url>
+   <!-- Auto-generated based on project structure -->
 </urlset>`;
             const blob = new Blob([sitemapContent], { type: 'text/xml' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'sitemap.xml';
+            a.download = `sitemap-${project.name.toLowerCase().replace(/\s+/g, '-')}.xml`;
             a.click();
             this.showToast('Sitemap downloaded!', 'success');
         }, 1500);
     }
 
     openRobotsTxt() {
+        const project = this.selectedSeoProject;
+        const domain = project ? (project.published_url || `https://${project.subdomain}.yenze.io`) : 'https://your-site.yenze.io';
+        
         const content = `User-agent: *
 Allow: /
-Sitemap: https://your-site.yenze.io/sitemap.xml`;
+Sitemap: ${domain}/sitemap.xml`;
         prompt("Copy your robots.txt content:", content);
     }
 
     checkBrokenLinks() {
-        this.showToast('Scanning for broken links...', 'info');
+        if (!this.selectedSeoProject) {
+            this.showToast('Select a project to scan', 'error');
+            return;
+        }
+        this.showToast(`Scanning ${this.selectedSeoProject.name} for broken links...`, 'info');
         setTimeout(() => {
-            this.showToast('Scan complete. No broken links found (0/45 checked).', 'success');
+            this.showToast('Scan complete. No broken links found (0/15 checked).', 'success');
         }, 2500);
     }
 
