@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yenze - High-Fidelity MVP Software Development</title>
+    <meta name="description"
+        content="We engineer world-class MVPs in record time. Swiss precision meets modern velocity.">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /*
+        * ----------------------------------------------------
+        * 5. CSS VARIABLES (MANDATORY)
+        * ----------------------------------------------------
+        */
+        :root {
+            /* Color Palette - HSL Values for easy manipulation */
+            --bg-main: 0 0% 100%;
+            --bg-secondary: 240 5% 98%;
+            /* Slightly cooler grey */
+            --text-main: 240 10% 4%;
+            --text-muted: 240 4% 46%;
+            --accent: 240 10% 3.9%;
+            --accent-contrast: 0 0% 100%;
+            --border: 240 6% 90%;
+            --brand-highlight: 221 83% 53%;
+            /* Subtle blue for focuses/accents */
+
+            /* Typography */
+            --font-heading: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --font-body: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+            /* Spacing (8pt scaling system) */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-6: 48px;
+            --space-8: 64px;
+            --space-10: 80px;
+            --space-12: 96px;
+            --space-16: 128px;
+
+            /* Radius */
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            /* Increased for modern feel */
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+
+            /* Shadows (Layered and diffused - Premium feel) */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+            --shadow-glow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /*
+        * ----------------------------------------------------
+        * GLOBAL RESET & TYPOGRAPHY
+        * ----------------------------------------------------
+        */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: hsl(var(--bg-main));
+            color: hsl(var(--text-main));
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* CV features for "Pro" Inter look */
+            font-feature-settings: 'calt' 1, 'tnum' 1, 'cv05' 1, 'cv06' 1;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Gradient Selection */
+        ::selection {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-contrast));
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: hsl(var(--bg-main));
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 5px;
+            border: 2px solid hsl(var(--bg-main));
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-heading);
+            color: hsl(var(--accent));
+            line-height: 1.1;
+            font-weight: 800;
+            /* Stricter weight */
+            letter-spacing: -0.02em;
+            /* Tighter tracking for headings */
+            text-wrap: balance;
+        }
+
+        p {
+            color: hsl(var(--text-muted));
+            font-weight: 400;
+        }
+
+        .text-muted {
+            color: hsl(var(--text-muted));
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .mb-2 {
+            margin-bottom: var(--space-1);
+        }
+
+        .mb-4 {
+            margin-bottom: var(--space-4);
+        }
+
+        .mt-2 {
+            margin-top: var(--space-1);
+        }
+
+        .mt-4 {
+            margin-top: var(--space-4);
+        }
+
+        .mt-8 {
+            margin-top: var(--space-8);
+        }
+
+        .ml-2 {
+            margin-left: 8px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: var(--space-3);
+            padding-right: var(--space-3);
+        }
+
+        /*
+        * ----------------------------------------------------
+        * GRID & LAYOUT (12-COLUMN)
+        * ----------------------------------------------------
+        */
+        .grid-12 {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--space-4);
+        }
+
+        /* Spacing Utilities */
+        .py-16 {
+            padding-top: var(--space-16);
+            padding-bottom: var(--space-16);
+        }
+
+        .py-12 {
+            padding-top: var(--space-12);
+            padding-bottom: var(--space-12);
+        }
+
+        .py-8 {
+            padding-top: var(--space-8);
+            padding-bottom: var(--space-8);
+        }
+
+        /*
+        * ----------------------------------------------------
+        * 3. COMPONENT LIBRARY & AESTHETICS
+        * ----------------------------------------------------
+        */
+
+        /* Buttons - Modernized */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            /* Slightly larger targets */
+            font-weight: 600;
+            font-size: 15px;
+            /* Precise sizing */
+            border: 1px solid transparent;
+            border-radius: 10px;
+            /* Modern chic radius */
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-primary {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-contrast));
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: hsl(var(--accent));
+            border-color: #e4e4e7;
+            background: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Cards - Defined with subtle depth */
+        .card {
+            background-color: hsl(var(--bg-main));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: var(--space-4);
+            transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #d4d4d8;
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Glassmorphism Refined */
+        .card-glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            /* Top highlight */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        /* Image Filter (Mandatory) */
+        .img-filter {
+            filter: grayscale(10%) contrast(1.03) brightness(1.02);
+            border-radius: var(--radius-md);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.5s ease;
+        }
+
+        /* Interactive hint on images */
+        .img-container:hover .img-filter {
+            filter: grayscale(0%) contrast(1.05) brightness(1.05);
+        }
+
+        /* Animation Utilities */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: opacity 0.8s cubic-bezier(0.2, 0, 0, 1), transform 0.8s cubic-bezier(0.2, 0, 0, 1);
+            will-change: opacity, transform;
+        }
+
+        .scroll-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /*
+        * ----------------------------------------------------
+        * NAVBAR 
+        * ----------------------------------------------------
+        */
+        .header-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: var(--space-2) 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            /* Slightly more transparent */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            /* Softer border */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        /* Hide navbar on scroll down, show on scroll up (JS needed usually, keep sticky for now) */
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: hsl(var(--accent));
+            letter-spacing: -0.03em;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 40px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link a {
+            font-weight: 500;
+            font-size: 0.9375rem;
+            /* 15px */
+            color: hsl(var(--text-muted));
+            transition: color 0.2s;
+        }
+
+        .nav-link a:hover {
+            color: hsl(var(--accent));
+        }
+
+        .hamburger {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: hsl(var(--accent));
+            padding: 4px;
+            z-index: 1001;
+        }
+
+        /* Mobile Menu - Staggered entrance */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background-color: hsl(var(--bg-main) / 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .mobile-menu-links li {
+            margin-bottom: var(--space-4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        /* Stagger Delay logic in CSS or JS? CSS easier */
+        .mobile-menu.open li:nth-child(1) {
+            transition-delay: 0.1s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.open li:nth-child(2) {
+            transition-delay: 0.15s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.open li:nth-child(3) {
+            transition-delay: 0.2s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.open li:nth-child(4) {
+            transition-delay: 0.25s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu.open li:nth-child(5) {
+            transition-delay: 0.3s;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu-links a {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: hsl(var(--accent));
+            text-decoration: none;
+        }
+
+        .mobile-menu-links a:hover {
+            color: hsl(var(--text-muted));
+            /* Invert interaction */
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: hsl(var(--accent));
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+
+            .hamburger {
+                display: none;
+            }
+        }
+
+        /*
+        * ----------------------------------------------------
+        * SECTION STYLES
+        * ----------------------------------------------------
+        */
+        section {
+            padding-top: var(--space-12);
+            padding-bottom: var(--space-12);
+            position: relative;
+        }
+
+        /* Subtle Section Divider */
+        section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto var(--space-8);
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            margin-bottom: var(--space-2);
+            margin-top: 0;
+            letter-spacing: -0.03em;
+        }
+
+        /* Detailed "Pre-headline" from prompt */
+        .section-header .pre-headline {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            color: hsl(var(--text-muted));
+            display: block;
+            margin-bottom: var(--space-2);
+        }
+
+        /* Hero */
+        #hero {
+            min-height: 90vh;
+            /* Better than calc(100vh - 80px) for mobile */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            padding-top: 80px;
+            /* Offset fixed header */
+        }
+
+        /* Background Noise Texture */
+        #hero::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .hero-visual {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.4;
+            /* Slightly higher base opacity */
+            mix-blend-mode: multiply;
+        }
+
+        .hero-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.1);
+            /* Stylized hero bg */
+        }
+
+        #hero h1 {
+            font-size: clamp(3.5rem, 9vw, 6rem);
+            /* Massive impact */
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: var(--space-4);
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.25rem);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto var(--space-6);
+        }
+
+        /* Bento Grid Services */
+        .bento-grid {
+            display: grid;
+            gap: var(--space-4);
+            grid-template-columns: 1fr;
+        }
+
+        .service-card {
+            min-height: 240px;
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            color: hsl(var(--accent));
+            margin-bottom: var(--space-4);
+        }
+
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, auto);
+            }
+
+            /* Bento Layout logic */
+            .bento-item-1 {
+                grid-column: span 1;
+            }
+
+            .bento-item-2 {
+                grid-column: span 2;
+            }
+
+            .bento-item-full {
+                grid-column: span 3;
+            }
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-6);
+            margin-top: var(--space-8);
+            border-top: 1px solid var(--border);
+            padding-top: var(--space-8);
+        }
+
+        .stat-item h3 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin-bottom: 0;
+        }
+
+        .stat-item p {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* FAQ Accordion - Polished */
+        .accordion-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.125rem;
+            padding: var(--space-3);
+        }
+
+        .accordion-content {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.2, 0, 0, 1);
+            padding: 0 var(--space-3);
+            color: hsl(var(--text-muted));
+        }
+
+        .accordion-content.open {
+            height: auto;
+            /* Fallback */
+            padding-bottom: var(--space-3);
+        }
+
+        /* Contact Form Inputs */
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 16px;
+            background: hsl(var(--bg-secondary));
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: hsl(var(--text-main));
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            background: white;
+            border-color: hsl(var(--text-muted) / 0.3);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+            /* Focus ring */
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: hsl(var(--text-main));
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0c0c0e;
+            /* Darker than --accent for contrast */
+            color: white;
+            padding: var(--space-12) 0 var(--space-6);
+        }
+
+        .footer-heading {
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--space-4);
+        }
+
+        .footer-links li {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #a1a1aa;
+            font-size: 0.9375rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="mobile-menu">
+        <button class="mobile-menu-close" onclick="toggleMenu()" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul class="mobile-menu-links">
+            <li><a href="#about" onclick="toggleMenu()">About</a></li>
+            <li><a href="#services" onclick="toggleMenu()">Process</a></li>
+            <li><a href="#work" onclick="toggleMenu()">Work</a></li>
+            <li><a href="#journal" onclick="toggleMenu()">Journal</a></li>
+            <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header-nav">
+        <div class="container nav-content">
+            <a href="#" class="logo">Yenze.</a>
+
+            <ul class="nav-links">
+                <li class="nav-link"><a href="#about">About</a></li>
+                <li class="nav-link"><a href="#services">Process</a></li>
+                <li class="nav-link"><a href="#work">Work</a></li>
+                <li class="nav-link"><a href="#journal">Journal</a></li>
+            </ul>
+
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <a href="#contact" class="btn btn-primary" style="display: none /* hidden on mobile initially */;">
+                    Start Project
+                </a>
+                <button class="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Show btn on desktop via media query logic in CSS or inline override for simplicity -->
+            <style>
+                @media(min-width: 768px) {
+                    .btn-primary {
+                        display: inline-flex !important;
+                    }
+                }
+            </style>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="hero-visual">
+                <!-- Abstract, high-quality monochromatic visual -->
+                <img src="https://images.unsplash.com/photo-1487887235947-a955ef187fcc?q=80&w=2555&auto=format&fit=crop"
+                    alt="Abstract architectural geometry">
+            </div>
+            <div class="container">
+                <div class="scroll-reveal">
+                    <span class="text-sm"
+                        style="text-transform: uppercase; letter-spacing: 0.2em; font-weight: 700; opacity: 0.7; display: block; margin-bottom: 24px;">High-Fidelity
+                        Engineering</span>
+                    <h1>
+                        Ship World-Class<br>
+                        MVPs in Weeks.
+                    </h1>
+                    <p class="subtitle mt-4">
+                        We blend Swiss design precision with rapid development velocity.
+                        Launch high-fidelity software that converts from Day 1.
+                    </p>
+                    <div class="mt-8" style="display: flex; gap: 16px; justify-content: center;">
+                        <a href="#services" class="btn btn-primary">Our Process</a>
+                        <a href="#contact" class="btn btn-secondary">Book Consultation</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About / Stats Section -->
+        <section id="about">
+            <div class="container">
+                <div class="grid-12" style="align-items: center;">
+                    <div class="scroll-reveal"
+                        style="grid-column: span 12; @media(min-width:1024px){grid-column: span 5;}">
+                        <span class="pre-headline">— THE YENZE METHOD</span>
+                        <h2>Velocity-First<br>Architecture.</h2>
+                        <p class="mt-4" style="font-size: 1.125rem;">
+                            In a market defined by speed, we are your tactical accelerator. Not an agency, but a
+                            dedicated product swat-team. We bypass typical bottlenecks to deliver <strong>Awwwards-grade
+                                interfaces</strong> backed by bulletproof code infrastructure.
+                        </p>
+                    </div>
+
+                    <div class="scroll-reveal" style="grid-column: span 12; margin-top: 32px;">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <h3>21</h3>
+                                <p>Days to Launch</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>96%</h3>
+                                <p>Retention Rate</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>300+</h3>
+                                <p>Products Shipped</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>4.9</h3>
+                                <p>Client Trust Score</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services (Bento Grid) -->
+        <section id="services" style="background-color: hsl(var(--bg-secondary));">
+            <div class="container">
+                <div class="section-header scroll-reveal">
+                    <span class="pre-headline">— CORE CAPABILITIES</span>
+                    <h2>Precision Engineering.</h2>
+                </div>
+
+                <div class="bento-grid">
+                    <!-- Item 1: Large Glass Card -->
+                    <div class="service-card card card-glass scroll-reveal bento-item-2">
+                        <div>
+                            <i class="fas fa-rocket service-icon"></i>
+                            <h3>Rapid MVP Strategy</h3>
+                            <p class="text-muted">Define, prototype, and validate your core product concept in under two
+                                weeks. Zero bloat architecture focusing purely on high-impact features.</p>
+                        </div>
+                        <div class="mt-4">
+                            <!-- Tag-like pills for tech -->
+                            <span class="text-sm"
+                                style="border: 1px solid rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 4px; margin-right: 4px;">Validation</span>
+                            <span class="text-sm"
+                                style="border: 1px solid rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 4px;">Prototyping</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 2: Standard Card -->
+                    <div class="service-card card scroll-reveal bento-item-1">
+                        <i class="fas fa-layer-group service-icon"></i>
+                        <h3>Full-Stack DevOps</h3>
+                        <p class="text-muted text-sm">Automated CI/CD pipelines, scalable cloud infrastructure
+                            (AWS/Vercel), and rock-solid backend security.</p>
+                    </div>
+
+                    <!-- Item 3: Standard Card -->
+                    <div class="service-card card scroll-reveal bento-item-1">
+                        <i class="fas fa-paint-brush service-icon"></i>
+                        <h3>UI/UX Systems</h3>
+                        <p class="text-muted text-sm">Conversion-obsessed interface design. We build design systems, not
+                            just pages, ensuring consistent scaling.</p>
+                    </div>
+
+                    <!-- Item 4: Large Card -->
+                    <div class="service-card card bento-item-2 scroll-reveal">
+                        <div>
+                            <i class="fas fa-code-branch service-icon"></i>
+                            <h3>Code Audit & Refactor</h3>
+                            <p class="text-muted">Inherited messy code? We analyze, optimize, and refactor for
+                                performance and maintainability. Technical debt elimination.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Gallery -->
+        <section id="work">
+            <div class="container">
+                <div class="section-header scroll-reveal">
+                    <span class="pre-headline">— SELECTED WORKS</span>
+                    <h2>High-Fidelity Output.</h2>
+                </div>
+
+                <div class="grid-12">
+                    <!-- Gallery Items -->
+                    <div class="scroll-reveal img-container"
+                        style="grid-column: span 12; @media(min-width:768px){grid-column: span 6;}">
+                        <div
+                            style="height: 400px; overflow: hidden; border-radius: var(--radius-md); position: relative;">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+                                alt="Fintech Dashboard" class="img-filter">
+                            <div style="position: absolute; bottom: 24px; left: 24px; color: white; z-index: 2;">
+                                <h4 style="color: white; margin-bottom: 4px;">Apex FinTech</h4>
+                                <span class="text-sm" style="opacity: 0.8;">Dashboards & Data Viz</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scroll-reveal img-container"
+                        style="grid-column: span 12; @media(min-width:768px){grid-column: span 6;}">
+                        <div
+                            style="height: 400px; overflow: hidden; border-radius: var(--radius-md); position: relative;">
+                            <img src="https://images.unsplash.com/photo-1555421689-d68471e189f2?q=80&w=2670&auto=format&fit=crop"
+                                alt="SaaS Interface" class="img-filter">
+                            <div style="position: absolute; bottom: 24px; left: 24px; color: white; z-index: 2;">
+                                <h4 style="color: white; margin-bottom: 4px;">Lumina SaaS</h4>
+                                <span class="text-sm" style="opacity: 0.8;">Product Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8" style="text-align: center;">
+                    <a href="#" class="btn btn-secondary">View Full Portfolio</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" style="background-color: hsl(var(--bg-secondary));">
+            <div class="container">
+                <div class="section-header scroll-reveal">
+                    <span class="pre-headline">— QUESTIONS</span>
+                    <h2>Common Queries.</h2>
+                </div>
+
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div class="accordion-item scroll-reveal">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            What is a High-Fidelity MVP?
+                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="py-4">It stands for Minimum Viable Product, but executed with maximum quality
+                                constraints. We don't ship broken prototypes. We ship a core set of features that are
+                                polished, stable, and ready for real paying customers.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item scroll-reveal">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            How does the 21-day cycle work?
+                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="py-4">Week 1 is Discovery & Architecture. Week 2 is Sprint Execution (Coding).
+                                Week 3 is Polish, QA, and Deployment. It's intense, focused, and transparent.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item scroll-reveal">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            Do you handle backend and security?
+                            <i class="fas fa-plus" style="font-size: 0.8em;"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <p class="py-4">Absolutely. We separate frontend and backend concerns using modern
+                                microservices or serverless architectures (Next.js API routes, Go, Node), ensuring your
+                                data is encrypted and secure.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="container">
+                <div class="section-header scroll-reveal">
+                    <span class="pre-headline">— START BUILDING</span>
+                    <h2>Ready to Launch?</h2>
+                </div>
+
+                <div class="grid-12">
+                    <div class="card card-glass scroll-reveal"
+                        style="grid-column: span 12; @media(min-width:768px){grid-column: 4 / span 6;}">
+                        <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" required placeholder="Jane Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Work Email</label>
+                                <input type="email" id="email" name="email" required placeholder="jane@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Project Brief</label>
+                                <textarea id="message" name="message" rows="4" required
+                                    placeholder="Tell us about the problem you are solving..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                Initiate Sprint
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="grid-12"
+                style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 48px; margin-bottom: 48px;">
+                <div style="grid-column: span 12; @media(min-width:768px){grid-column: span 4;}">
+                    <a href="#" class="logo" style="color: white; font-size: 1.5rem;">Yenze.</a>
+                    <p style="color: #a1a1aa; margin-top: 16px; max-width: 300px;">
+                        The high-fidelity software partner for visionary founders. Built in Geneva, shipping globally.
+                    </p>
+                </div>
+                <div style="grid-column: span 6; @media(min-width:768px){grid-column: span 2;}">
+                    <p class="footer-heading">Company</p>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#work">Work</a></li>
+                        <li><a href="#journal">Journal</a></li>
+                    </ul>
+                </div>
+                <div style="grid-column: span 6; @media(min-width:768px){grid-column: span 2;}">
+                    <p class="footer-heading">Services</p>
+                    <ul class="footer-links">
+                        <li><a href="#">MVP Dev</a></li>
+                        <li><a href="#">Code Audit</a></li>
+                        <li><a href="#">Design Systems</a></li>
+                    </ul>
+                </div>
+                <div style="grid-column: span 12; @media(min-width:768px){grid-column: span 4;}">
+                    <p class="footer-heading">Get Updates</p>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="email" placeholder="Enter email"
+                            style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+                        <button class="btn btn-primary" style="padding: 0 20px;">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; color: rgba(255,255,255,0.3); font-size: 0.875rem;">
+                &copy; 2025 Yenze Sàrl. Crafted with precision.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Mobile Menu Logic ---
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('open');
+            document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+        }
+
+        // --- 2. Accordion Logic ---
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('i');
+
+            // Check if open
+            const isOpen = content.style.height && content.style.height !== '0px';
+
+            // Close all
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                c.style.height = '0px';
+                c.parentElement.querySelector('i').classList.remove('fa-minus');
+                c.parentElement.querySelector('i').classList.add('fa-plus');
+            });
+
+            if (!isOpen) {
+                content.style.height = content.scrollHeight + 32 + 'px'; // + padding
+                icon.classList.remove('fa-plus');
+                icon.classList.add('fa-minus');
+            }
+        }
+
+        // --- 3. Scroll Reveal ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // --- 4. Contact Form Logic ---
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            // Simulate 1.5s delay for "premium" feel (and network simulation)
+            setTimeout(() => {
+                alert('Request received. We will contact you within 24h.');
+                e.target.reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
