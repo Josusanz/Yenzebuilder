@@ -1373,9 +1373,15 @@ class YenzeBuilder {
 
     selectElement(element) {
         // Remove previous selection
+
         if (this.selectedElement) {
-            this.selectedElement.style.outline = 'none';
-            this.selectedElement.style.boxShadow = 'none';
+            this.selectedElement.style.removeProperty('outline');
+            this.selectedElement.style.removeProperty('outline-offset');
+            this.selectedElement.style.removeProperty('box-shadow');
+            // Clean up empty style attribute
+            if (this.selectedElement.getAttribute('style') === '') {
+                this.selectedElement.removeAttribute('style');
+            }
         }
 
         // If deselecting, stop here
@@ -3376,9 +3382,16 @@ if (validationForm) {
         // Clear selection to remove editor artifacts
         this.selectElement(null);
 
+        // Get fresh HTML from iframe to ensure it's clean and up-to-date
+        const canvas = document.getElementById('canvas');
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+
+        // Use outerHTML of documentElement to get the full HTML including <html> tag
+        const cleanHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+
         // Open in new window
         const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
-        previewWindow.document.write(this.currentHTML);
+        previewWindow.document.write(cleanHTML);
         previewWindow.document.close();
 
         this.showToast('👁️ Preview opened in new window', 'success');
