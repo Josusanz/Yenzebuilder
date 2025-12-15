@@ -11,11 +11,24 @@ class StripeIntegration {
         if (this.initialized) return;
 
         try {
+            // Wait for STRIPE_CONFIG to be initialized
+            let retries = 0;
+            while (!window.STRIPE_CONFIG && retries < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                retries++;
+            }
+
+            if (!window.STRIPE_CONFIG) {
+                throw new Error('STRIPE_CONFIG not initialized after 5 seconds');
+            }
+
             // Initialize Stripe.js with publishable key
-            this.stripe = Stripe(STRIPE_CONFIG.publicKey);
+            this.stripe = Stripe(window.STRIPE_CONFIG.publicKey);
             this.initialized = true;
+            console.log('[StripeIntegration] Initialized successfully');
         } catch (error) {
             console.error('Failed to initialize Stripe:', error);
+            throw error;
         }
     }
 

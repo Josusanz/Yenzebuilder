@@ -269,6 +269,21 @@ class SecureConfig {
         const config = await this.load();
         return config.google;
     }
+
+    // Helper to wait for STRIPE_CONFIG to be available
+    async waitForStripeConfig(maxRetries = 50) {
+        let retries = 0;
+        while (!window.STRIPE_CONFIG && retries < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retries++;
+        }
+
+        if (!window.STRIPE_CONFIG) {
+            throw new Error('STRIPE_CONFIG not initialized after timeout');
+        }
+
+        return window.STRIPE_CONFIG;
+    }
 }
 
 // Export singleton instance
@@ -277,3 +292,28 @@ const secureConfig = new SecureConfig();
 // Backward compatibility - expose PLANS globally
 window.PLANS = PLANS;
 window.secureConfig = secureConfig;
+
+// Initialize STRIPE_CONFIG globally for backward compatibility
+// This will be populated after config loads
+window.STRIPE_CONFIG = null;
+
+// Load config and populate STRIPE_CONFIG immediately
+(async () => {
+    try {
+        const config = await secureConfig.load();
+        window.STRIPE_CONFIG = config.stripe;
+        console.log('[Config] STRIPE_CONFIG initialized:', window.STRIPE_CONFIG);
+    } catch (error) {
+        console.error('[Config] Failed to initialize STRIPE_CONFIG:', error);
+        // Fallback to hardcoded values
+        window.STRIPE_CONFIG = {
+            publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK',
+            paymentLinks: {
+                starter: 'https://buy.stripe.com/eVq7sM3er132eJZeD3aIM04',
+                pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+            },
+            priceIds: {}
+        };
+    }
+})();
