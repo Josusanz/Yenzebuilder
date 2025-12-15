@@ -1289,12 +1289,20 @@ ${result.robotsTxt}
 
             listContainer.innerHTML = detectedItems.map(item => `
                 <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                        <div>
-                            <div style="font-size: 11px; color: #64748B; text-transform: uppercase; font-weight: 600; margin-bottom: 4px;">${item.projectName}</div>
-                            <h3 style="margin: 0; font-size: 16px; color: #0F172A; font-weight: 600;">${item.name}</h3>
+                    <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #F1F5F9;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="9" y1="3" x2="9" y2="21"></line>
+                            </svg>
+                            <div style="font-size: 13px; color: #64748B; font-weight: 500;">${item.projectName}</div>
                         </div>
-                        <div style="background: #EFF6FF; color: #0066FF; padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 14px;">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0; font-size: 18px; color: #0F172A; font-weight: 600;">${item.name}</h3>
+                        </div>
+                        <div style="background: #EFF6FF; color: #0066FF; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 15px; white-space: nowrap; margin-left: 12px;">
                             ${item.price}
                         </div>
                     </div>
