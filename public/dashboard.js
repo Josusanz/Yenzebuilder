@@ -557,6 +557,12 @@ class DashboardApp {
 
         console.log('✅ SEO Context loaded for:', this.selectedSeoProject.name);
 
+        // Toggle views: hide selection, show main content
+        const selectionState = document.getElementById('seoProjectSelectionState');
+        const mainContent = document.getElementById('seoMainContent');
+        if (selectionState) selectionState.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+
         // Show selected project info
         const selectedProjectInfo = document.getElementById('selectedProjectInfo');
         const selectedProjectName = document.getElementById('selectedProjectName');
@@ -665,6 +671,12 @@ class DashboardApp {
         this.selectedSeoProject = null;
         const selector = document.getElementById('seoProjectFilter');
         if (selector) selector.value = '';
+
+        // Toggle views: show selection, hide main content
+        const selectionState = document.getElementById('seoProjectSelectionState');
+        const mainContent = document.getElementById('seoMainContent');
+        if (selectionState) selectionState.style.display = 'block';
+        if (mainContent) mainContent.style.display = 'none';
 
         const selectedProjectInfo = document.getElementById('selectedProjectInfo');
         if (selectedProjectInfo) selectedProjectInfo.style.display = 'none';
