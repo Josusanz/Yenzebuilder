@@ -563,25 +563,32 @@ class DashboardApp {
         if (selectionState) selectionState.style.display = 'none';
         if (mainContent) mainContent.style.display = 'block';
 
-        // Show selected project info
-        const selectedProjectInfo = document.getElementById('selectedProjectInfo');
-        const selectedProjectName = document.getElementById('selectedProjectName');
-        const selectedProjectUrl = document.getElementById('selectedProjectUrl');
-        const selectedProjectPlan = document.getElementById('selectedProjectPlan');
+        // Show selected project info in the header
+        const seoSelectedProjectName = document.getElementById('seoSelectedProjectName');
+        const seoSelectedProjectUrl = document.getElementById('seoSelectedProjectUrl');
 
-        if (selectedProjectInfo) selectedProjectInfo.style.display = 'block';
-        if (selectedProjectName) selectedProjectName.textContent = this.selectedSeoProject.name || 'Untitled Project';
-
-        if (selectedProjectUrl) {
-            let url = '--';
-            if (this.selectedSeoProject.published_url) url = this.selectedSeoProject.published_url;
-            else if (this.selectedSeoProject.subdomain_slug) url = `${this.selectedSeoProject.subdomain_slug}.yenze.io`;
-            else if (this.selectedSeoProject.public_slug) url = `yenze.io/s/${this.selectedSeoProject.public_slug}`;
-            selectedProjectUrl.textContent = url;
+        if (seoSelectedProjectName) {
+            seoSelectedProjectName.textContent = this.selectedSeoProject.name || 'Untitled Project';
         }
 
-        if (selectedProjectPlan) {
-            selectedProjectPlan.textContent = (this.selectedSeoProject.plan || 'free').toUpperCase();
+        if (seoSelectedProjectUrl) {
+            let url = '--';
+            let href = '#';
+
+            if (this.selectedSeoProject.published_url) {
+                url = this.selectedSeoProject.published_url;
+                href = this.selectedSeoProject.published_url;
+            } else if (this.selectedSeoProject.subdomain_slug) {
+                url = `${this.selectedSeoProject.subdomain_slug}.yenze.io`;
+                href = `https://${this.selectedSeoProject.subdomain_slug}.yenze.io`;
+            } else if (this.selectedSeoProject.public_slug) {
+                url = `yenze.io/s/${this.selectedSeoProject.public_slug}`;
+                href = `https://yenze.io/s/${this.selectedSeoProject.public_slug}`;
+            }
+
+            // Update the link text and href
+            seoSelectedProjectUrl.childNodes[0].textContent = url + ' ';
+            seoSelectedProjectUrl.href = href;
         }
 
 
