@@ -597,6 +597,9 @@ class DashboardApp {
                 const toastType = score >= 80 ? 'success' : (score >= 50 ? 'warning' : 'error');
                 this.showToast(toastMessage, toastType);
 
+                // Update UI
+                this.updateSEOChecklistUI('audit', score, result);
+
                 // Log recommendations
                 if (result.recommendations.length > 0) {
                     console.log('SEO Recommendations:');
@@ -612,10 +615,86 @@ class DashboardApp {
             this.showToast('Error running SEO audit: ' + error.message, 'error');
         } finally {
             if (btn) {
-                btn.textContent = 'Run New Audit';
+                btn.innerHTML = '🔍 Run SEO Audit';
                 btn.disabled = false;
             }
         }
+    }
+
+    updateSEOChecklistUI(step, data, fullData = null) {
+        if (step === 'audit' && typeof data === 'number') {
+            // Update audit status
+            const auditStatus = document.getElementById('auditStatus');
+            const auditResults = document.getElementById('auditResults');
+            const auditScorePath = document.getElementById('auditScorePath');
+            const auditScoreText = document.getElementById('auditScoreText');
+            const auditScoreLabel = document.getElementById('auditScoreLabel');
+            const auditScoreDesc = document.getElementById('auditScoreDesc');
+
+            if (auditStatus) {
+                const statusClass = data >= 80 ? '#10b981' : (data >= 50 ? '#f59e0b' : '#ef4444');
+                const statusText = data >= 80 ? 'Excellent' : (data >= 50 ? 'Good' : 'Needs Work');
+                auditStatus.style.background = data >= 80 ? '#d1fae5' : (data >= 50 ? '#fef3c7' : '#fee2e2');
+                auditStatus.style.color = data >= 80 ? '#065f46' : (data >= 50 ? '#92400e' : '#991b1b');
+                auditStatus.textContent = statusText;
+            }
+
+            if (auditResults) auditResults.style.display = 'block';
+            if (auditScorePath) {
+                auditScorePath.setAttribute('stroke-dasharray', `${data}, 100`);
+                auditScorePath.setAttribute('stroke', data >= 80 ? '#10b981' : (data >= 50 ? '#f59e0b' : '#ef4444'));
+            }
+            if (auditScoreText) {
+                auditScoreText.textContent = data;
+                auditScoreText.style.color = data >= 80 ? '#10b981' : (data >= 50 ? '#f59e0b' : '#ef4444');
+            }
+            if (auditScoreLabel) {
+                auditScoreLabel.textContent = data >= 80 ? 'Excellent SEO Health' : (data >= 50 ? 'Good SEO Health' : 'SEO Needs Improvement');
+            }
+            if (auditScoreDesc && fullData) {
+                auditScoreDesc.textContent = `${fullData.passed.length} checks passed, ${fullData.issues.length} critical issues, ${fullData.warnings.length} warnings`;
+            }
+        } else if (step === 'sitemap') {
+            const sitemapStatus = document.getElementById('sitemapStatus');
+            if (sitemapStatus) {
+                sitemapStatus.style.background = '#d1fae5';
+                sitemapStatus.style.color = '#065f46';
+                sitemapStatus.textContent = 'Generated';
+            }
+        } else if (step === 'links' && fullData) {
+            const linksStatus = document.getElementById('linksStatus');
+            const brokenLinksResults = document.getElementById('brokenLinksResults');
+            const workingLinksCount = document.getElementById('workingLinksCount');
+            const brokenLinksCount = document.getElementById('brokenLinksCount');
+            const warningLinksCount = document.getElementById('warningLinksCount');
+
+            if (linksStatus) {
+                const isBroken = fullData.broken > 0;
+                linksStatus.style.background = isBroken ? '#fee2e2' : '#d1fae5';
+                linksStatus.style.color = isBroken ? '#991b1b' : '#065f46';
+                linksStatus.textContent = isBroken ? 'Issues Found' : 'All Good';
+            }
+
+            if (brokenLinksResults) brokenLinksResults.style.display = 'block';
+            if (workingLinksCount) workingLinksCount.textContent = fullData.working;
+            if (brokenLinksCount) brokenLinksCount.textContent = fullData.broken;
+            if (warningLinksCount) warningLinksCount.textContent = fullData.warnings;
+        } else if (step === 'google') {
+            const googleStatus = document.getElementById('googleStatus');
+            if (googleStatus) {
+                googleStatus.style.background = '#d1fae5';
+                googleStatus.style.color = '#065f46';
+                googleStatus.textContent = 'Submitted';
+            }
+        }
+    }
+
+    showSEOGuide() {
+        const emptyState = document.getElementById('seoEmptyState');
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
+        this.showToast('Select a project above to start optimizing your SEO', 'info');
     }
 
     syncAssets() {
@@ -662,6 +741,9 @@ class DashboardApp {
 
             if (response.ok && result.success) {
                 this.showToast('Sitemap submitted to Google successfully!', 'success');
+
+                // Update UI
+                this.updateSEOChecklistUI('google');
 
                 // Also open Google Search Console for manual verification
                 const gscUrl = `https://search.google.com/search-console/sitemaps?resource_id=${encodeURIComponent(domain)}`;
@@ -733,6 +815,9 @@ class DashboardApp {
                 document.body.removeChild(a);
 
                 this.showToast('Sitemap downloaded!', 'success');
+
+                // Update UI
+                this.updateSEOChecklistUI('sitemap');
             } else {
                 throw new Error(result.error || 'Failed to generate sitemap');
             }
@@ -863,6 +948,9 @@ ${result.robotsTxt}
                 } else {
                     this.showToast('All links are working!', 'success');
                 }
+
+                // Update UI
+                this.updateSEOChecklistUI('links', null, result);
 
                 // Log detailed results to console
                 console.log('Broken Link Check Results:', result);
