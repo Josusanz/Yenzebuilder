@@ -1219,8 +1219,7 @@
             const hasContactForm = state.structure === 'multi' ? state.pages.includes('contact') : state.features.includes('contact');
 
             // Constructing the "Mega Prompt" for Premium Results
-            let prompt = `ACT AS A **SENIOR FRONTEND ARCHITECT, AWWWARDS JURY MEMBER, AND EXPERT UI/UX DESIGNER**.
-Your task is to build a **WORLD-CLASS, PREMIUM WEBSITE** that could win "Site of the Day".
+            let prompt = `ACT AS A **SENIOR FRONTEND ARCHITECT, AWWWARDS JURY MEMBER, AND STRICT QUALITY ASSURANCE (QA) SPECIALIST**. Your primary task is to generate a **PERFECTLY VALIDATED, WORLD-CLASS, PREMIUM WEBSITE** that is structurally and visually compliant with ALL constraints. **NON-COMPLIANCE WILL RESULT IN IMMEDIATE REJECTION.**
 The Output MUST be a single, production-ready \`index.html\` file containing HTML, CSS, and JS (if needed).
 
 ---
@@ -1441,15 +1440,27 @@ async function handleFormSubmit(e) {
 }
 ` : 'No functional contact form required, but you may include a mailto link if appropriate.'}
 
-### 11. FINAL CODE EXECUTION
+### 11. POST-GENERATION AUDIT CHECKLIST (MANDATORY SELF-VALIDATION)
+Before wrapping the code in the final markdown block, you MUST internally verify compliance with these critical, non-negotiable points. Do not proceed if any check fails:
+
+1. **Grid System Integrity**: Confirm \`.pricing-grid\`, \`.services-grid\`, and \`.features-grid\` use the strict responsive media query check: mobile (1 col) and desktop (3 cols). **NO** use of \`grid-column: span X / span Y\` in the pricing cards themselves.
+2. **Pricing Card Vertical Alignment**: Confirm all pricing cards (\`.pricing-plan\`) utilize \`display: flex; flex-direction: column; height: 100%;\` and \`.pricing-features\` has \`flex-grow: 1\` to push the CTA button to the absolute bottom, ensuring equal card heights.
+3. **Visual Depth Implementation**: Confirm the sticky navigation bar uses \`backdrop-filter: blur(12px)\` (Glassmorphism) and \`box-shadow\` is the specified layered, diffused type.
+4. **Image Unification Filter**: Confirm the \`.img-filter\` class (applied to ALL decorative images) contains the exact \`filter: grayscale(20%) contrast(1.05) brightness(1.02);\` property.
+5. **Scroll Reveal**: Confirm the JavaScript uses \`IntersectionObserver\` to implement the \`translateY(20px) -> 0\` fade-in scroll reveal on key sections.
+
+Failure to confirm all 5 points results in an immediate project failure (i.e., do not generate the code).
+
+### 12. FINAL CODE EXECUTION
 - **Output**: A single markdown code block with the complete \`index.html\`.
 - **Validation**: 
   - **MUST** close all HTML tags (e.g., \`</div>\`, \`</section>\`). 
   - **MUST** include the FontAwesome CDN in \`<head>\`: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
   - **NO** placeholders like \`[Insert Content]\`. Fill EVERYTHING with real, professional copy.
 - **Images**: 
-  - **NEVER** use broken links. 
-  - Use \`https://source.unsplash.com/featured/?keyword\` format or specific high-quality Unsplash URLs (e.g., \`https://images.unsplash.com/photo-...\`).
+  - **STOP**: \`source.unsplash.com\` is DEPRECATED and BROKEN. **DO NOT USE IT.**
+  - **USE**: \`https://image.pollinations.ai/prompt/{description}?nologo=true\` for AI-generated images matching the context.
+    - Example: \`https://image.pollinations.ai/prompt/futuristic%20office?width=1200&height=600&nologo=true\`
   - **ALWAYS** include \`alt\` attributes.
 
 Generate the "Site of the Day" worthy code now. Ensure it is **PERFECT** and **PRODUCTION-READY**.
