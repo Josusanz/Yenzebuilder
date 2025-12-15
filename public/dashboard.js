@@ -534,7 +534,8 @@ class DashboardApp {
         }
 
         // Try to find in loaded projects first
-        this.selectedSeoProject = this.projects.find(p => p.id === projectId);
+        this.selectedSeoProject = (this.projects || []).find(p => p.id === projectId) ||
+            (this.seoProjects || []).find(p => p.id === projectId);
 
         // If not found in loaded projects, fetch it directly
         if (!this.selectedSeoProject) {

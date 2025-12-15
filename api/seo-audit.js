@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         // Get project HTML
         const { data: project, error: projectError } = await supabase
             .from('projects')
-            .select('html, name, subdomain, published_url, meta_description, meta_keywords')
+            .select('html, name, subdomain_slug, published_url, meta_description, meta_keywords')
             .eq('id', projectId)
             .single();
 
