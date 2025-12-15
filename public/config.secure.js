@@ -222,8 +222,28 @@ class SecureConfig {
                 }
             };
         } catch (error) {
-            console.error('Failed to load secure config:', error);
-            throw error;
+            console.error('Failed to load secure config from API, using fallback:', error);
+
+            // Fallback to hardcoded credentials (for development/backup)
+            return {
+                ...PUBLIC_CONFIG,
+                supabase: {
+                    url: 'https://xssdcphepracobbsvqmg.supabase.co',
+                    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhzc2RjcGhlcHJhY29iYnN2cW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MTA3MDYsImV4cCI6MjA3OTE4NjcwNn0.Z3w9P2dMeNu2J-2AcnxhLVSF_p794JZgIcAKMqkT3-A'
+                },
+                stripe: {
+                    publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK',
+                    paymentLinks: {
+                        starter: 'https://buy.stripe.com/eVq7sM3er132eJZeD3aIM04',
+                        pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                        business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                    },
+                    priceIds: {}
+                },
+                google: {
+                    clientId: ''
+                }
+            };
         }
     }
 
