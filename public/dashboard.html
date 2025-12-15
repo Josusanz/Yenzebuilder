@@ -160,7 +160,8 @@
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                     <div class="stat-card" style="padding: 20px;">
                         <div style="font-size: 14px; margin-bottom: 8px; color: #666;">Projects with Pricing</div>
-                        <div style="font-size: 24px; font-weight: 700; color: #0066FF;" id="projectsWithPricingCount">0</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #0066FF;" id="projectsWithPricingCount">0
+                        </div>
                     </div>
                     <div class="stat-card" style="padding: 20px;">
                         <div style="font-size: 14px; margin-bottom: 8px; color: #666;">Total Products</div>
@@ -174,7 +175,8 @@
 
                 <!-- Projects List View -->
                 <div id="projectsListView" class="detected-payments-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <div>
                             <h3 style="font-size: 18px; margin: 0;">Your Projects</h3>
                             <p style="color: #64748B; font-size: 14px; margin: 4px 0 0 0;">
@@ -193,10 +195,13 @@
 
                 <!-- Payment Links Detail View (hidden by default) -->
                 <div id="paymentLinksDetailView" class="detected-payments-container" style="display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <button onclick="dashboardApp.showPaymentProjectsList()" class="btn-secondary" style="padding: 8px 12px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <button onclick="dashboardApp.showPaymentProjectsList()" class="btn-secondary"
+                                style="padding: 8px 12px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
                                     <line x1="19" y1="12" x2="5" y2="12"></line>
                                     <polyline points="12 19 5 12 12 5"></polyline>
                                 </svg>
@@ -204,7 +209,8 @@
                             </button>
                             <div>
                                 <h3 style="font-size: 18px; margin: 0;" id="selectedProjectTitle">Project Name</h3>
-                                <p style="color: #64748B; font-size: 14px; margin: 4px 0 0 0;">Manage payment links for this project</p>
+                                <p style="color: #64748B; font-size: 14px; margin: 4px 0 0 0;">Manage payment links for
+                                    this project</p>
                             </div>
                         </div>
                     </div>
@@ -218,20 +224,8 @@
 
             <!-- SEO Tools Section -->
             <section id="seoSection" class="dashboard-section">
-                <!-- Enhanced Header with Project Selector on Left -->
-                <div class="section-header" style="flex-direction: column; align-items: flex-start; gap: 16px;">
-                    <div style="width: 100%;">
-                        <label
-                            style="display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Select
-                            Website to Optimize</label>
-                        <div style="position: relative; max-width: 400px;">
-                            <select id="seoProjectFilter" class="filter-select"
-                                onchange="dashboardApp.loadProjectSEO(this.value)"
-                                style="width: 100%; padding: 12px 16px; font-size: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 12px center;">
-                                <option value="">Select a Project...</option>
-                            </select>
-                        </div>
-                    </div>
+                <!-- Header -->
+                <div class="section-header">
                     <div>
                         <h2 style="margin-bottom: 4px;">SEO Center</h2>
                         <p class="text-muted" style="margin: 0;">Audit, optimize, and submit your websites to search
@@ -239,142 +233,284 @@
                     </div>
                 </div>
 
-                <!-- SEO Setup Guide -->
-                <div id="seoEmptyState" class="dashboard-card" style="margin-bottom: 24px; padding: 40px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px;">
-                    <h3 style="margin-top: 0; color: white; font-size: 24px;">🚀 Optimize Your Website for Google</h3>
-                    <p style="font-size: 16px; opacity: 0.9; margin-bottom: 24px;">Follow these simple steps to make your website discoverable in search engines</p>
-                    <button onclick="dashboardApp.showSEOGuide()" class="btn-primary" style="background: white; color: #667eea; font-weight: 600; padding: 12px 32px;">Start SEO Setup</button>
-                </div>
+                <!-- Project Selection Card - PROMINENT -->
+                <!-- SEO Project Selection (Initial State) -->
+                <div id="seoProjectSelectionState">
+                    <div style="text-align: center; margin-bottom: 32px; padding: 40px 0;">
+                        <div
+                            style="margin-bottom: 16px; display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: #e0e7ff; border-radius: 50%; color: #4338ca; font-size: 32px;">
+                            🚀</div>
+                        <h2 style="font-size: 24px; margin: 0 0 12px 0; color: #1e293b;">Select a Website to Optimize
+                        </h2>
+                        <p style="color: #64748b; font-size: 16px; margin: 0 auto; max-width: 500px;">Choose a project
+                            below to audit its performance, fix SEO issues, and submit it to search engines.</p>
+                    </div>
 
-                <!-- Selected Project Card -->
-                <div id="selectedProjectCard" style="display: none; margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <div id="selectedProjectThumbnail" style="width: 80px; height: 80px; background: white; border-radius: 8px; overflow: hidden; flex-shrink: 0;">
-                            <img src="" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div id="seoProjectGrid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto;">
+                        <!-- Projects will be injected here via JS -->
+                        <div class="loading-container">
+                            <div class="loading-spinner"></div>
+                            <p>Loading projects...</p>
                         </div>
-                        <div style="flex: 1;">
-                            <div style="font-size: 12px; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Currently Optimizing</div>
-                            <h3 id="selectedProjectName" style="margin: 0 0 8px 0; color: white; font-size: 20px;">--</h3>
-                            <div style="display: flex; gap: 16px; font-size: 13px; opacity: 0.9;">
-                                <div><strong>URL:</strong> <span id="selectedProjectUrl">--</span></div>
-                                <div><strong>Plan:</strong> <span id="selectedProjectPlan">--</span></div>
-                            </div>
-                        </div>
-                        <button onclick="dashboardApp.clearSeoProject()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">Change Project</button>
                     </div>
                 </div>
 
-                <div class="seo-dashboard-grid" style="display: grid; grid-template-columns: 1fr; gap: 24px;">
-                    <!-- Main SEO Tools -->
-                    <div class="seo-main">
-                        <!-- Step-by-Step SEO Checklist -->
-                        <div class="dashboard-card" style="margin-bottom: 24px; padding: 24px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
-                            <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                                📋 SEO Setup Checklist
-                                <span style="font-size: 12px; background: #e0e7ff; color: #4338ca; padding: 4px 12px; border-radius: 99px; font-weight: 600; margin-left: auto;">4 Steps</span>
-                            </h3>
-                            <p class="text-muted" style="margin-bottom: 24px; color: #64748b;">Complete these steps to optimize your website for search engines</p>
-
-                            <!-- Step 1: SEO Audit -->
-                            <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
-                                <div style="display: flex; align-items: start; gap: 16px;">
-                                    <div style="flex-shrink: 0; width: 40px; height: 40px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">1</div>
-                                    <div style="flex: 1;">
-                                        <h4 style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
-                                            Run SEO Audit
-                                            <span id="auditStatus" style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
-                                        </h4>
-                                        <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Analyze your website for SEO issues and get recommendations</p>
-                                        <div id="auditResults" style="display: none; background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                                            <div style="display: flex; align-items: center; gap: 16px;">
-                                                <div style="position: relative; width: 60px; height: 60px;">
-                                                    <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#cbd5e1" stroke-width="3" />
-                                                        <path id="auditScorePath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="0, 100" />
-                                                    </svg>
-                                                    <div id="auditScoreText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #10b981;">--</div>
-                                                </div>
-                                                <div>
-                                                    <div id="auditScoreLabel" style="font-weight: 600; margin-bottom: 4px;">Not audited yet</div>
-                                                    <div id="auditScoreDesc" style="font-size: 13px; color: #64748b;">Click "Run Audit" to analyze your website</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button id="btnRunAudit" class="btn-primary" style="font-size: 14px;">🔍 Run SEO Audit</button>
-                                    </div>
-                                </div>
+                <!-- SEO Main Content (Selected State) -->
+                <div id="seoMainContent" style="display: none;">
+                    <!-- Selected Project Header -->
+                    <div class="dashboard-card"
+                        style="margin-bottom: 24px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: white; border: 1px solid #e2e8f0; border-left: 4px solid #4338ca;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <!-- Thumbnail -->
+                            <div id="seoSelectedThumbnail"
+                                style="width: 56px; height: 56px; background: #f1f5f9; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0;">
+                                <span style="font-size: 24px;">🌐</span>
                             </div>
-
-                            <!-- Step 2: Generate Sitemap -->
-                            <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
-                                <div style="display: flex; align-items: start; gap: 16px;">
-                                    <div style="flex-shrink: 0; width: 40px; height: 40px; background: #0ea5e9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">2</div>
-                                    <div style="flex: 1;">
-                                        <h4 style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
-                                            Generate Sitemap & Robots.txt
-                                            <span id="sitemapStatus" style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
-                                        </h4>
-                                        <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Create XML sitemap and robots.txt files for search engines</p>
-                                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                            <button onclick="dashboardApp.generateSitemap()" class="btn-primary" style="font-size: 14px;">📄 Generate Sitemap</button>
-                                            <button onclick="dashboardApp.openRobotsTxt()" class="btn-secondary" style="font-size: 14px;">🤖 Generate Robots.txt</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: Check Broken Links -->
-                            <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
-                                <div style="display: flex; align-items: start; gap: 16px;">
-                                    <div style="flex-shrink: 0; width: 40px; height: 40px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">3</div>
-                                    <div style="flex: 1;">
-                                        <h4 style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
-                                            Check for Broken Links
-                                            <span id="linksStatus" style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
-                                        </h4>
-                                        <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Scan your website for broken links that hurt SEO</p>
-                                        <div id="brokenLinksResults" style="display: none; background: white; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-                                            <div style="display: flex; gap: 12px; font-size: 13px;">
-                                                <div><span style="color: #10b981; font-weight: 600;" id="workingLinksCount">0</span> Working</div>
-                                                <div><span style="color: #ef4444; font-weight: 600;" id="brokenLinksCount">0</span> Broken</div>
-                                                <div><span style="color: #f59e0b; font-weight: 600;" id="warningLinksCount">0</span> Warnings</div>
-                                            </div>
-                                        </div>
-                                        <button onclick="dashboardApp.checkBrokenLinks()" class="btn-primary" style="font-size: 14px;">🔗 Check Broken Links</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Step 4: Submit to Google -->
-                            <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                                <div style="display: flex; align-items: start; gap: 16px;">
-                                    <div style="flex-shrink: 0; width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">4</div>
-                                    <div style="flex: 1;">
-                                        <h4 style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
-                                            Submit to Google Search Console
-                                            <span id="googleStatus" style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Not Connected</span>
-                                        </h4>
-                                        <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Submit your sitemap to Google for faster indexing</p>
-                                        <button onclick="dashboardApp.submitToGoogle()" class="btn-primary" style="font-size: 14px;">🚀 Submit to Google</button>
-                                    </div>
-                                </div>
+                            <div>
+                                <div
+                                    style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+                                    Currently Optimizing</div>
+                                <h2 id="seoSelectedProjectName" style="margin: 0; font-size: 20px; color: #0f172a;">
+                                    Project Name</h2>
+                                <a id="seoSelectedProjectUrl" href="#" target="_blank"
+                                    style="font-size: 13px; color: #4338ca; text-decoration: none; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                                    project-url.yenze.io <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                </a>
                             </div>
                         </div>
+                        <button class="btn-secondary" onclick="dashboardApp.clearSeoProject()"
+                            style="padding: 8px 16px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" style="margin-right: 6px;">
+                                <line x1="19" y1="12" x2="5" y2="12"></line>
+                                <polyline points="12 19 5 12 12 5"></polyline>
+                            </svg> Change Project
+                        </button>
+                    </div>
 
-                        <!-- SEO Projects Overview -->
-                        <div class="dashboard-card" style="margin-top: 24px; padding: 24px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
-                            <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                                📊 SEO Projects Overview
-                                <span id="seoProjectsCount" style="font-size: 12px; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 99px; font-weight: 600; margin-left: auto;">0 Projects</span>
-                            </h3>
-                            <p class="text-muted" style="margin-bottom: 20px; color: #64748b;">Track SEO optimization status for all your projects</p>
+                    <style>
+                        @keyframes pulse {
 
-                            <div id="seoProjectsList" style="display: grid; gap: 12px;">
-                                <!-- SEO projects will be loaded here -->
-                                <div style="text-align: center; padding: 40px; color: #94a3b8;">
-                                    <div style="font-size: 48px; margin-bottom: 12px;">📋</div>
-                                    <p style="margin: 0;">No projects with SEO configuration yet</p>
-                                    <p style="margin: 8px 0 0 0; font-size: 14px;">Select a project above and start optimizing!</p>
+                            0%,
+                            100% {
+                                opacity: 1;
+                            }
+
+                            50% {
+                                opacity: 0.5;
+                            }
+                        }
+
+                        .project-card-seo {
+                            background: white;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 12px;
+                            padding: 20px;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .project-card-seo:hover {
+                            border-color: #4338ca;
+                            transform: translateY(-2px);
+                            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                        }
+
+                        .project-card-seo::before {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 4px;
+                            height: 100%;
+                            background: #e2e8f0;
+                            transition: background 0.2s;
+                        }
+
+                        .project-card-seo:hover::before {
+                            background: #4338ca;
+                        }
+                    </style>
+
+                    <div class="seo-dashboard-grid" style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+                        <!-- Main SEO Tools -->
+                        <div class="seo-main">
+                            <!-- Step-by-Step SEO Checklist -->
+                            <div class="dashboard-card"
+                                style="margin-bottom: 24px; padding: 24px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                                    📋 SEO Setup Checklist
+                                    <span
+                                        style="font-size: 12px; background: #e0e7ff; color: #4338ca; padding: 4px 12px; border-radius: 99px; font-weight: 600; margin-left: auto;">4
+                                        Steps</span>
+                                </h3>
+                                <p class="text-muted" style="margin-bottom: 24px; color: #64748b;">Complete these steps
+                                    to optimize your website for search engines</p>
+
+                                <!-- Step 1: SEO Audit -->
+                                <div
+                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            1</div>
+                                        <div style="flex: 1;">
+                                            <h4
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                Run SEO Audit
+                                                <span id="auditStatus"
+                                                    style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Analyze your
+                                                website for SEO issues and get recommendations</p>
+                                            <div id="auditResults"
+                                                style="display: none; background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                                                <div style="display: flex; align-items: center; gap: 16px;">
+                                                    <div style="position: relative; width: 60px; height: 60px;">
+                                                        <svg viewBox="0 0 36 36"
+                                                            style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                                                            <path
+                                                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                                fill="none" stroke="#cbd5e1" stroke-width="3" />
+                                                            <path id="auditScorePath"
+                                                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                                                fill="none" stroke="#10b981" stroke-width="3"
+                                                                stroke-dasharray="0, 100" />
+                                                        </svg>
+                                                        <div id="auditScoreText"
+                                                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; font-weight: 700; color: #10b981;">
+                                                            --</div>
+                                                    </div>
+                                                    <div>
+                                                        <div id="auditScoreLabel"
+                                                            style="font-weight: 600; margin-bottom: 4px;">Not audited
+                                                            yet</div>
+                                                        <div id="auditScoreDesc"
+                                                            style="font-size: 13px; color: #64748b;">Click "Run Audit"
+                                                            to analyze your website</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button id="btnRunAudit" class="btn-primary" style="font-size: 14px;">🔍 Run
+                                                SEO Audit</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Generate Sitemap -->
+                                <div
+                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #0ea5e9; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            2</div>
+                                        <div style="flex: 1;">
+                                            <h4
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                Generate Sitemap & Robots.txt
+                                                <span id="sitemapStatus"
+                                                    style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Create XML
+                                                sitemap and robots.txt files for search engines</p>
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <button onclick="dashboardApp.generateSitemap()" class="btn-primary"
+                                                    style="font-size: 14px;">📄 Generate Sitemap</button>
+                                                <button onclick="dashboardApp.openRobotsTxt()" class="btn-secondary"
+                                                    style="font-size: 14px;">🤖 Generate Robots.txt</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Check Broken Links -->
+                                <div
+                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #f59e0b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            3</div>
+                                        <div style="flex: 1;">
+                                            <h4
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                Check for Broken Links
+                                                <span id="linksStatus"
+                                                    style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Pending</span>
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Scan your
+                                                website for broken links that hurt SEO</p>
+                                            <div id="brokenLinksResults"
+                                                style="display: none; background: white; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                                                <div style="display: flex; gap: 12px; font-size: 13px;">
+                                                    <div><span style="color: #10b981; font-weight: 600;"
+                                                            id="workingLinksCount">0</span> Working</div>
+                                                    <div><span style="color: #ef4444; font-weight: 600;"
+                                                            id="brokenLinksCount">0</span> Broken</div>
+                                                    <div><span style="color: #f59e0b; font-weight: 600;"
+                                                            id="warningLinksCount">0</span> Warnings</div>
+                                                </div>
+                                            </div>
+                                            <button onclick="dashboardApp.checkBrokenLinks()" class="btn-primary"
+                                                style="font-size: 14px;">🔗 Check Broken Links</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Submit to Google -->
+                                <div
+                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            4</div>
+                                        <div style="flex: 1;">
+                                            <h4
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                Submit to Google Search Console
+                                                <span id="googleStatus"
+                                                    style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Not
+                                                    Connected</span>
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Submit your
+                                                sitemap to Google for faster indexing</p>
+                                            <button onclick="dashboardApp.submitToGoogle()" class="btn-primary"
+                                                style="font-size: 14px;">🚀 Submit to Google</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SEO Projects Overview -->
+                            <div class="dashboard-card"
+                                style="margin-top: 24px; padding: 24px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                                    📊 SEO Projects Overview
+                                    <span id="seoProjectsCount"
+                                        style="font-size: 12px; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 99px; font-weight: 600; margin-left: auto;">0
+                                        Projects</span>
+                                </h3>
+                                <p class="text-muted" style="margin-bottom: 20px; color: #64748b;">Track SEO
+                                    optimization status for all your projects</p>
+
+                                <div id="seoProjectsList" style="display: grid; gap: 12px;">
+                                    <!-- SEO projects will be loaded here -->
+                                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                                        <div style="font-size: 48px; margin-bottom: 12px;">📋</div>
+                                        <p style="margin: 0;">No projects with SEO configuration yet</p>
+                                        <p style="margin: 8px 0 0 0; font-size: 14px;">Select a project above and start
+                                            optimizing!</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

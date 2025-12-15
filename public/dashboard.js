@@ -378,24 +378,25 @@ class DashboardApp {
     }
 
     async loadSEO() {
-        // Populate project selector
-        const selector = document.getElementById('seoProjectFilter');
-        if (selector && this.projects.length > 0) {
-            // Keep the default option
-            selector.innerHTML = '<option value="">Select a Project...</option>';
-
-            this.projects.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.id;
-                opt.textContent = p.name || 'Untitled Project';
-                selector.appendChild(opt);
-            });
-
-            // Select first project by default if none selected
-            if (!selector.value && this.projects[0]) {
-                selector.value = this.projects[0].id;
-                this.loadProjectSEO(this.projects[0].id);
+        // Populate Project Grid
+        const grid = document.getElementById('seoProjectGrid');
+        if (grid) {
+            if (this.projects.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;"><h3>No projects found</h3><p>Create a project in the Editor to get started with SEO.</p></div>';
+            } else {
+                grid.innerHTML = this.projects.map(p => this.createSeoProjectCard(p)).join('');
             }
+        }
+
+        // Show selection state, hide main content unless already selected
+        if (!this.selectedSeoProject) {
+            const selectionState = document.getElementById('seoProjectSelectionState');
+            const mainContent = document.getElementById('seoMainContent');
+            if (selectionState) selectionState.style.display = 'block';
+            if (mainContent) mainContent.style.display = 'none';
+        } else {
+            // Refresh current project view
+            this.loadProjectSEO(this.selectedSeoProject.id);
         }
 
         // Load global defaults as fallback
@@ -420,8 +421,50 @@ class DashboardApp {
             btnRunAudit.dataset.initialized = 'true';
         }
 
-        // Load SEO projects overview
+        // Load SEO projects overview (stats)
         this.loadSEOProjectsOverview();
+    }
+
+    createSeoProjectCard(project) {
+        // Create thumbnail if possible
+        let thumbnail = '<div style="width: 100%; height: 100%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 32px;">🌐</div>';
+
+        if (project.html) {
+            try {
+                const pages = JSON.parse(project.html);
+                const firstPage = pages[0];
+                if (firstPage?.html) {
+                    // Simple placeholder for real thumbnail generation which would happen elsewhere
+                    thumbnail = '<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); display: flex; align-items: center; justify-content: center; font-size: 32px;">📄</div>';
+                }
+            } catch (e) { }
+        }
+
+        const planName = (project.plan || 'free').toUpperCase();
+        const planColor = project.plan === 'business' ? '#7c3aed' : (project.plan === 'pro' ? '#2563eb' : '#64748b');
+
+        let url = 'No URL';
+        if (project.published_url) url = project.published_url;
+        else if (project.subdomain_slug) url = `${project.subdomain_slug}.yenze.io`;
+        else if (project.public_slug) url = `yenze.io/s/${project.public_slug}`;
+
+        return `
+            <div class="project-card-seo" onclick="dashboardApp.loadProjectSEO('${project.id}')">
+                <div style="display: flex; gap: 16px; align-items: flex-start;">
+                    <div style="width: 56px; height: 56px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; background: #f8fafc;">
+                        ${thumbnail}
+                    </div>
+                    <div>
+                        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #0f172a;">${project.name || 'Untitled Project'}</h3>
+                        <p style="margin: 0; font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${url}</p>
+                    </div>
+                </div>
+                <div style="margin-top: 4px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px; font-weight: 600; color: ${planColor}; background: ${planColor}15; padding: 2px 8px; border-radius: 4px;">${planName}</span>
+                    <span style="font-size: 12px; color: #4338ca; font-weight: 500;">Select &rarr;</span>
+                </div>
+            </div>
+        `;
     }
 
     async loadProjectSEO(projectId) {
@@ -452,10 +495,26 @@ class DashboardApp {
         }
 
         console.log('✅ SEO Context loaded for:', this.selectedSeoProject.name);
-        this.showToast(`Project "${this.selectedSeoProject.name}" selected for SEO optimization`, 'success');
 
-        // Show project info card
-        this.updateSelectedProjectCard();
+        // Switch Views
+        document.getElementById('seoProjectSelectionState').style.display = 'none';
+        document.getElementById('seoMainContent').style.display = 'block';
+
+        // Update Header
+        const headerName = document.getElementById('seoSelectedProjectName');
+        const headerUrl = document.getElementById('seoSelectedProjectUrl');
+
+        if (headerName) headerName.textContent = this.selectedSeoProject.name || 'Untitled Project';
+        if (headerUrl) {
+            let url = '--';
+            if (this.selectedSeoProject.published_url) url = this.selectedSeoProject.published_url;
+            else if (this.selectedSeoProject.subdomain_slug) url = `${this.selectedSeoProject.subdomain_slug}.yenze.io`;
+            else if (this.selectedSeoProject.public_slug) url = `yenze.io/s/${this.selectedSeoProject.public_slug}`;
+
+            headerUrl.innerHTML = `${url} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
+            headerUrl.href = url.startsWith('http') ? url : `https://${url}`;
+        }
+
 
         // Load SEO projects overview
         this.loadSEOProjectsOverview();
@@ -579,11 +638,13 @@ class DashboardApp {
             return;
         }
 
-        const btn = document.querySelector('.seo-main .btn-primary');
+        const btn = document.getElementById('btnRunAudit');
         if (btn) {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Auditing...';
             btn.disabled = true;
         }
+
+        console.log('Running SEO Audit for Project ID:', this.selectedSeoProject.id);
 
         try {
             const response = await fetch('/api/seo-audit', {
@@ -798,15 +859,17 @@ class DashboardApp {
 
     clearSeoProject() {
         this.selectedSeoProject = null;
-        const card = document.getElementById('selectedProjectCard');
-        if (card) card.style.display = 'none';
+        document.getElementById('seoProjectSelectionState').style.display = 'block';
+        document.getElementById('seoMainContent').style.display = 'none';
 
-        // Reset project selector
-        const selector = document.getElementById('seoProjectSelector');
-        if (selector) selector.value = '';
-
-        this.showToast('Project cleared. Select a new project to continue.', 'info');
+        // Reset checklist UI elements visually
+        document.getElementById('auditStatus').textContent = 'Pending';
+        document.getElementById('auditStatus').style.background = '#fef3c7';
+        document.getElementById('auditStatus').style.color = '#92400e';
+        document.getElementById('auditScoreText').textContent = '--';
+        document.getElementById('auditScorePath').setAttribute('stroke-dasharray', '0, 100');
     }
+
 
     async loadSEOProjectsOverview() {
         if (!this.currentUser) return;
