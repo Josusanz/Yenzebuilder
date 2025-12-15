@@ -1322,9 +1322,75 @@ ${state.features.length > 0 ? state.features.map(f => `
 - **REQUIRED SECTION**: Must be wrapped in \`<section id="${f}">\` and implement the look of: ${featureLabels[f]}`).join('\\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
                 }
 
-${state.details ? `### 7. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.details}` : ''}
+### 7. CRITICAL LAYOUT RULES (PREVENT BROKEN LAYOUTS)
+**GRID SYSTEM - STRICT IMPLEMENTATION:**
+- For multi-column sections (pricing, services, features), you MUST use responsive grid:
+  \`\`\`css
+  .pricing-grid, .services-grid, .features-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr); /* Mobile: 1 column */
+      gap: var(--space-4);
+  }
+  @media (min-width: 768px) {
+      .pricing-grid, .services-grid, .features-grid {
+          grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columns */
+      }
+  }
+  \`\`\`
 
-### 8. MANDATORY COPYWRITING RULES (ANTI-GENERIC)
+**PRICING SECTION - SPECIFIC REQUIREMENTS:**
+- **NEVER** use \`grid-column: span 12 / span 4\` for pricing cards - this breaks layout!
+- **ALWAYS** wrap pricing cards in a dedicated container with proper grid:
+  \`\`\`html
+  <section id="pricing">
+      <div class="container">
+          <div class="pricing-grid">
+              <div class="pricing-plan">...</div>
+              <div class="pricing-plan">...</div>
+              <div class="pricing-plan">...</div>
+          </div>
+      </div>
+  </section>
+  \`\`\`
+- Each pricing card MUST have:
+  - Equal heights using \`display: flex; flex-direction: column;\`
+  - \`flex-grow: 1\` on the features list to push CTA button to bottom
+  - NO empty white spaces between elements
+  - Consistent padding: \`padding: var(--space-6) var(--space-4);\`
+
+**PRICING CARD STRUCTURE - MANDATORY:**
+\`\`\`html
+<div class="pricing-plan">
+    <h3>Plan Name</h3>
+    <p class="text-muted">Brief description</p>
+    <div class="price-display">
+        <span class="price-currency">$</span>
+        <span class="price-amount">99</span>
+        <span class="price-period">/month</span>
+    </div>
+    <ul class="pricing-features">
+        <li><i class="fa-solid fa-check"></i> Feature 1</li>
+        <li><i class="fa-solid fa-check"></i> Feature 2</li>
+        <li><i class="fa-solid fa-check"></i> Feature 3</li>
+    </ul>
+    <button class="btn btn-primary">Get Started</button>
+</div>
+\`\`\`
+
+**PREVENT WHITE SPACES:**
+- **NO** empty \`<div>\` containers
+- All text elements MUST have \`margin: 0\` unless specifically needed
+- Use \`gap\` in flexbox/grid instead of margins for consistent spacing
+- Lists should have \`list-style: none; padding-left: 0;\`
+
+**MOBILE RESPONSIVENESS:**
+- ALL grid sections MUST collapse to single column on mobile
+- \`@media (max-width: 768px)\` is MANDATORY for all grid layouts
+- Test that pricing cards stack vertically on mobile without breaking
+
+${state.details ? `### 8. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.details}` : ''}
+
+### 9. MANDATORY COPYWRITING RULES (ANTI-GENERIC)
 - **Primary Source**: The content from **User Context** is the sole source of truth. All headlines and body copy must be a confident, professional re-write of that source.
 - **Headlines Structure**:
     - **MUST** include a muted, upper-cased \`<p class="text-muted mb-2">— PRE-HEADLINE</p>\` above all major \`<h2>\` headings.
@@ -1332,7 +1398,7 @@ ${state.details ? `### 7. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.d
 - **Tone**: Professional, confident, and specific to the industry of "${state.type}". Avoid cliches like "Unleash your potential" or "We are the best". Focus on value and specifics.
 - **Call-to-Action**: Every section should conclude with a prominent CTA button.
 
-### 9. CONTACT FORM LOGIC (MANDATORY)
+### 10. CONTACT FORM LOGIC (MANDATORY)
 ${hasContactForm ? `
 You MUST implement the contact form with this specific API logic:
 HTML:
@@ -1375,7 +1441,7 @@ async function handleFormSubmit(e) {
 }
 ` : 'No functional contact form required, but you may include a mailto link if appropriate.'}
 
-### 10. FINAL CODE EXECUTION
+### 11. FINAL CODE EXECUTION
 - **Output**: A single markdown code block with the complete \`index.html\`.
 - **Validation**: 
   - **MUST** close all HTML tags (e.g., \`</div>\`, \`</section>\`). 
