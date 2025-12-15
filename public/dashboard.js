@@ -3239,7 +3239,7 @@ ${result.robotsTxt}
         const markAllBtn = document.getElementById('markAllReadBtn');
 
         const total = messages.length;
-        const unread = messages.filter(m => !m.read).length;
+        const unread = messages.filter(m => !m.is_read).length;
 
         // Calculate this month's messages
         const now = new Date();
@@ -3282,7 +3282,7 @@ ${result.robotsTxt}
             const initials = this.getInitials(message.name || message.email);
             const projectName = message.project_id ? (projectMap[message.project_id] || 'Unknown Project') : 'Unknown';
             const date = this.formatMessageDate(message.created_at);
-            const isUnread = !message.read;
+            const isUnread = !message.is_read;
 
             return `
                 <div class="message-card ${isUnread ? 'unread' : ''}" onclick="dashboardApp.viewMessage('${message.id}')">
@@ -3336,7 +3336,7 @@ ${result.robotsTxt}
         if (!message) return;
 
         // Mark as read if not already
-        if (!message.read) {
+        if (!message.is_read) {
             await this.markAsRead(messageId);
         }
 
@@ -3415,14 +3415,14 @@ ${result.robotsTxt}
         try {
             const { error } = await supabaseClient.client
                 .from('form_submissions')
-                .update({ read: true })
+                .update({ is_read: true })
                 .eq('id', messageId);
 
             if (error) throw error;
 
             // Update local state
             const message = this.messages.find(m => m.id === messageId);
-            if (message) message.read = true;
+            if (message) message.is_read = true;
 
             // Show success feedback
             this.showToast('Message marked as read', 'success');
@@ -3438,13 +3438,13 @@ ${result.robotsTxt}
 
     async markAllAsRead() {
         try {
-            const unreadIds = this.messages.filter(m => !m.read).map(m => m.id);
+            const unreadIds = this.messages.filter(m => !m.is_read).map(m => m.id);
 
             if (unreadIds.length === 0) return;
 
             const { error } = await supabaseClient.client
                 .from('form_submissions')
-                .update({ read: true })
+                .update({ is_read: true })
                 .in('id', unreadIds);
 
             if (error) throw error;
