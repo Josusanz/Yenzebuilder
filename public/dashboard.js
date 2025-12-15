@@ -414,13 +414,41 @@ class DashboardApp {
         }
     }
 
-    loadProjectSEO(projectId) {
-        if (!projectId) return;
+    async loadProjectSEO(projectId) {
+        if (!projectId) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
 
+        // Try to find in loaded projects first
         this.selectedSeoProject = this.projects.find(p => p.id === projectId);
-        if (!this.selectedSeoProject) return;
 
-        console.log('SEO Context loaded for:', this.selectedSeoProject.name);
+        // If not found in loaded projects, fetch it directly
+        if (!this.selectedSeoProject) {
+            try {
+                const { data: project, error } = await supabaseClient.client
+                    .from('projects')
+                    .select('*')
+                    .eq('id', projectId)
+                    .single();
+
+                if (error) throw error;
+                this.selectedSeoProject = project;
+            } catch (error) {
+                console.error('Error loading project for SEO:', error);
+                this.showToast('Error loading project: ' + error.message, 'error');
+                return;
+            }
+        }
+
+        console.log('✅ SEO Context loaded for:', this.selectedSeoProject.name);
+        this.showToast(`Project "${this.selectedSeoProject.name}" selected for SEO optimization`, 'success');
+
+        // Show project info card
+        this.updateSelectedProjectCard();
+
+        // Load SEO projects overview
+        this.loadSEOProjectsOverview();
 
         // Update GSC context (Mock logic: In reality checking specific project metadata)
         // For now we rely on the global default for GSC, but visually reset UI to look "fresh" or check specific status
@@ -600,6 +628,12 @@ class DashboardApp {
                 // Update UI
                 this.updateSEOChecklistUI('audit', score, result);
 
+                // Save audit metadata to database
+                await this.saveSEOMetadata({ audit_score: score });
+
+                // Reload SEO projects overview
+                await this.loadSEOProjectsOverview();
+
                 // Log recommendations
                 if (result.recommendations.length > 0) {
                     console.log('SEO Recommendations:');
@@ -695,6 +729,216 @@ class DashboardApp {
             emptyState.style.display = 'none';
         }
         this.showToast('Select a project above to start optimizing your SEO', 'info');
+    }
+
+    updateSelectedProjectCard() {
+        const card = document.getElementById('selectedProjectCard');
+        if (!card || !this.selectedSeoProject) return;
+
+        const projectName = document.getElementById('selectedProjectName');
+        const projectUrl = document.getElementById('selectedProjectUrl');
+        const projectPlan = document.getElementById('selectedProjectPlan');
+        const projectThumbnail = document.querySelector('#selectedProjectThumbnail img');
+
+        if (projectName) projectName.textContent = this.selectedSeoProject.name || 'Untitled Project';
+
+        // Generate project URL
+        let url = '--';
+        if (this.selectedSeoProject.published_url) {
+            url = this.selectedSeoProject.published_url;
+        } else if (this.selectedSeoProject.subdomain_slug) {
+            url = `https://${this.selectedSeoProject.subdomain_slug}.yenze.io`;
+        } else if (this.selectedSeoProject.public_slug) {
+            url = `https://yenze.io/s/${this.selectedSeoProject.public_slug}`;
+        }
+        if (projectUrl) projectUrl.textContent = url;
+
+        if (projectPlan) projectPlan.textContent = (this.selectedSeoProject.plan || 'free').toUpperCase();
+
+        // Generate thumbnail from first page HTML
+        if (projectThumbnail && this.selectedSeoProject.html) {
+            try {
+                const pages = JSON.parse(this.selectedSeoProject.html);
+                const firstPage = pages[0];
+                if (firstPage?.html) {
+                    // Create a data URL thumbnail
+                    const blob = new Blob([firstPage.html], { type: 'text/html' });
+                    const thumbnailUrl = URL.createObjectURL(blob);
+                    projectThumbnail.src = 'data:image/svg+xml;base64,' + btoa(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+                            <rect width="80" height="80" fill="#f1f5f9"/>
+                            <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="32" fill="#64748b">🌐</text>
+                        </svg>
+                    `);
+                }
+            } catch (error) {
+                // Fallback icon
+                projectThumbnail.src = 'data:image/svg+xml;base64,' + btoa(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+                        <rect width="80" height="80" fill="#f1f5f9"/>
+                        <text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="32" fill="#64748b">🌐</text>
+                    </svg>
+                `);
+            }
+        }
+
+        // Show the card
+        card.style.display = 'block';
+    }
+
+    clearSeoProject() {
+        this.selectedSeoProject = null;
+        const card = document.getElementById('selectedProjectCard');
+        if (card) card.style.display = 'none';
+
+        // Reset project selector
+        const selector = document.getElementById('seoProjectSelector');
+        if (selector) selector.value = '';
+
+        this.showToast('Project cleared. Select a new project to continue.', 'info');
+    }
+
+    async loadSEOProjectsOverview() {
+        if (!this.currentUser) return;
+
+        const listContainer = document.getElementById('seoProjectsList');
+        const countBadge = document.getElementById('seoProjectsCount');
+
+        if (!listContainer) return;
+
+        try {
+            // Fetch all projects with their metadata
+            const { data: projects, error } = await supabaseClient.client
+                .from('projects')
+                .select('id, name, plan, published_url, subdomain_slug, public_slug, seo_metadata, updated_at')
+                .eq('user_id', this.currentUser.id)
+                .order('updated_at', { ascending: false });
+
+            if (error) throw error;
+
+            // Filter projects that have any SEO work done
+            const seoProjects = projects.filter(p => {
+                const metadata = p.seo_metadata || {};
+                return metadata.audit_score || metadata.sitemap_generated || metadata.robots_generated || metadata.links_checked;
+            });
+
+            // Update count badge
+            if (countBadge) {
+                countBadge.textContent = `${seoProjects.length} Project${seoProjects.length !== 1 ? 's' : ''}`;
+            }
+
+            if (seoProjects.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📋</div>
+                        <p style="margin: 0;">No projects with SEO configuration yet</p>
+                        <p style="margin: 8px 0 0 0; font-size: 14px;">Select a project above and start optimizing!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render SEO projects
+            listContainer.innerHTML = seoProjects.map(project => {
+                const metadata = project.seo_metadata || {};
+                const auditScore = metadata.audit_score || 0;
+                const hasSitemap = metadata.sitemap_generated || false;
+                const hasRobots = metadata.robots_generated || false;
+                const linksChecked = metadata.links_checked || false;
+
+                let url = '--';
+                if (project.published_url) {
+                    url = project.published_url;
+                } else if (project.subdomain_slug) {
+                    url = `${project.subdomain_slug}.yenze.io`;
+                } else if (project.public_slug) {
+                    url = `yenze.io/s/${project.public_slug}`;
+                }
+
+                const completionCount = [auditScore > 0, hasSitemap, hasRobots, linksChecked].filter(Boolean).length;
+                const completionPercent = (completionCount / 4) * 100;
+
+                return `
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 4px 0; font-size: 15px;">${project.name || 'Untitled'}</h4>
+                                <div style="font-size: 12px; color: #64748b;">${url}</div>
+                            </div>
+                            <button onclick="dashboardApp.selectProjectForSEO('${project.id}')" class="btn-secondary" style="font-size: 12px; padding: 6px 12px;">Edit SEO</button>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <span style="font-size: 11px; background: ${auditScore >= 80 ? '#d1fae5' : auditScore >= 50 ? '#fef3c7' : '#e2e8f0'}; color: ${auditScore >= 80 ? '#065f46' : auditScore >= 50 ? '#92400e' : '#64748b'}; padding: 3px 8px; border-radius: 99px; font-weight: 600;">
+                                ${auditScore > 0 ? `Audit: ${auditScore}` : 'No Audit'}
+                            </span>
+                            ${hasSitemap ? '<span style="font-size: 11px; background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 99px; font-weight: 600;">✓ Sitemap</span>' : ''}
+                            ${hasRobots ? '<span style="font-size: 11px; background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 99px; font-weight: 600;">✓ Robots</span>' : ''}
+                            ${linksChecked ? '<span style="font-size: 11px; background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 99px; font-weight: 600;">✓ Links</span>' : ''}
+                        </div>
+                        <div style="height: 4px; background: #e2e8f0; border-radius: 99px; overflow: hidden;">
+                            <div style="height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); width: ${completionPercent}%; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error loading SEO projects overview:', error);
+            listContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #ef4444;">
+                    <p style="margin: 0;">Error loading SEO projects</p>
+                    <p style="margin: 8px 0 0 0; font-size: 14px;">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    async selectProjectForSEO(projectId) {
+        // Update selector
+        const selector = document.getElementById('seoProjectSelector');
+        if (selector) {
+            selector.value = projectId;
+        }
+
+        // Load the project
+        await this.loadProjectSEO(projectId);
+
+        // Scroll to top of SEO section
+        const seoSection = document.getElementById('seoSection');
+        if (seoSection) {
+            seoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    async saveSEOMetadata(metadata) {
+        if (!this.selectedSeoProject) {
+            console.error('No project selected for SEO');
+            return;
+        }
+
+        try {
+            // Get existing metadata
+            const existingMetadata = this.selectedSeoProject.seo_metadata || {};
+
+            // Merge with new metadata
+            const updatedMetadata = { ...existingMetadata, ...metadata };
+
+            // Update in database
+            const { error } = await supabaseClient.client
+                .from('projects')
+                .update({ seo_metadata: updatedMetadata })
+                .eq('id', this.selectedSeoProject.id);
+
+            if (error) throw error;
+
+            // Update local project object
+            this.selectedSeoProject.seo_metadata = updatedMetadata;
+
+            console.log('SEO metadata saved:', updatedMetadata);
+        } catch (error) {
+            console.error('Error saving SEO metadata:', error);
+            this.showToast('Error saving SEO data: ' + error.message, 'error');
+        }
     }
 
     syncAssets() {
@@ -818,6 +1062,12 @@ class DashboardApp {
 
                 // Update UI
                 this.updateSEOChecklistUI('sitemap');
+
+                // Save sitemap metadata
+                await this.saveSEOMetadata({ sitemap_generated: true });
+
+                // Reload SEO projects overview
+                await this.loadSEOProjectsOverview();
             } else {
                 throw new Error(result.error || 'Failed to generate sitemap');
             }
@@ -880,6 +1130,12 @@ ${result.robotsTxt}
                 document.body.removeChild(a);
 
                 this.showToast('Robots.txt downloaded!', 'success');
+
+                // Save robots metadata
+                await this.saveSEOMetadata({ robots_generated: true });
+
+                // Reload SEO projects overview
+                await this.loadSEOProjectsOverview();
             } else {
                 throw new Error(result.error || 'Failed to generate robots.txt');
             }
@@ -951,6 +1207,12 @@ ${result.robotsTxt}
 
                 // Update UI
                 this.updateSEOChecklistUI('links', null, result);
+
+                // Save links check metadata
+                await this.saveSEOMetadata({ links_checked: true });
+
+                // Reload SEO projects overview
+                await this.loadSEOProjectsOverview();
 
                 // Log detailed results to console
                 console.log('Broken Link Check Results:', result);

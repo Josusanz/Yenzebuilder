@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS projects (
     published_url TEXT,
     plan VARCHAR(20) NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'one_time', 'pro')),
     custom_domain TEXT,
+    seo_metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -30,6 +31,7 @@ CREATE TABLE IF NOT EXISTS projects (
 -- Index for faster queries
 CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
 CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects(updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_projects_seo_metadata ON projects USING GIN (seo_metadata);
 
 -- Row Level Security (RLS) Policies for projects
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
