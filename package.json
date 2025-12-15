@@ -6,11 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "echo 'No build step required - static files served directly'",
     "preview": "vite preview",
     "dev:api": "vercel dev",
-    "deploy": "npm run build && vercel --prod",
-    "deploy:staging": "npm run build && vercel",
+    "deploy": "vercel --prod",
+    "deploy:staging": "vercel",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
@@ -22,7 +22,7 @@
     "format:check": "prettier --check \"**/*.{js,json,md,html,css}\"",
     "setup": "cp .env.example .env && npm install",
     "check": "npm run lint && npm run format:check && npm test",
-    "release": "npm run check && npm run build && npm run deploy"
+    "release": "npm run check && npm run deploy"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
