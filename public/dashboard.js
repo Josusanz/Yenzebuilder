@@ -412,6 +412,16 @@ class DashboardApp {
             defaultsForm.addEventListener('submit', (e) => this.saveSEODefaults(e));
             defaultsForm.dataset.initialized = 'true';
         }
+
+        // Setup SEO action buttons
+        const btnRunAudit = document.getElementById('btnRunAudit');
+        if (btnRunAudit && !btnRunAudit.dataset.initialized) {
+            btnRunAudit.addEventListener('click', () => this.runSEOAudit());
+            btnRunAudit.dataset.initialized = 'true';
+        }
+
+        // Load SEO projects overview
+        this.loadSEOProjectsOverview();
     }
 
     async loadProjectSEO(projectId) {
