@@ -126,6 +126,11 @@ class SupabaseClient {
 
     async signIn(email, password) {
         try {
+            // Ensure client is initialized
+            if (!this.client) {
+                await this.init();
+            }
+
             const { data, error } = await this.client.auth.signInWithPassword({
                 email,
                 password
@@ -153,6 +158,11 @@ class SupabaseClient {
 
     async signInWithGoogle() {
         try {
+            // Ensure client is initialized
+            if (!this.client) {
+                await this.init();
+            }
+
             // Detect Safari browser
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             console.log('[OAuth] Browser detected - Safari:', isSafari);
@@ -204,6 +214,11 @@ class SupabaseClient {
 
     async signInWithGithub() {
         try {
+            // Ensure client is initialized
+            if (!this.client) {
+                await this.init();
+            }
+
             console.log('[OAuth] Redirect URL configured:', 'https://builder.yenze.io');
             const { data, error } = await this.client.auth.signInWithOAuth({
                 provider: 'github',
