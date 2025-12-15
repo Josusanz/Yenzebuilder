@@ -16,13 +16,11 @@
     },
     {
       "source": "/dashboard",
-      "destination": "/dashboard.html",
-      "has": [
-        {
-          "type": "host",
-          "value": "builder.yenze.io"
-        }
-      ]
+      "destination": "/dashboard.html"
+    },
+    {
+      "source": "/builder",
+      "destination": "/builder.html"
     },
     {
       "source": "/",
