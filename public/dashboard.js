@@ -1442,7 +1442,32 @@ ${result.robotsTxt}
 
         projectsListContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Scanning projects for pricing...</p></div>';
 
-        // Simulate scanning delay
+        // Load ALL projects from Supabase first
+        try {
+            const { data: allProjects, error } = await supabaseClient.client
+                .from('projects')
+                .select('*')
+                .eq('user_id', this.currentUser.id)
+                .order('updated_at', { ascending: false });
+
+            if (error) throw error;
+
+            // Update this.projects with all user projects
+            this.projects = allProjects || [];
+            console.log(`[Payment Links] Loaded ${this.projects.length} projects for scanning`);
+
+        } catch (error) {
+            console.error('Error loading projects for payment scanning:', error);
+            projectsListContainer.innerHTML = `
+                <div class="empty-state" style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+                    <h3>Error loading projects</h3>
+                    <p>${error.message}</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Scan for pricing items
         setTimeout(async () => {
             const detectedItems = await this.scanProjectsForPayments();
 
@@ -3385,11 +3410,15 @@ ${result.robotsTxt}
             const message = this.messages.find(m => m.id === messageId);
             if (message) message.read = true;
 
+            // Show success feedback
+            this.showToast('Message marked as read', 'success');
+
             // Re-render
             this.loadMessages();
 
         } catch (error) {
             console.error('Error marking message as read:', error);
+            this.showToast('Failed to mark message as read', 'error');
         }
     }
 
