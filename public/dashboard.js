@@ -1241,37 +1241,79 @@ ${result.robotsTxt}
         }
     }
 
-    async loadProjects() {
+    async loadProjects(loadMore = false) {
         const grid = document.getElementById('projectsGrid');
-        grid.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading your projects...</p></div>';
+
+        // Initialize pagination state
+        if (!loadMore) {
+            this.projectsPage = 0;
+            this.projectsPerPage = 9;
+            this.hasMoreProjects = true;
+            this.allProjectsLoaded = false;
+            grid.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading your projects...</p></div>';
+        }
 
         try {
-            // Get user's subscription first
-            const { data: subscriptions } = await supabaseClient.client
-                .from('subscriptions')
-                .select('plan')
-                .eq('user_id', this.currentUser.id)
-                .eq('status', 'active')
-                .order('created_at', { ascending: false })
-                .limit(1);
+            // Get user's subscription first (only once)
+            if (!loadMore) {
+                const { data: subscriptions } = await supabaseClient.client
+                    .from('subscriptions')
+                    .select('plan')
+                    .eq('user_id', this.currentUser.id)
+                    .eq('status', 'active')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
 
-            const subscription = subscriptions?.[0];
-            this.userPlan = subscription?.plan || 'free';
+                const subscription = subscriptions?.[0];
+                this.userPlan = subscription?.plan || 'free';
 
-            console.log('[Dashboard] User subscription:', subscription);
-            console.log('[Dashboard] User plan:', this.userPlan);
+                console.log('[Dashboard] User subscription:', subscription);
+                console.log('[Dashboard] User plan:', this.userPlan);
 
-            const { data: projects, error } = await supabaseClient.client
+                // Get custom domains once
+                const { data: customDomains } = await supabaseClient.client
+                    .from('custom_domains')
+                    .select('project_id, domain, status')
+                    .eq('user_id', this.currentUser.id);
+
+                console.log('[Dashboard] Custom domains found:', customDomains);
+
+                // Create a map of project_id -> custom domain
+                this.domainMap = {};
+                if (customDomains) {
+                    customDomains.forEach(cd => {
+                        this.domainMap[cd.project_id] = cd.domain;
+                        console.log(`[Dashboard] Mapping project ${cd.project_id} to domain ${cd.domain} (status: ${cd.status})`);
+                    });
+                }
+            }
+
+            // Load projects with pagination
+            const offset = this.projectsPage * this.projectsPerPage;
+            const { data: projects, error, count } = await supabaseClient.client
                 .from('projects')
-                .select('*')
+                .select('*', { count: 'exact' })
                 .eq('user_id', this.currentUser.id)
-                .order('created_at', { ascending: false });
+                .order('created_at', { ascending: false })
+                .range(offset, offset + this.projectsPerPage - 1);
 
             if (error) throw error;
 
-            this.projects = projects || [];
+            const newProjects = projects || [];
 
-            if (this.projects.length === 0) {
+            // Update state
+            if (!loadMore) {
+                this.projects = newProjects;
+            } else {
+                this.projects = [...this.projects, ...newProjects];
+            }
+
+            this.hasMoreProjects = this.projects.length < count;
+            this.allProjectsLoaded = !this.hasMoreProjects;
+
+            console.log(`[Dashboard] Loaded ${newProjects.length} projects (${this.projects.length}/${count} total)`);
+
+            if (this.projects.length === 0 && !loadMore) {
                 grid.innerHTML = `
                     <div class="empty-state">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1287,32 +1329,14 @@ ${result.robotsTxt}
                 return;
             }
 
-            // Get custom domains to determine which projects are on paid plans
-            const { data: customDomains } = await supabaseClient.client
-                .from('custom_domains')
-                .select('project_id, domain, status')
-                .eq('user_id', this.currentUser.id);
-
-            console.log('[Dashboard] Custom domains found:', customDomains);
-
-            // Create a map of project_id -> custom domain
-            const domainMap = {};
-            if (customDomains) {
-                customDomains.forEach(cd => {
-                    domainMap[cd.project_id] = cd.domain;
-                    console.log(`[Dashboard] Mapping project ${cd.project_id} to domain ${cd.domain} (status: ${cd.status})`);
-                });
-            }
-
-            console.log('[Dashboard] Domain map:', domainMap);
-
             // Check if user has access to analytics
             const hasAnalytics = PlanUtils.hasFeature('hasAnalytics', this.userPlan);
 
-            // Render projects
-            const projectsHTML = this.projects.map((project) => {
+            // Render projects (only the new ones if loading more)
+            const projectsToRender = loadMore ? newProjects : this.projects;
+            const projectsHTML = projectsToRender.map((project) => {
                 // Determine project plan and URL based on whether it has a custom domain
-                const customDomain = domainMap[project.id];
+                const customDomain = this.domainMap[project.id];
                 const projectPlan = customDomain ? this.userPlan : 'free';
                 const projectUrl = customDomain ? `https://${customDomain}` : project.published_url;
 
@@ -1409,18 +1433,45 @@ ${result.robotsTxt}
                 `;
             }).join('');
 
-            grid.innerHTML = projectsHTML;
+            // Append or replace HTML
+            if (loadMore) {
+                // Remove existing load more button if it exists
+                const existingLoadMore = document.getElementById('loadMoreProjects');
+                if (existingLoadMore) {
+                    existingLoadMore.remove();
+                }
+                grid.insertAdjacentHTML('beforeend', projectsHTML);
+            } else {
+                grid.innerHTML = projectsHTML;
+            }
 
-            // Fetch stats asynchronously after rendering
+            // Add "Load More" button if there are more projects
+            if (this.hasMoreProjects) {
+                const loadMoreHTML = `
+                    <div id="loadMoreProjects" style="grid-column: 1 / -1; display: flex; justify-content: center; margin-top: 24px;">
+                        <button onclick="dashboardApp.loadMoreProjects()" class="btn-secondary" style="padding: 12px 32px; font-size: 14px; font-weight: 600;">
+                            📦 Load More Projects (${this.projects.length} loaded)
+                        </button>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', loadMoreHTML);
+            }
+
+            // Fetch stats asynchronously after rendering (only for new projects)
             if (hasAnalytics) {
-                this.projects.forEach(async (project) => {
+                projectsToRender.forEach(async (project) => {
                     const stats = await this.getProjectStats(project.id);
                     const viewsEl = document.getElementById(`views-${project.id}`);
                     const visitorsEl = document.getElementById(`visitors-${project.id}`);
-                    
+
                     if (viewsEl) viewsEl.textContent = stats.views;
                     if (visitorsEl) visitorsEl.textContent = stats.visitors;
                 });
+            }
+
+            // Increment page for next load
+            if (loadMore) {
+                this.projectsPage++;
             }
 
         } catch (error) {
@@ -1432,6 +1483,17 @@ ${result.robotsTxt}
                 </div>
             `;
         }
+    }
+
+    async loadMoreProjects() {
+        const btn = document.querySelector('#loadMoreProjects button');
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            btn.disabled = true;
+        }
+
+        this.projectsPage++;
+        await this.loadProjects(true);
     }
 
     async getProjectStats(projectId) {
