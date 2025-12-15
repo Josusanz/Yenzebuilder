@@ -557,23 +557,25 @@ class DashboardApp {
 
         console.log('✅ SEO Context loaded for:', this.selectedSeoProject.name);
 
-        // Switch Views
-        document.getElementById('seoProjectSelectionState').style.display = 'none';
-        document.getElementById('seoMainContent').style.display = 'block';
+        // Show selected project info
+        const selectedProjectInfo = document.getElementById('selectedProjectInfo');
+        const selectedProjectName = document.getElementById('selectedProjectName');
+        const selectedProjectUrl = document.getElementById('selectedProjectUrl');
+        const selectedProjectPlan = document.getElementById('selectedProjectPlan');
 
-        // Update Header
-        const headerName = document.getElementById('seoSelectedProjectName');
-        const headerUrl = document.getElementById('seoSelectedProjectUrl');
+        if (selectedProjectInfo) selectedProjectInfo.style.display = 'block';
+        if (selectedProjectName) selectedProjectName.textContent = this.selectedSeoProject.name || 'Untitled Project';
 
-        if (headerName) headerName.textContent = this.selectedSeoProject.name || 'Untitled Project';
-        if (headerUrl) {
+        if (selectedProjectUrl) {
             let url = '--';
             if (this.selectedSeoProject.published_url) url = this.selectedSeoProject.published_url;
             else if (this.selectedSeoProject.subdomain_slug) url = `${this.selectedSeoProject.subdomain_slug}.yenze.io`;
             else if (this.selectedSeoProject.public_slug) url = `yenze.io/s/${this.selectedSeoProject.public_slug}`;
+            selectedProjectUrl.textContent = url;
+        }
 
-            headerUrl.innerHTML = `${url} <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
-            headerUrl.href = url.startsWith('http') ? url : `https://${url}`;
+        if (selectedProjectPlan) {
+            selectedProjectPlan.textContent = (this.selectedSeoProject.plan || 'free').toUpperCase();
         }
 
 
@@ -657,6 +659,17 @@ class DashboardApp {
             btn.textContent = originalText;
             btn.disabled = false;
         }
+    }
+
+    clearSeoProject() {
+        this.selectedSeoProject = null;
+        const selector = document.getElementById('seoProjectFilter');
+        if (selector) selector.value = '';
+
+        const selectedProjectInfo = document.getElementById('selectedProjectInfo');
+        if (selectedProjectInfo) selectedProjectInfo.style.display = 'none';
+
+        this.showToast('Project deselected. Please select a project to continue.', 'info');
     }
 
     async saveSEODefaults(e) {

@@ -1386,6 +1386,12 @@ class YenzeBuilder {
 
         // If deselecting, stop here
         if (!element) {
+            // Clear previous element's selection styles
+            if (this.selectedElement) {
+                this.selectedElement.style.outline = '';
+                this.selectedElement.style.outlineOffset = '';
+                this.selectedElement.style.boxShadow = '';
+            }
             this.selectedElement = null;
             // Clear properties panel
             this.showProperties(null);
@@ -1417,6 +1423,13 @@ class YenzeBuilder {
                     }, 100);
                 }
             }
+        }
+
+        // Clear previous element's selection styles
+        if (this.selectedElement && this.selectedElement !== element) {
+            this.selectedElement.style.outline = '';
+            this.selectedElement.style.outlineOffset = '';
+            this.selectedElement.style.boxShadow = '';
         }
 
         // Highlight selected element with Framer-style selection
