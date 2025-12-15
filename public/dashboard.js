@@ -378,22 +378,15 @@ class DashboardApp {
     }
 
     async loadSEO() {
-        // Populate Project Grid
-        const grid = document.getElementById('seoProjectGrid');
-        if (grid) {
-            if (this.projects.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;"><h3>No projects found</h3><p>Create a project in the Editor to get started with SEO.</p></div>';
-            } else {
-                grid.innerHTML = this.projects.map(p => this.createSeoProjectCard(p)).join('');
-            }
-        }
-
         // Show selection state, hide main content unless already selected
         if (!this.selectedSeoProject) {
             const selectionState = document.getElementById('seoProjectSelectionState');
             const mainContent = document.getElementById('seoMainContent');
             if (selectionState) selectionState.style.display = 'block';
             if (mainContent) mainContent.style.display = 'none';
+
+            // Load projects for grid
+            this.loadSEOProjects(false);
         } else {
             // Refresh current project view
             this.loadProjectSEO(this.selectedSeoProject.id);
@@ -423,6 +416,73 @@ class DashboardApp {
 
         // Load SEO projects overview (stats)
         this.loadSEOProjectsOverview();
+    }
+
+    async loadSEOProjects(loadMore = false) {
+        const grid = document.getElementById('seoProjectGrid');
+        const loadMoreBtn = document.getElementById('seoLoadMoreContainer');
+        if (!grid) return;
+
+        if (!loadMore) {
+            this.seoProjectsPage = 0;
+            this.seoProjectsPerPage = 9;
+            this.seoProjects = [];
+            grid.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading projects...</p></div>';
+        } else {
+            this.seoProjectsPage = (this.seoProjectsPage || 0) + 1;
+            const btn = document.getElementById('btnSeoLoadMore');
+            if (btn) btn.innerHTML = '<div class="loading-spinner small" style="display: inline-block; width: 12px; height: 12px; border-width: 2px;"></div> Loading...';
+        }
+
+        try {
+            const offset = (this.seoProjectsPage || 0) * (this.seoProjectsPerPage || 9);
+            const limit = (this.seoProjectsPerPage || 9);
+
+            const { data: projects, error, count } = await supabaseClient.client
+                .from('projects')
+                .select('id, name, html, plan, published_url, subdomain_slug, public_slug, created_at', { count: 'exact' })
+                .eq('user_id', this.currentUser.id)
+                .order('created_at', { ascending: false })
+                .range(offset, offset + limit - 1);
+
+            if (error) throw error;
+
+            const newProjects = projects || [];
+
+            if (!loadMore) {
+                this.seoProjects = newProjects;
+                grid.innerHTML = '';
+            } else {
+                this.seoProjects = [...(this.seoProjects || []), ...newProjects];
+            }
+
+            if (this.seoProjects.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 40px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;"><h3>No projects found</h3><p>Create a project in the Editor to get started with SEO.</p></div>';
+                if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+            } else {
+                const cardsHTML = newProjects.map(p => this.createSeoProjectCard(p)).join('');
+
+                if (!loadMore) {
+                    grid.innerHTML = cardsHTML;
+                } else {
+                    grid.insertAdjacentHTML('beforeend', cardsHTML);
+                }
+
+                // Handle Load More button visibility
+                const hasMore = (offset + newProjects.length) < count;
+                if (loadMoreBtn) {
+                    loadMoreBtn.style.display = hasMore ? 'block' : 'none';
+                    const btn = document.getElementById('btnSeoLoadMore');
+                    if (btn) btn.innerHTML = 'Load More Projects';
+                }
+            }
+
+        } catch (error) {
+            console.error('Error loading SEO projects:', error);
+            if (!loadMore) {
+                grid.innerHTML = `<div style="color: red; padding: 20px;">Error loading projects: ${error.message}</div>`;
+            }
+        }
     }
 
     createSeoProjectCard(project) {
