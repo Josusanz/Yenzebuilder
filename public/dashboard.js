@@ -1253,7 +1253,6 @@ ${result.robotsTxt}
     }
 
     async loadPayments() {
-        const listContainer = document.getElementById('detectedPaymentsList');
         const connectBtn = document.getElementById('connectStripeBtn');
         const isConnected = !!this.currentUser?.user_metadata?.stripe_account_id;
 
@@ -1279,17 +1278,47 @@ ${result.robotsTxt}
             connectBtn.onclick = () => this.connectStripe();
         }
 
-        listContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Scanning projects for pricing...</p></div>';
+        // Show projects list view
+        this.showPaymentProjectsList();
+    }
+
+    async showPaymentProjectsList() {
+        const projectsListView = document.getElementById('projectsListView');
+        const detailView = document.getElementById('paymentLinksDetailView');
+        const projectsListContainer = document.getElementById('projectsWithPricingList');
+
+        // Show projects list, hide detail view
+        projectsListView.style.display = 'block';
+        detailView.style.display = 'none';
+
+        projectsListContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Scanning projects for pricing...</p></div>';
 
         // Simulate scanning delay
         setTimeout(async () => {
             const detectedItems = await this.scanProjectsForPayments();
 
+            // Group items by project
+            const projectsMap = {};
+            detectedItems.forEach(item => {
+                if (!projectsMap[item.projectId]) {
+                    projectsMap[item.projectId] = {
+                        projectId: item.projectId,
+                        projectName: item.projectName,
+                        items: []
+                    };
+                }
+                projectsMap[item.projectId].items.push(item);
+            });
+
+            const projectsWithPricing = Object.values(projectsMap);
+
+            // Update stats
+            document.getElementById('projectsWithPricingCount').textContent = projectsWithPricing.length;
             document.getElementById('detectedItemsCount').textContent = detectedItems.length;
 
-            if (detectedItems.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1 / -1;">
+            if (projectsWithPricing.length === 0) {
+                projectsListContainer.innerHTML = `
+                    <div class="empty-state" style="text-align: center; padding: 60px 20px; color: #94a3b8;">
                         <h3>No pricing items found</h3>
                         <p>Add pricing sections to your websites to see them here.</p>
                     </div>
@@ -1297,17 +1326,66 @@ ${result.robotsTxt}
                 return;
             }
 
-            listContainer.innerHTML = detectedItems.map(item => `
-                <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
-                    <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #F1F5F9;">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="9" y1="3" x2="9" y2="21"></line>
-                            </svg>
-                            <div style="font-size: 13px; color: #64748B; font-weight: 500;">${item.projectName}</div>
+            // Render projects list
+            projectsListContainer.innerHTML = projectsWithPricing.map(project => `
+                <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; cursor: pointer; transition: all 0.2s;" onclick="dashboardApp.showProjectPaymentLinks('${project.projectId}', '${project.projectName}')">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0066FF" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                                </svg>
+                                <h3 style="margin: 0; font-size: 18px; color: #0F172A; font-weight: 600;">${project.projectName}</h3>
+                            </div>
+                            <div style="display: flex; gap: 12px; font-size: 13px; color: #64748B;">
+                                <div><strong>${project.items.length}</strong> pricing ${project.items.length === 1 ? 'item' : 'items'}</div>
+                                <div>•</div>
+                                <div>0 active links</div>
+                            </div>
                         </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </div>
+                </div>
+            `).join('');
+        }, 800);
+    }
+
+    showProjectPaymentLinks(projectId, projectName) {
+        const projectsListView = document.getElementById('projectsListView');
+        const detailView = document.getElementById('paymentLinksDetailView');
+        const detailContainer = document.getElementById('detectedPaymentsList');
+        const titleElement = document.getElementById('selectedProjectTitle');
+        const isConnected = !!this.currentUser?.user_metadata?.stripe_account_id;
+
+        // Show detail view, hide projects list
+        projectsListView.style.display = 'none';
+        detailView.style.display = 'block';
+
+        // Update title
+        titleElement.textContent = projectName;
+
+        // Load payment links for this project
+        detailContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><p>Loading payment links...</p></div>';
+
+        setTimeout(async () => {
+            const allItems = await this.scanProjectsForPayments();
+            const projectItems = allItems.filter(item => item.projectId === projectId);
+
+            if (projectItems.length === 0) {
+                detailContainer.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #94a3b8;">
+                        <h3>No pricing items found in this project</h3>
+                        <p>Add pricing sections to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            detailContainer.innerHTML = projectItems.map(item => `
+                <div class="integration-card" style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                         <div style="flex: 1;">
                             <h3 style="margin: 0; font-size: 18px; color: #0F172A; font-weight: 600;">${item.name}</h3>
@@ -1316,7 +1394,7 @@ ${result.robotsTxt}
                             ${item.price}
                         </div>
                     </div>
-                    
+
                     <div style="margin-bottom: 16px; font-size: 13px; color: #475569;">
                         <ul style="padding-left: 20px; margin: 0;">
                             ${item.features.slice(0, 2).map(f => `<li>${f}</li>`).join('')}
@@ -1338,7 +1416,7 @@ ${result.robotsTxt}
                     </div>
                 </div>
             `).join('');
-        }, 800);
+        }, 300);
     }
 
     async scanProjectsForPayments() {

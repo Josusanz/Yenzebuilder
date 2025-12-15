@@ -159,29 +159,59 @@
                 <div class="payments-stats"
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                     <div class="stat-card" style="padding: 20px;">
-                        <div style="font-size: 14px; margin-bottom: 8px; color: #666;">Total Products Detected</div>
+                        <div style="font-size: 14px; margin-bottom: 8px; color: #666;">Projects with Pricing</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #0066FF;" id="projectsWithPricingCount">0</div>
+                    </div>
+                    <div class="stat-card" style="padding: 20px;">
+                        <div style="font-size: 14px; margin-bottom: 8px; color: #666;">Total Products</div>
                         <div style="font-size: 24px; font-weight: 700; color: #0066FF;" id="detectedItemsCount">0</div>
                     </div>
                     <div class="stat-card" style="padding: 20px;">
                         <h3 style="font-size: 14px; color: #64748B; margin: 0 0 8px;">Active Links</h3>
                         <div style="font-size: 24px; font-weight: 700; color: #0F172A;" id="activeLinksCount">0</div>
                     </div>
-                    <div style="font-size: 24px; font-weight: 700; color: #0066FF;" id="detectedItemsCount">0</div>
                 </div>
 
-                <div class="detected-payments-container">
-                    <h3 style="font-size: 18px; margin-bottom: 16px;">Detected Pricing Items</h3>
-                    <p style="color: #64748B; font-size: 14px; margin-bottom: 24px;">
-                        We scanned your projects and found these potential products. Turn them into payment links
-                        instantly.
-                    </p>
+                <!-- Projects List View -->
+                <div id="projectsListView" class="detected-payments-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h3 style="font-size: 18px; margin: 0;">Your Projects</h3>
+                            <p style="color: #64748B; font-size: 14px; margin: 4px 0 0 0;">
+                                Select a project to manage its payment links
+                            </p>
+                        </div>
+                    </div>
 
-                    <div id="detectedPaymentsList" class="integrations-grid"
-                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                    <div id="projectsWithPricingList" style="display: grid; gap: 12px;">
                         <div class="loading-container">
                             <div class="loading-spinner"></div>
                             <p>Scanning projects...</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Payment Links Detail View (hidden by default) -->
+                <div id="paymentLinksDetailView" class="detected-payments-container" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <button onclick="dashboardApp.showPaymentProjectsList()" class="btn-secondary" style="padding: 8px 12px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                Back to Projects
+                            </button>
+                            <div>
+                                <h3 style="font-size: 18px; margin: 0;" id="selectedProjectTitle">Project Name</h3>
+                                <p style="color: #64748B; font-size: 14px; margin: 4px 0 0 0;">Manage payment links for this project</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detectedPaymentsList" class="integrations-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                        <!-- Payment links will be loaded here -->
                     </div>
                 </div>
             </section>
