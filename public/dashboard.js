@@ -738,17 +738,24 @@ class DashboardApp {
         }
 
         console.log('Running SEO Audit for Project ID:', this.selectedSeoProject.id);
+        console.log('Selected Project Data:', this.selectedSeoProject);
 
         try {
+            const requestBody = {
+                projectId: this.selectedSeoProject.id
+            };
+            console.log('SEO Audit Request Body:', requestBody);
+
             const response = await fetch('/api/seo-audit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    projectId: this.selectedSeoProject.id
-                })
+                body: JSON.stringify(requestBody)
             });
 
+            console.log('SEO Audit Response Status:', response.status);
+
             const result = await response.json();
+            console.log('SEO Audit Response Data:', result);
 
             if (response.ok && result.success) {
                 const score = result.score;
