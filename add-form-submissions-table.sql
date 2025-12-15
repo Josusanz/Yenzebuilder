@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS form_submissions (
     subject TEXT,
     message TEXT NOT NULL,
     custom_fields JSONB DEFAULT '{}'::jsonb,
-    read BOOLEAN DEFAULT FALSE,
+    "read" BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Index for faster queries
 CREATE INDEX IF NOT EXISTS idx_form_submissions_project_id ON form_submissions(project_id);
-CREATE INDEX IF NOT EXISTS idx_form_submissions_read ON form_submissions(read);
+CREATE INDEX IF NOT EXISTS idx_form_submissions_read ON form_submissions("read");
 CREATE INDEX IF NOT EXISTS idx_form_submissions_created_at ON form_submissions(created_at DESC);
 
 -- Row Level Security (RLS) Policies
