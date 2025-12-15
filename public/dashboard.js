@@ -535,15 +535,32 @@ class DashboardApp {
         }
     }
 
-    runSEOAudit() {
+    async runSEOAudit() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
         const btn = document.querySelector('.seo-main .btn-primary');
         if (btn) {
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Auditing...';
             btn.disabled = true;
+        }
 
-            setTimeout(() => {
-                const score = Math.floor(Math.random() * (98 - 70 + 1) + 70);
-                const color = score > 80 ? '#10b981' : (score > 50 ? '#f59e0b' : '#ef4444');
+        try {
+            const response = await fetch('/api/seo-audit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                const score = result.score;
+                const color = score >= 80 ? '#10b981' : (score >= 50 ? '#f59e0b' : '#ef4444');
 
                 // Update score circle
                 const scoreText = document.querySelector('.seo-main .dashboard-card svg + div');
@@ -558,10 +575,46 @@ class DashboardApp {
                     scoreCircle.setAttribute('stroke-dasharray', `${score}, 100`);
                 }
 
+                // Show detailed results in console
+                console.log('SEO Audit Results:', {
+                    score: result.score,
+                    issues: result.issues,
+                    warnings: result.warnings,
+                    passed: result.passed,
+                    recommendations: result.recommendations,
+                    details: result.details
+                });
+
+                // Build toast message
+                let toastMessage = `Audit complete! Score: ${score}/100`;
+                if (result.issues.length > 0) {
+                    toastMessage += `\n${result.issues.length} critical issue(s) found`;
+                }
+                if (result.warnings.length > 0) {
+                    toastMessage += `\n${result.warnings.length} warning(s)`;
+                }
+
+                const toastType = score >= 80 ? 'success' : (score >= 50 ? 'warning' : 'error');
+                this.showToast(toastMessage, toastType);
+
+                // Log recommendations
+                if (result.recommendations.length > 0) {
+                    console.log('SEO Recommendations:');
+                    result.recommendations.forEach((rec, i) => {
+                        console.log(`${i + 1}. ${rec}`);
+                    });
+                }
+            } else {
+                throw new Error(result.error || 'Failed to run SEO audit');
+            }
+        } catch (error) {
+            console.error('SEO Audit error:', error);
+            this.showToast('Error running SEO audit: ' + error.message, 'error');
+        } finally {
+            if (btn) {
                 btn.textContent = 'Run New Audit';
                 btn.disabled = false;
-                this.showToast(`Audit complete! Score: ${score}/100`, 'success');
-            }, 2000);
+            }
         }
     }
 
@@ -578,15 +631,265 @@ class DashboardApp {
         }, 1200);
     }
 
-    submitToGoogle() {
-        if (!this.selectedSeoProject) return;
+    async submitToGoogle() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
 
-        const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
-        // Since we can't API submit without OAuth2 offline tokens, we guide them to the exact deep link
-        const gscUrl = `https://search.google.com/search-console/sitemaps?resource_id=${encodeURIComponent(domain)}`;
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
 
-        window.open(gscUrl, '_blank');
-        this.showToast('Opening Google Search Console to submit sitemap...', 'info');
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            btn.disabled = true;
+        }
+
+        try {
+            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
+
+            // Call API to submit to Google
+            const response = await fetch('/api/submit-to-google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id,
+                    sitemapUrl: `${domain}/sitemap.xml`
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showToast('Sitemap submitted to Google successfully!', 'success');
+
+                // Also open Google Search Console for manual verification
+                const gscUrl = `https://search.google.com/search-console/sitemaps?resource_id=${encodeURIComponent(domain)}`;
+                setTimeout(() => {
+                    window.open(gscUrl, '_blank');
+                }, 1000);
+            } else {
+                throw new Error(result.error || 'Failed to submit to Google');
+            }
+        } catch (error) {
+            console.error('Submit to Google error:', error);
+            this.showToast('Error submitting to Google: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    async generateSitemap() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
+
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch('/api/generate-sitemap', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Show preview of sitemap
+                const previewHtml = `
+                    <div style="max-height: 400px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+                        <strong>Sitemap Generated!</strong><br>
+                        <strong>Total URLs:</strong> ${result.totalUrls}<br>
+                        <strong>Base URL:</strong> ${result.baseUrl}<br><br>
+                        <pre style="white-space: pre-wrap;">${this.escapeHtml(result.sitemap.substring(0, 500))}...</pre>
+                    </div>
+                `;
+
+                // Show in modal or alert
+                this.showToast('Sitemap generated successfully!', 'success');
+
+                // Download sitemap
+                const blob = new Blob([result.sitemap], { type: 'application/xml' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sitemap.xml';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                this.showToast('Sitemap downloaded!', 'success');
+            } else {
+                throw new Error(result.error || 'Failed to generate sitemap');
+            }
+        } catch (error) {
+            console.error('Generate sitemap error:', error);
+            this.showToast('Error generating sitemap: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    async openRobotsTxt() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
+
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch('/api/generate-robots', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id,
+                    allowCrawling: true
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Show robots.txt content
+                const robotsPreview = `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 13px; white-space: pre-wrap;">
+${result.robotsTxt}
+                    </div>
+                `;
+
+                this.showToast('Robots.txt generated successfully!', 'success');
+
+                // Download robots.txt
+                const blob = new Blob([result.robotsTxt], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'robots.txt';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                this.showToast('Robots.txt downloaded!', 'success');
+            } else {
+                throw new Error(result.error || 'Failed to generate robots.txt');
+            }
+        } catch (error) {
+            console.error('Generate robots.txt error:', error);
+            this.showToast('Error generating robots.txt: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    async checkBrokenLinks() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
+
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch('/api/check-broken-links', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Show results summary
+                const summary = `
+                    <div style="padding: 20px;">
+                        <h3 style="margin-top: 0;">Broken Link Check Results</h3>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                            <div style="background: #10b981; color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: bold;">${result.working}</div>
+                                <div style="font-size: 12px;">Working Links</div>
+                            </div>
+                            <div style="background: #ef4444; color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: bold;">${result.broken}</div>
+                                <div style="font-size: 12px;">Broken Links</div>
+                            </div>
+                            <div style="background: #f59e0b; color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 24px; font-weight: bold;">${result.warnings}</div>
+                                <div style="font-size: 12px;">Warnings</div>
+                            </div>
+                        </div>
+                        <p><strong>Total Links Checked:</strong> ${result.total}</p>
+                        <p><strong>Health Status:</strong> <span style="color: ${result.summary.health === 'healthy' ? '#10b981' : result.summary.health === 'warning' ? '#f59e0b' : '#ef4444'}; font-weight: bold; text-transform: uppercase;">${result.summary.health}</span></p>
+                    </div>
+                `;
+
+                if (result.broken > 0) {
+                    this.showToast(`Found ${result.broken} broken link(s)`, 'error');
+                } else {
+                    this.showToast('All links are working!', 'success');
+                }
+
+                // Log detailed results to console
+                console.log('Broken Link Check Results:', result);
+
+                // Show broken links if any
+                if (result.broken > 0) {
+                    const brokenLinks = result.links.filter(l => l.status === 'broken');
+                    console.error('Broken Links:', brokenLinks);
+                }
+            } else {
+                throw new Error(result.error || 'Failed to check links');
+            }
+        } catch (error) {
+            console.error('Check broken links error:', error);
+            this.showToast('Error checking links: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     async loadPayments() {
