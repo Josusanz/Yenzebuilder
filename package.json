@@ -1,21 +1,50 @@
 {
   "name": "yenzehtml",
-  "version": "1.0.0",
-  "description": "YENZE HTML Builder - Create and deploy HTML sites instantly",
+  "version": "2.0.0",
+  "description": "YENZE HTML Builder 2.0 - Professional visual HTML editor",
+  "author": "YENZE Team",
+  "license": "MIT",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required'",
-    "deploy": "vercel --prod"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:api": "vercel dev",
+    "deploy": "npm run build && vercel --prod",
+    "deploy:staging": "npm run build && vercel",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:mobile": "playwright test --project='Mobile Chrome'",
+    "lint": "eslint public api --ext .js",
+    "lint:fix": "eslint public api --ext .js --fix",
+    "format": "prettier --write \"**/*.{js,json,md,html,css}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md,html,css}\"",
+    "setup": "cp .env.example .env && npm install",
+    "check": "npm run lint && npm run format:check && npm test",
+    "release": "npm run check && npm run build && npm run deploy"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@supabase/supabase-js": "^2.84.0",
+    "@sentry/browser": "^8.0.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "dompurify": "^3.1.0",
     "dotenv": "^17.2.3",
+    "i18next": "^23.15.0",
+    "i18next-browser-languagedetector": "^8.0.0",
     "micro": "^10.0.1",
     "resend": "^6.5.2",
-    "stripe": "^14.25.0"
+    "stripe": "^17.0.0"
   },
   "devDependencies": {
-    "vercel": "^33.0.0"
+    "@playwright/test": "^1.48.0",
+    "@vitejs/plugin-legacy": "^5.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "vite": "^5.4.0",
+    "vercel": "^37.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

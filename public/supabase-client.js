@@ -23,10 +23,13 @@ class SupabaseClient {
         // Create and store the initialization promise
         this.initPromise = (async () => {
             try {
+                // Load secure configuration from API
+                const config = await window.secureConfig.getSupabaseConfig();
+
                 // Initialize Supabase client using CDN
                 this.client = supabase.createClient(
-                    SUPABASE_CONFIG.url,
-                    SUPABASE_CONFIG.anonKey
+                    config.url,
+                    config.anonKey
                 );
 
                 // Check if we have OAuth hash in URL
