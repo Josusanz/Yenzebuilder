@@ -132,76 +132,116 @@
     line-height: 1.1;
 }
 
-/* Logo animations */
+/* Logo animations - Smooth and elegant */
 @keyframes float-layer-1 {
     0%, 100% {
-        transform: translateY(0) translateX(0);
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    25% {
+        transform: translateY(-1.5px) scale(1.02);
+        opacity: 0.95;
     }
     50% {
-        transform: translateY(-2px) translateX(1px);
+        transform: translateY(-3px) scale(1.04);
+        opacity: 0.9;
+    }
+    75% {
+        transform: translateY(-1.5px) scale(1.02);
+        opacity: 0.95;
     }
 }
 
 @keyframes float-layer-2 {
     0%, 100% {
-        transform: translateY(0) translateX(0);
+        transform: translateY(0) scale(1);
+        opacity: 1;
     }
-    50% {
-        transform: translateY(2px) translateX(-1px);
+    33% {
+        transform: translateY(2px) scale(0.98);
+        opacity: 0.95;
+    }
+    66% {
+        transform: translateY(-1px) scale(1.01);
+        opacity: 0.92;
     }
 }
 
 @keyframes float-layer-3 {
     0%, 100% {
-        transform: translateY(0) translateX(0);
+        transform: translateX(0) scale(1);
+        opacity: 1;
     }
-    50% {
-        transform: translateY(1px) translateX(1.5px);
+    40% {
+        transform: translateX(1.5px) scale(1.01);
+        opacity: 0.96;
+    }
+    80% {
+        transform: translateX(-1px) scale(0.99);
+        opacity: 0.94;
     }
 }
 
-@keyframes pulse-glow {
+@keyframes logo-glow {
     0%, 100% {
-        filter: drop-shadow(0 0 2px currentColor);
+        filter: drop-shadow(0 0 1px rgba(0, 102, 255, 0.3));
     }
     50% {
-        filter: drop-shadow(0 0 6px currentColor);
+        filter: drop-shadow(0 0 8px rgba(0, 102, 255, 0.6));
+    }
+}
+
+@keyframes logo-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
 
 .logo-animated {
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
 
 .logo-layer-1 {
-    animation: float-layer-1 3s ease-in-out infinite;
+    animation: float-layer-1 4s ease-in-out infinite;
     transform-origin: center;
+    transition: all 0.3s ease;
 }
 
 .logo-layer-2 {
-    animation: float-layer-2 2.5s ease-in-out infinite;
+    animation: float-layer-2 3.5s ease-in-out infinite 0.3s;
     transform-origin: center;
+    transition: all 0.3s ease;
 }
 
 .logo-layer-3 {
-    animation: float-layer-3 2.8s ease-in-out infinite;
+    animation: float-layer-3 3.8s ease-in-out infinite 0.6s;
     transform-origin: center;
+    transition: all 0.3s ease;
 }
 
+/* Hover effects - More dynamic */
 .group:hover .logo-animated {
-    animation: pulse-glow 1.5s ease-in-out infinite;
+    animation: logo-glow 2s ease-in-out infinite;
+    transform: scale(1.1);
 }
 
 .group:hover .logo-layer-1 {
-    animation: float-layer-1 1.5s ease-in-out infinite;
+    animation: float-layer-1 1.5s ease-in-out infinite, logo-rotate 8s linear infinite;
+    stroke-width: 3;
 }
 
 .group:hover .logo-layer-2 {
-    animation: float-layer-2 1.2s ease-in-out infinite;
+    animation: float-layer-2 1.2s ease-in-out infinite 0.1s;
+    stroke-width: 3;
 }
 
 .group:hover .logo-layer-3 {
-    animation: float-layer-3 1.3s ease-in-out infinite;
+    animation: float-layer-3 1.3s ease-in-out infinite 0.2s;
+    stroke-width: 3;
 }
 </style>
 </head>
