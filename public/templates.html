@@ -1922,8 +1922,15 @@
             }
         }
 
-        // Initial render
-        renderTemplates();
+        // Initial render with error handling
+        try {
+            console.log('Templates loaded:', templates.length);
+            renderTemplates();
+            console.log('Templates rendered successfully');
+        } catch (error) {
+            console.error('Error rendering templates:', error);
+            document.getElementById('templatesGrid').innerHTML = '<p style="color: red; padding: 40px; text-align: center;">Error loading templates. Please refresh the page.</p>';
+        }
     </script>
 </body>
 </html>
