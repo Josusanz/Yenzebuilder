@@ -18,7 +18,6 @@
                         primary: "#0066FF",
                         "primary-dark": "#0052cc",
                         "background-light": "#FFFFFF",
-                        "background-dark": "#FFFFFF",
                         "surface-dark": "rgba(255, 255, 255, 0.7)",
                         "surface-light": "rgba(240, 240, 240, 0.7)",
                         "text-dark": "#1A202C",
@@ -41,7 +40,6 @@
                     },
                     boxShadow: {
                         "glass-light": "0 4px 20px 0 rgba(0, 0, 0, 0.05)",
-                        "glass-dark": "0 4px 20px 0 rgba(0, 0, 0, 0.05)",
                     },
                 }
             }
@@ -83,20 +81,10 @@
 #parallax-layer-1 {
     background-image: var(--tw-bg-abstract-gradient);
     background-size: 200% 200%;
-    animation: none;
 }
 #parallax-layer-2 {
     background-image: var(--tw-bg-hero-pattern);
     opacity: 0.8;
-    transform: scale(1);
-}
-#parallax-layer-3 {
-    background-image: none;
-    background-color: #f8f8f8;
-    opacity: 1;
-    filter: none;
-    transform: scale(1);
-    animation: none;
 }
 .progress-indicator-container {
     position: fixed;
@@ -136,11 +124,11 @@
     opacity: 0.3;
 }
 .h1-immersive {
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(2.5rem, 8vw, 5rem);
     line-height: 1.1;
 }
 .h2-immersive {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: clamp(2rem, 6vw, 3.5rem);
     line-height: 1.1;
 }
 </style>
@@ -148,10 +136,9 @@
 <body class="bg-background-light text-text-dark font-display overflow-x-hidden selection:bg-primary selection:text-white relative min-h-screen">
 <div class="parallax-bg fixed inset-0" id="parallax-layer-1"></div>
 <div class="parallax-bg fixed inset-0" id="parallax-layer-2"></div>
-<div class="parallax-bg fixed inset-0" id="parallax-layer-3"></div>
 <div class="relative flex min-h-screen w-full flex-col">
 <div class="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center w-full">
-<nav class="flex items-center justify-between w-full max-w-[960px] glass-panel rounded-full px-6 py-3 shadow-glass-light">
+<nav class="flex items-center justify-between w-full max-w-[1100px] glass-panel rounded-full px-6 py-3 shadow-glass-light">
 <a class="flex items-center gap-2 text-text-dark hover:opacity-80 transition-opacity" href="/">
 <div class="size-6 text-primary">
 <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -160,24 +147,33 @@
 </div>
 <span class="text-lg font-bold tracking-tight">YENZE</span>
 </a>
-<div class="flex items-center gap-3">
-<a class="hidden sm:block text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="#features">Features</a>
+<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="/prompt-generator.html">AI Prompt Generator</a>
+<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="#pricing">Pricing</a>
+<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
 <a href="/start.html" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all transform hover:scale-105 shadow-md">
     Get Started
 </a>
 </div>
+<div class="flex md:hidden items-center gap-3">
+<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
+<a href="/start.html" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-4 py-2 rounded-full transition-all shadow-md">
+    Start
+</a>
+</div>
 </nav>
 </div>
-<div class="progress-indicator-container hidden md:flex">
+<div class="progress-indicator-container hidden lg:flex">
 <a class="progress-dot active" data-section="hero" href="#hero"></a>
-<a class="progress-dot" data-section="features" href="#features"></a>
 <a class="progress-dot" data-section="how-to-start" href="#how-to-start"></a>
+<a class="progress-dot" data-section="features" href="#features"></a>
 <a class="progress-dot" data-section="pricing" href="#pricing"></a>
 <a class="progress-dot" data-section="cta" href="#cta"></a>
 </div>
 <div class="flex flex-col flex-1 pt-32 pb-10 px-4 md:px-10 lg:px-20 max-w-7xl mx-auto w-full relative z-10">
-<section class="flex flex-col items-center justify-center py-12 md:py-24 relative min-h-[calc(100vh-10rem)]" id="hero">
-<div class="relative z-10 flex flex-col items-center text-center max-w-4xl gap-8 mb-16">
+<section class="flex flex-col items-center justify-center py-12 md:py-20 relative" id="hero">
+<div class="relative z-10 flex flex-col items-center text-center max-w-4xl gap-6 mb-12">
 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-xs font-medium text-primary shadow-glass-light">
 <span class="relative flex h-2 w-2">
 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -189,287 +185,276 @@
                         Build Stunning Websites.<br/>
 <span class="text-primary">No Code Required.</span>
 </h1>
-<p class="text-xl text-text-light max-w-2xl leading-relaxed">
+<p class="text-lg md:text-xl text-text-light max-w-2xl leading-relaxed">
                         YENZE empowers creators to launch professional websites in minutes with our visual drag-and-drop editor. Design, publish, and scale without writing a single line of code.
                     </p>
-<div class="flex flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
-<a href="/start.html" class="h-14 px-10 rounded-full bg-primary text-white text-base font-bold tracking-wide hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center justify-center">
-                            Start Building Free
-                        </a>
-<a href="#how-to-start" class="h-14 px-10 rounded-full glass-panel text-text-dark text-base font-bold hover:bg-surface-light transition-all flex items-center justify-center gap-2 shadow-glass-light">
-<span class="material-symbols-outlined text-[24px]">play_circle</span>
-                            How It Works
-                        </a>
 </div>
+</section>
+
+<section class="py-8 md:py-12" id="how-to-start">
+<div class="text-center mb-12">
+<h2 class="text-3xl md:text-4xl font-extrabold text-text-dark mb-4">Choose How to Start</h2>
+<p class="text-text-light text-base md:text-lg">Three easy ways to create your perfect website</p>
 </div>
-<div class="relative z-10 w-full max-w-6xl aspect-[16/9] bg-surface-light rounded-xl border border-border-light overflow-hidden shadow-glass-light group glass-panel p-4">
-<div class="absolute inset-0 bg-gradient-to-t from-background-light/80 to-transparent z-10 pointer-events-none"></div>
-<div class="w-full h-full bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center text-6xl font-bold text-primary/40">
-                    YENZE Builder Preview
-                </div>
-<div class="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-end opacity-0 md:opacity-100 transition-opacity">
-<div class="glass-panel p-4 rounded-lg flex items-center gap-3 shadow-glass-light">
-<div class="bg-primary/10 p-2 rounded-full text-primary">
-<span class="material-symbols-outlined">auto_awesome</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center hover:border-primary/50 transition-all hover:shadow-xl group">
+<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" y1="13" x2="8" y2="13"></line>
+<line x1="16" y1="17" x2="8" y2="17"></line>
+</svg>
 </div>
-<div>
-<div class="text-xs text-text-light">Visual Editor</div>
-<div class="text-sm font-semibold text-text-dark">Drag & Drop Interface</div>
+<h3 class="text-xl font-bold text-text-dark mb-3">Import HTML</h3>
+<p class="text-text-light text-sm mb-6 flex-1">Already have code? Upload or paste your HTML to start editing visually.</p>
+<a href="https://builder.yenze.io" class="w-full py-3 px-6 rounded-full border-2 border-border-light text-text-dark font-bold hover:border-primary hover:text-primary transition-all text-sm">
+                        Import Code →
+                    </a>
 </div>
+
+<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center border-2 border-primary hover:shadow-2xl transition-all group relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</div>
+<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+</svg>
 </div>
+<h3 class="text-xl font-bold text-text-dark mb-3">AI Prompt Generator</h3>
+<p class="text-text-light text-sm mb-6 flex-1">Generate perfect prompts for Gemini AI to create your website code instantly.</p>
+<a href="/prompt-generator.html" class="w-full py-3 px-6 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition-all text-sm shadow-lg">
+                        Try AI Generator →
+                    </a>
+</div>
+
+<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center hover:border-primary/50 transition-all hover:shadow-xl group">
+<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="3" width="7" height="7"></rect>
+<rect x="14" y="3" width="7" height="7"></rect>
+<rect x="14" y="14" width="7" height="7"></rect>
+<rect x="3" y="14" width="7" height="7"></rect>
+</svg>
+</div>
+<h3 class="text-xl font-bold text-text-dark mb-3">Choose a Template</h3>
+<p class="text-text-light text-sm mb-6 flex-1">Start with professionally designed templates. Free and premium options available.</p>
+<a href="https://builder.yenze.io/templates.html" class="w-full py-3 px-6 rounded-full border-2 border-border-light text-text-dark font-bold hover:border-primary hover:text-primary transition-all text-sm">
+                        Browse Templates →
+                    </a>
 </div>
 </div>
 </section>
 
-<section class="py-12 border-y border-border-subtle mt-20" id="social-proof">
-<p class="text-text-light text-base font-medium text-center mb-8">Trusted by thousands of creators worldwide</p>
-<div class="flex flex-wrap justify-center gap-10 md:gap-20 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
-<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">storefront</span> E-commerce</div>
-<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">restaurant</span> Restaurants</div>
-<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">person</span> Portfolios</div>
-<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">business</span> Businesses</div>
-<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">article</span> Blogs</div>
+<section class="py-12 border-y border-border-subtle mt-16" id="social-proof">
+<p class="text-text-light text-sm md:text-base font-medium text-center mb-8">Trusted by thousands of creators worldwide</p>
+<div class="flex flex-wrap justify-center gap-6 md:gap-16 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">storefront</span> E-commerce</div>
+<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">restaurant</span> Restaurants</div>
+<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">person</span> Portfolios</div>
+<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">business</span> Businesses</div>
+<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">article</span> Blogs</div>
 </div>
 </section>
 
-<section class="py-24 md:py-36" id="features">
+<section class="py-20 md:py-32" id="features">
 <div class="flex flex-col gap-6 mb-16 text-center">
 <h2 class="h2-immersive font-extrabold text-text-dark tracking-tight drop-shadow-sm">Powerful Features</h2>
-<p class="text-text-light text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create, publish, and grow your online presence.</p>
+<p class="text-text-light text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create, publish, and grow your online presence.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="md:col-span-2 glass-panel rounded-xl p-8 lg:p-12 flex flex-col justify-between group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+<div class="md:col-span-2 glass-panel rounded-xl p-6 md:p-10 flex flex-col justify-between group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
 <div class="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
 <div class="relative z-10">
-<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
 <span class="material-symbols-outlined text-3xl">drag_pan</span>
 </div>
-<h3 class="text-3xl font-bold text-text-dark mb-3">Visual Drag & Drop Builder</h3>
-<p class="text-text-light max-w-md text-lg">Intuitive interface that lets you design visually. Move elements freely, resize with handles, and see changes instantly in real-time.</p>
+<h3 class="text-2xl md:text-3xl font-bold text-text-dark mb-3">Visual Drag & Drop Builder</h3>
+<p class="text-text-light text-base md:text-lg">Intuitive interface that lets you design visually. Move elements freely, resize with handles, and see changes instantly in real-time.</p>
 </div>
-<div class="mt-12 relative h-64 rounded-xl bg-white border border-border-subtle overflow-hidden">
+<div class="mt-8 relative h-48 rounded-xl bg-white border border-border-subtle overflow-hidden">
 <div class="absolute inset-0 flex items-center justify-center">
-<div class="w-48 h-32 bg-primary/10 border-4 border-primary/40 border-dashed rounded-lg flex items-center justify-center text-primary text-base font-bold animate-pulse">
+<div class="w-40 h-24 bg-primary/10 border-4 border-primary/40 border-dashed rounded-lg flex items-center justify-center text-primary text-sm font-bold animate-pulse">
                                     Drag Elements Here
                                 </div>
 </div>
 </div>
 </div>
-<div class="glass-panel rounded-xl p-8 lg:p-12 flex flex-col group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
-<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<div class="glass-panel rounded-xl p-6 md:p-10 flex flex-col group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
 <span class="material-symbols-outlined text-3xl">devices</span>
 </div>
-<h3 class="text-3xl font-bold text-text-dark mb-3">Fully Responsive</h3>
-<p class="text-text-light mb-8 text-lg">Your site automatically looks perfect on every device - desktop, tablet, and mobile.</p>
-<div class="flex-1 rounded-xl bg-gradient-to-br from-white to-transparent border border-border-subtle p-6 flex flex-col gap-3">
-<div class="h-3 w-1/2 bg-gray-100 rounded"></div>
-<div class="h-3 w-3/4 bg-gray-100 rounded"></div>
-<div class="h-36 w-full bg-gray-50 rounded mt-4"></div>
-<div class="flex gap-3 mt-auto">
-<div class="h-10 w-10 rounded-full bg-primary/10"></div>
-<div class="flex-1 h-10 rounded bg-gray-50"></div>
+<h3 class="text-2xl md:text-3xl font-bold text-text-dark mb-3">Fully Responsive</h3>
+<p class="text-text-light text-base mb-6">Your site automatically looks perfect on every device - desktop, tablet, and mobile.</p>
+<div class="flex-1 rounded-xl bg-gradient-to-br from-white to-transparent border border-border-subtle p-4 flex flex-col gap-2">
+<div class="h-2 w-1/2 bg-gray-100 rounded"></div>
+<div class="h-2 w-3/4 bg-gray-100 rounded"></div>
+<div class="h-24 w-full bg-gray-50 rounded mt-3"></div>
+<div class="flex gap-2 mt-auto">
+<div class="h-8 w-8 rounded-full bg-primary/10"></div>
+<div class="flex-1 h-8 rounded bg-gray-50"></div>
 </div>
 </div>
 </div>
-<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
-<span class="material-symbols-outlined text-3xl">link</span>
+<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-2xl">link</span>
 </div>
-<h3 class="text-2xl font-bold text-text-dark mb-2">Custom Domains</h3>
-<p class="text-text-light text-base">Connect your own domain or use a free yenze.io subdomain. SSL certificates included automatically.</p>
+<h3 class="text-xl font-bold text-text-dark mb-2">Custom Domains</h3>
+<p class="text-text-light text-sm">Connect your own domain or use a free yenze.io subdomain. SSL certificates included automatically.</p>
 </div>
-<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
-<span class="material-symbols-outlined text-3xl">mail</span>
+<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-2xl">mail</span>
 </div>
-<h3 class="text-2xl font-bold text-text-dark mb-2">Form Builder</h3>
-<p class="text-text-light text-base">Create contact forms, surveys, and newsletter signups. Submissions delivered straight to your email.</p>
+<h3 class="text-xl font-bold text-text-dark mb-2">Form Builder</h3>
+<p class="text-text-light text-sm">Create contact forms, surveys, and newsletter signups. Submissions delivered straight to your email.</p>
 </div>
-<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
-<span class="material-symbols-outlined text-3xl">analytics</span>
+<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-2xl">analytics</span>
 </div>
-<h3 class="text-2xl font-bold text-text-dark mb-2">Built-in Analytics</h3>
-<p class="text-text-light text-base">Track visitors and understand your audience with privacy-first analytics integrated into your dashboard.</p>
-</div>
-</div>
-</section>
-
-<section class="py-24 md:py-36" id="how-to-start">
-<div class="flex flex-col gap-6 mb-16 text-center">
-<h2 class="h2-immersive font-extrabold text-text-dark tracking-tight drop-shadow-sm">How to Get Started</h2>
-<p class="text-text-light text-xl max-w-3xl mx-auto leading-relaxed">Launch your website in three simple steps.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-<div class="flex flex-col items-center text-center">
-<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
-<span class="text-4xl font-bold">1</span>
-<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-sm">check</span>
-</div>
-</div>
-<h3 class="text-2xl font-bold text-text-dark mb-3">Sign Up Free</h3>
-<p class="text-text-light text-base">Create your account in seconds. No credit card required to get started with 3 free projects.</p>
-</div>
-<div class="flex flex-col items-center text-center">
-<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
-<span class="text-4xl font-bold">2</span>
-<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-sm">brush</span>
-</div>
-</div>
-<h3 class="text-2xl font-bold text-text-dark mb-3">Design Your Site</h3>
-<p class="text-text-light text-base">Choose a template, import HTML, or use AI to generate. Then customize with our visual builder.</p>
-</div>
-<div class="flex flex-col items-center text-center">
-<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
-<span class="text-4xl font-bold">3</span>
-<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-sm">rocket_launch</span>
-</div>
-</div>
-<h3 class="text-2xl font-bold text-text-dark mb-3">Publish & Share</h3>
-<p class="text-text-light text-base">Hit publish and your site goes live instantly on our global CDN. Share it with the world!</p>
+<h3 class="text-xl font-bold text-text-dark mb-2">Built-in Analytics</h3>
+<p class="text-text-light text-sm">Track visitors and understand your audience with privacy-first analytics integrated into your dashboard.</p>
 </div>
 </div>
 </section>
 
-<section class="py-24 md:py-36 flex flex-col items-center" id="pricing">
+<section class="py-20 md:py-32 flex flex-col items-center" id="pricing">
 <div class="text-center mb-16">
-<h2 class="h2-immersive font-extrabold text-text-dark mb-6 drop-shadow-sm">Simple, Transparent Pricing</h2>
-<p class="text-text-light text-xl">Start free. Scale as you grow. No hidden fees.</p>
+<h2 class="h2-immersive font-extrabold text-text-dark mb-4 drop-shadow-sm">Simple, Transparent Pricing</h2>
+<p class="text-text-light text-lg md:text-xl">Start free. Scale as you grow. No hidden fees.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-8 w-full max-w-6xl">
-<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
-<h3 class="text-2xl font-bold text-text-dark mb-3">Free</h3>
-<div class="text-5xl font-extrabold text-text-dark mb-6">$0<span class="text-lg font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-base mb-10 flex-1">Perfect for hobby projects and trying out YENZE.</p>
-<div class="flex flex-col gap-4 mb-10">
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
+<h3 class="text-xl font-bold text-text-dark mb-3">Free</h3>
+<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$0<span class="text-base font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-sm mb-8 flex-1">Perfect for hobby projects</p>
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 3 Websites
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 /s/slug URLs
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 1K visitors/mo
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 10MB storage
                             </div>
 </div>
-<a href="/start.html" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg text-center">Start Free</a>
+<a href="/start.html" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm text-center">Start Free</a>
 </div>
-<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col relative border-2 border-primary shadow-[0_0_40px_rgba(0,102,255,0.15)] transform md:-translate-y-8">
-<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">Most Popular</div>
-<h3 class="text-2xl font-bold text-text-dark mb-3 mt-4">Starter</h3>
-<div class="text-5xl font-extrabold text-text-dark mb-6">$3<span class="text-lg font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-base mb-10 flex-1">For personal sites and small projects.</p>
-<div class="flex flex-col gap-4 mb-10">
-<div class="flex items-center gap-3 text-text-dark">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col relative border-2 border-primary shadow-[0_0_30px_rgba(0,102,255,0.15)] sm:-translate-y-4">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</div>
+<h3 class="text-xl font-bold text-text-dark mb-3 mt-2">Starter</h3>
+<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$3<span class="text-base font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-sm mb-8 flex-1">For personal sites</p>
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 5 Websites
                             </div>
-<div class="flex items-center gap-3 text-text-dark">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Free Subdomain
                             </div>
-<div class="flex items-center gap-3 text-text-dark">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 1 Custom Domain
                             </div>
-<div class="flex items-center gap-3 text-text-dark">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 5K visitors/mo
                             </div>
-<div class="flex items-center gap-3 text-text-dark">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Remove Branding
                             </div>
 </div>
-<button onclick="handlePricingClick('starter')" class="w-full py-4 rounded-full bg-primary text-white font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/25 text-lg cursor-pointer">Get Started</button>
+<button onclick="handlePricingClick('starter')" class="w-full py-3 rounded-full bg-primary text-white font-bold hover:brightness-110 transition-all shadow-lg text-sm cursor-pointer">Get Started</button>
 </div>
-<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
-<h3 class="text-2xl font-bold text-text-dark mb-3">Pro</h3>
-<div class="text-5xl font-extrabold text-text-dark mb-6">$7<span class="text-lg font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-base mb-10 flex-1">For professionals and content creators.</p>
-<div class="flex flex-col gap-4 mb-10">
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
+<h3 class="text-xl font-bold text-text-dark mb-3">Pro</h3>
+<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$7<span class="text-base font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-sm mb-8 flex-1">For professionals</p>
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 10 Websites
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Unlimited Domains
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 25K visitors/mo
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Advanced Analytics
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Code Export
                             </div>
 </div>
-<button onclick="handlePricingClick('pro')" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg cursor-pointer">Go Pro</button>
+<button onclick="handlePricingClick('pro')" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm cursor-pointer">Go Pro</button>
 </div>
-<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
-<h3 class="text-2xl font-bold text-text-dark mb-3">Business</h3>
-<div class="text-5xl font-extrabold text-text-dark mb-6">$15<span class="text-lg font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-base mb-10 flex-1">For agencies and teams managing clients.</p>
-<div class="flex flex-col gap-4 mb-10">
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
+<h3 class="text-xl font-bold text-text-dark mb-3">Business</h3>
+<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$15<span class="text-base font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-sm mb-8 flex-1">For agencies</p>
+<div class="flex flex-col gap-3 mb-8">
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Unlimited Sites
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Unlimited Domains
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 100K visitors/mo
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 White-label
                             </div>
-<div class="flex items-center gap-3 text-base text-text-light">
-<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+<div class="flex items-center gap-2 text-sm text-text-light">
+<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
                                 Priority Support
                             </div>
 </div>
-<button onclick="handlePricingClick('business')" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg cursor-pointer">Scale Up</button>
+<button onclick="handlePricingClick('business')" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm cursor-pointer">Scale Up</button>
 </div>
 </div>
 </section>
 
-<footer class="mt-20 border-t border-border-subtle pt-20 pb-10" id="cta">
-<div class="flex flex-col items-center text-center gap-8 mb-20">
+<footer class="mt-20 border-t border-border-subtle pt-16 pb-10" id="cta">
+<div class="flex flex-col items-center text-center gap-6 mb-16">
 <h2 class="h2-immersive font-extrabold text-text-dark drop-shadow-sm">Ready to launch?</h2>
-<p class="text-xl text-text-light">Join thousands of creators building with YENZE today.</p>
-<a href="/start.html" class="h-16 px-12 rounded-full bg-primary text-white text-xl font-bold hover:bg-primary-dark transition-colors mt-6 shadow-xl shadow-primary/30 flex items-center justify-center">
+<p class="text-lg md:text-xl text-text-light">Join thousands of creators building with YENZE today.</p>
+<a href="/start.html" class="h-14 px-10 rounded-full bg-primary text-white text-lg font-bold hover:bg-primary-dark transition-colors mt-4 shadow-xl shadow-primary/30 flex items-center justify-center">
                         Get Started for Free
                     </a>
 </div>
-<div class="flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-text-light">
-<div class="flex items-center gap-3 text-base">
-<div class="size-6 text-text-light">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-text-light">
+<div class="flex items-center gap-2 text-sm">
+<div class="size-5 text-text-light">
 <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
 <path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
 </svg>
 </div>
 <span>© 2025 YENZE. Made with love for creators.</span>
 </div>
-<div class="flex gap-8 text-base">
+<div class="flex gap-6 text-sm">
 <a class="hover:text-text-dark transition-colors" href="#">Privacy</a>
 <a class="hover:text-text-dark transition-colors" href="#">Terms</a>
 <a class="hover:text-text-dark transition-colors" href="https://twitter.com/yenze">Twitter</a>
@@ -526,7 +511,6 @@
         // Handle pricing button clicks
         async function handlePricingClick(plan) {
             try {
-                // Payment links from your existing config
                 const paymentLinks = {
                     starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
                     pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
@@ -541,12 +525,10 @@
                     return;
                 }
 
-                // Check if user is authenticated
                 if (typeof supabaseClient !== 'undefined') {
                     const { data: { session } } = await supabaseClient.client.auth.getSession();
 
                     if (session && session.user) {
-                        // User is authenticated - redirect with prefilled email
                         const email = session.user.email;
                         const userId = session.user.id;
                         window.location.href = `${paymentLink}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${userId}`;
@@ -554,12 +536,10 @@
                     }
                 }
 
-                // User not authenticated - redirect to payment link
                 window.location.href = paymentLink;
 
             } catch (error) {
                 console.error('Error handling pricing click:', error);
-                // Fallback to payment link
                 const paymentLinks = {
                     starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
                     pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
