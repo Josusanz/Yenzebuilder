@@ -131,6 +131,78 @@
     font-size: clamp(2rem, 6vw, 3.5rem);
     line-height: 1.1;
 }
+
+/* Logo animations */
+@keyframes float-layer-1 {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    50% {
+        transform: translateY(-2px) translateX(1px);
+    }
+}
+
+@keyframes float-layer-2 {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    50% {
+        transform: translateY(2px) translateX(-1px);
+    }
+}
+
+@keyframes float-layer-3 {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    50% {
+        transform: translateY(1px) translateX(1.5px);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 2px currentColor);
+    }
+    50% {
+        filter: drop-shadow(0 0 6px currentColor);
+    }
+}
+
+.logo-animated {
+    transition: all 0.3s ease;
+}
+
+.logo-layer-1 {
+    animation: float-layer-1 3s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.logo-layer-2 {
+    animation: float-layer-2 2.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.logo-layer-3 {
+    animation: float-layer-3 2.8s ease-in-out infinite;
+    transform-origin: center;
+}
+
+.group:hover .logo-animated {
+    animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.group:hover .logo-layer-1 {
+    animation: float-layer-1 1.5s ease-in-out infinite;
+}
+
+.group:hover .logo-layer-2 {
+    animation: float-layer-2 1.2s ease-in-out infinite;
+}
+
+.group:hover .logo-layer-3 {
+    animation: float-layer-3 1.3s ease-in-out infinite;
+}
 </style>
 </head>
 <body class="bg-background-light text-text-dark font-display overflow-x-hidden selection:bg-primary selection:text-white relative min-h-screen">
@@ -139,10 +211,12 @@
 <div class="relative flex min-h-screen w-full flex-col">
 <div class="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center w-full">
 <nav class="flex items-center justify-between w-full max-w-[1100px] glass-panel rounded-full px-6 py-3 shadow-glass-light">
-<a class="flex items-center gap-2 text-text-dark hover:opacity-80 transition-opacity" href="/">
-<div class="size-6 text-primary">
-<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+<a class="flex items-center gap-2 text-text-dark hover:opacity-80 transition-opacity group" href="/">
+<div class="size-7 text-primary relative">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-animated">
+<polygon points="12 2 2 7 12 12 22 7 12 2" class="logo-layer-1"></polygon>
+<polyline points="2 17 12 22 22 17" class="logo-layer-2"></polyline>
+<polyline points="2 12 12 17 22 12" class="logo-layer-3"></polyline>
 </svg>
 </div>
 <span class="text-lg font-bold tracking-tight">YENZE</span>
