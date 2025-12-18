@@ -1,1041 +1,573 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YENZE - Build stunning websites without code</title>
-    <meta name="description" content="Create, design, and publish beautiful websites in minutes. No coding required.">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <script>
-        // Subdomain Router for Builder
-        // If user visits builder.yenze.io (root), redirect to the actual builder app
-        if (window.location.hostname === 'builder.yenze.io' && window.location.pathname === '/') {
-            window.location.replace('/builder.html' + window.location.search + window.location.hash);
-        }
-
-        // Auth Redirect Handler (Fix for Safari/Mobile OAuth callback)
-        // If we land on root with an access_token, it means we just logged in.
-        // Redirect to dashboard immediately to consume the token.
-        if (window.location.hash && window.location.hash.includes('access_token')) {
-            window.location.replace('/dashboard.html' + window.location.hash);
-        }
-    </script>
-
-    <style>
-        :root {
-            --primary: #0066FF;
-            --primary-dark: #0052cc;
-            --primary-light: #E5F0FF;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --bg-light: #FAFAFA;
-            --surface: #FFFFFF;
-            --border: #E2E8F0;
-            --gradient-hero: radial-gradient(circle at 50% 0%, rgba(0, 102, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            color: var(--text-main);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-
-        /* --- Utility Animations --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Navigation --- */
-        .nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-main);
-            text-decoration: none;
-            letter-spacing: -1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 32px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover {
-            color: var(--text-main);
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background: var(--text-main);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-primary:hover {
-            background: #000;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--text-muted);
-            background: var(--bg-light);
-        }
-
-        .mobile-toggle {
-            display: none;
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            padding: 160px 24px 100px;
-            text-align: center;
-            background: var(--gradient-hero);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 100px;
-            margin-bottom: 32px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-        }
-
-        .hero-badge span {
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .hero h1 {
-            font-size: 72px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.03em;
-            color: var(--text-main);
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            line-height: 1.6;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 80px;
-        }
-
-        .hero-cta .btn {
-            padding: 14px 32px;
-            font-size: 16px;
-            border-radius: 12px;
-        }
-
-        /* Start Options CSS */
-        .hero-demo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .start-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            margin-top: 24px;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .option-card {
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .option-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 102, 255, 0.12);
-        }
-
-        .featured-option {
-            border-color: var(--primary);
-            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.08);
-        }
-
-        .popular-badge {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 100px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .option-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .option-icon svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .option-card h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 6px;
-        }
-
-        .option-card p {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-            margin-bottom: 12px;
-            flex-grow: 1;
-        }
-
-        .option-btn {
-            margin-top: auto;
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-
-        /* --- Stats --- */
-        .stats {
-            padding: 40px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo-cloud {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            opacity: 0.5;
-            filter: grayscale(100%);
-        }
-
-        .logo-item {
-            font-weight: 700;
-            font-size: 20px;
-            color: #94a3b8;
-        }
-
-        /* --- Features --- */
-        .features {
-            padding: 140px 24px;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 80px;
-        }
-
-        .section-header h2 {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            letter-spacing: -0.02em;
-        }
-
-        .section-header p {
-            font-size: 18px;
-            color: var(--text-muted);
-        }
-
-        .features-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-        }
-
-        .feature-card {
-            padding: 32px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .feature-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 12px 32px rgba(0, 102, 255, 0.1);
-            transform: translateY(-4px);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--primary-light);
-            color: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-        }
-
-        .feature-icon svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .feature-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        /* --- Pricing --- */
-        .pricing {
-            padding: 120px 24px;
-            background: var(--bg-light);
-            position: relative;
-        }
-
-        /* Mesh background decoration */
-        .pricing::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--border), transparent);
-        }
-
-        .pricing-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            align-items: start;
-        }
-
-        .price-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .price-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .price-card.featured {
-            border: 2px solid var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.1);
-            z-index: 10;
-        }
-
-        .featured-badge {
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .price-card h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .price {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -1px;
-            color: var(--text-main);
-        }
-
-        .price span {
-            font-size: 16px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .price-features {
-            list-style: none;
-            margin: 32px 0;
-        }
-
-        .price-features li {
-            padding: 8px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .check-icon {
-            color: var(--primary);
-            width: 16px;
-            height: 16px;
-        }
-
-        /* --- CTA --- */
-        .cta-section {
-            padding: 100px 24px;
-            background: #0F172A;
-            color: white;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Glow effect */
-        .cta-section::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 1;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .cta-content h2 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
-        }
-
-        .cta-content p {
-            font-size: 18px;
-            color: #94a3b8;
-            margin-bottom: 40px;
-        }
-
-        .cta-content .btn {
-            background: var(--primary);
-            color: white;
-            padding: 16px 48px;
-            font-size: 18px;
-            border-radius: 100px;
-        }
-
-        .cta-content .btn:hover {
-            background: #2563eb;
-            box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
-        }
-
-        /* --- Footer --- */
-        footer {
-            background: white;
-            padding: 60px 24px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-
-        footer p {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 56px;
-            }
-
-            .pricing-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 30px;
-            }
-
-            .start-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 24px;
-                border-bottom: 1px solid var(--border);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-            }
-
-            .nav-menu.active {
-                display: flex;
-            }
-
-            .mobile-toggle {
-                display: block;
-            }
-
-            .hero h1 {
-                font-size: 40px;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .start-options {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <nav class="nav">
-        <div class="nav-content">
-            <a href="/" class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                    <polyline points="2 17 12 22 22 17"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
-                YENZE
-            </a>
-            <button class="mobile-toggle" aria-label="Toggle Menu">☰</button>
-            <div class="nav-menu">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="/prompt-generator.html" class="nav-link">Prompt Generator</a>
-                <a href="#pricing" class="nav-link">Pricing</a>
-                <a href="https://builder.yenze.io/login.html" class="nav-link">Sign In</a>
-                <a href="/start.html" class="btn btn-primary">Start Building</a>
-            </div>
-        </div>
-    </nav>
-
-    <section class="hero">
-        <div class="reveal">
-            <div class="hero-badge">
-                <span>New</span> Template Marketplace v2.0 is live
-            </div>
-
-            <h1>Build websites faster than you can imagine</h1>
-
-            <p class="hero-subtitle">
-                The modern website builder for creators who value design and speed.
-                No coding required. Just pure creativity.
-            </p>
-
-            <div class="hero-cta">
-                <a href="/start.html" class="btn btn-primary">Start for free</a>
-                <a href="#demo" class="btn btn-secondary">View demo</a>
-            </div>
-        </div>
-
-        <div class="hero-demo-container reveal">
-            <h2
-                style="text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 32px; color: var(--text-main);">
-                Choose how to start</h2>
-
-            <div class="start-options" style="grid-template-columns: repeat(3, 1fr);">
-                <!-- Option 1: Import HTML -->
-                <div class="option-card">
-                    <div class="option-icon" style="background: #E5F0FF; color: #0066FF;">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                    </div>
-                    <h3>Import HTML</h3>
-                    <p>Already have code? Upload or paste your HTML to start editing.</p>
-                    <a href="https://builder.yenze.io" class="btn btn-secondary option-btn"
-                        style="width: 100%; text-decoration: none; display: block; text-align: center;">
-                        Import Code →
-                    </a>
-                </div>
-
-                <!-- Option 2: AI Prompt Generator -->
-                <div class="option-card featured-option">
-                    <div class="popular-badge">POPULAR</div>
-                    <div class="option-icon" style="background: #E5F0FF; color: #0066FF;">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path
-                                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3>AI Prompt Generator</h3>
-                    <p>Generate perfect prompts for Gemini AI to create your website code.</p>
-                    <button class="btn btn-primary option-btn" id="use-html-btn" style="width: 100%;">
-                        Try AI Generator →
-                    </button>
-                </div>
-
-                <!-- Option 3: Choose Template -->
-                <div class="option-card">
-                    <div class="option-icon" style="background: #E5F0FF; color: #0066FF;">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                    </div>
-                    <h3>Choose a Template</h3>
-                    <p>Start with professionally designed templates. Free and premium options.</p>
-                    <button class="btn btn-secondary option-btn" id="templates-btn" style="width: 100%;">
-                        Browse Templates →
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="stats">
-        <div class="logo-cloud">
-            <span class="logo-item">ACME Corp</span>
-            <span class="logo-item">StarkInd</span>
-            <span class="logo-item">Wayne Ent</span>
-            <span class="logo-item">Cyberdyne</span>
-            <span class="logo-item">Massive</span>
-        </div>
-    </section>
-
-    <section id="features" class="features">
-        <div class="section-header reveal">
-            <h2>Everything you need to scale</h2>
-            <p>Powerful features packed into a simple interface.</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                        <path d="M2 2l7.586 7.586"></path>
-                        <circle cx="11" cy="11" r="2"></circle>
-                    </svg>
-                </div>
-                <h3>Visual Editor</h3>
-                <p>Drag, drop, and customize. Our editor feels like a design tool, but writes clean HTML/CSS code for
-                    you.</p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                    </svg>
-                </div>
-                <h3>Global CDN</h3>
-                <p>Deployed instantly to the edge. Your sites load in milliseconds regardless of where your visitors are
-                    located.</p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                    </svg>
-                </div>
-                <h3>Responsive Native</h3>
-                <p>Breakpoints are handled automatically. Design for desktop and we ensure it looks perfect on mobile.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                    </svg>
-                </div>
-                <h3>Custom Domains</h3>
-                <p>Connect any domain you own in seconds with automatic SSL provisioning and renewal.</p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="20" x2="18" y2="10"></line>
-                        <line x1="12" y1="20" x2="12" y2="4"></line>
-                        <line x1="6" y1="20" x2="6" y2="14"></line>
-                    </svg>
-                </div>
-                <h3>Analytics</h3>
-                <p>Privacy-focused analytics built right in. Track page views, visitors, and referrers without cookies.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                </div>
-                <h3>Forms & Integrations</h3>
-                <p>Collect leads directly to your email, or connect to Zapier, Slack, and Notion effortlessly.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" class="pricing">
-        <div class="section-header reveal">
-            <h2>Simple pricing</h2>
-            <p>Start for free, upgrade when you're ready.</p>
-        </div>
-
-        <div class="pricing-grid">
-            <div class="price-card reveal">
-                <h3>Free</h3>
-                <div class="price">$0<span>/forever</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For hobby projects</p>
-                <a href="https://builder.yenze.io" class="btn btn-secondary" style="width: 100%">Get Started</a>
-                <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 3 Projects</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 1,000 monthly visitors</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 10MB storage per site</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> yenze.io/s/your-site URL</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Community Support</li>
-                </ul>
-            </div>
-
-            <div class="price-card featured reveal">
-                <div class="featured-badge">POPULAR</div>
-                <h3>Starter</h3>
-                <div class="price">$9<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For personal sites</p>
-                <a href="https://builder.yenze.io" class="btn btn-primary" style="width: 100%">Start Building</a>
-                <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 5 Projects</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 5,000 monthly visitors</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 50MB storage per site</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Custom subdomain (yoursite.yenze.io)</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 1 Custom Domain</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Remove Branding</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Analytics Dashboard</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Email Support</li>
-                </ul>
-            </div>
-
-            <div class="price-card reveal">
-                <h3>Pro</h3>
-                <div class="price">$29<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For professionals</p>
-                <a href="https://builder.yenze.io" class="btn btn-secondary" style="width: 100%">Go Pro</a>
-                <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 10 Projects</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 25,000 monthly visitors</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> 500MB storage per site</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Custom subdomains</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Unlimited Custom Domains</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Advanced Analytics</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Code Export</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Priority Support</li>
-                </ul>
-            </div>
-
-            <div class="price-card reveal">
-                <h3>Premium</h3>
-                <div class="price">$99<span>/mo</span></div>
-                <p style="font-size: 14px; color: #64748B; margin-bottom: 24px;">For agencies</p>
-                <a href="https://builder.yenze.io" class="btn btn-secondary" style="width: 100%">Contact Sales</a>
-                <ul class="price-features">
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Unlimited Projects</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Unlimited monthly visitors</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Unlimited storage</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> White-label solution</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Team collaboration</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> SSO & Advanced Security</li>
-                    <li><svg class="check-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg> Dedicated Account Manager</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="cta-content reveal">
-            <h2>Ready to launch your idea?</h2>
-            <p>Join 10,000+ creators building the web of tomorrow.</p>
-            <a href="https://builder.yenze.io" class="btn">Get Started Free →</a>
-        </div>
-    </section>
-
-    <footer>
-        <div class="logo" style="justify-content: center; margin-bottom: 16px; color: #cbd5e1;">YENZE</div>
-        <p>© 2025 YENZE Inc. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // Mobile Menu Toggle
-        const menuBtn = document.querySelector('.mobile-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        menuBtn.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            menuBtn.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
-        });
-
-        // Reveal Animation on Scroll
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YENZE - Build Stunning Websites Without Code</title>
+<meta name="description" content="Create, design, and publish beautiful websites in minutes with YENZE's AI-powered visual editor. No coding required.">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0066FF",
+                        "primary-dark": "#0052cc",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#FFFFFF",
+                        "surface-dark": "rgba(255, 255, 255, 0.7)",
+                        "surface-light": "rgba(240, 240, 240, 0.7)",
+                        "text-dark": "#1A202C",
+                        "text-light": "#4B5563",
+                        "border-light": "rgba(220, 220, 220, 0.7)",
+                        "border-subtle": "rgba(240, 240, 240, 0.7)",
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        lg: "2rem",
+                        xl: "3rem",
+                        full: "9999px"
+                    },
+                    backgroundImage: {
+                        "hero-pattern": "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23F5F5F5\" fill-opacity=\"0.8\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 0H0v2h4v4h2V2H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                        "abstract-gradient": "linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(245, 245, 245, 1) 100%)",
+                    },
+                    boxShadow: {
+                        "glass-light": "0 4px 20px 0 rgba(0, 0, 0, 0.05)",
+                        "glass-dark": "0 4px 20px 0 rgba(0, 0, 0, 0.05)",
+                    },
                 }
+            }
+        };
+    </script>
+<style>
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+::-webkit-scrollbar-thumb {
+    background: #d0d0d0;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+.glass-panel {
+    background-color: var(--tw-colors-surface-dark);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--tw-colors-border-light);
+    box-shadow: var(--tw-shadow-glass-light);
+}
+.parallax-bg {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+#parallax-layer-1 {
+    background-image: var(--tw-bg-abstract-gradient);
+    background-size: 200% 200%;
+    animation: none;
+}
+#parallax-layer-2 {
+    background-image: var(--tw-bg-hero-pattern);
+    opacity: 0.8;
+    transform: scale(1);
+}
+#parallax-layer-3 {
+    background-image: none;
+    background-color: #f8f8f8;
+    opacity: 1;
+    filter: none;
+    transform: scale(1);
+    animation: none;
+}
+.progress-indicator-container {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+.progress-dot.active {
+    background-color: var(--tw-colors-primary);
+    width: 12px;
+    height: 12px;
+    box-shadow: 0 0 10px rgba(0, 102, 255, 0.4);
+}
+.progress-dot.active::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--tw-colors-primary);
+    border-radius: 50%;
+    opacity: 0.3;
+}
+.h1-immersive {
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1.1;
+}
+.h2-immersive {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+}
+</style>
+</head>
+<body class="bg-background-light text-text-dark font-display overflow-x-hidden selection:bg-primary selection:text-white relative min-h-screen">
+<div class="parallax-bg fixed inset-0" id="parallax-layer-1"></div>
+<div class="parallax-bg fixed inset-0" id="parallax-layer-2"></div>
+<div class="parallax-bg fixed inset-0" id="parallax-layer-3"></div>
+<div class="relative flex min-h-screen w-full flex-col">
+<div class="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center w-full">
+<nav class="flex items-center justify-between w-full max-w-[960px] glass-panel rounded-full px-6 py-3 shadow-glass-light">
+<a class="flex items-center gap-2 text-text-dark hover:opacity-80 transition-opacity" href="/">
+<div class="size-6 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight">YENZE</span>
+</a>
+<div class="flex items-center gap-3">
+<a class="hidden sm:block text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
+<a href="/start.html" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all transform hover:scale-105 shadow-md">
+    Get Started
+</a>
+</div>
+</nav>
+</div>
+<div class="progress-indicator-container hidden md:flex">
+<a class="progress-dot active" data-section="hero" href="#hero"></a>
+<a class="progress-dot" data-section="features" href="#features"></a>
+<a class="progress-dot" data-section="how-to-start" href="#how-to-start"></a>
+<a class="progress-dot" data-section="pricing" href="#pricing"></a>
+<a class="progress-dot" data-section="cta" href="#cta"></a>
+</div>
+<div class="flex flex-col flex-1 pt-32 pb-10 px-4 md:px-10 lg:px-20 max-w-7xl mx-auto w-full relative z-10">
+<section class="flex flex-col items-center justify-center py-12 md:py-24 relative min-h-[calc(100vh-10rem)]" id="hero">
+<div class="relative z-10 flex flex-col items-center text-center max-w-4xl gap-8 mb-16">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-xs font-medium text-primary shadow-glass-light">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                        AI-Powered Website Builder
+                    </div>
+<h1 class="h1-immersive font-extrabold tracking-tight text-text-dark drop-shadow-sm">
+                        Build Stunning Websites.<br/>
+<span class="text-primary">No Code Required.</span>
+</h1>
+<p class="text-xl text-text-light max-w-2xl leading-relaxed">
+                        YENZE empowers creators to launch professional websites in minutes with our visual drag-and-drop editor. Design, publish, and scale without writing a single line of code.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4 mt-8 w-full justify-center">
+<a href="/start.html" class="h-14 px-10 rounded-full bg-primary text-white text-base font-bold tracking-wide hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center justify-center">
+                            Start Building Free
+                        </a>
+<a href="#how-to-start" class="h-14 px-10 rounded-full glass-panel text-text-dark text-base font-bold hover:bg-surface-light transition-all flex items-center justify-center gap-2 shadow-glass-light">
+<span class="material-symbols-outlined text-[24px]">play_circle</span>
+                            How It Works
+                        </a>
+</div>
+</div>
+<div class="relative z-10 w-full max-w-6xl aspect-[16/9] bg-surface-light rounded-xl border border-border-light overflow-hidden shadow-glass-light group glass-panel p-4">
+<div class="absolute inset-0 bg-gradient-to-t from-background-light/80 to-transparent z-10 pointer-events-none"></div>
+<div class="w-full h-full bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg flex items-center justify-center text-6xl font-bold text-primary/40">
+                    YENZE Builder Preview
+                </div>
+<div class="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-end opacity-0 md:opacity-100 transition-opacity">
+<div class="glass-panel p-4 rounded-lg flex items-center gap-3 shadow-glass-light">
+<div class="bg-primary/10 p-2 rounded-full text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<div class="text-xs text-text-light">Visual Editor</div>
+<div class="text-sm font-semibold text-text-dark">Drag & Drop Interface</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="py-12 border-y border-border-subtle mt-20" id="social-proof">
+<p class="text-text-light text-base font-medium text-center mb-8">Trusted by thousands of creators worldwide</p>
+<div class="flex flex-wrap justify-center gap-10 md:gap-20 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">storefront</span> E-commerce</div>
+<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">restaurant</span> Restaurants</div>
+<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">person</span> Portfolios</div>
+<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">business</span> Businesses</div>
+<div class="text-text-dark font-bold text-2xl flex items-center gap-3"><span class="material-symbols-outlined text-primary text-3xl">article</span> Blogs</div>
+</div>
+</section>
+
+<section class="py-24 md:py-36" id="features">
+<div class="flex flex-col gap-6 mb-16 text-center">
+<h2 class="h2-immersive font-extrabold text-text-dark tracking-tight drop-shadow-sm">Powerful Features</h2>
+<p class="text-text-light text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create, publish, and grow your online presence.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-2 glass-panel rounded-xl p-8 lg:p-12 flex flex-col justify-between group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
+<div class="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+<div class="relative z-10">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">drag_pan</span>
+</div>
+<h3 class="text-3xl font-bold text-text-dark mb-3">Visual Drag & Drop Builder</h3>
+<p class="text-text-light max-w-md text-lg">Intuitive interface that lets you design visually. Move elements freely, resize with handles, and see changes instantly in real-time.</p>
+</div>
+<div class="mt-12 relative h-64 rounded-xl bg-white border border-border-subtle overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-48 h-32 bg-primary/10 border-4 border-primary/40 border-dashed rounded-lg flex items-center justify-center text-primary text-base font-bold animate-pulse">
+                                    Drag Elements Here
+                                </div>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-8 lg:p-12 flex flex-col group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">devices</span>
+</div>
+<h3 class="text-3xl font-bold text-text-dark mb-3">Fully Responsive</h3>
+<p class="text-text-light mb-8 text-lg">Your site automatically looks perfect on every device - desktop, tablet, and mobile.</p>
+<div class="flex-1 rounded-xl bg-gradient-to-br from-white to-transparent border border-border-subtle p-6 flex flex-col gap-3">
+<div class="h-3 w-1/2 bg-gray-100 rounded"></div>
+<div class="h-3 w-3/4 bg-gray-100 rounded"></div>
+<div class="h-36 w-full bg-gray-50 rounded mt-4"></div>
+<div class="flex gap-3 mt-auto">
+<div class="h-10 w-10 rounded-full bg-primary/10"></div>
+<div class="flex-1 h-10 rounded bg-gray-50"></div>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">link</span>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-2">Custom Domains</h3>
+<p class="text-text-light text-base">Connect your own domain or use a free yenze.io subdomain. SSL certificates included automatically.</p>
+</div>
+<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">mail</span>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-2">Form Builder</h3>
+<p class="text-text-light text-base">Create contact forms, surveys, and newsletter signups. Submissions delivered straight to your email.</p>
+</div>
+<div class="glass-panel rounded-xl p-8 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">analytics</span>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-2">Built-in Analytics</h3>
+<p class="text-text-light text-base">Track visitors and understand your audience with privacy-first analytics integrated into your dashboard.</p>
+</div>
+</div>
+</section>
+
+<section class="py-24 md:py-36" id="how-to-start">
+<div class="flex flex-col gap-6 mb-16 text-center">
+<h2 class="h2-immersive font-extrabold text-text-dark tracking-tight drop-shadow-sm">How to Get Started</h2>
+<p class="text-text-light text-xl max-w-3xl mx-auto leading-relaxed">Launch your website in three simple steps.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
+<span class="text-4xl font-bold">1</span>
+<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">check</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-3">Sign Up Free</h3>
+<p class="text-text-light text-base">Create your account in seconds. No credit card required to get started with 3 free projects.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
+<span class="text-4xl font-bold">2</span>
+<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">brush</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-3">Design Your Site</h3>
+<p class="text-text-light text-base">Choose a template, import HTML, or use AI to generate. Then customize with our visual builder.</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 relative">
+<span class="text-4xl font-bold">3</span>
+<div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm">rocket_launch</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-text-dark mb-3">Publish & Share</h3>
+<p class="text-text-light text-base">Hit publish and your site goes live instantly on our global CDN. Share it with the world!</p>
+</div>
+</div>
+</section>
+
+<section class="py-24 md:py-36 flex flex-col items-center" id="pricing">
+<div class="text-center mb-16">
+<h2 class="h2-immersive font-extrabold text-text-dark mb-6 drop-shadow-sm">Simple, Transparent Pricing</h2>
+<p class="text-text-light text-xl">Start free. Scale as you grow. No hidden fees.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 w-full max-w-6xl">
+<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
+<h3 class="text-2xl font-bold text-text-dark mb-3">Free</h3>
+<div class="text-5xl font-extrabold text-text-dark mb-6">$0<span class="text-lg font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-base mb-10 flex-1">Perfect for hobby projects and trying out YENZE.</p>
+<div class="flex flex-col gap-4 mb-10">
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                3 Websites
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                /s/slug URLs
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                1K visitors/mo
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                10MB storage
+                            </div>
+</div>
+<a href="/start.html" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg text-center">Start Free</a>
+</div>
+<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col relative border-2 border-primary shadow-[0_0_40px_rgba(0,102,255,0.15)] transform md:-translate-y-8">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">Most Popular</div>
+<h3 class="text-2xl font-bold text-text-dark mb-3 mt-4">Starter</h3>
+<div class="text-5xl font-extrabold text-text-dark mb-6">$3<span class="text-lg font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-base mb-10 flex-1">For personal sites and small projects.</p>
+<div class="flex flex-col gap-4 mb-10">
+<div class="flex items-center gap-3 text-text-dark">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                5 Websites
+                            </div>
+<div class="flex items-center gap-3 text-text-dark">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Free Subdomain
+                            </div>
+<div class="flex items-center gap-3 text-text-dark">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                1 Custom Domain
+                            </div>
+<div class="flex items-center gap-3 text-text-dark">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                5K visitors/mo
+                            </div>
+<div class="flex items-center gap-3 text-text-dark">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Remove Branding
+                            </div>
+</div>
+<button onclick="handlePricingClick('starter')" class="w-full py-4 rounded-full bg-primary text-white font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/25 text-lg cursor-pointer">Get Started</button>
+</div>
+<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
+<h3 class="text-2xl font-bold text-text-dark mb-3">Pro</h3>
+<div class="text-5xl font-extrabold text-text-dark mb-6">$7<span class="text-lg font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-base mb-10 flex-1">For professionals and content creators.</p>
+<div class="flex flex-col gap-4 mb-10">
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                10 Websites
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Unlimited Domains
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                25K visitors/mo
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Advanced Analytics
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Code Export
+                            </div>
+</div>
+<button onclick="handlePricingClick('pro')" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg cursor-pointer">Go Pro</button>
+</div>
+<div class="glass-panel rounded-xl p-8 lg:p-10 flex flex-col shadow-glass-light">
+<h3 class="text-2xl font-bold text-text-dark mb-3">Business</h3>
+<div class="text-5xl font-extrabold text-text-dark mb-6">$15<span class="text-lg font-normal text-text-light">/mo</span></div>
+<p class="text-text-light text-base mb-10 flex-1">For agencies and teams managing clients.</p>
+<div class="flex flex-col gap-4 mb-10">
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Unlimited Sites
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Unlimited Domains
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                100K visitors/mo
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                White-label
+                            </div>
+<div class="flex items-center gap-3 text-base text-text-light">
+<span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                Priority Support
+                            </div>
+</div>
+<button onclick="handlePricingClick('business')" class="w-full py-4 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-lg cursor-pointer">Scale Up</button>
+</div>
+</div>
+</section>
+
+<footer class="mt-20 border-t border-border-subtle pt-20 pb-10" id="cta">
+<div class="flex flex-col items-center text-center gap-8 mb-20">
+<h2 class="h2-immersive font-extrabold text-text-dark drop-shadow-sm">Ready to launch?</h2>
+<p class="text-xl text-text-light">Join thousands of creators building with YENZE today.</p>
+<a href="/start.html" class="h-16 px-12 rounded-full bg-primary text-white text-xl font-bold hover:bg-primary-dark transition-colors mt-6 shadow-xl shadow-primary/30 flex items-center justify-center">
+                        Get Started for Free
+                    </a>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-text-light">
+<div class="flex items-center gap-3 text-base">
+<div class="size-6 text-text-light">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span>© 2025 YENZE. Made with love for creators.</span>
+</div>
+<div class="flex gap-8 text-base">
+<a class="hover:text-text-dark transition-colors" href="#">Privacy</a>
+<a class="hover:text-text-dark transition-colors" href="#">Terms</a>
+<a class="hover:text-text-dark transition-colors" href="https://twitter.com/yenze">Twitter</a>
+<a class="hover:text-text-dark transition-colors" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Stripe -->
+<script src="https://js.stripe.com/v3/"></script>
+<!-- Configuration -->
+<script src="/config.js"></script>
+<script src="/supabase-client.js"></script>
+<script src="/stripe-integration.js"></script>
+
+<script>
+        // Scroll progress indicator
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navDots = document.querySelectorAll('.progress-dot');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navDots.forEach(dot => dot.classList.remove('active'));
+                        const activeDot = document.querySelector(`.progress-dot[data-section="${entry.target.id}"]`);
+                        if (activeDot) {
+                            activeDot.classList.add('active');
+                        }
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => observer.observe(section));
+            navDots.forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = dot.getAttribute('data-section');
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
         });
 
-        // Start Option Buttons
-        const useHtmlBtn = document.getElementById('use-html-btn');
-        const templatesBtn = document.getElementById('templates-btn');
+        // Handle pricing button clicks
+        async function handlePricingClick(plan) {
+            try {
+                // Payment links from your existing config
+                const paymentLinks = {
+                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
+                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                };
 
-        // Option 1: Use Your HTML - Redirect to prompt generator
-        useHtmlBtn.addEventListener('click', () => {
-            window.location.href = '/prompt-generator.html';
-        });
+                const paymentLink = paymentLinks[plan.toLowerCase()];
 
-        // Option 2: Choose Template - Redirect to templates page
-        templatesBtn.addEventListener('click', () => {
-            window.location.href = 'https://builder.yenze.io/templates.html';
-        });
+                if (!paymentLink) {
+                    console.error('No payment link for plan:', plan);
+                    window.location.href = `/start.html?plan=${plan}`;
+                    return;
+                }
+
+                // Check if user is authenticated
+                if (typeof supabaseClient !== 'undefined') {
+                    const { data: { session } } = await supabaseClient.client.auth.getSession();
+
+                    if (session && session.user) {
+                        // User is authenticated - redirect with prefilled email
+                        const email = session.user.email;
+                        const userId = session.user.id;
+                        window.location.href = `${paymentLink}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${userId}`;
+                        return;
+                    }
+                }
+
+                // User not authenticated - redirect to payment link
+                window.location.href = paymentLink;
+
+            } catch (error) {
+                console.error('Error handling pricing click:', error);
+                // Fallback to payment link
+                const paymentLinks = {
+                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
+                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
+                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                };
+                window.location.href = paymentLinks[plan.toLowerCase()] || '/start.html';
+            }
+        }
     </script>
 </body>
-
 </html>
