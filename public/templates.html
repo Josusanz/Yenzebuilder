@@ -254,6 +254,1480 @@
         // Template data
         const templates = [
             {
+                id: 'dark-elegant',
+                name: 'Dark Elegant',
+                description: 'Sophisticated dark theme with golden accents',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Elegant</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #fff; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(208, 187, 149, 0.1); }
+        .logo { font-size: 24px; font-weight: 800; color: #D0BB95; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #fff; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: #D0BB95; }
+        .hero { min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; }
+        .hero h1 { font-size: 72px; font-weight: 800; margin-bottom: 24px; background: linear-gradient(135deg, #fff 0%, #D0BB95 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 24px; color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+        .btn { display: inline-block; padding: 16px 48px; background: #D0BB95; color: #0a0a0a; border-radius: 8px; text-decoration: none; font-weight: 700; transition: transform 0.3s; }
+        .btn:hover { transform: translateY(-2px); }
+        .features { padding: 120px 48px; background: #0f0f0f; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; max-width: 1200px; margin: 0 auto; }
+        .feature { padding: 40px; background: rgba(208, 187, 149, 0.05); border: 1px solid rgba(208, 187, 149, 0.1); border-radius: 12px; }
+        .feature h3 { font-size: 24px; margin-bottom: 16px; color: #D0BB95; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; margin-bottom: 48px; text-align: center; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #D0BB95; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: rgba(208, 187, 149, 0.05); border: 1px solid rgba(208, 187, 149, 0.2); border-radius: 8px; color: #fff; font-size: 16px; }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .submit-btn { width: 100%; padding: 16px; background: #D0BB95; color: #0a0a0a; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+            .contact { padding: 60px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">ELEGANT</div>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Elegant Design<br>Powerful Results</h1>
+            <p>Premium solutions for modern businesses</p>
+            <a href="#contact" class="btn">Get Started</a>
+        </div>
+    </div>
+
+    <div class="features" id="features">
+        <div class="features-grid">
+            <div class="feature">
+                <h3>Premium Quality</h3>
+                <p style="color: rgba(255,255,255,0.7);">Exceptional attention to detail in every aspect of our work</p>
+            </div>
+            <div class="feature">
+                <h3>Modern Approach</h3>
+                <p style="color: rgba(255,255,255,0.7);">Using the latest technologies and design trends</p>
+            </div>
+            <div class="feature">
+                <h3>Dedicated Support</h3>
+                <p style="color: rgba(255,255,255,0.7);">We're here to help you succeed every step of the way</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Get In Touch</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message *</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Contact Form - Dark Elegant Template',
+                site_url: window.location.href
+            };
+
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error sending your message. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'modern-minimalist',
+                name: 'Modern Minimalist',
+                description: 'Clean minimalist design with subtle gray tones',
+                category: 'portfolio',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Minimalist</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #1a1a1a; color: #e5e5e5; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(139, 149, 165, 0.1); }
+        .logo { font-size: 24px; font-weight: 800; color: #8B95A5; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #e5e5e5; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: #8B95A5; }
+        .hero { min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; }
+        .hero h1 { font-size: 72px; font-weight: 800; margin-bottom: 24px; line-height: 1.1; }
+        .hero p { font-size: 20px; color: rgba(229,229,229,0.6); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn { display: inline-block; padding: 14px 40px; background: transparent; color: #8B95A5; border: 2px solid #8B95A5; border-radius: 6px; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .btn:hover { background: #8B95A5; color: #1a1a1a; }
+        .services { padding: 120px 48px; }
+        .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; max-width: 1000px; margin: 0 auto; }
+        .service { padding: 40px; background: rgba(139, 149, 165, 0.05); border: 1px solid rgba(139, 149, 165, 0.1); border-radius: 8px; }
+        .service h3 { font-size: 24px; margin-bottom: 16px; color: #8B95A5; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; margin-bottom: 16px; text-align: center; }
+        .contact-subtitle { text-align: center; color: rgba(229,229,229,0.6); margin-bottom: 48px; font-size: 18px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #8B95A5; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: rgba(139, 149, 165, 0.05); border: 1px solid rgba(139, 149, 165, 0.2); border-radius: 6px; color: #e5e5e5; font-size: 16px; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 16px; background: transparent; color: #8B95A5; border: 2px solid #8B95A5; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .submit-btn:hover { background: #8B95A5; color: #1a1a1a; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 6px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+            .contact { padding: 60px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">MINIMAL</div>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Simple.<br>Effective.<br>Beautiful.</h1>
+            <p>We create minimal digital experiences that stand out through simplicity and precision</p>
+            <a href="#contact" class="btn">Start a Project</a>
+        </div>
+    </div>
+
+    <div class="services" id="services">
+        <div class="services-grid">
+            <div class="service">
+                <h3>Design</h3>
+                <p style="color: rgba(229,229,229,0.6);">Beautiful interfaces that users love to interact with</p>
+            </div>
+            <div class="service">
+                <h3>Development</h3>
+                <p style="color: rgba(229,229,229,0.6);">Clean, efficient code that brings designs to life</p>
+            </div>
+            <div class="service">
+                <h3>Strategy</h3>
+                <p style="color: rgba(229,229,229,0.6);">Data-driven approaches to achieve your goals</p>
+            </div>
+            <div class="service">
+                <h3>Branding</h3>
+                <p style="color: rgba(229,229,229,0.6);">Memorable identities that resonate with audiences</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Let's Talk</h2>
+        <p class="contact-subtitle">Have a project in mind? We'd love to hear from you.</p>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Contact Form - Modern Minimalist Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error sending your message. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'tech-startup',
+                name: 'Tech Startup',
+                description: 'Modern tech startup with vibrant gradients',
+                category: 'landing',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Startup</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; }
+        .nav { padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); z-index: 100; }
+        .logo { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+        .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 24px; }
+        .hero p { font-size: 24px; opacity: 0.9; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn { display: inline-block; padding: 16px 48px; background: #fff; color: #667eea; border-radius: 100px; text-decoration: none; font-weight: 700; transition: transform 0.3s; }
+        .btn:hover { transform: scale(1.05); }
+        .features { padding: 120px 48px; background: #f8f9fa; }
+        .features h2 { font-size: 48px; text-align: center; margin-bottom: 64px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .feature { padding: 40px; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; margin-bottom: 24px; }
+        .feature h3 { font-size: 24px; margin-bottom: 16px; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; margin-bottom: 48px; text-align: center; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">STARTUP</div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>Build the Future</h1>
+            <p>Transform your ideas into reality with our cutting-edge technology platform</p>
+            <a href="#contact" class="btn">Get Started Free</a>
+        </div>
+    </div>
+
+    <div class="features" id="features">
+        <h2>Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Fast & Reliable</h3>
+                <p style="color: #666;">Lightning-fast performance you can depend on</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Easy to Use</h3>
+                <p style="color: #666;">Intuitive interface designed for everyone</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Secure</h3>
+                <p style="color: #666;">Enterprise-grade security for peace of mind</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Get In Touch</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Contact Form - Tech Startup Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error sending your message. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'creative-agency',
+                name: 'Creative Agency',
+                description: 'Bold and creative agency portfolio',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1542744094-24638eff58bb?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Agency</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 28px; font-weight: 900; }
+        .hero { padding: 120px 48px; background: #000; color: #fff; min-height: 90vh; display: flex; align-items: center; }
+        .hero h1 { font-size: 96px; font-weight: 900; line-height: 1; margin-bottom: 32px; }
+        .hero-highlight { color: #FFD700; }
+        .stats { padding: 80px 48px; background: #f8f9fa; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 1000px; margin: 0 auto; }
+        .stat h3 { font-size: 64px; font-weight: 900; color: #FFD700; margin-bottom: 8px; }
+        .contact { padding: 120px 48px; max-width: 700px; margin: 0 auto; }
+        .contact h2 { font-size: 56px; font-weight: 900; margin-bottom: 56px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 18px; border: 2px solid #e9ecef; border-radius: 0; font-size: 16px; font-family: inherit; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #FFD700; }
+        .form-group textarea { min-height: 180px; resize: vertical; }
+        .submit-btn { padding: 18px 48px; background: #000; color: #FFD700; border: none; font-size: 16px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+        .submit-btn:hover { background: #FFD700; color: #000; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 56px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">CREATIVE</div>
+    </nav>
+
+    <div class="hero">
+        <div>
+            <h1>We Create<br><span class="hero-highlight">Experiences</span></h1>
+            <p style="font-size: 24px; opacity: 0.8;">Award-winning creative agency crafting memorable brands</p>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <h3>200+</h3>
+                <p style="font-size: 18px; color: #666;">Projects Completed</p>
+            </div>
+            <div class="stat">
+                <h3>50+</h3>
+                <p style="font-size: 18px; color: #666;">Happy Clients</p>
+            </div>
+            <div class="stat">
+                <h3>15</h3>
+                <p style="font-size: 18px; color: #666;">Awards Won</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Let's Work Together</h2>
+        <form id="contactForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="message">Tell us about your project</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Contact Form - Creative Agency Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! Your message has been sent successfully.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error sending your message. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'restaurant',
+                name: 'Restaurant & Cafe',
+                description: 'Elegant restaurant and cafe template',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant & Cafe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', serif; background: #FFF8F0; color: #2c2c2c; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 32px; font-weight: 700; color: #8B4513; font-family: 'Georgia', serif; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #2c2c2c; text-decoration: none; font-weight: 500; }
+        .hero { padding: 120px 48px; text-align: center; background: linear-gradient(rgba(139, 69, 19, 0.1), rgba(139, 69, 19, 0.1)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23FFF" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>'); }
+        .hero h1 { font-size: 72px; color: #8B4513; margin-bottom: 24px; }
+        .hero p { font-size: 24px; color: #5c5c5c; max-width: 600px; margin: 0 auto 40px; }
+        .menu { padding: 80px 48px; background: #fff; }
+        .menu h2 { font-size: 48px; text-align: center; color: #8B4513; margin-bottom: 64px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto; }
+        .menu-item { padding: 32px; border: 2px solid #f0f0f0; border-radius: 8px; }
+        .menu-item h3 { font-size: 24px; color: #8B4513; margin-bottom: 12px; }
+        .menu-item-price { font-size: 20px; font-weight: 700; color: #2c2c2c; margin-top: 16px; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; color: #8B4513; margin-bottom: 16px; text-align: center; }
+        .contact-subtitle { text-align: center; color: #5c5c5c; margin-bottom: 48px; font-size: 18px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c2c2c; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #fff; border: 2px solid #e9e9e9; border-radius: 8px; font-size: 16px; font-family: 'Georgia', serif; }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .submit-btn { width: 100%; padding: 16px; background: #8B4513; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.3s; font-family: 'Georgia', serif; }
+        .submit-btn:hover { background: #6d3410; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">Bistro</div>
+        <div class="nav-links">
+            <a href="#menu">Menu</a>
+            <a href="#contact">Reservations</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Fine Dining Experience</h1>
+        <p>Authentic flavors crafted with passion and served with love</p>
+    </div>
+
+    <div class="menu" id="menu">
+        <h2>Our Specialties</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Classic Burger</h3>
+                <p style="color: #5c5c5c;">Grass-fed beef, aged cheddar, house sauce</p>
+                <div class="menu-item-price">$18</div>
+            </div>
+            <div class="menu-item">
+                <h3>Caesar Salad</h3>
+                <p style="color: #5c5c5c;">Romaine, parmesan, garlic croutons</p>
+                <div class="menu-item-price">$14</div>
+            </div>
+            <div class="menu-item">
+                <h3>Grilled Salmon</h3>
+                <p style="color: #5c5c5c;">Atlantic salmon, seasonal vegetables</p>
+                <div class="menu-item-price">$26</div>
+            </div>
+            <div class="menu-item">
+                <h3>Pasta Carbonara</h3>
+                <p style="color: #5c5c5c;">Fresh pasta, pancetta, parmesan cream</p>
+                <div class="menu-item-price">$22</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Make a Reservation</h2>
+        <p class="contact-subtitle">Book your table or inquire about private events</p>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message / Special Requests</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Submit Inquiry</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Reservation / Contact Form - Restaurant Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! We will contact you soon to confirm your reservation.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error. Please call us directly.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Inquiry';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'photographer',
+                name: 'Photographer Portfolio',
+                description: 'Stunning photography portfolio template',
+                category: 'portfolio',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photographer Portfolio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); z-index: 100; border-bottom: 1px solid #f0f0f0; }
+        .logo { font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #1a1a1a; text-decoration: none; font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero { padding: 160px 48px 80px; text-align: center; }
+        .hero h1 { font-size: 56px; font-weight: 300; margin-bottom: 24px; letter-spacing: 2px; }
+        .hero p { font-size: 18px; color: #666; }
+        .gallery { padding: 80px 48px; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1400px; margin: 0 auto; }
+        .gallery-item { aspect-ratio: 1; background: #f5f5f5; border-radius: 4px; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 42px; font-weight: 300; margin-bottom: 48px; text-align: center; letter-spacing: 2px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 16px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #1a1a1a; background: #fff; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 16px; background: #1a1a1a; color: #fff; border: none; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: background 0.3s; }
+        .submit-btn:hover { background: #000; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 4px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">PHOTO</div>
+        <div class="nav-links">
+            <a href="#gallery">Gallery</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Capturing Moments</h1>
+        <p>Fine art & editorial photography</p>
+    </div>
+
+    <div class="gallery" id="gallery">
+        <div class="gallery-grid">
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+            <div class="gallery-item"></div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Get In Touch</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Project Details</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Inquiry</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Contact Form - Photographer Portfolio Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! I will get back to you soon.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error sending your message. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Inquiry';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'fitness-gym',
+                name: 'Fitness & Gym',
+                description: 'High-energy fitness and gym template',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness & Gym</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #000; color: #fff; }
+        .nav { padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); position: fixed; width: 100%; z-index: 100; border-bottom: 2px solid #FF4655; }
+        .logo { font-size: 28px; font-weight: 900; color: #FF4655; text-transform: uppercase; letter-spacing: 2px; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: 700; text-transform: uppercase; font-size: 14px; }
+        .hero { padding: 200px 48px 120px; background: linear-gradient(rgba(255,70,85,0.3), rgba(0,0,0,0.8)); }
+        .hero h1 { font-size: 84px; font-weight: 900; margin-bottom: 24px; text-transform: uppercase; line-height: 1; }
+        .hero-highlight { color: #FF4655; }
+        .hero p { font-size: 24px; margin-bottom: 40px; opacity: 0.9; }
+        .btn { display: inline-block; padding: 18px 48px; background: #FF4655; color: #fff; border-radius: 4px; text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.3s; }
+        .btn:hover { transform: scale(1.05); }
+        .programs { padding: 120px 48px; }
+        .programs h2 { font-size: 56px; font-weight: 900; margin-bottom: 64px; text-align: center; text-transform: uppercase; }
+        .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1200px; margin: 0 auto; }
+        .program { padding: 40px; background: rgba(255,70,85,0.1); border: 2px solid #FF4655; border-radius: 8px; }
+        .program h3 { font-size: 24px; margin-bottom: 16px; color: #FF4655; text-transform: uppercase; font-weight: 900; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; font-weight: 900; margin-bottom: 48px; text-align: center; text-transform: uppercase; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; color: #FF4655; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,70,85,0.3); border-radius: 4px; color: #fff; font-size: 16px; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #FF4655; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 18px; background: #FF4655; color: #fff; border: none; border-radius: 4px; font-size: 16px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.3s; }
+        .submit-btn:hover { transform: scale(1.02); }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 4px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 48px; }
+            .programs-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">POWERHOUSE</div>
+        <div class="nav-links">
+            <a href="#programs">Programs</a>
+            <a href="#contact">Join Now</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1><span class="hero-highlight">TRAIN</span><br>HARDER</h1>
+        <p>Transform your body, transform your life</p>
+        <a href="#contact" class="btn">Start Today</a>
+    </div>
+
+    <div class="programs" id="programs">
+        <h2>Our Programs</h2>
+        <div class="programs-grid">
+            <div class="program">
+                <h3>Strength</h3>
+                <p style="opacity: 0.8;">Build muscle and power with our strength training programs</p>
+            </div>
+            <div class="program">
+                <h3>Cardio</h3>
+                <p style="opacity: 0.8;">High-intensity cardio to burn fat and boost endurance</p>
+            </div>
+            <div class="program">
+                <h3>Yoga</h3>
+                <p style="opacity: 0.8;">Flexibility and mindfulness for complete wellness</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Join Us</h2>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Tell us your fitness goals</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Get Started</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Membership Inquiry - Fitness & Gym Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Welcome! We will contact you soon to get started.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Get Started';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'saas-landing',
+                name: 'SaaS Landing Page',
+                description: 'Modern SaaS product landing page',
+                category: 'landing',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Landing Page</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; }
+        .nav { padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .logo { font-size: 24px; font-weight: 800; color: #0066FF; }
+        .nav-btn { padding: 10px 24px; background: #0066FF; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .hero { padding: 120px 48px; text-align: center; background: linear-gradient(180deg, #f8f9ff 0%, #fff 100%); }
+        .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 24px; line-height: 1.1; }
+        .hero p { font-size: 20px; color: #666; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .hero-btn { display: inline-block; padding: 16px 40px; background: #0066FF; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 18px; transition: background 0.3s; }
+        .hero-btn:hover { background: #0052CC; }
+        .features { padding: 120px 48px; }
+        .features h2 { font-size: 48px; font-weight: 800; text-align: center; margin-bottom: 64px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; max-width: 1200px; margin: 0 auto; }
+        .feature { text-align: center; }
+        .feature-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #0066FF 0%, #00D4FF 100%); border-radius: 16px; margin: 0 auto 24px; }
+        .feature h3 { font-size: 24px; margin-bottom: 16px; }
+        .contact { padding: 120px 48px; background: #f8f9fa; }
+        .contact-container { max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 48px; font-weight: 800; margin-bottom: 16px; text-align: center; }
+        .contact-subtitle { text-align: center; color: #666; margin-bottom: 48px; font-size: 18px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #fff; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #0066FF; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 16px; background: #0066FF; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; transition: background 0.3s; }
+        .submit-btn:hover { background: #0052CC; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">CloudApp</div>
+        <a href="#contact" class="nav-btn">Get Started</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Your Work,<br>Simplified</h1>
+        <p>The all-in-one platform to manage your team, projects, and workflows efficiently</p>
+        <a href="#contact" class="hero-btn">Start Free Trial</a>
+    </div>
+
+    <div class="features">
+        <h2>Everything You Need</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Real-time Collaboration</h3>
+                <p style="color: #666;">Work together seamlessly with your team</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Powerful Analytics</h3>
+                <p style="color: #666;">Make data-driven decisions with insights</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"></div>
+                <h3>Enterprise Security</h3>
+                <p style="color: #666;">Bank-level encryption and security</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <div class="contact-container">
+            <h2>Start Your Free Trial</h2>
+            <p class="contact-subtitle">No credit card required. Get started in minutes.</p>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Work Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Tell us about your needs</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Start Free Trial</button>
+                <div class="form-message" id="formMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Free Trial Request - SaaS Landing Page',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Welcome aboard! Check your email for next steps.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Start Free Trial';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'consulting',
+                name: 'Consulting & Professional',
+                description: 'Professional consulting and services template',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulting & Professional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', 'Times New Roman', serif; background: #f5f5f5; color: #2c2c2c; }
+        .nav { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 26px; font-weight: 700; color: #2c2c2c; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { color: #2c2c2c; text-decoration: none; font-weight: 500; }
+        .hero { padding: 120px 48px; background: #fff; text-align: center; }
+        .hero h1 { font-size: 56px; font-weight: 700; margin-bottom: 24px; color: #1a5490; line-height: 1.2; }
+        .hero p { font-size: 20px; color: #666; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; }
+        .services { padding: 120px 48px; }
+        .services h2 { font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 64px; color: #2c2c2c; }
+        .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; max-width: 1000px; margin: 0 auto; }
+        .service { padding: 40px; background: #fff; border-left: 4px solid #1a5490; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .service h3 { font-size: 24px; color: #1a5490; margin-bottom: 16px; }
+        .service p { color: #666; line-height: 1.6; }
+        .contact { padding: 120px 48px; background: #fff; }
+        .contact-container { max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 42px; font-weight: 700; margin-bottom: 16px; text-align: center; color: #2c2c2c; }
+        .contact-subtitle { text-align: center; color: #666; margin-bottom: 48px; font-size: 18px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c2c2c; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; font-family: 'Georgia', serif; }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .submit-btn { width: 100%; padding: 16px; background: #1a5490; color: #fff; border: none; border-radius: 4px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.3s; font-family: 'Georgia', serif; }
+        .submit-btn:hover { background: #14427a; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 4px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">Strategic Consulting</div>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Strategic Solutions for Business Growth</h1>
+        <p>With over 20 years of experience, we help organizations navigate complex challenges and achieve sustainable success through tailored consulting services.</p>
+    </div>
+
+    <div class="services" id="services">
+        <h2>Our Services</h2>
+        <div class="services-grid">
+            <div class="service">
+                <h3>Strategy Development</h3>
+                <p>Comprehensive strategic planning to align your organization with market opportunities and long-term objectives.</p>
+            </div>
+            <div class="service">
+                <h3>Operational Excellence</h3>
+                <p>Process optimization and efficiency improvements to enhance productivity and reduce costs.</p>
+            </div>
+            <div class="service">
+                <h3>Change Management</h3>
+                <p>Guiding your organization through transformation with proven methodologies and best practices.</p>
+            </div>
+            <div class="service">
+                <h3>Leadership Development</h3>
+                <p>Executive coaching and leadership programs to build capable, forward-thinking management teams.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <div class="contact-container">
+            <h2>Schedule a Consultation</h2>
+            <p class="contact-subtitle">Let's discuss how we can help your organization thrive.</p>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Describe Your Needs</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Request Consultation</button>
+                <div class="form-message" id="formMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Consultation Request - Consulting Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! We will contact you within 24 hours.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Request Consultation';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
+                id: 'ecommerce-product',
+                name: 'E-Commerce Product',
+                description: 'Modern e-commerce product showcase',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Product</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; }
+        .nav { padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .logo { font-size: 24px; font-weight: 800; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { color: #1a1a1a; text-decoration: none; font-weight: 500; }
+        .cart-btn { padding: 10px 24px; background: #1a1a1a; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .hero { padding: 80px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1400px; margin: 0 auto; align-items: center; }
+        .product-image { width: 100%; aspect-ratio: 1; background: #f5f5f5; border-radius: 12px; }
+        .product-info h1 { font-size: 48px; font-weight: 800; margin-bottom: 24px; }
+        .price { font-size: 36px; font-weight: 800; color: #10B981; margin-bottom: 32px; }
+        .product-description { font-size: 18px; color: #666; line-height: 1.6; margin-bottom: 40px; }
+        .add-to-cart { display: inline-block; padding: 18px 48px; background: #1a1a1a; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 18px; transition: background 0.3s; cursor: pointer; border: none; }
+        .add-to-cart:hover { background: #000; }
+        .features { padding: 120px 48px; background: #f8f9fa; }
+        .features h2 { font-size: 42px; font-weight: 800; text-align: center; margin-bottom: 64px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .feature { text-align: center; }
+        .feature h3 { font-size: 20px; margin-bottom: 12px; }
+        .contact { padding: 120px 48px; max-width: 600px; margin: 0 auto; }
+        .contact h2 { font-size: 42px; font-weight: 800; margin-bottom: 16px; text-align: center; }
+        .contact-subtitle { text-align: center; color: #666; margin-bottom: 48px; font-size: 18px; }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 16px; background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        .form-group textarea { min-height: 150px; resize: vertical; font-family: inherit; }
+        .submit-btn { width: 100%; padding: 16px; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; transition: background 0.3s; }
+        .submit-btn:hover { background: #000; }
+        .form-message { margin-top: 16px; padding: 12px; border-radius: 8px; text-align: center; display: none; }
+        .form-message.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .form-message.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; gap: 40px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .nav { padding: 16px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">SHOP</div>
+        <div class="nav-links">
+            <a href="#products">Products</a>
+            <a href="#contact">Contact</a>
+            <a href="#" class="cart-btn">Cart (0)</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="product-image"></div>
+        <div class="product-info">
+            <h1>Premium Wireless Headphones</h1>
+            <div class="price">$299</div>
+            <p class="product-description">Experience crystal-clear audio with our flagship wireless headphones. Featuring active noise cancellation, 40-hour battery life, and premium materials for ultimate comfort.</p>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="features">
+        <h2>Product Features</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <h3>40Hr Battery</h3>
+                <p style="color: #666;">All-day listening on a single charge</p>
+            </div>
+            <div class="feature">
+                <h3>Active ANC</h3>
+                <p style="color: #666;">Industry-leading noise cancellation</p>
+            </div>
+            <div class="feature">
+                <h3>Premium Build</h3>
+                <p style="color: #666;">Aluminum and leather construction</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact" id="contact">
+        <h2>Questions?</h2>
+        <p class="contact-subtitle">Get in touch with our customer support team</p>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message</button>
+            <div class="form-message" id="formMessage"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                subject: 'Customer Inquiry - E-Commerce Template',
+                site_url: window.location.href
+            };
+            const messageDiv = document.getElementById('formMessage');
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            try {
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = 'Thank you! We will respond within 24 hours.';
+                    messageDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Sorry, there was an error. Please try again.';
+                messageDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+            }
+        });
+    </script>
+</body>
+</html>`
+            },
+            {
                 id: 'minimal-portfolio',
                 name: 'Minimal Portfolio',
                 description: 'Clean and modern portfolio template perfect for creatives',
