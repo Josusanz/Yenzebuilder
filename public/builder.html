@@ -3394,58 +3394,30 @@
                     console.log('[Template Load] Loading template:', templateName || templateId);
                     console.log('[Template Load] Template HTML length:', templateHTML.length);
 
-                    // Wait a bit for the canvas iframe to be ready
-                    setTimeout(() => {
-                        const canvas = document.getElementById('canvas');
-                        const emptyState = document.getElementById('emptyState');
+                    // Use app.loadHTML() method to properly load the template
+                    if (typeof app !== 'undefined' && app.loadHTML) {
+                        app.loadHTML(templateHTML);
+                        console.log('[Template Load] ✓ Template loaded using app.loadHTML()');
 
-                        console.log('[Template Load] Canvas element:', !!canvas);
-                        console.log('[Template Load] Empty state element:', !!emptyState);
-                        console.log('[Template Load] Canvas contentDocument:', !!canvas?.contentDocument);
-
-                        if (canvas) {
-                            try {
-                                // Write the template HTML to the iframe
-                                const doc = canvas.contentDocument || canvas.contentWindow.document;
-                                doc.open();
-                                doc.write(templateHTML);
-                                doc.close();
-
-                                // Show the canvas
-                                canvas.style.display = 'block';
-
-                                // Hide the empty state
-                                if (emptyState) {
-                                    emptyState.style.display = 'none';
-                                }
-
-                                console.log('[Template Load] ✓ Template inserted into canvas iframe');
-
-                                // Show success message
-                                if (typeof showNotification === 'function') {
-                                    showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
-                                } else {
-                                    console.log('[Template Load] showNotification not available');
-                                }
-
-                                // Clear template from localStorage after successful load
-                                setTimeout(() => {
-                                    localStorage.removeItem('templateHTML');
-                                    localStorage.removeItem('templateName');
-                                    localStorage.removeItem('templateId');
-                                    console.log('[Template Load] ✓ LocalStorage cleared');
-                                }, 2000);
-                            } catch (error) {
-                                console.error('[Template Load] ✗ Error writing to iframe:', error);
-                            }
-                        } else {
-                            console.error('[Template Load] ✗ Canvas element not found');
+                        // Show success message
+                        if (typeof showNotification === 'function') {
+                            showNotification(`Template "${templateName || 'Loaded'}" loaded successfully!`, 'success');
                         }
+
+                        // Clear template from localStorage after successful load
+                        setTimeout(() => {
+                            localStorage.removeItem('templateHTML');
+                            localStorage.removeItem('templateName');
+                            localStorage.removeItem('templateId');
+                            console.log('[Template Load] ✓ LocalStorage cleared');
+                        }, 1000);
 
                         // Remove ?template=true from URL
                         const newUrl = window.location.pathname;
                         window.history.replaceState({}, '', newUrl);
-                    }, 2000);
+                    } else {
+                        console.error('[Template Load] ✗ app.loadHTML not available');
+                    }
                 }
             }
 
