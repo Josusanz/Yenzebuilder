@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>YENZE - Cinematic Creation Journey</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;family=Poppins:wght@700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // Progressive color scheme (cool to warm)
+                        "narrative-blue": "#0A2040",
+                        "narrative-cyan": "#0C4C6D",
+                        "narrative-purple": "#4A2A6C",
+                        "narrative-orange": "#CC5500",
+                        "narrative-red": "#9A031E",
+                        "overlay-dark": "rgba(10, 20, 30, 0.6)", // Dark translucent overlay
+                        "overlay-light": "rgba(255, 255, 255, 0.05)", // Light translucent overlay for text background
+                        "text-primary-light": "#E0E7EB",
+                        "text-secondary-light": "#A7BCCB",
+                    },
+                    fontFamily: {
+                        headline: ["Poppins", "sans-serif"],
+                        body: ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "1.5rem", lg: "2.5rem", xl: "4rem", full: "9999px"
+                    },
+                    backgroundImage: {
+                        "hero-art": "url('https://images.unsplash.com/photo-1579547621415-3754907a9ee0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMjh8MHwxfHNlYXJjaHwxfHxjb25jZXB0dWFsJTIwYmxhY2slMjBhbmQlMjBibHVlJTIwYWJzdHJhY3QlMjBhcnR8ZW58MHx8fHwxNzA1MjQ4NjcwfDA&ixlib=rb-4.0.3&q=80&w=1080')",
+                        "vision-art": "url('https://images.unsplash.com/photo-1558591398-316886e80b2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMjh8MHwxfHNlYXJjaHw1fHxmdXR1cmlzdGljJTIwYWJzdHJhY3QlMjBpbnRlcmZhY2V8ZW58MHx8fHwxNzA1MjQ4NjcwfDA&ixlib=rb-4.0.3&q=80&w=1080')",
+                        "craft-art": "url('https://images.unsplash.com/photo-1549725227-897d8b8e391b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMjh8MHwxfHNlYXJjaHwxfHxkaWdpdGFsJTIwY3JlYXRpb24lMjBwcm9jZXNzJTIwYWJzdHJhY3R8ZW58MHx8fHwxNzA1MjQ4NzkwfDA&ixlib=rb-4.0.3&q=80&w=1080')",
+                        "evolve-art": "url('https://images.unsplash.com/photo-1620641372338-348f6c3848b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMjh8MHwxfHNlYXJjaHw3fHxkaWdpdGFsJTIwZXZvbHV0aW9uJTIwY29uY2VwdHxlbnwwfHx8fDE3MDUyNDg3OTB8MA&ixlib=rb-4.0.3&q=80&w=1080')",
+                        "impact-art": "url('https://images.unsplash.com/photo-1522071820075-fc289859f874?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMjh8MHwxfHNlYXJjaHwzfHxncm93dGglMjBhYnN0cmFjdCUyMGRlc2lnbnxlbnwwfHx8fDE3MDUyNDg4ODB8MA&ixlib=rb-4.0.3&q=80&w=1080')",
+                    },
+                    boxShadow: {
+                        "overlay-light": "0 4px 15px rgba(0,0,0,0.1)",
+                        "overlay-dark": "0 8px 30px rgba(0,0,0,0.4)",
+                    },
+                }
+            }
+        };
+    </script>
+<style type="text/tailwindcss">::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #051020;}
+        ::-webkit-scrollbar-thumb {
+            background: #4A2A6C;border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #CC5500;}.cinematic-section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;}.content-overlay-panel {
+            background-color: var(--tw-colors-overlay-dark);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: var(--tw-shadow-overlay-dark);
+        }.full-screen-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }#journey-begin-section .full-screen-bg { background-image: var(--tw-bg-hero-art); }
+        #vision-unfold-section .full-screen-bg { background-image: var(--tw-bg-vision-art); }
+        #craft-mastery-section .full-screen-bg { background-image: var(--tw-bg-craft-art); }
+        #evolve-impact-section .full-screen-bg { background-image: var(--tw-bg-evolve-art); }
+        #future-unleashed-section .full-screen-bg { background-image: var(--tw-bg-impact-art); }.headline-cinematic {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+            font-family: var(--tw-font-headline);
+            font-weight: 900;
+        }
+        .subheadline-cinematic {
+            font-size: clamp(2.25rem, 5vw, 4rem);
+            line-height: 1.2;
+            font-family: var(--tw-font-headline);
+            font-weight: 800;
+        }
+        .body-text-cinematic {
+            font-family: var(--tw-font-body);
+            font-weight: 400;
+            line-height: 1.8;
+        }html {
+            scroll-behavior: smooth;
+        }.fixed-navbar {
+            background-color: var(--tw-colors-overlay-dark);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .fixed-navbar a {
+            color: var(--tw-colors-text-primary-light);
+        }
+        .fixed-navbar .logo {
+             color: var(--tw-colors-narrative-orange);}
+    </style>
+</head>
+<body class="bg-background-dark text-text-primary-light font-body overflow-x-hidden relative">
+<div class="fixed top-0 left-0 right-0 z-50 px-4 flex justify-center w-full py-4 fixed-navbar">
+<nav class="flex items-center justify-between w-full max-w-screen-xl">
+<a class="flex items-center gap-2 logo hover:opacity-80 transition-opacity" href="#">
+<div class="size-7">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+<polyline points="2 17 12 22 22 17"></polyline>
+<polyline points="2 12 12 17 22 12"></polyline>
+</svg>
+</div>
+<span class="text-2xl font-bold tracking-tight font-headline">YENZE</span>
+</a>
+<div class="flex items-center gap-6">
+<a class="text-sm font-medium hover:text-narrative-orange transition-colors" href="#journey-begin">Journey</a>
+<a class="text-sm font-medium hover:text-narrative-orange transition-colors" href="#vision-unfold">Vision</a>
+<a class="text-sm font-medium hover:text-narrative-orange transition-colors" href="#craft-mastery">Craft</a>
+<a class="text-sm font-medium hover:text-narrative-orange transition-colors" href="#evolve-impact">Evolve</a>
+<a class="text-sm font-medium hover:text-narrative-orange transition-colors" href="#contact">Contact</a>
+</div>
+</nav>
+</div>
+<main class="relative z-0">
+<section class="cinematic-section text-center bg-narrative-blue" id="journey-begin-section">
+<div class="full-screen-bg"></div>
+<div class="relative z-10 max-w-4xl mx-auto px-6 py-16 content-overlay-panel rounded-lg">
+<h1 class="headline-cinematic text-text-primary-light mb-6">
+                    Embrace the <span class="text-narrative-orange">Dawn</span><br/>of Creation.
+                </h1>
+<p class="body-text-cinematic text-text-secondary-light text-xl max-w-3xl mx-auto mb-10">
+                    Step into a realm where ideas transcend imagination into tangible digital experiences. YENZE is your genesis point.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="h-14 px-10 rounded-full bg-narrative-orange text-text-primary-light text-base font-bold tracking-wide hover:shadow-[0_0_30px_rgba(204,85,0,0.6)] transition-all shadow-lg font-headline">
+                        Start Your Odyssey
+                    </button>
+<button class="h-14 px-10 rounded-full bg-overlay-light text-text-primary-light text-base font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2 font-headline">
+<span class="material-symbols-outlined text-[24px]">explore</span>
+                        Unveil the Process
+                    </button>
+</div>
+</div>
+</section>
+<section class="cinematic-section text-center bg-narrative-cyan" id="vision-unfold-section">
+<div class="full-screen-bg"></div>
+<div class="relative z-10 max-w-4xl mx-auto px-6 py-16 content-overlay-panel rounded-lg">
+<h2 class="subheadline-cinematic text-text-primary-light mb-6">
+                    Where Vision <span class="text-narrative-orange">Takes Form</span>.
+                </h2>
+<p class="body-text-cinematic text-text-secondary-light text-xl max-w-3xl mx-auto mb-10">
+                    Translate abstract concepts into breathtaking realities. Our platform breathes life into your digital dreams, pixel by exquisite pixel.
+                </p>
+<div class="w-full max-w-5xl aspect-[16/9] bg-overlay-light rounded-xl border border-white/5 overflow-hidden shadow-overlay-dark group p-4 mx-auto">
+<div class="absolute inset-0 bg-gradient-to-t from-narrative-blue/80 to-transparent z-10 pointer-events-none"></div>
+<div class="w-full h-full bg-cover bg-center rounded-lg" data-alt="Abstract modern web interface dashboard with dark mode charts and layout builder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCbFkzJRzV6E8uoU_aGyvLi1m6v9MJe5U2XfdYFi6DHus2yzin_il906v7N9g6mONuIKmvrHcaRh_ukzxniIURTIu8SAv6c2gvE0Y9NI9mh5fbVdedtXSgQfJ8CGSrFsVTXKmEPPkh13PAwvj5e1zVAaqgLrF9j5xS_HAsrpqn0MRB_8g1kJGVVKpM_qK1jg28JXB3vbfflUfLj8azcQ662JK-arQIBRQi7F6CMlm58R7RWnJBrfA6pzlTPTeG8a2VO1mepw-M9pz0x');"></div>
+<div class="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-end opacity-0 md:opacity-100 transition-opacity">
+<div class="content-overlay-panel p-4 rounded-lg flex items-center gap-3 shadow-overlay-light">
+<div class="bg-narrative-orange/20 p-2 rounded-full text-narrative-orange">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div>
+<div class="text-xs text-text-secondary-light">Intelligent Design</div>
+<div class="text-sm font-semibold text-text-primary-light">Layout Manifested</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="cinematic-section text-center bg-narrative-purple" id="craft-mastery-section">
+<div class="full-screen-bg"></div>
+<div class="relative z-10 max-w-6xl mx-auto px-6 py-16 content-overlay-panel rounded-lg">
+<h2 class="subheadline-cinematic text-text-primary-light mb-6">
+                    The Art of <span class="text-narrative-orange">Seamless Craft</span>.
+                </h2>
+<p class="body-text-cinematic text-text-secondary-light text-xl max-w-3xl mx-auto mb-10">
+                    Precision tools and intuitive controls await, empowering you to sculpt experiences with unparalleled ease and elegance.
+                </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-2 content-overlay-panel rounded-xl p-8 lg:p-12 flex flex-col justify-between group hover:border-narrative-orange/50 transition-colors relative overflow-hidden shadow-overlay-dark">
+<div class="absolute top-0 right-0 w-80 h-80 bg-narrative-orange/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+<div class="relative z-10 text-left">
+<div class="w-16 h-16 bg-narrative-orange/20 rounded-full flex items-center justify-center text-narrative-orange mb-8">
+<span class="material-symbols-outlined text-3xl">gesture</span>
+</div>
+<h3 class="text-3xl font-headline font-bold text-text-primary-light mb-3">Intuitive Flow</h3>
+<p class="body-text-cinematic text-text-secondary-light max-w-md text-lg">Effortlessly design with our drag-and-drop mechanics. Fluidity in creation, instant visual feedback.</p>
+</div>
+<div class="mt-12 relative h-64 rounded-xl bg-overlay-light border border-white/10 overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-48 h-32 bg-narrative-orange/20 border-4 border-narrative-orange border-dashed rounded-lg flex items-center justify-center text-narrative-orange text-base font-bold animate-pulse font-headline">
+                                    Compose Element
+                                </div>
+</div>
+</div>
+</div>
+<div class="content-overlay-panel rounded-xl p-8 lg:p-12 flex flex-col group hover:border-narrative-orange/50 transition-colors relative overflow-hidden shadow-overlay-dark">
+<div class="w-16 h-16 bg-narrative-orange/20 rounded-full flex items-center justify-center text-narrative-orange mb-8">
+<span class="material-symbols-outlined text-3xl">lightbulb</span>
+</div>
+<h3 class="text-3xl font-headline font-bold text-text-primary-light mb-3">Generative Intelligence</h3>
+<p class="body-text-cinematic text-text-secondary-light mb-8 text-lg">Harness AI to manifest elegant, responsive layouts that resonate with your unique narrative.</p>
+<div class="flex-1 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 p-6 flex flex-col gap-3">
+<div class="h-3 w-1/2 bg-white/10 rounded"></div>
+<div class="h-3 w-3/4 bg-white/10 rounded"></div>
+<div class="h-36 w-full bg-white/5 rounded mt-4"></div>
+<div class="flex gap-3 mt-auto">
+<div class="h-10 w-10 rounded-full bg-narrative-orange/20"></div>
+<div class="flex-1 h-10 rounded bg-white/5"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="cinematic-section text-center bg-narrative-orange" id="evolve-impact-section">
+<div class="full-screen-bg"></div>
+<div class="relative z-10 max-w-4xl mx-auto px-6 py-16 content-overlay-panel rounded-lg">
+<h2 class="subheadline-cinematic text-text-primary-light mb-6">
+                    Evolve Your <span class="text-narrative-blue">Impact</span>.
+                </h2>
+<p class="body-text-cinematic text-text-secondary-light text-xl max-w-3xl mx-auto mb-10">
+                    Your creation is destined for global resonance. Optimize for reach, engagement, and lasting impression.
+                </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="group cursor-pointer content-overlay-panel rounded-xl p-4 shadow-overlay-dark hover:border-narrative-blue/50 transition-all">
+<div class="w-full aspect-[4/3] bg-overlay-light rounded-lg overflow-hidden mb-4 border border-white/5">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Modern business dashboard template with dark blue tones" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6mZV_Mw8wD2GOThkAcht3QEKaqaX8EhV511hLLdXMtkHxcjV58SqzLVJ_wXI_O0pEK6pmerosY_tXlXLwEbHQm0rwPTj0bhq8hyUzBD_tUdJ59c9EzNzxnhUzGVWknX_k2THGmIzpYzdMkRX9lCyQfzL1zDZkKlgkG-cZOGJu_mQy7FBhLSdw_IcmOuVf06s4lgUqqxTbTxvvgMP6yHPpEx6PL-pe8ETRDuaQIifF1WG1V_mUXnRE-pnfhhSFKPWfFZXvDPeFToMu');"></div>
+</div>
+<h3 class="text-text-primary-light font-headline font-bold text-lg mb-1">Dynamic Pathways</h3>
+<p class="text-sm text-text-secondary-light">Business, Innovation</p>
+</div>
+<div class="group cursor-pointer content-overlay-panel rounded-xl p-4 shadow-overlay-dark hover:border-narrative-blue/50 transition-all">
+<div class="w-full aspect-[4/3] bg-overlay-light rounded-lg overflow-hidden mb-4 border border-white/5">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Minimal portfolio website template for creative agency" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDswgsXYkD3LcM0TSByEmrr4dSBtJ793-jXocK4c7Nn_yw5xUv-2EwjXUkwoQWWHUc_TunLbSdV-POl7l5o67GqLiScuJtbrnItlhz63xfBJYml8cRVkWTLLn6eJRsilSn0RJK4L1lBFQztTkUHjbsN8aGDp7UWNKwSeYYZ9fQBf9IvJqLDW-kXTYbNkK_dxv_iC1j_cm9oNFMwhnsQyTfN1vhoKe4PwCB3vp6YoEWWrQXljbe5mgJ0UqhvqIS4C6igUmN-gv5RS1zN');"></div>
+</div>
+<h3 class="text-text-primary-light font-headline font-bold text-lg mb-1">Infinite Canvas</h3>
+<p class="text-sm text-text-secondary-light">Creative, Personal</p>
+</div>
+<div class="group cursor-pointer content-overlay-panel rounded-xl p-4 shadow-overlay-dark hover:border-narrative-blue/50 transition-all">
+<div class="w-full aspect-[4/3] bg-overlay-light rounded-lg overflow-hidden mb-4 border border-white/5">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="E-commerce product page template with grid layout" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCrkvmrzbJahJDedgp3EtygkBXokP_dYF61Nh2GXMDI8IKuv3hHfdI9vtoLpWR8g9duCdK4O2XCLZx_Or_fvWfC_O9QqJXKbh1EnpbXF_pTTjdj3UD1TOFXSsrZWDO1il3eDGTRGZQY5U1Du_p0cif_JwMr_d09qoZzBI0_r_QPJiiLaQWpoAeOwZT9kDN4fJlF0ATTs5DmjdbI9eaT6uoRRWmdEVxwLFpU9A-x3LPlp9ZZ7Qv1yEwglpuskCINPisIJelfxPxTovMO');"></div>
+</div>
+<h3 class="text-text-primary-light font-headline font-bold text-lg mb-1">Commerce Odyssey</h3>
+<p class="text-sm text-text-secondary-light">E-commerce, Retail</p>
+</div>
+<div class="group cursor-pointer content-overlay-panel rounded-xl p-4 shadow-overlay-dark hover:border-narrative-blue/50 transition-all">
+<div class="w-full h-full aspect-[4/3] bg-overlay-light rounded-lg overflow-hidden mb-4 border border-white/5">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Modern cooking blog template with large imagery" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD1CCNsNHlohtAtYYBCgY4kjJLNGjD-bbny_eBB7N3MnD3OWWCpA-pLE0YdpZf2taFRpeMKIc8H7-9UuZTEJRsIRU2YdG8_bpMuLUcniDDA1yW7oS5rWqhZUZohPZPOuwssMxrszt9GvJ36GoPDP8eW-l-pPBWf-cr328dQbE7pcO3oV1lmilWwfqosG5_HSlC4uRAvEQH4An_ScKHC0tb8m1uX36VSB1kJKJCKfDeuYamNhxuRNHpA692d8sof6i3iBQV9r-QZKQ_C');"></div>
+</div>
+<h3 class="text-text-primary-light font-headline font-bold text-lg mb-1">Narrative Scrolls</h3>
+<p class="text-sm text-text-secondary-light">Blog, Lifestyle</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Contact Form Section -->
+<section class="cinematic-section text-center bg-narrative-red" id="contact">
+<div class="full-screen-bg"></div>
+<div class="relative z-10 max-w-4xl mx-auto px-6 py-16">
+<div class="content-overlay-panel rounded-lg p-8 md:p-12">
+<h2 class="subheadline-cinematic text-text-primary-light mb-6">
+                        Connect With <span class="text-narrative-cyan">Your Vision</span>.
+                    </h2>
+<p class="body-text-cinematic text-text-secondary-light text-xl max-w-3xl mx-auto mb-10">
+                        Share your aspirations and let us bring them to life. Every great journey begins with a single message.
+                    </p>
+
+<form id="contactForm" class="space-y-6 text-left">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label for="name" class="block text-sm font-medium text-text-primary-light mb-2 font-body">Name</label>
+<input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    required
+                                    class="w-full px-4 py-3 bg-overlay-light border border-white/10 rounded-lg text-text-primary-light placeholder-text-secondary-light focus:outline-none focus:border-narrative-orange transition-colors"
+                                    placeholder="Your name"
+                                />
+</div>
+<div>
+<label for="email" class="block text-sm font-medium text-text-primary-light mb-2 font-body">Email</label>
+<input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    required
+                                    class="w-full px-4 py-3 bg-overlay-light border border-white/10 rounded-lg text-text-primary-light placeholder-text-secondary-light focus:outline-none focus:border-narrative-orange transition-colors"
+                                    placeholder="your@email.com"
+                                />
+</div>
+</div>
+
+<div>
+<label for="subject" class="block text-sm font-medium text-text-primary-light mb-2 font-body">Subject</label>
+<input
+                                type="text"
+                                id="subject"
+                                name="subject"
+                                class="w-full px-4 py-3 bg-overlay-light border border-white/10 rounded-lg text-text-primary-light placeholder-text-secondary-light focus:outline-none focus:border-narrative-orange transition-colors"
+                                placeholder="What's on your mind?"
+                            />
+</div>
+
+<div>
+<label for="message" class="block text-sm font-medium text-text-primary-light mb-2 font-body">Message</label>
+<textarea
+                                id="message"
+                                name="message"
+                                rows="6"
+                                required
+                                class="w-full px-4 py-3 bg-overlay-light border border-white/10 rounded-lg text-text-primary-light placeholder-text-secondary-light focus:outline-none focus:border-narrative-orange transition-colors resize-none"
+                                placeholder="Share your vision with us..."
+                            ></textarea>
+</div>
+
+<div id="formMessage" class="hidden p-4 rounded-lg"></div>
+
+<button
+                            type="submit"
+                            id="submitBtn"
+                            class="w-full py-4 rounded-full bg-narrative-orange text-text-primary-light font-bold text-lg hover:shadow-[0_0_30px_rgba(204,85,0,0.6)] transition-all shadow-lg flex items-center justify-center gap-2 font-headline"
+                        >
+<span id="submitText">Send Your Message</span>
+<span class="material-symbols-outlined">send</span>
+</button>
+</form>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-narrative-blue text-text-secondary-light py-10 border-t border-white/5 text-center px-4">
+<div class="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-sm">
+<div class="flex items-center gap-3 text-base">
+<div class="size-6 text-narrative-orange">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+<polyline points="2 17 12 22 22 17"></polyline>
+<polyline points="2 12 12 17 22 12"></polyline>
+</svg>
+</div>
+<span>© 2024 YENZE Inc.</span>
+</div>
+<div class="flex gap-8 text-base font-body">
+<a class="hover:text-text-primary-light transition-colors" href="#">Manifesto</a>
+<a class="hover:text-text-primary-light transition-colors" href="#">Guidance</a>
+<a class="hover:text-text-primary-light transition-colors" href="#">X</a>
+<a class="hover:text-text-primary-light transition-colors" href="#">Insta</a>
+</div>
+</div>
+</footer>
+
+<script>
+    // Contact Form Handling with YENZE Form System
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const formMessage = document.getElementById('formMessage');
+
+        // Disable button and show loading state
+        submitBtn.disabled = true;
+        submitText.textContent = 'Sending...';
+        formMessage.classList.add('hidden');
+
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value || 'Contact Form Submission',
+            message: document.getElementById('message').value,
+            site_url: window.location.href
+        };
+
+        try {
+            const response = await fetch('https://yenze.io/api/submit-form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Success message
+                formMessage.textContent = data.message || 'Thank you! Your message has been sent successfully.';
+                formMessage.className = 'p-4 rounded-lg bg-narrative-orange/20 border border-narrative-orange text-text-primary-light';
+                formMessage.classList.remove('hidden');
+
+                // Reset form
+                document.getElementById('contactForm').reset();
+            } else {
+                // Error message
+                formMessage.textContent = data.error || 'Something went wrong. Please try again.';
+                formMessage.className = 'p-4 rounded-lg bg-red-500/20 border border-red-500 text-red-200';
+                formMessage.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            formMessage.textContent = 'Network error. Please check your connection and try again.';
+            formMessage.className = 'p-4 rounded-lg bg-red-500/20 border border-red-500 text-red-200';
+            formMessage.classList.remove('hidden');
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitText.textContent = 'Send Your Message';
+        }
+    });
+</script>
+</body></html>
