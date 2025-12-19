@@ -3397,42 +3397,55 @@
                     // Wait a bit for the canvas iframe to be ready
                     setTimeout(() => {
                         const canvas = document.getElementById('canvas');
-                        if (canvas && canvas.contentDocument) {
-                            // Write the template HTML to the iframe
-                            canvas.contentDocument.open();
-                            canvas.contentDocument.write(templateHTML);
-                            canvas.contentDocument.close();
+                        const emptyState = document.getElementById('emptyState');
 
-                            // Show the canvas
-                            canvas.style.display = 'block';
+                        console.log('[Template Load] Canvas element:', !!canvas);
+                        console.log('[Template Load] Empty state element:', !!emptyState);
+                        console.log('[Template Load] Canvas contentDocument:', !!canvas?.contentDocument);
 
-                            // Hide the empty state
-                            const emptyState = document.querySelector('.empty-state');
-                            if (emptyState) {
-                                emptyState.style.display = 'none';
-                            }
+                        if (canvas) {
+                            try {
+                                // Write the template HTML to the iframe
+                                const doc = canvas.contentDocument || canvas.contentWindow.document;
+                                doc.open();
+                                doc.write(templateHTML);
+                                doc.close();
 
-                            console.log('[Template Load] Template inserted into canvas iframe');
+                                // Show the canvas
+                                canvas.style.display = 'block';
 
-                            // Show success message
-                            if (typeof showNotification === 'function') {
-                                showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
+                                // Hide the empty state
+                                if (emptyState) {
+                                    emptyState.style.display = 'none';
+                                }
+
+                                console.log('[Template Load] ✓ Template inserted into canvas iframe');
+
+                                // Show success message
+                                if (typeof showNotification === 'function') {
+                                    showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
+                                } else {
+                                    console.log('[Template Load] showNotification not available');
+                                }
+
+                                // Clear template from localStorage after successful load
+                                setTimeout(() => {
+                                    localStorage.removeItem('templateHTML');
+                                    localStorage.removeItem('templateName');
+                                    localStorage.removeItem('templateId');
+                                    console.log('[Template Load] ✓ LocalStorage cleared');
+                                }, 2000);
+                            } catch (error) {
+                                console.error('[Template Load] ✗ Error writing to iframe:', error);
                             }
                         } else {
-                            console.error('[Template Load] Canvas iframe not ready');
+                            console.error('[Template Load] ✗ Canvas element not found');
                         }
-
-                        // Clear template from localStorage after a delay
-                        setTimeout(() => {
-                            localStorage.removeItem('templateHTML');
-                            localStorage.removeItem('templateName');
-                            localStorage.removeItem('templateId');
-                        }, 1000);
 
                         // Remove ?template=true from URL
                         const newUrl = window.location.pathname;
                         window.history.replaceState({}, '', newUrl);
-                    }, 1500);
+                    }, 2000);
                 }
             }
 
