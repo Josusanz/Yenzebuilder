@@ -329,38 +329,63 @@
 
         // Load individual template preview
         async function loadTemplatePreview(templateId) {
+            const previewContainer = document.getElementById(`preview-${templateId}`);
+
             try {
-                const response = await fetch(`/templates/${templateId}.html`);
-                if (!response.ok) throw new Error('Failed to load');
+                console.log(`[Preview] Loading template: ${templateId}`);
+                const response = await fetch(`/templates/${templateId}.html?v=${Date.now()}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
 
                 const html = await response.text();
-                const previewContainer = document.getElementById(`preview-${templateId}`);
+                console.log(`[Preview] Loaded ${html.length} bytes for ${templateId}`);
 
                 if (previewContainer) {
                     // Create iframe with proper scaling
                     const iframe = document.createElement('iframe');
-                    iframe.sandbox = 'allow-same-origin';
+                    iframe.sandbox = 'allow-same-origin allow-scripts';
                     iframe.scrolling = 'no';
-                    iframe.style.cssText = 'width: 333.33%; height: 333.33%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0;';
+                    iframe.style.cssText = 'width: 333.33%; height: 333.33%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0; position: absolute; top: 0; left: 0;';
 
-                    // Write HTML to iframe
+                    // Clear container and add iframe
                     previewContainer.innerHTML = '';
                     previewContainer.appendChild(iframe);
 
+                    // Wait for iframe to be ready
+                    iframe.onload = () => {
+                        console.log(`[Preview] iframe loaded for ${templateId}`);
+                    };
+
+                    // Write HTML to iframe
                     const doc = iframe.contentDocument || iframe.contentWindow.document;
                     doc.open();
                     doc.write(html);
                     doc.close();
 
-                    // Re-add badge
+                    // Re-add badge on top
                     const badge = document.createElement('div');
-                    badge.className = templates.find(t => t.id === templateId).isPremium ? 'template-badge badge-premium' : 'template-badge badge-free';
-                    badge.textContent = templates.find(t => t.id === templateId).isPremium ? 'PREMIUM' : 'FREE';
+                    const template = templates.find(t => t.id === templateId);
+                    badge.className = template.isPremium ? 'template-badge badge-premium' : 'template-badge badge-free';
+                    badge.textContent = template.isPremium ? 'PREMIUM' : 'FREE';
+                    badge.style.position = 'absolute';
+                    badge.style.top = '12px';
+                    badge.style.right = '12px';
+                    badge.style.zIndex = '10';
                     previewContainer.appendChild(badge);
+
+                    console.log(`[Preview] ✓ Successfully rendered ${templateId}`);
                 }
             } catch (error) {
-                console.error(`Failed to load preview for ${templateId}:`, error);
-                // Keep the loading/fallback state
+                console.error(`[Preview] ✗ Failed to load ${templateId}:`, error);
+                if (previewContainer) {
+                    previewContainer.innerHTML = `
+                        <div style="width: 100%; height: 100%; background: #fee; display: flex; align-items: center; justify-content: center; color: #c00; font-size: 12px; text-align: center; padding: 20px;">
+                            Failed to load preview<br/>${error.message}
+                        </div>
+                    `;
+                }
             }
         }
 
