@@ -365,7 +365,7 @@
 
             try {
                 console.log(`[Preview] Loading template: ${templateId}`);
-                const response = await fetch(`/templates/${templateId}.html?v=${Date.now()}`);
+                const response = await fetch(`/templates/${templateId}.html?v=20241219-2`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -450,7 +450,7 @@
             if (availableTemplates.includes(templateId)) {
                 try {
                     // Fetch the template HTML
-                    const response = await fetch(`/templates/${templateId}.html`);
+                    const response = await fetch(`/templates/${templateId}.html?v=20241219-2`);
 
                     if (!response.ok) {
                         throw new Error('Failed to load template');
