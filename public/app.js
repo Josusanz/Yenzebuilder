@@ -4293,6 +4293,12 @@ if (validationForm) {
         console.log('[LoadProject] Paste mode:', isPasteMode);
         console.log('[LoadProject] Template mode:', isTemplateMode);
 
+        // Debug localStorage
+        const hasTemplateHTML = localStorage.getItem('templateHTML');
+        console.log('[LoadProject] localStorage has templateHTML:', hasTemplateHTML ? `Yes (${hasTemplateHTML.length} bytes)` : 'No');
+        console.log('[LoadProject] localStorage templateName:', localStorage.getItem('templateName'));
+        console.log('[LoadProject] localStorage templateId:', localStorage.getItem('templateId'));
+
         // Check for template HTML from templates page
         if (isTemplateMode && localStorage.getItem('templateHTML')) {
             const templateHTML = localStorage.getItem('templateHTML');

@@ -253,6 +253,7 @@
             <button class="tab" data-filter="business">Business</button>
             <button class="tab" data-filter="portfolio">Portfolio</button>
             <button class="tab" data-filter="landing">Landing Page</button>
+            <button class="tab" data-filter="linktree">Linktree</button>
         </div>
 
         <div class="templates-grid" id="templatesGrid">
@@ -311,6 +312,46 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop&q=80',
+                html: null
+            },
+            {
+                id: 'linktree-creative',
+                name: 'Creative Links',
+                description: 'Minimalist linktree-style profile with dark mode and smooth animations',
+                category: 'linktree',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=800&h=600&fit=crop&q=80',
+                html: null
+            },
+            {
+                id: 'linktree-business',
+                name: 'Business Pro',
+                description: 'Professional corporate linktree with verified badge and contact form',
+                category: 'linktree',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80',
+                html: null
+            },
+            {
+                id: 'linktree-influencer',
+                name: 'Influencer Vibes',
+                description: 'Vibrant pastel design perfect for lifestyle bloggers and content creators',
+                category: 'linktree',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&q=80',
+                html: null
+            },
+            {
+                id: 'linktree-creator',
+                name: 'Content Creator',
+                description: 'Bold dark theme with video preview for YouTubers and streamers',
+                category: 'linktree',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=600&fit=crop&q=80',
                 html: null
             }
         ];
@@ -441,7 +482,7 @@
 
         // View demo in new window
         function viewDemo(templateId) {
-            const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect'];
+            const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect', 'linktree-creative', 'linktree-business', 'linktree-influencer', 'linktree-creator'];
 
             if (availableTemplates.includes(templateId)) {
                 window.open(`/templates/${templateId}.html?v=20241219-3`, '_blank');
@@ -465,7 +506,7 @@
             }
 
             // Check if this template has an HTML file
-            const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect'];
+            const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect', 'linktree-creative', 'linktree-business', 'linktree-influencer', 'linktree-creator'];
 
             if (availableTemplates.includes(templateId)) {
                 try {

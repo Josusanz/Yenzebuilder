@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Vibrant Content Creator Profile</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#D0BB95",
+                        "background-light": "#f7f7f6",
+                        "background-dark": "#1d1a15",
+                        "card-dark": "#1e2933"
+                    },
+                    fontFamily: {
+                        display: "Inter"
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        lg: "2rem",
+                        xl: "3rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        .hover-bounce {
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .hover-bounce:hover {
+            transform: scale(1.02);
+        }
+        .hover-bounce:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen overflow-x-hidden">
+    <!-- Ambient Background Glow -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-0 right-0 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+
+    <div class="relative z-10 flex flex-col items-center w-full min-h-screen py-12 px-4">
+        <!-- Main Content Column -->
+        <main class="w-full max-w-[480px] flex flex-col gap-8">
+            <!-- Profile Header -->
+            <section class="flex flex-col items-center text-center gap-4">
+                <div class="relative group cursor-pointer">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-cyan-400 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
+                    <div class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-background-dark">
+                        <div class="w-full h-full bg-center bg-cover" data-alt="Portrait of a smiling young man looking at the camera" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC0m5J6sn07RkEADIQz1IiMnbNPD6V3QNHLk-lMWq11G-zDGFRQ3Bu74RvVgztZym7k9PRhtTW1JHnsa952wp9oMZk_gxpCSYjXP5wkRUqtbY19_gbjvIEwxGpOBV-2lMUPqMz1NXdGFgeKCLTLGV7twdJJ2Lhw567MEYF4I2p0J50hM8ZPkXzRSH1hDgsXuCJAUgi08_QAEnpnDR1HcRnkUrbpGTJl5yT1LVaJoG9L22eCJZFABIDwbZkzTgW940yNVtfent1NC3Q");'></div>
+                    </div>
+                    <div class="absolute bottom-0 right-0 bg-green-500 border-4 border-background-dark w-8 h-8 rounded-full flex items-center justify-center" title="Online">
+                        <span class="material-symbols-outlined text-white text-[16px] font-bold">bolt</span>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <h1 class="text-2xl font-black tracking-tight flex items-center justify-center gap-2">
+                        @CreativeSoul
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    </h1>
+                    <p class="text-slate-500 dark:text-slate-400 font-medium text-sm max-w-[300px] mx-auto leading-relaxed">
+                        Making chaos look organized. 🎮 + 📸 <br/> New video every Tuesday!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Social Row -->
+            <section class="flex justify-center gap-4">
+                <a class="group flex items-center justify-center w-12 h-12 bg-card-dark rounded-full hover:bg-primary/20 hover:text-primary transition-colors duration-200" href="#">
+                    <span class="material-symbols-outlined text-xl">mail</span>
+                </a>
+                <a class="group flex items-center justify-center w-12 h-12 bg-card-dark rounded-full hover:bg-primary/20 hover:text-primary transition-colors duration-200" href="#">
+                    <span class="material-symbols-outlined text-xl">forum</span>
+                </a>
+                <a class="group flex items-center justify-center w-12 h-12 bg-card-dark rounded-full hover:bg-primary/20 hover:text-primary transition-colors duration-200" href="#">
+                    <span class="material-symbols-outlined text-xl">share</span>
+                </a>
+            </section>
+
+            <!-- Link Stack -->
+            <section class="flex flex-col gap-4 w-full">
+                <a class="hover-bounce relative group flex items-center w-full p-1 bg-card-dark hover:bg-white dark:hover:bg-white rounded-full transition-colors duration-300 overflow-hidden border border-slate-800 hover:border-white" href="#">
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="flex items-center justify-center w-12 h-12 bg-primary text-white rounded-full shrink-0 relative z-10">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_display</span>
+                    </div>
+                    <span class="flex-1 text-center font-bold text-lg text-white group-hover:text-black transition-colors relative z-10">
+                        Watch New Video
+                    </span>
+                    <div class="flex items-center justify-center w-12 h-12 text-slate-500 group-hover:text-black shrink-0 relative z-10 transition-transform group-hover:translate-x-1">
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </div>
+                </a>
+
+                <a class="hover-bounce flex items-center w-full p-1 bg-card-dark hover:bg-card-dark/80 rounded-full border border-slate-800 transition-colors" href="#">
+                    <div class="flex items-center justify-center w-12 h-12 bg-[#243647] text-white rounded-full shrink-0">
+                        <span class="material-symbols-outlined">music_note</span>
+                    </div>
+                    <span class="flex-1 text-center font-bold text-base text-white">
+                        TikTok Shenanigans
+                    </span>
+                    <div class="flex items-center justify-center w-12 h-12 text-slate-500 shrink-0"></div>
+                </a>
+
+                <a class="hover-bounce flex items-center w-full p-1 bg-card-dark hover:bg-card-dark/80 rounded-full border border-slate-800 transition-colors" href="#">
+                    <div class="flex items-center justify-center w-12 h-12 bg-[#243647] text-white rounded-full shrink-0">
+                        <span class="material-symbols-outlined">photo_camera</span>
+                    </div>
+                    <span class="flex-1 text-center font-bold text-base text-white">
+                        Daily Updates
+                    </span>
+                    <div class="flex items-center justify-center w-12 h-12 text-slate-500 shrink-0"></div>
+                </a>
+
+                <a class="hover-bounce flex items-center w-full p-1 bg-card-dark hover:bg-card-dark/80 rounded-full border-2 border-dashed border-primary/50 hover:border-primary transition-colors" href="#">
+                    <div class="flex items-center justify-center w-12 h-12 bg-[#243647] text-primary rounded-full shrink-0">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+                    </div>
+                    <span class="flex-1 text-center font-bold text-base text-white">
+                        Shop the Drop
+                    </span>
+                    <div class="flex items-center justify-center w-12 h-12 text-slate-500 shrink-0"></div>
+                </a>
+            </section>
+
+            <!-- Latest Content Preview -->
+            <section class="w-full bg-card-dark rounded-3xl p-4 border border-slate-800/50">
+                <div class="flex items-center justify-between mb-3 px-2">
+                    <h3 class="text-white font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        Latest Drop
+                    </h3>
+                    <span class="text-xs text-slate-400 font-medium">2 hours ago</span>
+                </div>
+                <div class="relative aspect-video w-full rounded-2xl overflow-hidden group cursor-pointer">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors z-10"></div>
+                    <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity transform scale-75 group-hover:scale-100 duration-300">
+                        <div class="w-16 h-16 bg-primary/90 rounded-full flex items-center justify-center backdrop-blur-sm shadow-xl">
+                            <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Abstract colorful gradient background representing a video thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtEDCgX7UZoasXwpIAw_nKqC6MF-6GOL35-hfXR8eXCfGDIflS8U4BFD3jK7_pg9iM-9tEv9Ba-rAj_d2Ht8rcEoydFS-kuHDkmX0yqQSAkVffqGF7u5u-peyQEEvioK-G6VIOUbDl4zxbh6xM2_pypQ3YHI84E0QGmtWUj5RBToFenWshl08uN0zUpz5mJ3JdC-8h_FS-JmDRW0B_us_aQGdAR-gRBOugZS8fGy7hLgEsXJ6oAmIbtDk9zGbBBl4ngkiq1Ak7688");'></div>
+                </div>
+                <div class="mt-3 px-2">
+                    <p class="text-white font-bold leading-tight">Setup Tour 2024: The Ultimate Creator Studio Upgrade</p>
+                </div>
+            </section>
+
+            <!-- Footer / Newsletter -->
+            <section class="mt-4 pt-8 border-t border-slate-800 w-full flex flex-col gap-4">
+                <div class="text-center">
+                    <h3 class="text-white font-bold">Join the Squad</h3>
+                    <p class="text-slate-400 text-sm mt-1">Get exclusive behind the scenes &amp; drops.</p>
+                </div>
+                <form id="newsletterForm" class="flex w-full gap-2">
+                    <input id="email" class="flex-1 bg-card-dark border-transparent focus:border-primary focus:ring-0 rounded-full px-5 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all" placeholder="your@email.com" type="email" required/>
+                    <button class="bg-white hover:bg-slate-200 text-black font-bold rounded-full px-6 py-3 text-sm transition-colors" type="submit">
+                        Subscribe
+                    </button>
+                </form>
+                <p id="formMessage" class="text-sm text-center hidden"></p>
+                <div class="flex items-center justify-center gap-2 mt-8 opacity-40 hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-outlined text-lg">eco</span>
+                    <span class="text-xs font-semibold">Linktree</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Newsletter Form Integration with YENZE API
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formMessage = document.getElementById('formMessage');
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Joining...';
+            formMessage.className = 'text-sm text-center hidden';
+
+            const email = document.getElementById('email').value;
+
+            const formData = {
+                name: 'Squad Member',
+                email: email,
+                subject: 'Squad Subscription',
+                message: 'New squad member subscription from creator profile',
+                site_url: window.location.href
+            };
+
+            try {
+                const response = await fetch('https://yenze.io/api/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    formMessage.textContent = '✓ Welcome to the squad! Check your inbox.';
+                    formMessage.className = 'text-sm text-center text-green-400';
+                    e.target.reset();
+                } else {
+                    throw new Error(result.error || 'Failed to subscribe');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                formMessage.textContent = '✗ Failed to join. Please try again.';
+                formMessage.className = 'text-sm text-center text-red-400';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        });
+    </script>
+</body>
+</html>
