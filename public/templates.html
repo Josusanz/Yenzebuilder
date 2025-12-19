@@ -153,15 +153,12 @@
         }
 
         .template-preview iframe {
-            width: 1400px;
-            height: 1000px;
+            width: 333.33%;
+            height: 333.33%;
             border: none;
             pointer-events: none;
-            transform: scale(0.25);
-            transform-origin: top left;
-            position: absolute;
-            top: 0;
-            left: 0;
+            transform: scale(0.3);
+            transform-origin: 0 0;
         }
 
         .template-badge {
@@ -282,7 +279,7 @@
         ];
 
         // Render templates
-        function renderTemplates(filter = 'all') {
+        async function renderTemplates(filter = 'all') {
             const grid = document.getElementById('templatesGrid');
 
             let filtered = templates;
@@ -296,10 +293,32 @@
                 }
             }
 
-            grid.innerHTML = filtered.map(template => `
+            // Load HTML content for each template to create previews
+            const templatesWithPreviews = await Promise.all(filtered.map(async (template) => {
+                try {
+                    const response = await fetch(`/templates/${template.id}.html`);
+                    const html = await response.text();
+                    const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
+                    return { ...template, previewDataUrl };
+                } catch (error) {
+                    console.error(`Failed to load preview for ${template.id}:`, error);
+                    return { ...template, previewDataUrl: null };
+                }
+            }));
+
+            grid.innerHTML = templatesWithPreviews.map(template => `
                 <div class="template-card" onclick="selectTemplate('${template.id}', ${template.isPremium})">
                     <div class="template-preview">
-                        <iframe src="/templates/${template.id}.html" sandbox="allow-same-origin" loading="lazy"></iframe>
+                        ${template.previewDataUrl ? `
+                            <iframe
+                                src="${template.previewDataUrl}"
+                                sandbox="allow-same-origin"
+                                scrolling="no"
+                                loading="lazy"
+                            ></iframe>
+                        ` : `
+                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        `}
                         <div class="template-badge ${template.isPremium ? 'badge-premium' : 'badge-free'}">
                             ${template.isPremium ? 'PREMIUM' : 'FREE'}
                         </div>
