@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Jeff Nox | Digital Architect</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a66f3f",
+                        "background-light": "#fbfaf9",
+                        "background-dark": "#1e1914",
+                        "stone-light": "#e7e5e4",
+                        "stone-dark": "#292524",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                    spacing: {
+                        '128': '32rem',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Simple Fade In Animation Utility */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#181411] dark:text-[#fbfaf9] font-display antialiased overflow-x-hidden selection:bg-primary/20 selection:text-primary">
+<!-- Sticky Glassmorphism Navbar -->
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-stone-200/50 dark:border-stone-800/50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md transition-all duration-300">
+<div class="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+<!-- Logo -->
+<a class="flex items-center gap-2 group" href="#">
+<div class="h-8 w-8 bg-primary text-white flex items-center justify-center rounded-lg font-bold text-sm tracking-tighter group-hover:rotate-3 transition-transform">
+                    JN
+                </div>
+<span class="text-lg font-bold tracking-tight hidden sm:block">JEFF NOX</span>
+</a>
+<!-- Desktop Links -->
+<div class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#work">Work</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#process">Process</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#about">About</a>
+<a class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-full transition-all hover:shadow-lg hover:shadow-primary/20" href="#contact">
+                    Let's Talk
+                </a>
+</div>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden p-2 text-current">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<main class="relative w-full flex flex-col pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center justify-center px-6 md:px-12 py-20 overflow-hidden">
+<div class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Text Content -->
+<div class="lg:col-span-7 flex flex-col gap-8 order-2 lg:order-1 fade-in-up">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-stone-100 dark:bg-stone-800 rounded-full w-fit border border-stone-200 dark:border-stone-700">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold tracking-wide uppercase text-stone-500 dark:text-stone-400">Available for commissions</span>
+</div>
+<h1 class="text-5xl md:text-7xl xl:text-8xl font-black tracking-tighter leading-[0.95] text-stone-900 dark:text-stone-50">
+                        ARCHITECT <br/>
+<span class="text-stone-400 dark:text-stone-600 font-light italic">OF THE</span> <br/>
+                        METAVERSE
+                    </h1>
+<p class="text-lg md:text-xl text-stone-600 dark:text-stone-400 max-w-lg leading-relaxed border-l-2 border-primary pl-6">
+                        Curating digital rarity through high-fidelity virtual architecture and immersive NFT storytelling.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<a class="h-12 px-8 flex items-center justify-center bg-stone-900 dark:bg-white text-white dark:text-stone-900 font-bold rounded-lg hover:translate-y-[-2px] transition-transform" href="#work">
+                            View Selected Works
+                        </a>
+<a class="h-12 px-8 flex items-center justify-center border border-stone-300 dark:border-stone-700 font-bold rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors" href="#process">
+                            The Process
+                        </a>
+</div>
+</div>
+<!-- Visual -->
+<div class="lg:col-span-5 relative order-1 lg:order-2 fade-in-up delay-200">
+<div class="aspect-[4/5] w-full relative rounded-2xl overflow-hidden shadow-2xl shadow-stone-200 dark:shadow-black/50">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent mix-blend-overlay z-10"></div>
+<div class="w-full h-full bg-cover bg-center transition-transform duration-1000 hover:scale-105" data-alt="Abstract 3D architectural geometric structure in earth tones" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqRDfXkiq6rIWEeekTHFiFmB2ITeqTIB8sO0tGS2Z6mmRqTGaH3bnqmtBao5xV_mFNo39V9th2b_y8hEyaOUDHTTBP4ljaB_nZPQ_maZBIfAnA6hM3-4DDpXUL2ER313xwrnxm3QGPz9jURDKQVDTMDyL1mQgCZTi8oouF_ifntWcJVU4YD9fo_icLJcYVZW1JQsdO2eHIpkNbJpF1POJXME3EKdsvzE5BfF8L-f4m4tMSFm5Jz2JzJnBIB6ofsECx5NRxEPbmErue');">
+</div>
+<!-- Floating Card -->
+<div class="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-black/80 backdrop-blur-md p-4 rounded-xl border border-white/20 z-20">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Latest Drop</p>
+<p class="text-sm font-bold">The Ethereal Block #042</p>
+</div>
+<span class="material-symbols-outlined text-primary">arrow_outward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Selected Works (Asymmetrical Grid) -->
+<section class="py-24 px-6 md:px-12 bg-white dark:bg-stone-900/50" id="work">
+<div class="max-w-7xl mx-auto flex flex-col gap-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 dark:border-stone-800 pb-8 fade-in-up">
+<div>
+<h2 class="text-sm font-bold text-primary mb-2 tracking-widest uppercase">Portfolio</h2>
+<h3 class="text-4xl md:text-5xl font-bold tracking-tight">Selected Works</h3>
+</div>
+<p class="text-stone-500 dark:text-stone-400 max-w-xs text-right hidden md:block">
+                        Explorations in digital space, texture, and light across the web3 ecosystem.
+                    </p>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 auto-rows-[400px]">
+<!-- Item 1: Large Feature -->
+<div class="lg:col-span-8 row-span-1 md:row-span-2 group relative overflow-hidden rounded-2xl cursor-pointer fade-in-up delay-100">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Futuristic landscape with floating obsidian structures" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBFAU-ctuk1Yi0by2Ep_DjPr_VvHKvi5uA0fCsxbC7SqIAmsnuFKoNV3WI4zerVkjC8xh6W3g2UrQxYfjTsQl3qBzxR3t_uiA735A7r0_Dp_d4KZC_4TEdtSNQD2_Zf5kPMHd3BOY3vZF9OSm2ZzNAWzAiy_n4SfA-F4QsNOyIrJyguXayv538MSOQ88r5XACdpkcqSyQFO_ucmksq3lpT1M8dE3LThWHJZ1wC-rprZ0_Zv7w5lXdzEZdQ3ovukHhO08fZn123WTzJC');">
+</div>
+<div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+<p class="text-white/80 text-sm font-medium mb-2">Virtual Real Estate</p>
+<h4 class="text-white text-3xl font-bold">Obsidian Virtuals</h4>
+</div>
+</div>
+<!-- Item 2: Tall Portrait -->
+<div class="lg:col-span-4 row-span-1 md:row-span-2 group relative overflow-hidden rounded-2xl cursor-pointer fade-in-up delay-200">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Digital sculpture of a cyberpunk renaissance bust" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3ODQ3XNnUE4VqnHTZ9ZJKyNxSip2etAiOVAzYqV3DMj58mAXmBfFRlAmlSHecAt4N2gmdxfhOqWiveRGfjlY_M_YLUT7Ack3ytTt1WIKHko6JTyY6s73x9ziyNo043DdxT25VgPCUsD-Wo1FfjjtuKBEGG0PyqTPIiFal1WoTQ3Hbp26SStvXKtuUEIQ97YCodjtdxKjveU24lLfAvG9N8dZZpQ2cDotdm_qTb8c2PyNA0B_AC1B7sRA-wztd6W3oCmIdw5sGdrqa');">
+</div>
+<div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+<p class="text-white/80 text-sm font-medium mb-2">Digital Sculpture</p>
+<h4 class="text-white text-3xl font-bold">Cyber Renaissance</h4>
+</div>
+</div>
+<!-- Item 3: Standard Card -->
+<div class="lg:col-span-4 row-span-1 group relative overflow-hidden rounded-2xl cursor-pointer fade-in-up delay-100">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Abstract fluid golden shapes on dark background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPzOE40kOs-Fk0ii9zWp1f6FWnLsDfKoZUoZFxbowzggoM2EFLPg0sQ08bNY0Aad5DL3La7fgDVuRPAbOjIARqshBAPoAoYWtkXy0SDVsaJQFPzOwmuq34sm8ZLHqmnmgkPQtFw8sCC5o3CE6_RfbUVukKexAQu1walURvIVfFMO7B7chVa1fBmJGQQmzH8813P6TJeUG7jQuFWCkbcPx3-2lSb4NI3jwxRFxQfzJP4aw44VFxCSEaNUsUQIDibCnygu_uahSh7m5v');">
+</div>
+<div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+<p class="text-white/80 text-sm font-medium mb-2">NFT Collection</p>
+<h4 class="text-white text-2xl font-bold">Fluid Gold</h4>
+</div>
+</div>
+<!-- Item 4: Wide Card -->
+<div class="lg:col-span-8 row-span-1 group relative overflow-hidden rounded-2xl cursor-pointer fade-in-up delay-200">
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="Minimalist white architectural interior render" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJVa3-hXaX6u-KeS6gFaSXaoxsiM5Zzuf4B2U_gEBuszGoB89-Fp6dwH-GIhroi5FbBxRHgm9nBPm9bNSaxqtx0AaGv_o8XRdlr_yHIzD6VJqrubuCoZ0zT8hoEeitDZhQ2SeEqH_iuWtnI53vfsUO29bWn1_mc5-okr9S0jckUk-zVw9Tro2kTYEwDmgE3DfeA2fqJxRj75guhgtPS_mZMXguDY-KYP1XTWpJFvihJCI23cUqAmMOQ58cm6THy1Decs8qnEGcIDxi');">
+</div>
+<div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+<p class="text-white/80 text-sm font-medium mb-2">Metaverse Architecture</p>
+<h4 class="text-white text-2xl font-bold">The White Void</h4>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-8">
+<button class="flex items-center gap-2 text-primary font-bold hover:text-stone-900 dark:hover:text-white transition-colors">
+<span>View All Projects</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Process Section -->
+<section class="py-24 px-6 md:px-12 bg-stone-100 dark:bg-stone-900" id="process">
+<div class="max-w-7xl mx-auto">
+<div class="grid lg:grid-cols-12 gap-12 lg:gap-24">
+<!-- Title Column -->
+<div class="lg:col-span-4 flex flex-col gap-6 fade-in-up">
+<h2 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">THE <br/><span class="text-primary">PROCESS</span></h2>
+<p class="text-stone-600 dark:text-stone-400 text-lg">
+                            Creating immersive digital experiences requires more than just tools—it demands a philosophy of architectural precision.
+                        </p>
+<div class="h-px w-24 bg-primary mt-4"></div>
+</div>
+<!-- Steps Column -->
+<div class="lg:col-span-8 grid md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-primary/50 transition-all duration-300 group fade-in-up delay-100">
+<div class="w-12 h-12 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">lightbulb</span>
+</div>
+<h3 class="text-xl font-bold mb-3">01. Concept</h3>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+                                Defining the narrative arc and emotional resonance of the digital asset before a single pixel is placed.
+                            </p>
+</div>
+<!-- Step 2 -->
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-primary/50 transition-all duration-300 group fade-in-up delay-200">
+<div class="w-12 h-12 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">architecture</span>
+</div>
+<h3 class="text-xl font-bold mb-3">02. Construct</h3>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+                                Building the 3D environment with high-fidelity renders, focusing on lighting, texture, and spatial awareness.
+                            </p>
+</div>
+<!-- Step 3 -->
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-primary/50 transition-all duration-300 group fade-in-up delay-300">
+<div class="w-12 h-12 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">token</span>
+</div>
+<h3 class="text-xl font-bold mb-3">03. Tokenize</h3>
+<p class="text-stone-500 dark:text-stone-400 text-sm leading-relaxed">
+                                Minting on the blockchain with verified scarcity, ensuring the digital artifact retains its provenance and value.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- About / Editorial Section -->
+<section class="py-24 px-6 md:px-12" id="about">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+<div class="relative rounded-2xl overflow-hidden aspect-square md:aspect-[4/5] fade-in-up">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Portrait of Jeff Nox in a minimalist studio setting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCUzsgKLAca66RACR4HAxRctDX5yGc_5i5rf7xA_YU3Sh86JplYNy9NuV6Fm_USqvuJur8WhkpKtp3qke-y0oeVxcJ5-83yn7TJbjBQs25JYj_soG_XUyRfZ2ctPx3wRCoRCyBK0MU6nf0jasLXojRU44z1EOo3gSfX635jNpxVtkbm4vHdGlDdJPjsqD4peeWnEOifjpK8nMtlrrbyTPKcL0mCHEP2OpaP2yFlmrSTw2QTnQ4r2xibWlWdGlXY5lfrkEcZCTKvnLCd'); filter: grayscale(100%) contrast(1.1);">
+</div>
+</div>
+<div class="flex flex-col gap-8 fade-in-up delay-100">
+<h2 class="text-3xl md:text-4xl font-bold leading-tight">
+                        "In the metaverse, design isn't just about aesthetics.<br/>
+<span class="text-primary italic font-serif">It's about presence.</span>"
+                    </h2>
+<div class="space-y-4 text-stone-600 dark:text-stone-400 leading-relaxed">
+<p>
+                            Jeff Nox is a digital architect bridging the gap between physical constraints and virtual possibilities. With a background in structural engineering and a passion for Web3, Jeff creates spaces that don't just exist—they envelop.
+                        </p>
+<p>
+                            His work has been featured in major NFT galleries and virtual expos. He believes that as our lives migrate online, the quality of our digital environments becomes the quality of our lives.
+                        </p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-6 pt-4">
+<div>
+<h4 class="text-2xl font-bold text-stone-900 dark:text-white">50+</h4>
+<p class="text-xs text-stone-500 uppercase tracking-wider mt-1">Projects Shipped</p>
+</div>
+<div>
+<h4 class="text-2xl font-bold text-stone-900 dark:text-white">12k</h4>
+<p class="text-xs text-stone-500 uppercase tracking-wider mt-1">Community Members</p>
+</div>
+<div>
+<h4 class="text-2xl font-bold text-stone-900 dark:text-white">4.5E</h4>
+<p class="text-xs text-stone-500 uppercase tracking-wider mt-1">Volume Traded</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section class="py-24 px-6 md:px-12 bg-stone-900 text-white relative overflow-hidden" id="contact">
+<!-- Background Decoration -->
+<div class="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 -ml-24 -mb-24 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="max-w-5xl mx-auto relative z-10">
+<div class="text-center mb-16 fade-in-up">
+<h2 class="text-4xl md:text-6xl font-black mb-6 tracking-tight">COLLABORATE ON<br/>THE FUTURE</h2>
+<p class="text-stone-400 text-lg max-w-xl mx-auto">
+                        Have a vision for a digital space or NFT collection? Let's build something the world hasn't seen yet.
+                    </p>
+</div>
+<div class="bg-white/5 backdrop-blur-sm border border-white/10 p-8 md:p-12 rounded-3xl max-w-3xl mx-auto fade-in-up delay-200">
+<form id="contactForm" class="space-y-6">
+<div class="grid md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-stone-400 ml-1" for="name">Name</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-stone-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="name" name="name" placeholder="Enter your name" type="text" required/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-stone-400 ml-1" for="email">Email</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-stone-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="email" name="email" placeholder="Enter your email" type="email" required/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-stone-400 ml-1" for="type">Project Type</label>
+<select class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-stone-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all [&>option]:bg-stone-900" id="type" name="type">
+<option>NFT Collection Design</option>
+<option>Virtual Architecture</option>
+<option>3D Brand Asset</option>
+<option>Other</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-stone-400 ml-1" for="message">Message</label>
+<textarea class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-stone-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="message" name="message" placeholder="Tell me about your vision..." rows="4" required></textarea>
+</div>
+
+<div id="formMessage" class="hidden p-4 rounded-xl"></div>
+
+<button type="submit" id="submitBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 transform hover:-translate-y-1">
+<span id="submitText">SEND INQUIRY</span>
+</button>
+</form>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-background-light dark:bg-background-dark py-12 px-6 md:px-12 border-t border-stone-200 dark:border-stone-800">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="h-6 w-6 bg-stone-900 dark:bg-white text-white dark:text-stone-900 flex items-center justify-center rounded font-bold text-xs">
+                        JN
+                    </div>
+<span class="text-sm font-bold tracking-tight">JEFF NOX © 2024</span>
+</div>
+<div class="flex gap-8">
+<a class="text-stone-500 hover:text-primary transition-colors text-sm font-medium" href="#">Twitter / X</a>
+<a class="text-stone-500 hover:text-primary transition-colors text-sm font-medium" href="#">Instagram</a>
+<a class="text-stone-500 hover:text-primary transition-colors text-sm font-medium" href="#">OpenSea</a>
+<a class="text-stone-500 hover:text-primary transition-colors text-sm font-medium" href="#">LinkedIn</a>
+</div>
+</div>
+</footer>
+</main>
+
+<script>
+    // Contact Form Handling with YENZE Form System
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const formMessage = document.getElementById('formMessage');
+
+        // Disable button and show loading state
+        submitBtn.disabled = true;
+        submitText.textContent = 'SENDING...';
+        formMessage.classList.add('hidden');
+
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: `Project Inquiry: ${document.getElementById('type').value}`,
+            message: document.getElementById('message').value,
+            site_url: window.location.href
+        };
+
+        try {
+            const response = await fetch('https://yenze.io/api/submit-form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Success message
+                formMessage.textContent = data.message || 'Thank you! Your inquiry has been sent successfully.';
+                formMessage.className = 'p-4 rounded-xl bg-primary/20 border border-primary text-white';
+                formMessage.classList.remove('hidden');
+
+                // Reset form
+                document.getElementById('contactForm').reset();
+            } else {
+                // Error message
+                formMessage.textContent = data.error || 'Something went wrong. Please try again.';
+                formMessage.className = 'p-4 rounded-xl bg-red-500/20 border border-red-500 text-red-200';
+                formMessage.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            formMessage.textContent = 'Network error. Please check your connection and try again.';
+            formMessage.className = 'p-4 rounded-xl bg-red-500/20 border border-red-500 text-red-200';
+            formMessage.classList.remove('hidden');
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitText.textContent = 'SEND INQUIRY';
+        }
+    });
+
+    // Simple Intersection Observer for scroll animations
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.fade-in-up');
+        animatedElements.forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    });
+</script>
+</body></html>
