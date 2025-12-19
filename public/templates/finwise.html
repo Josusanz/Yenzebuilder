@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>FinWise - Empower Your Finances</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <script>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinWise - Empower Your Finances</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "#4F86F7",
+              primary: "#4F86F7", // Bright blue from screenshots
               "background-light": "#FAFAFA",
               "background-dark": "#111827",
               "surface-light": "#FFFFFF",
@@ -30,10 +29,10 @@
               sans: ["Inter", "sans-serif"],
             },
             borderRadius: {
-              DEFAULT: "0.75rem",
-              "xl": "1rem",
-              "2xl": "1.5rem",
-              "3xl": "2rem",
+              DEFAULT: "0.75rem", // 12px
+              "xl": "1rem",      // 16px
+              "2xl": "1.5rem",   // 24px
+              "3xl": "2rem",     // 32px
             },
             boxShadow: {
                 'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
@@ -44,11 +43,9 @@
         },
       };
     </script>
-    <style>
-        html {
+<style>html {
             scroll-behavior: smooth;
-        }
-        ::-webkit-scrollbar {
+        }::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
@@ -60,8 +57,7 @@
         }
         .dark ::-webkit-scrollbar-thumb {
             background: #374151;
-        }
-        @keyframes float {
+        }@keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
@@ -71,8 +67,7 @@
         }
         .animate-float-delayed {
             animation: float 7s ease-in-out infinite 1s;
-        }
-        .mesh-gradient {
+        }.mesh-gradient {
             background-color: hsla(0, 0%, 98%, 1);
             background-image:
                 radial-gradient(at 40% 20%, hsla(220, 100%, 94%, 1) 0px, transparent 50%),
@@ -89,235 +84,508 @@
     </style>
 </head>
 <body class="font-sans text-text-light dark:text-text-dark bg-background-light dark:bg-background-dark antialiased transition-colors duration-300">
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex-shrink-0 flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xl shadow-glow">
+<nav class="fixed w-full z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-20 items-center">
+<div class="flex-shrink-0 flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xl shadow-glow">
                         F
                     </div>
-                    <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">FinWise</span>
-                </div>
-
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#features">Features</a>
-                    <a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#testimonials">Stories</a>
-                    <a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#pricing">Pricing</a>
-                    <a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Login</a>
-                    <a class="bg-primary hover:bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40" href="#">
+<span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">FinWise</span>
+</div>
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#features">Features</a>
+<a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#testimonials">Stories</a>
+<a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#pricing">Pricing</a>
+<a class="text-sm font-medium text-subtext-light dark:text-subtext-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Login</a>
+<a class="bg-primary hover:bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40" href="#">
                         Get Started
                     </a>
-                </div>
-
-                <div class="md:hidden flex items-center">
-                    <button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none">
-                        <span class="material-icons-round text-2xl">menu</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden mesh-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
-                <!-- Hero Text -->
-                <div class="lg:col-span-5 text-center lg:text-left mb-16 lg:mb-0">
-                    <h1 class="text-5xl lg:text-6xl font-display font-bold tracking-tight text-gray-900 dark:text-white mb-6 leading-[1.1]">
+</div>
+<div class="md:hidden flex items-center">
+<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline-none">
+<span class="material-icons-round text-2xl">menu</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden mesh-gradient">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
+<div class="lg:col-span-5 text-center lg:text-left mb-16 lg:mb-0">
+<h1 class="text-5xl lg:text-6xl font-display font-bold tracking-tight text-gray-900 dark:text-white mb-6 leading-[1.1]">
                         Grow Smarter, <br/>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">Invest with Confidence</span>
-                    </h1>
-
-                    <p class="text-lg text-subtext-light dark:text-subtext-dark mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">Invest with Confidence</span>
+</h1>
+<p class="text-lg text-subtext-light dark:text-subtext-dark mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
                         Smarter tools designed to help you grow your wealth effortlessly and take full control of your financial future today.
                     </p>
-
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a class="bg-primary text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1" href="#">
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+<a class="bg-primary text-white px-8 py-3.5 rounded-full font-medium transition-all shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1" href="#">
                             Start for free
                         </a>
-                        <a class="bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-8 py-3.5 rounded-full font-medium transition-all hover:bg-gray-50 dark:hover:bg-gray-800" href="#">
+<a class="bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 px-8 py-3.5 rounded-full font-medium transition-all hover:bg-gray-50 dark:hover:bg-gray-800" href="#">
                             See how it works
                         </a>
+</div>
+<div class="mt-10 flex items-center justify-center lg:justify-start gap-4">
+<div class="flex -space-x-3">
+<img alt="User 1" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQsGwlUapjlr90O75GO65-H9-0pXWfHQ02AePpS19kimNm9TsJPOYOsoZd-SaI73RjPDpPDpdm4s6jSXDgRupeiA-SwKVXM1Ek903UC6sjnhAf7Zqsrg6iIZyMh5dRs_rIWoDFJAm4pZoygHSD_PgPUGSOCSUOq0toFYXcfTbcM5mfKzzUk2cKzJbOI0Yz1BjV0eddGQNwm-jmlWvoQymQwTCG7vwo1VO7OBP-QvsIlvm3u9To0l0OYwTDfQS9VrV4K37Up3lZJkE"/>
+<img alt="User 2" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT38C5URpTTYjJeHV7EF4N5VrCVGZ_LFJ5KxsvWwRYH5LqujOr2bwXtcywnXuaGNgMjIsTDEgjmNZgLC49GXO4UTZYmAvpJrVaZqGDbmAK3uZGLaPRmvY9bffc54ncbdXPJRSQn6NwwzdTGW7HqWP1OjEW-Hcs3y0umHdviB93EvAP39SjIxdbDIM2cs2t5qi4CEhccsph1MsRQKhqOjcq9ykDd0hOp0AMIUppvYeaz61xSP8F4l0Gn-8cZSD6nhDq250MbSommNg"/>
+<img alt="User 3" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqDeoIR9gKERVgu7eUJ0_5Zr6g2pEA1oBY9_aHktI4GgkEOkW4fYqe8t6WkTos6PNpICRZTAANhrO0gfyMCuFo9ZJzIJ5DF0PD1kZye716mb0_5tdb-ve5i8FZ2sFCuXzHqvKVaW2gXjSdvCcu7shizpJSKNj6kQM1go0l0veg-scCJwy9z9AiuLxdIszN0YHAneyrqgMnpUWIgfjczxl0blWJkYTY70xt8jYdGGFINRxMxU-0ztfKTM1ICsVqsJrlpra1DdBSGsI"/>
+</div>
+<div class="text-sm">
+<span class="font-bold text-gray-900 dark:text-white block">10,000+</span>
+<span class="text-subtext-light dark:text-subtext-dark">Active Investors</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7 relative">
+<div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl filter opacity-50 dark:opacity-20 animate-pulse"></div>
+<div class="absolute bottom-0 left-10 -mb-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl filter opacity-50 dark:opacity-20"></div>
+<div class="relative mx-auto w-[300px] sm:w-[340px] h-[680px] bg-gray-900 rounded-[3rem] border-8 border-gray-900 shadow-2xl z-20 animate-float">
+<div class="w-full h-full bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden relative">
+<div class="absolute top-0 w-full h-8 flex justify-between items-center px-6 z-10">
+<div class="text-[10px] font-bold text-gray-900 dark:text-white">9:41</div>
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-gray-900 dark:bg-white rounded-full opacity-20"></div>
+<div class="w-3 h-3 bg-gray-900 dark:bg-white rounded-full opacity-20"></div>
+<div class="w-3 h-3 bg-gray-900 dark:bg-white rounded-full opacity-80"></div>
+</div>
+</div>
+<div class="pt-12 px-5 h-full flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<div>
+<p class="text-xs text-gray-500 dark:text-gray-400">Total Balance</p>
+<h3 class="text-2xl font-bold text-gray-900 dark:text-white">$24,562.00</h3>
+</div>
+<div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+<span class="material-icons-round text-gray-600 dark:text-gray-300">notifications</span>
+</div>
+</div>
+<div class="bg-gradient-to-br from-gray-800 to-black p-5 rounded-2xl text-white shadow-xl mb-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-xl"></div>
+<div class="flex justify-between mb-8">
+<span class="text-xs font-medium tracking-wider opacity-70">CURRENT ACCOUNT</span>
+<span class="material-icons-round opacity-80">contactless</span>
+</div>
+<div class="mb-4 text-xl tracking-widest font-mono">4562  1122  4595  7852</div>
+<div class="flex justify-between items-end">
+<div>
+<div class="text-[10px] opacity-60">CARD HOLDER</div>
+<div class="text-sm font-medium">ALEX JOHNSON</div>
+</div>
+<div class="opacity-80">
+<div class="w-8 h-5 bg-white/20 rounded-sm flex">
+<div class="w-1/2 bg-red-500/80 rounded-l-sm"></div>
+<div class="w-1/2 bg-yellow-500/80 rounded-r-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-hidden">
+<div class="flex justify-between items-center mb-4">
+<h4 class="font-bold text-gray-900 dark:text-white">Recent Activity</h4>
+<a class="text-xs text-primary font-medium" href="#">See All</a>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center">
+<span class="material-icons-round text-lg">apple</span>
+</div>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Apple Store</div>
+<div class="text-xs text-gray-500 dark:text-gray-400">Electronics</div>
+</div>
+</div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">-$599.00</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+<span class="material-icons-round text-lg">music_note</span>
+</div>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Spotify</div>
+<div class="text-xs text-gray-500 dark:text-gray-400">Subscription</div>
+</div>
+</div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">-$12.99</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+<span class="material-icons-round text-lg">work</span>
+</div>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Salary</div>
+<div class="text-xs text-gray-500 dark:text-gray-400">Income</div>
+</div>
+</div>
+<div class="font-bold text-sm text-green-500">+$3,250.00</div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 w-full h-16 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex justify-around items-center px-2">
+<button class="p-2 text-primary"><span class="material-icons-round">home</span></button>
+<button class="p-2 text-gray-400 dark:text-gray-500 hover:text-primary"><span class="material-icons-round">pie_chart</span></button>
+<div class="w-12 h-12 bg-primary rounded-full -mt-6 flex items-center justify-center shadow-lg text-white">
+<span class="material-icons-round">add</span>
+</div>
+<button class="p-2 text-gray-400 dark:text-gray-500 hover:text-primary"><span class="material-icons-round">credit_card</span></button>
+<button class="p-2 text-gray-400 dark:text-gray-500 hover:text-primary"><span class="material-icons-round">person</span></button>
+</div>
+</div>
+</div>
+<div class="absolute top-[20%] left-[-20px] lg:left-[-40px] bg-white dark:bg-surface-dark p-3 rounded-xl shadow-card z-30 animate-float-delayed hidden sm:flex items-center gap-3 max-w-[200px] border border-gray-100 dark:border-gray-700">
+<div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center relative">
+<svg class="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
+<path class="text-gray-200 dark:text-gray-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="75, 100" stroke-width="3"></path>
+</svg>
+<span class="material-icons-round text-primary text-sm absolute">music_note</span>
+</div>
+<div>
+<div class="font-bold text-gray-900 dark:text-white text-sm">$1,235</div>
+<div class="text-[10px] text-gray-500 uppercase font-medium">Entertainment</div>
+</div>
+</div>
+<div class="absolute top-[35%] right-[-10px] lg:right-[-60px] bg-black text-white px-4 py-2 rounded-full shadow-xl z-30 animate-float text-xs font-medium hidden sm:block">
+                        Grow wealth with ease
                     </div>
-
-                    <div class="mt-10 flex items-center justify-center lg:justify-start gap-4">
-                        <div class="flex -space-x-3">
-                            <img alt="User 1" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"/>
-                            <img alt="User 2" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"/>
-                            <img alt="User 3" class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-900" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"/>
-                        </div>
-                        <div class="text-sm">
-                            <span class="font-bold text-gray-900 dark:text-white block">10,000+</span>
-                            <span class="text-subtext-light dark:text-subtext-dark">Active Investors</span>
-                        </div>
+<div class="absolute bottom-[25%] left-[-10px] lg:left-[-80px] bg-black text-white px-4 py-2 rounded-full shadow-xl z-30 animate-float-delayed text-xs font-medium hidden sm:block">
+                        Smarter tools for investing
                     </div>
-                </div>
-
-                <!-- Phone Mockup -->
-                <div class="lg:col-span-7 relative">
-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl filter opacity-50 dark:opacity-20 animate-pulse"></div>
-                    <div class="absolute bottom-0 left-10 -mb-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl filter opacity-50 dark:opacity-20"></div>
-
-                    <div class="relative mx-auto w-[300px] sm:w-[340px] h-[680px] bg-gray-900 rounded-[3rem] border-8 border-gray-900 shadow-2xl z-20 animate-float">
-                        <div class="w-full h-full bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden">
-                            <!-- Phone content -->
-                            <div class="p-6">
-                                <div class="text-center py-20">
-                                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Financial Dashboard</h3>
-                                    <p class="text-sm text-gray-500">Track your wealth</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Trust Badges -->
-            <div class="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800 text-center">
-                <p class="text-sm font-medium text-subtext-light dark:text-subtext-dark mb-8 uppercase tracking-widest">Trusted by leaders worldwide</p>
-                <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale transition-all duration-500 hover:grayscale-0 hover:opacity-100">
-                    <div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
-                        <span class="material-icons-round text-2xl">diamond</span> LOGOIPSUM
-                    </div>
-                    <div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
-                        <span class="material-icons-round text-2xl">change_history</span> VENTURE
-                    </div>
-                    <div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
-                        <span class="material-icons-round text-2xl">blur_on</span> CIRCULAR
-                    </div>
-                    <div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
-                        <span class="material-icons-round text-2xl">all_inclusive</span> INFINITY
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-20 bg-white dark:bg-surface-dark transition-colors duration-300" id="features">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <div class="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4 uppercase tracking-wider">Features</div>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Streamline Finances with Smart Features</h2>
-                <p class="text-subtext-light dark:text-subtext-dark">Everything you need to manage your money, invest, and track your net worth in one intuitive dashboard.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 border border-transparent dark:border-gray-700/50">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Real-Time Analytics</h3>
-                    <p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Monitor your finances live with clear, intuitive dashboards.</p>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 border border-transparent dark:border-gray-700/50">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Automated Reports</h3>
-                    <p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Generate summaries instantly—no manual work needed.</p>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 border border-transparent dark:border-gray-700/50">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Smart Budgeting</h3>
-                    <p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Plan and adjust with AI-powered budget suggestions.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section class="py-20 bg-background-light dark:bg-background-dark" id="pricing">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <div class="inline-block px-3 py-1 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4 uppercase tracking-wider">Pricing</div>
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Flexible Plans for Every Stage</h2>
-                <p class="text-subtext-light dark:text-subtext-dark">Choose the plan that fits your financial goals perfectly.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-                <!-- Starter Plan -->
-                <div class="bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 transition-transform hover:-translate-y-1">
-                    <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-4">Starter</h3>
-                    <div class="flex items-baseline gap-1 mb-4">
-                        <span class="text-4xl font-bold text-gray-900 dark:text-white">$0</span>
-                        <span class="text-gray-500">/mo</span>
-                    </div>
-                    <p class="text-sm text-subtext-light dark:text-subtext-dark mb-8">Perfect for solo founders and early-stage projects.</p>
-                    <button class="w-full bg-gray-800 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-3 rounded-full font-medium mb-8 transition-colors">Get Started</button>
-                </div>
-
-                <!-- Growth Plan (Featured) -->
-                <div class="relative bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-xl border-2 border-primary z-10 transform scale-105">
-                    <div class="absolute top-0 left-0 right-0 bg-primary h-12 rounded-t-[20px] flex items-center justify-center">
-                        <span class="text-white text-xs font-semibold uppercase tracking-wider">Best Deal</span>
-                    </div>
-                    <div class="mt-8">
-                        <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-4">Growth</h3>
-                        <div class="flex items-baseline gap-1 mb-4">
-                            <span class="text-4xl font-bold text-gray-900 dark:text-white">$25</span>
-                            <span class="text-gray-500">/mo</span>
-                        </div>
-                        <p class="text-sm text-subtext-light dark:text-subtext-dark mb-8">Ideal for growing teams who need deeper insights.</p>
-                        <button class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-full font-medium mb-8 transition-colors shadow-lg shadow-blue-500/30">Get Started</button>
-                    </div>
-                </div>
-
-                <!-- Scale Plan -->
-                <div class="bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 transition-transform hover:-translate-y-1">
-                    <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-4">Scale</h3>
-                    <div class="flex items-baseline gap-1 mb-4">
-                        <span class="text-4xl font-bold text-gray-900 dark:text-white">$75</span>
-                        <span class="text-gray-500">/mo</span>
-                    </div>
-                    <p class="text-sm text-subtext-light dark:text-subtext-dark mb-8">For established teams ready to maximize performance.</p>
-                    <button class="w-full bg-gray-800 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-3 rounded-full font-medium mb-8 transition-colors">Contact Us</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-white dark:bg-surface-dark pt-16 pb-8 border-t border-gray-100 dark:border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-                <div class="col-span-2">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xl">
+</div>
+</div>
+<div class="mt-20 pt-10 border-t border-gray-100 dark:border-gray-800 text-center">
+<p class="text-sm font-medium text-subtext-light dark:text-subtext-dark mb-8 uppercase tracking-widest">Trusted by leaders worldwide</p>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale transition-all duration-500 hover:grayscale-0 hover:opacity-100">
+<div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
+<span class="material-icons-round text-2xl">diamond</span> LOGOIPSUM
+                   </div>
+<div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
+<span class="material-icons-round text-2xl">change_history</span> VENTURE
+                   </div>
+<div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
+<span class="material-icons-round text-2xl">blur_on</span> CIRCULAR
+                   </div>
+<div class="flex items-center gap-2 text-xl font-bold font-display text-gray-800 dark:text-white">
+<span class="material-icons-round text-2xl">all_inclusive</span> INFINITY
+                   </div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-white dark:bg-surface-dark transition-colors duration-300" id="features">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<div class="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4 uppercase tracking-wider">Features</div>
+<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Streamline Finances with <br/> Smart Features</h2>
+<p class="text-subtext-light dark:text-subtext-dark">Everything you need to manage your money, invest, and track your net worth in one intuitive dashboard.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 group border border-transparent dark:border-gray-700/50">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Real-Time Analytics</h3>
+<p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Monitor your finances live with clear, intuitive dashboards.</p>
+</div>
+<div class="h-40 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white dark:bg-surface-dark p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-4 border-primary/20 border-t-primary flex items-center justify-center">
+<span class="material-icons-round text-primary text-xs">music_note</span>
+</div>
+<div>
+<div class="font-bold text-gray-900 dark:text-white text-sm">$1,235</div>
+<div class="text-[10px] text-gray-500">Entertainment</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 group border border-transparent dark:border-gray-700/50">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Automated Reports</h3>
+<p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Generate summaries instantly—no manual work needed.</p>
+</div>
+<div class="h-40 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 relative overflow-hidden flex items-end">
+<svg class="w-full h-full text-primary" preserveAspectRatio="none" viewBox="0 0 200 80">
+<defs>
+<linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="currentColor" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<path d="M0,80 L0,60 C20,60 40,55 60,40 C80,25 100,30 120,20 C140,10 160,15 180,5 L200,0 L200,80 Z" fill="url(#chartGradient)"></path>
+<path d="M0,60 C20,60 40,55 60,40 C80,25 100,30 120,20 C140,10 160,15 180,5 L200,0" fill="none" stroke="currentColor" stroke-width="2"></path>
+<circle class="fill-current text-primary" cx="120" cy="20" r="4"></circle>
+</svg>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 group border border-transparent dark:border-gray-700/50">
+<div class="mb-6">
+<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Smart Budgeting</h3>
+<p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Plan and adjust with AI-powered budget suggestions.</p>
+</div>
+<div class="h-40 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 relative flex items-center justify-center">
+<div class="flex -space-x-4">
+<div class="w-20 h-24 bg-white dark:bg-surface-dark shadow-md rounded-xl p-2 transform -rotate-6 z-0 border border-gray-100 dark:border-gray-700">
+<div class="w-full h-full rounded-full border-[6px] border-orange-400 border-t-transparent border-r-transparent transform rotate-45"></div>
+</div>
+<div class="w-20 h-24 bg-white dark:bg-surface-dark shadow-xl rounded-xl p-2 transform rotate-6 z-10 border border-gray-100 dark:border-gray-700 flex items-center justify-center">
+<div class="relative w-12 h-12">
+<svg class="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+<path class="text-blue-100 dark:text-blue-900" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="60, 100" stroke-width="4"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-[8px] font-bold">55%</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+<div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 flex flex-col md:flex-row gap-6 items-center border border-transparent dark:border-gray-700/50">
+<div class="flex-1">
+<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Secure Syncing</h3>
+<p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">Link accounts safely with real-time data syncing across all devices.</p>
+</div>
+<div class="flex-1 w-full flex justify-center">
+<div class="relative w-40 h-20 overflow-hidden">
+<div class="absolute w-40 h-40 rounded-full border-[12px] border-dashed border-gray-200 dark:border-gray-600"></div>
+<div class="absolute w-40 h-40 rounded-full border-[12px] border-dashed border-primary border-r-transparent border-b-transparent border-l-transparent transform -rotate-45"></div>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-8 hover:shadow-soft transition-all duration-300 flex flex-col md:flex-row gap-6 items-center border border-transparent dark:border-gray-700/50">
+<div class="flex-1">
+<h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Growth Score</h3>
+<p class="text-sm text-subtext-light dark:text-subtext-dark leading-relaxed">View key metrics and trends at a glance to improve your score.</p>
+</div>
+<div class="flex-1 w-full flex justify-center items-center">
+<div class="relative w-32 h-16 bg-gray-200 dark:bg-gray-700 rounded-t-full overflow-hidden">
+<div class="absolute bottom-0 left-0 w-full h-full bg-gradient-to-r from-primary to-blue-300 origin-bottom transform scale-x-0 transition-transform duration-1000" style="transform: scaleX(0.7)"></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-10 bg-gray-50 dark:bg-gray-800 rounded-t-full flex items-end justify-center pb-2">
+<span class="text-xl font-bold text-gray-900 dark:text-white">78</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-background-light dark:bg-background-dark" id="pricing">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<div class="inline-block px-3 py-1 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4 uppercase tracking-wider">Pricing</div>
+<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Flexible Plans for Every Stage</h2>
+<p class="text-subtext-light dark:text-subtext-dark">Choose the plan that fits your financial goals perfectly.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+<div class="bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 transition-transform hover:-translate-y-1">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+<span class="material-icons-round text-gray-900 dark:text-white">inbox</span>
+</div>
+<h3 class="font-bold text-xl text-gray-900 dark:text-white">Starter</h3>
+</div>
+<div class="flex items-baseline gap-1 mb-4">
+<span class="text-4xl font-bold text-gray-900 dark:text-white">$0</span>
+<span class="text-gray-500">/mo</span>
+</div>
+<p class="text-sm text-subtext-light dark:text-subtext-dark mb-8 min-h-[40px]">Perfect for solo founders and early-stage projects.</p>
+<button class="w-full bg-gray-800 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-3 rounded-full font-medium mb-8 transition-colors">Get Started</button>
+<ul class="space-y-4 text-sm text-subtext-light dark:text-subtext-dark">
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> 1 connected account</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Real-time dashboard access</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Basic reporting</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Email support</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Up to 2 team members</li>
+</ul>
+</div>
+<div class="relative bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-xl border-2 border-primary z-10 transform scale-105 md:scale-105">
+<div class="absolute top-0 left-0 right-0 bg-primary h-12 rounded-t-[20px] flex items-center justify-center">
+<span class="text-white text-xs font-semibold uppercase tracking-wider">Best Deal</span>
+</div>
+<div class="mt-8 flex items-center gap-3 mb-6">
+<div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+<span class="material-icons-round text-primary">star</span>
+</div>
+<h3 class="font-bold text-xl text-gray-900 dark:text-white">Growth</h3>
+</div>
+<div class="flex items-baseline gap-1 mb-4">
+<span class="text-4xl font-bold text-gray-900 dark:text-white">$25</span>
+<span class="text-gray-500">/mo</span>
+</div>
+<p class="text-sm text-subtext-light dark:text-subtext-dark mb-8 min-h-[40px]">Ideal for growing teams who need deeper insights.</p>
+<button class="w-full bg-primary hover:bg-blue-600 text-white py-3 rounded-full font-medium mb-8 transition-colors shadow-lg shadow-blue-500/30">Get Started</button>
+<ul class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+<li class="flex items-center gap-3"><span class="material-icons-round text-primary text-sm">check</span> Up to 5 connected accounts</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-primary text-sm">check</span> Advanced analytics</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-primary text-sm">check</span> Automated reports</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-primary text-sm">check</span> Priority email support</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-primary text-sm">check</span> Up to 10 team members</li>
+</ul>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 transition-transform hover:-translate-y-1">
+<div class="flex items-center gap-3 mb-6">
+<div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+<span class="material-icons-round text-gray-900 dark:text-white">bolt</span>
+</div>
+<h3 class="font-bold text-xl text-gray-900 dark:text-white">Scale</h3>
+</div>
+<div class="flex items-baseline gap-1 mb-4">
+<span class="text-4xl font-bold text-gray-900 dark:text-white">$75</span>
+<span class="text-gray-500">/mo</span>
+</div>
+<p class="text-sm text-subtext-light dark:text-subtext-dark mb-8 min-h-[40px]">For established teams ready to maximize performance.</p>
+<button class="w-full bg-gray-800 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-3 rounded-full font-medium mb-8 transition-colors">Contact Us</button>
+<ul class="space-y-4 text-sm text-subtext-light dark:text-subtext-dark">
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Unlimited accounts</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Real-time dashboard access</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Custom reporting</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> 24/7 dedicated support</li>
+<li class="flex items-center gap-3"><span class="material-icons-round text-gray-400 text-sm">check</span> Unlimited team members</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="py-20 bg-white dark:bg-surface-dark border-t border-gray-50 dark:border-gray-800" id="testimonials">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<div class="inline-block px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-4 uppercase tracking-wider">Reviews</div>
+<h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Real Stories, Real Results</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-2xl">
+<div class="flex text-yellow-400 mb-4">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+</div>
+<p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">"Lunera's modular design let us customize effortlessly. Our landing page performance soared!"</p>
+<div class="flex items-center gap-3">
+<img alt="Elena Petrova" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRbjnmEcrI1_LbCzzju9wxTFNEfdj54wa1QG0IBetYjUjDphh1BPVX9G5XIRsH080GMQjpLrGa1RyNWKNvbENDBhnVWrKOaVC0_IkMppXBlf7-MRhMxLobfgEdqzHGC1yanNdt4b05iy8AU5_qAL5YZVjwZldEgjy6LPHhogPaU-1HmvcXFM0u2nSPF4Os51WbT9aTBsB5YBGYqtOZ6IbEg6e4DPH40L5GbC-gBcYr86ZzmVn4ZaR74R_y7adb10eqjo6ZMV3MM6Y"/>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Elena Petrova</div>
+<div class="text-xs text-gray-500">Head of Growth, DataPulse</div>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-2xl">
+<div class="flex text-yellow-400 mb-4">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+</div>
+<p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">"The template's clean layout and responsiveness boosted our conversions instantly. A game-changer!"</p>
+<div class="flex items-center gap-3">
+<img alt="Priya Mehta" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjj7o4TaoJiz8bHwNRbA9Bip96ZoAxJEe5JWShM0Tznn407hm5iTf2ZQD59sLnrenNmCaEo5guKqknRU-ZMjEz9GodLQ1BEXMNQyC2VS5ey-VqSD1PWqTmoMDVZNUV0oqkPwXMXJSHzAX7m8ytgGuQbeOuH2KcRarQdgudGjCguHtIiR0V2ppxiojRL61rigR4BdROdjXEFusHKuD2f3JF7XoxRI4scze4uwD3bS35bfAGivnNjrPt0I44Xvm2veWM8ERMBLwjI20"/>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Priya Mehta</div>
+<div class="text-xs text-gray-500">Product Manager, Stellar Apps</div>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-800/50 p-8 rounded-2xl">
+<div class="flex text-yellow-400 mb-4">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+</div>
+<p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">"Lunera made our site look premium without custom coding. Perfect functionality and aesthetics."</p>
+<div class="flex items-center gap-3">
+<img alt="Marcus Reed" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkwQq_s-dsvn9zmffE2QWOfKjpm1K0qoUmBlvspcSHVD5leKqLVXvFF7gpOiWCs0d1F5UYR9BUMSK9D9vvL7SJH-n9LmFcCONEhVqw6FL1dC8aDijzjxxaHQMqKUZwQbX-HEa5wi5bzwqT2Ca-F1h3rb4iE6g6tf5iEI0zSQ66R7cwsF6gPHOc4UJrXXgZJ1xyCoDXTofcoZvKue8iMBJ1T_KKelpvJYJN7z94sp0uklOmUf_wlB-2f8642TUUfyvYAGxV5VMJIoM"/>
+<div>
+<div class="font-bold text-sm text-gray-900 dark:text-white">Marcus Reed</div>
+<div class="text-xs text-gray-500">CTO, TechVault</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-20 border-t border-gray-100 dark:border-gray-800 pt-10 grid grid-cols-3 gap-4 text-center">
+<div>
+<div class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">10k+</div>
+<div class="text-sm text-gray-500">Active Users</div>
+</div>
+<div>
+<div class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">99.9%</div>
+<div class="text-sm text-gray-500">Uptime</div>
+</div>
+<div>
+<div class="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">500M+</div>
+<div class="text-sm text-gray-500">Transactions</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="bg-white dark:bg-surface-dark pt-16 pb-8 border-t border-gray-100 dark:border-gray-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+<div class="col-span-2 lg:col-span-2">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-xl">
                             F
                         </div>
-                        <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">FinWise</span>
-                    </div>
-                    <p class="text-subtext-light dark:text-subtext-dark text-sm max-w-xs mb-6">
+<span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">FinWise</span>
+</div>
+<p class="text-subtext-light dark:text-subtext-dark text-sm max-w-xs mb-6">
                         Empowering you to take control of your financial journey with smart tools and real-time insights.
                     </p>
-                </div>
+<div class="flex space-x-4">
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round text-xl">facebook</i></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round text-xl">camera_alt</i></a>
+<a class="text-gray-400 hover:text-primary transition-colors" href="#"><i class="material-icons-round text-xl">alternate_email</i></a>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 dark:text-white mb-4">Product</h4>
+<ul class="space-y-2 text-sm text-subtext-light dark:text-subtext-dark">
+<li><a class="hover:text-primary transition-colors" href="#">Features</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Pricing</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Integrations</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Changelog</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 dark:text-white mb-4">Company</h4>
+<ul class="space-y-2 text-sm text-subtext-light dark:text-subtext-dark">
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-gray-900 dark:text-white mb-4">Resources</h4>
+<ul class="space-y-2 text-sm text-subtext-light dark:text-subtext-dark">
+<li><a class="hover:text-primary transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Status</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-sm text-gray-400">© 2024 FinWise Inc. All rights reserved.</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-sm text-gray-500 font-medium">Systems Operational</span>
+</div>
+</div>
+</div>
+</footer>
 
-                <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Product</h4>
-                    <ul class="space-y-2 text-sm text-subtext-light dark:text-subtext-dark">
-                        <li><a class="hover:text-primary transition-colors" href="#">Features</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Pricing</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Integrations</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Company</h4>
-                    <ul class="space-y-2 text-sm text-subtext-light dark:text-subtext-dark">
-                        <li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
-                        <li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-sm text-gray-400">© 2024 FinWise Inc. All rights reserved.</p>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                    <span class="text-sm text-gray-500 font-medium">Systems Operational</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+</body></html>
