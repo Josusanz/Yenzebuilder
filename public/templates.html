@@ -279,7 +279,7 @@
         ];
 
         // Render templates
-        async function renderTemplates(filter = 'all') {
+        function renderTemplates(filter = 'all') {
             const grid = document.getElementById('templatesGrid');
 
             let filtered = templates;
@@ -293,32 +293,12 @@
                 }
             }
 
-            // Load HTML content for each template to create previews
-            const templatesWithPreviews = await Promise.all(filtered.map(async (template) => {
-                try {
-                    const response = await fetch(`/templates/${template.id}.html`);
-                    const html = await response.text();
-                    const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
-                    return { ...template, previewDataUrl };
-                } catch (error) {
-                    console.error(`Failed to load preview for ${template.id}:`, error);
-                    return { ...template, previewDataUrl: null };
-                }
-            }));
-
-            grid.innerHTML = templatesWithPreviews.map(template => `
+            grid.innerHTML = filtered.map(template => `
                 <div class="template-card" onclick="selectTemplate('${template.id}', ${template.isPremium})">
-                    <div class="template-preview">
-                        ${template.previewDataUrl ? `
-                            <iframe
-                                src="${template.previewDataUrl}"
-                                sandbox="allow-same-origin"
-                                scrolling="no"
-                                loading="lazy"
-                            ></iframe>
-                        ` : `
-                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-                        `}
+                    <div class="template-preview" id="preview-${template.id}">
+                        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
+                            Loading preview...
+                        </div>
                         <div class="template-badge ${template.isPremium ? 'badge-premium' : 'badge-free'}">
                             ${template.isPremium ? 'PREMIUM' : 'FREE'}
                         </div>
@@ -335,6 +315,48 @@
                     </div>
                 </div>
             `).join('');
+
+            // Load previews after rendering
+            filtered.forEach(template => {
+                loadTemplatePreview(template.id);
+            });
+        }
+
+        // Load individual template preview
+        async function loadTemplatePreview(templateId) {
+            try {
+                const response = await fetch(`/templates/${templateId}.html`);
+                if (!response.ok) throw new Error('Failed to load');
+
+                const html = await response.text();
+                const previewContainer = document.getElementById(`preview-${templateId}`);
+
+                if (previewContainer) {
+                    // Create iframe with proper scaling
+                    const iframe = document.createElement('iframe');
+                    iframe.sandbox = 'allow-same-origin';
+                    iframe.scrolling = 'no';
+                    iframe.style.cssText = 'width: 333.33%; height: 333.33%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0;';
+
+                    // Write HTML to iframe
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(iframe);
+
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    doc.open();
+                    doc.write(html);
+                    doc.close();
+
+                    // Re-add badge
+                    const badge = document.createElement('div');
+                    badge.className = templates.find(t => t.id === templateId).isPremium ? 'template-badge badge-premium' : 'template-badge badge-free';
+                    badge.textContent = templates.find(t => t.id === templateId).isPremium ? 'PREMIUM' : 'FREE';
+                    previewContainer.appendChild(badge);
+                }
+            } catch (error) {
+                console.error(`Failed to load preview for ${templateId}:`, error);
+                // Keep the loading/fallback state
+            }
         }
 
         // Filter tabs
