@@ -3392,27 +3392,47 @@
 
                 if (templateHTML) {
                     console.log('[Template Load] Loading template:', templateName || templateId);
+                    console.log('[Template Load] Template HTML length:', templateHTML.length);
 
-                    // Insert template HTML into the canvas
-                    const canvas = document.getElementById('canvas');
-                    if (canvas) {
-                        canvas.innerHTML = templateHTML;
-                        console.log('[Template Load] Template inserted into canvas');
+                    // Wait a bit for the canvas iframe to be ready
+                    setTimeout(() => {
+                        const canvas = document.getElementById('canvas');
+                        if (canvas && canvas.contentDocument) {
+                            // Write the template HTML to the iframe
+                            canvas.contentDocument.open();
+                            canvas.contentDocument.write(templateHTML);
+                            canvas.contentDocument.close();
 
-                        // Clear template from localStorage
-                        localStorage.removeItem('templateHTML');
-                        localStorage.removeItem('templateName');
-                        localStorage.removeItem('templateId');
+                            // Show the canvas
+                            canvas.style.display = 'block';
 
-                        // Show success message
-                        if (typeof showNotification === 'function') {
-                            showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
+                            // Hide the empty state
+                            const emptyState = document.querySelector('.empty-state');
+                            if (emptyState) {
+                                emptyState.style.display = 'none';
+                            }
+
+                            console.log('[Template Load] Template inserted into canvas iframe');
+
+                            // Show success message
+                            if (typeof showNotification === 'function') {
+                                showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
+                            }
+                        } else {
+                            console.error('[Template Load] Canvas iframe not ready');
                         }
+
+                        // Clear template from localStorage after a delay
+                        setTimeout(() => {
+                            localStorage.removeItem('templateHTML');
+                            localStorage.removeItem('templateName');
+                            localStorage.removeItem('templateId');
+                        }, 1000);
 
                         // Remove ?template=true from URL
                         const newUrl = window.location.pathname;
                         window.history.replaceState({}, '', newUrl);
-                    }
+                    }, 1500);
                 }
             }
 
