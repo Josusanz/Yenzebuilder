@@ -51,6 +51,10 @@
       "destination": "/prompt-generator.html"
     },
     {
+      "source": "/templates",
+      "destination": "/templates.html"
+    },
+    {
       "source": "/s/:slug",
       "destination": "/api/view-project.js?slug=:slug"
     },
