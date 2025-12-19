@@ -509,33 +509,10 @@
             const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect', 'linktree-creative', 'linktree-business', 'linktree-influencer', 'linktree-creator'];
 
             if (availableTemplates.includes(templateId)) {
-                try {
-                    console.log('[Template Select] Fetching template:', templateId);
+                console.log('[Template Select] Redirecting to builder with template:', templateId);
 
-                    // Fetch the template HTML
-                    const response = await fetch(`/templates/${templateId}.html?v=20241219-4`);
-
-                    if (!response.ok) {
-                        throw new Error('Failed to load template');
-                    }
-
-                    const templateHTML = await response.text();
-                    console.log('[Template Select] Template loaded, size:', templateHTML.length, 'bytes');
-
-                    // Store template HTML in localStorage
-                    localStorage.setItem('templateHTML', templateHTML);
-                    localStorage.setItem('templateName', template.name);
-                    localStorage.setItem('templateId', templateId);
-
-                    console.log('[Template Select] Stored in localStorage');
-                    console.log('[Template Select] Redirecting to builder...');
-
-                    // Redirect to builder
-                    window.location.href = 'https://builder.yenze.io?template=true';
-                } catch (error) {
-                    console.error('[Template Select] Error:', error);
-                    alert('Failed to load template. Please try again.');
-                }
+                // Redirect to builder with template ID - builder will load it directly
+                window.location.href = `https://builder.yenze.io?template=${templateId}&templateName=${encodeURIComponent(template.name)}`;
             } else {
                 alert('This template is coming soon! Check back later for this design.');
             }

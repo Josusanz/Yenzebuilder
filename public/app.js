@@ -4285,48 +4285,53 @@ if (validationForm) {
         const projectId = urlParams.get('project');
         const isNewProject = urlParams.get('new') === 'true';
         const isPasteMode = urlParams.get('paste') === 'true';
-        const isTemplateMode = urlParams.get('template') === 'true';
+        const templateId = urlParams.get('template');
+        const templateName = urlParams.get('templateName');
         const isImportMode = urlParams.get('import') === 'true';
 
         console.log('[LoadProject] Project ID from URL:', projectId);
         console.log('[LoadProject] New project flag:', isNewProject);
         console.log('[LoadProject] Paste mode:', isPasteMode);
-        console.log('[LoadProject] Template mode:', isTemplateMode);
+        console.log('[LoadProject] Template ID from URL:', templateId);
+        console.log('[LoadProject] Template Name from URL:', templateName);
 
-        // Debug localStorage
-        const hasTemplateHTML = localStorage.getItem('templateHTML');
-        console.log('[LoadProject] localStorage has templateHTML:', hasTemplateHTML ? `Yes (${hasTemplateHTML.length} bytes)` : 'No');
-        console.log('[LoadProject] localStorage templateName:', localStorage.getItem('templateName'));
-        console.log('[LoadProject] localStorage templateId:', localStorage.getItem('templateId'));
+        // Check for template ID from URL (new cross-domain approach)
+        if (templateId && templateId !== 'true') {
+            console.log('[LoadProject] Loading template from URL:', templateId);
 
-        // Check for template HTML from templates page
-        if (isTemplateMode && localStorage.getItem('templateHTML')) {
-            const templateHTML = localStorage.getItem('templateHTML');
-            const templateName = localStorage.getItem('templateName') || 'Template Website';
-            console.log('[LoadProject] Loading template from templates page');
+            try {
+                // Fetch the template HTML from the templates folder
+                const response = await fetch(`https://yenze.io/templates/${templateId}.html?v=20241219-4`);
 
-            // Clear the template HTML from localStorage
-            localStorage.removeItem('templateHTML');
-            localStorage.removeItem('templateName');
+                if (!response.ok) {
+                    throw new Error(`Failed to load template: ${response.status}`);
+                }
 
-            // Clear existing project to start fresh
-            localStorage.removeItem('yenzeProject');
+                const templateHTML = await response.text();
+                console.log('[LoadProject] Template loaded, size:', templateHTML.length, 'bytes');
 
-            // Load the template HTML
-            this.projectData = {
-                name: templateName,
-                html: templateHTML,
-                assets: [],
-                publishedUrl: null
-            };
+                // Clear existing project to start fresh
+                localStorage.removeItem('yenzeProject');
 
-            document.getElementById('projectName').value = this.projectData.name;
-            this.loadHTML(templateHTML);
-            this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
+                // Load the template HTML
+                this.projectData = {
+                    name: decodeURIComponent(templateName || 'Template Website'),
+                    html: templateHTML,
+                    assets: [],
+                    publishedUrl: null
+                };
 
-            // Remove the template parameter from URL
-            window.history.replaceState({}, '', window.location.pathname);
-            return;
+                document.getElementById('projectName').value = this.projectData.name;
+                this.loadHTML(templateHTML);
+                this.showToast('🎨 Template loaded! Customize it to your needs.', 'success');
+
+                // Remove the template parameter from URL
+                window.history.replaceState({}, '', window.location.pathname);
+                return;
+            } catch (error) {
+                console.error('[LoadProject] Failed to load template:', error);
+                this.showToast('❌ Failed to load template. Please try again.', 'error');
+            }
         }
 
         // Check for imported HTML from prompt generator
