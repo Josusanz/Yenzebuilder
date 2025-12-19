@@ -123,6 +123,29 @@
             border-color: #0F172A;
         }
 
+        .mini-tab {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .mini-tab:hover {
+            border-color: #0066FF;
+            background: #F0F7FF;
+        }
+
+        .mini-tab.active {
+            background: #0066FF;
+            color: white;
+            border-color: #0066FF;
+        }
+
         .templates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -241,117 +264,87 @@
     </nav>
 
     <div class="container">
-        <div class="header">
-            <h1>Choose Your Template</h1>
-            <p>Start with a professionally designed template and customize it to your needs</p>
+        <!-- Compact Header with Filters -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap;">
+            <div>
+                <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Templates</h1>
+                <p id="resultsCount" style="font-size: 13px; color: #64748B; margin: 4px 0 0;">9 templates</p>
+            </div>
+
+            <!-- Compact Search & Filter Toggle -->
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search..."
+                    style="width: 180px; padding: 8px 14px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 14px; outline: none;"
+                />
+                <button id="filterToggle" style="padding: 8px 14px; border-radius: 8px; border: 1px solid #E2E8F0; background: white; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                    Filters
+                </button>
+            </div>
         </div>
 
-        <!-- Search Bar -->
-        <div style="max-width: 600px; margin: 0 auto 32px;">
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Search templates..."
-                style="width: 100%; padding: 14px 20px; border-radius: 100px; border: 2px solid #E2E8F0; font-size: 15px; outline: none; transition: all 0.2s;"
-                onfocus="this.style.borderColor='#0066FF'"
-                onblur="this.style.borderColor='#E2E8F0'"
-            />
-        </div>
+        <!-- Collapsible Filters -->
+        <div id="filtersPanel" style="display: none; margin-bottom: 20px; padding: 16px; background: #F8FAFC; border-radius: 10px; border: 1px solid #E2E8F0;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <!-- Category -->
+                <div>
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Category</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        <button class="mini-tab active" data-filter-type="category" data-filter="all">All</button>
+                        <button class="mini-tab" data-filter-type="category" data-filter="business">Business</button>
+                        <button class="mini-tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
+                        <button class="mini-tab" data-filter-type="category" data-filter="landing">Landing</button>
+                        <button class="mini-tab" data-filter-type="category" data-filter="linktree">Linktree</button>
+                    </div>
+                </div>
 
-        <!-- Advanced Filters -->
-        <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px;">
-            <!-- Category Filters -->
-            <div>
-                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Category</div>
-                <div class="filter-tabs">
-                    <button class="tab active" data-filter-type="category" data-filter="all">All</button>
-                    <button class="tab" data-filter-type="category" data-filter="business">Business</button>
-                    <button class="tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
-                    <button class="tab" data-filter-type="category" data-filter="landing">Landing</button>
-                    <button class="tab" data-filter-type="category" data-filter="linktree">Linktree</button>
+                <!-- Color -->
+                <div>
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Color</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        <button class="mini-tab active" data-filter-type="color" data-filter="all">All</button>
+                        <button class="mini-tab" data-filter-type="color" data-filter="dark">Dark</button>
+                        <button class="mini-tab" data-filter-type="color" data-filter="light">Light</button>
+                        <button class="mini-tab" data-filter-type="color" data-filter="blue">Blue</button>
+                        <button class="mini-tab" data-filter-type="color" data-filter="purple">Purple</button>
+                    </div>
+                </div>
+
+                <!-- Style -->
+                <div>
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Style</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        <button class="mini-tab active" data-filter-type="style" data-filter="all">All</button>
+                        <button class="mini-tab" data-filter-type="style" data-filter="minimal">Minimal</button>
+                        <button class="mini-tab" data-filter-type="style" data-filter="modern">Modern</button>
+                        <button class="mini-tab" data-filter-type="style" data-filter="professional">Pro</button>
+                        <button class="mini-tab" data-filter-type="style" data-filter="creative">Creative</button>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div style="grid-column: 1 / -1;">
+                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Features</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                        <button class="mini-tab" data-filter-type="feature" data-filter="contact-form">Contact Form</button>
+                        <button class="mini-tab" data-filter-type="feature" data-filter="dark-mode">Dark Mode</button>
+                        <button class="mini-tab" data-filter-type="feature" data-filter="animations">Animations</button>
+                        <button class="mini-tab" data-filter-type="feature" data-filter="responsive">Responsive</button>
+                        <button class="mini-tab" data-filter-type="feature" data-filter="glassmorphism">Glassmorphism</button>
+                        <button class="mini-tab" data-filter-type="feature" data-filter="newsletter">Newsletter</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Color Filters -->
-            <div>
-                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Color Scheme</div>
-                <div class="filter-tabs">
-                    <button class="tab color-filter" data-filter-type="color" data-filter="all" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
-                        All Colors
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="dark" style="background: #1a1a1a; color: white; border: none;">
-                        Dark
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="light" style="background: #ffffff; color: #0F172A; border: 1px solid #E2E8F0;">
-                        Light
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="blue" style="background: #0066FF; color: white; border: none;">
-                        Blue
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="purple" style="background: #9333EA; color: white; border: none;">
-                        Purple
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="pink" style="background: #EC4899; color: white; border: none;">
-                        Pink
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="green" style="background: #10B981; color: white; border: none;">
-                        Green
-                    </button>
-                    <button class="tab color-filter" data-filter-type="color" data-filter="gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); color: white; border: none;">
-                        Gradient
-                    </button>
-                </div>
-            </div>
-
-            <!-- Style Filters -->
-            <div>
-                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Style</div>
-                <div class="filter-tabs">
-                    <button class="tab" data-filter-type="style" data-filter="all">All Styles</button>
-                    <button class="tab" data-filter-type="style" data-filter="minimal">Minimal</button>
-                    <button class="tab" data-filter-type="style" data-filter="modern">Modern</button>
-                    <button class="tab" data-filter-type="style" data-filter="professional">Professional</button>
-                    <button class="tab" data-filter-type="style" data-filter="creative">Creative</button>
-                    <button class="tab" data-filter-type="style" data-filter="bold">Bold</button>
-                    <button class="tab" data-filter-type="style" data-filter="playful">Playful</button>
-                </div>
-            </div>
-
-            <!-- Feature Filters -->
-            <div>
-                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Features</div>
-                <div class="filter-tabs" style="gap: 8px;">
-                    <button class="tab" data-filter-type="feature" data-filter="contact-form">
-                        📧 Contact Form
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="dark-mode">
-                        🌙 Dark Mode
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="animations">
-                        ✨ Animations
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="responsive">
-                        📱 Responsive
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="glassmorphism">
-                        🔮 Glassmorphism
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="newsletter">
-                        📬 Newsletter
-                    </button>
-                    <button class="tab" data-filter-type="feature" data-filter="social-links">
-                        🔗 Social Links
-                    </button>
-                </div>
-            </div>
-
-            <!-- Active Filters & Results Count -->
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-top: 1px solid #E2E8F0;">
-                <div id="activeFilters" style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;"></div>
-                <div id="resultsCount" style="font-size: 14px; font-weight: 600; color: #64748B; white-space: nowrap; margin-left: 16px;">
-                    9 templates
-                </div>
-            </div>
+            <!-- Active Filters -->
+            <div id="activeFilters" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #E2E8F0;"></div>
         </div>
 
         <div class="templates-grid" id="templatesGrid">
@@ -687,6 +680,12 @@
             }
             renderTemplates();
         }
+
+        // Filter toggle button
+        document.getElementById('filterToggle').addEventListener('click', () => {
+            const panel = document.getElementById('filtersPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
 
         // Filter tabs - single select for category, color, style
         document.querySelectorAll('[data-filter-type="category"], [data-filter-type="color"], [data-filter-type="style"]').forEach(tab => {
