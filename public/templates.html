@@ -229,8 +229,10 @@
     <nav class="nav">
         <div class="nav-content">
             <a href="/" class="logo" style="display: flex; align-items: center; gap: 8px;">
-                <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #0066FF;">
-                    <path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #0066FF;">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
                 </svg>
                 <span>YENZE</span>
             </a>
@@ -279,6 +281,16 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop&q=80',
+                html: null
+            },
+            {
+                id: 'yenze-ai-agency',
+                name: 'AI Agency Pro',
+                description: 'Premium minimal design for AI and tech agencies with elegant layouts',
+                category: 'business',
+                price: 'FREE',
+                isPremium: false,
+                preview: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&q=80',
                 html: null
             }
         ];
@@ -413,7 +425,7 @@
             }
 
             // Check if this template has an HTML file
-            const availableTemplates = ['yenze-modern', 'finwise'];
+            const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency'];
 
             if (availableTemplates.includes(templateId)) {
                 try {
