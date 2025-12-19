@@ -246,14 +246,112 @@
             <p>Start with a professionally designed template and customize it to your needs</p>
         </div>
 
-        <div class="filter-tabs">
-            <button class="tab active" data-filter="all">All Templates</button>
-            <button class="tab" data-filter="free">Free</button>
-            <button class="tab" data-filter="premium">Premium</button>
-            <button class="tab" data-filter="business">Business</button>
-            <button class="tab" data-filter="portfolio">Portfolio</button>
-            <button class="tab" data-filter="landing">Landing Page</button>
-            <button class="tab" data-filter="linktree">Linktree</button>
+        <!-- Search Bar -->
+        <div style="max-width: 600px; margin: 0 auto 32px;">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search templates..."
+                style="width: 100%; padding: 14px 20px; border-radius: 100px; border: 2px solid #E2E8F0; font-size: 15px; outline: none; transition: all 0.2s;"
+                onfocus="this.style.borderColor='#0066FF'"
+                onblur="this.style.borderColor='#E2E8F0'"
+            />
+        </div>
+
+        <!-- Advanced Filters -->
+        <div style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 48px;">
+            <!-- Category Filters -->
+            <div>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Category</div>
+                <div class="filter-tabs">
+                    <button class="tab active" data-filter-type="category" data-filter="all">All</button>
+                    <button class="tab" data-filter-type="category" data-filter="business">Business</button>
+                    <button class="tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
+                    <button class="tab" data-filter-type="category" data-filter="landing">Landing</button>
+                    <button class="tab" data-filter-type="category" data-filter="linktree">Linktree</button>
+                </div>
+            </div>
+
+            <!-- Color Filters -->
+            <div>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Color Scheme</div>
+                <div class="filter-tabs">
+                    <button class="tab color-filter" data-filter-type="color" data-filter="all" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                        All Colors
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="dark" style="background: #1a1a1a; color: white; border: none;">
+                        Dark
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="light" style="background: #ffffff; color: #0F172A; border: 1px solid #E2E8F0;">
+                        Light
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="blue" style="background: #0066FF; color: white; border: none;">
+                        Blue
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="purple" style="background: #9333EA; color: white; border: none;">
+                        Purple
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="pink" style="background: #EC4899; color: white; border: none;">
+                        Pink
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="green" style="background: #10B981; color: white; border: none;">
+                        Green
+                    </button>
+                    <button class="tab color-filter" data-filter-type="color" data-filter="gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); color: white; border: none;">
+                        Gradient
+                    </button>
+                </div>
+            </div>
+
+            <!-- Style Filters -->
+            <div>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Style</div>
+                <div class="filter-tabs">
+                    <button class="tab" data-filter-type="style" data-filter="all">All Styles</button>
+                    <button class="tab" data-filter-type="style" data-filter="minimal">Minimal</button>
+                    <button class="tab" data-filter-type="style" data-filter="modern">Modern</button>
+                    <button class="tab" data-filter-type="style" data-filter="professional">Professional</button>
+                    <button class="tab" data-filter-type="style" data-filter="creative">Creative</button>
+                    <button class="tab" data-filter-type="style" data-filter="bold">Bold</button>
+                    <button class="tab" data-filter-type="style" data-filter="playful">Playful</button>
+                </div>
+            </div>
+
+            <!-- Feature Filters -->
+            <div>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 12px;">Features</div>
+                <div class="filter-tabs" style="gap: 8px;">
+                    <button class="tab" data-filter-type="feature" data-filter="contact-form">
+                        📧 Contact Form
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="dark-mode">
+                        🌙 Dark Mode
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="animations">
+                        ✨ Animations
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="responsive">
+                        📱 Responsive
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="glassmorphism">
+                        🔮 Glassmorphism
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="newsletter">
+                        📬 Newsletter
+                    </button>
+                    <button class="tab" data-filter-type="feature" data-filter="social-links">
+                        🔗 Social Links
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Filters & Results Count -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-top: 1px solid #E2E8F0;">
+                <div id="activeFilters" style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;"></div>
+                <div id="resultsCount" style="font-size: 14px; font-weight: 600; color: #64748B; white-space: nowrap; margin-left: 16px;">
+                    9 templates
+                </div>
+            </div>
         </div>
 
         <div class="templates-grid" id="templatesGrid">
@@ -262,7 +360,7 @@
     </div>
 
     <script>
-        // Template data
+        // Template data with rich metadata
         const templates = [
             {
                 id: 'yenze-modern',
@@ -272,7 +370,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['dark', 'blue'],
+                style: 'modern',
+                features: ['contact-form', 'responsive', 'animations']
             },
             {
                 id: 'finwise',
@@ -282,7 +383,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['light', 'blue', 'green'],
+                style: 'professional',
+                features: ['dashboard', 'charts', 'responsive']
             },
             {
                 id: 'yenze-ai-agency',
@@ -292,7 +396,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['light', 'purple'],
+                style: 'minimal',
+                features: ['newsletter', 'animations', 'responsive']
             },
             {
                 id: 'yenze-cinematic',
@@ -302,7 +409,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1579547621415-3754907a9ee0?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['multicolor', 'gradient'],
+                style: 'creative',
+                features: ['fullscreen', 'contact-form', 'animations', 'responsive']
             },
             {
                 id: 'portfolio-digital-architect',
@@ -312,7 +422,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['dark', 'orange', 'brown'],
+                style: 'creative',
+                features: ['grid-layout', 'contact-form', 'animations']
             },
             {
                 id: 'linktree-creative',
@@ -322,7 +435,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['dark', 'blue'],
+                style: 'minimal',
+                features: ['dark-mode', 'contact-form', 'social-links', 'animations']
             },
             {
                 id: 'linktree-business',
@@ -332,7 +448,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['light', 'blue'],
+                style: 'professional',
+                features: ['contact-form', 'verified-badge', 'social-links', 'glassmorphism']
             },
             {
                 id: 'linktree-influencer',
@@ -342,7 +461,10 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['pastel', 'pink', 'multicolor'],
+                style: 'playful',
+                features: ['newsletter', 'social-links', 'glassmorphism', 'animations']
             },
             {
                 id: 'linktree-creator',
@@ -352,26 +474,76 @@
                 price: 'FREE',
                 isPremium: false,
                 preview: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=600&fit=crop&q=80',
-                html: null
+                html: null,
+                colors: ['dark', 'gold'],
+                style: 'bold',
+                features: ['video-preview', 'newsletter', 'social-links', 'dark-mode']
             }
         ];
 
-        // Render templates
-        function renderTemplates(filter = 'all') {
+        // Active filters state
+        const activeFilters = {
+            category: 'all',
+            color: 'all',
+            style: 'all',
+            features: [],
+            search: ''
+        };
+
+        // Render templates with advanced filtering
+        function renderTemplates() {
             const grid = document.getElementById('templatesGrid');
 
-            let filtered = templates;
-            if (filter !== 'all') {
-                if (filter === 'free') {
-                    filtered = templates.filter(t => !t.isPremium);
-                } else if (filter === 'premium') {
-                    filtered = templates.filter(t => t.isPremium);
-                } else {
-                    filtered = templates.filter(t => t.category === filter);
+            // Apply all filters
+            let filtered = templates.filter(template => {
+                // Search filter
+                if (activeFilters.search) {
+                    const searchTerm = activeFilters.search.toLowerCase();
+                    const matchesSearch =
+                        template.name.toLowerCase().includes(searchTerm) ||
+                        template.description.toLowerCase().includes(searchTerm) ||
+                        template.category.toLowerCase().includes(searchTerm);
+                    if (!matchesSearch) return false;
                 }
-            }
 
-            grid.innerHTML = filtered.map(template => `
+                // Category filter
+                if (activeFilters.category !== 'all' && template.category !== activeFilters.category) {
+                    return false;
+                }
+
+                // Color filter
+                if (activeFilters.color !== 'all' && !template.colors.includes(activeFilters.color)) {
+                    return false;
+                }
+
+                // Style filter
+                if (activeFilters.style !== 'all' && template.style !== activeFilters.style) {
+                    return false;
+                }
+
+                // Features filter (must have ALL selected features)
+                if (activeFilters.features.length > 0) {
+                    const hasAllFeatures = activeFilters.features.every(feature =>
+                        template.features.includes(feature)
+                    );
+                    if (!hasAllFeatures) return false;
+                }
+
+                return true;
+            });
+
+            // Update results count
+            const count = filtered.length;
+            document.getElementById('resultsCount').textContent =
+                `${count} template${count !== 1 ? 's' : ''}`;
+
+            // Update active filters display
+            updateActiveFiltersDisplay();
+
+            // Render grid
+            grid.innerHTML = filtered.length === 0
+                ? '<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #64748B;"><div style="font-size: 48px; margin-bottom: 16px;">😕</div><div style="font-size: 18px; font-weight: 600;">No templates found</div><div style="margin-top: 8px;">Try adjusting your filters</div></div>'
+                : filtered.map(template => `
                 <div class="template-card">
                     <div class="template-preview" id="preview-${template.id}">
                         <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
@@ -471,13 +643,95 @@
             }
         }
 
-        // Filter tabs
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                renderTemplates(tab.dataset.filter);
+        // Update active filters display
+        function updateActiveFiltersDisplay() {
+            const container = document.getElementById('activeFilters');
+            const filters = [];
+
+            if (activeFilters.category !== 'all') {
+                filters.push({ type: 'category', value: activeFilters.category });
+            }
+            if (activeFilters.color !== 'all') {
+                filters.push({ type: 'color', value: activeFilters.color });
+            }
+            if (activeFilters.style !== 'all') {
+                filters.push({ type: 'style', value: activeFilters.style });
+            }
+            activeFilters.features.forEach(feature => {
+                filters.push({ type: 'feature', value: feature });
             });
+
+            container.innerHTML = filters.length === 0
+                ? '<span style="color: #94A3B8; font-size: 14px;">No filters applied</span>'
+                : filters.map(f => `
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #0066FF; color: white; border-radius: 100px; font-size: 13px; font-weight: 600;">
+                        ${f.value.replace('-', ' ')}
+                        <button onclick="removeFilter('${f.type}', '${f.value}')" style="background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 16px; line-height: 1;">&times;</button>
+                    </span>
+                `).join('');
+        }
+
+        // Remove individual filter
+        function removeFilter(type, value) {
+            if (type === 'feature') {
+                activeFilters.features = activeFilters.features.filter(f => f !== value);
+                // Update button state
+                const btn = document.querySelector(`[data-filter-type="feature"][data-filter="${value}"]`);
+                if (btn) btn.classList.remove('active');
+            } else {
+                activeFilters[type] = 'all';
+                // Update button state
+                document.querySelectorAll(`[data-filter-type="${type}"]`).forEach(t => t.classList.remove('active'));
+                const allBtn = document.querySelector(`[data-filter-type="${type}"][data-filter="all"]`);
+                if (allBtn) allBtn.classList.add('active');
+            }
+            renderTemplates();
+        }
+
+        // Filter tabs - single select for category, color, style
+        document.querySelectorAll('[data-filter-type="category"], [data-filter-type="color"], [data-filter-type="style"]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const filterType = tab.dataset.filterType;
+                const filterValue = tab.dataset.filter;
+
+                // Remove active from siblings
+                document.querySelectorAll(`[data-filter-type="${filterType}"]`).forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update filter
+                activeFilters[filterType] = filterValue;
+                renderTemplates();
+            });
+        });
+
+        // Feature filters - multi-select
+        document.querySelectorAll('[data-filter-type="feature"]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const feature = tab.dataset.filter;
+
+                if (activeFilters.features.includes(feature)) {
+                    // Remove feature
+                    activeFilters.features = activeFilters.features.filter(f => f !== feature);
+                    tab.classList.remove('active');
+                } else {
+                    // Add feature
+                    activeFilters.features.push(feature);
+                    tab.classList.add('active');
+                }
+
+                renderTemplates();
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                activeFilters.search = e.target.value;
+                renderTemplates();
+            }, 300);
         });
 
         // View demo in new window
