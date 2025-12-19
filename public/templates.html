@@ -374,7 +374,7 @@
 
             try {
                 console.log(`[Preview] Loading template: ${templateId}`);
-                const response = await fetch(`/templates/${templateId}.html?v=20241219-2`);
+                const response = await fetch(`/templates/${templateId}.html?v=20241219-3`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -444,7 +444,7 @@
             const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect'];
 
             if (availableTemplates.includes(templateId)) {
-                window.open(`/templates/${templateId}.html?v=20241219-2`, '_blank');
+                window.open(`/templates/${templateId}.html?v=20241219-3`, '_blank');
             } else {
                 alert('Demo coming soon for this template!');
             }
@@ -469,24 +469,30 @@
 
             if (availableTemplates.includes(templateId)) {
                 try {
+                    console.log('[Template Select] Fetching template:', templateId);
+
                     // Fetch the template HTML
-                    const response = await fetch(`/templates/${templateId}.html?v=20241219-2`);
+                    const response = await fetch(`/templates/${templateId}.html?v=20241219-3`);
 
                     if (!response.ok) {
                         throw new Error('Failed to load template');
                     }
 
                     const templateHTML = await response.text();
+                    console.log('[Template Select] Template loaded, size:', templateHTML.length, 'bytes');
 
                     // Store template HTML in localStorage
                     localStorage.setItem('templateHTML', templateHTML);
                     localStorage.setItem('templateName', template.name);
                     localStorage.setItem('templateId', templateId);
 
+                    console.log('[Template Select] Stored in localStorage');
+                    console.log('[Template Select] Redirecting to builder...');
+
                     // Redirect to builder
                     window.location.href = 'https://builder.yenze.io?template=true';
                 } catch (error) {
-                    console.error('Error loading template:', error);
+                    console.error('[Template Select] Error:', error);
                     alert('Failed to load template. Please try again.');
                 }
             } else {
