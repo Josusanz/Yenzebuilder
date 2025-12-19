@@ -1,7 +1,10 @@
 -- Add form_submissions table for Messages feature
 -- This table stores contact form submissions from published websites
 
-CREATE TABLE IF NOT EXISTS form_submissions (
+-- Drop existing table if it exists (to recreate with correct schema)
+DROP TABLE IF EXISTS form_submissions CASCADE;
+
+CREATE TABLE form_submissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
     name TEXT,
