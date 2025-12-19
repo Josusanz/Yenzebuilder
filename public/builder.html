@@ -3383,6 +3383,39 @@
                 await app.init();
             }
 
+            // Check if template should be loaded from localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('template') === 'true') {
+                const templateHTML = localStorage.getItem('templateHTML');
+                const templateName = localStorage.getItem('templateName');
+                const templateId = localStorage.getItem('templateId');
+
+                if (templateHTML) {
+                    console.log('[Template Load] Loading template:', templateName || templateId);
+
+                    // Insert template HTML into the canvas
+                    const canvas = document.getElementById('canvas');
+                    if (canvas) {
+                        canvas.innerHTML = templateHTML;
+                        console.log('[Template Load] Template inserted into canvas');
+
+                        // Clear template from localStorage
+                        localStorage.removeItem('templateHTML');
+                        localStorage.removeItem('templateName');
+                        localStorage.removeItem('templateId');
+
+                        // Show success message
+                        if (typeof showNotification === 'function') {
+                            showNotification(`Template "${templateName || 'Loaded'}" inserted successfully!`, 'success');
+                        }
+
+                        // Remove ?template=true from URL
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, '', newUrl);
+                    }
+                }
+            }
+
             // CRITICAL: Update UI immediately after app.init completes
             const user = supabaseClient.getUser();
             if (user) {
