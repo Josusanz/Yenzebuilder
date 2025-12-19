@@ -264,8 +264,8 @@
     </nav>
 
     <div class="container">
-        <!-- Compact Header with Filters -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px; flex-wrap: wrap;">
+        <!-- Compact Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 16px; flex-wrap: wrap;">
             <div>
                 <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Templates</h1>
                 <p id="resultsCount" style="font-size: 13px; color: #64748B; margin: 4px 0 0;">9 templates</p>
@@ -285,26 +285,23 @@
                         <line x1="4" y1="12" x2="20" y2="12"></line>
                         <line x1="4" y1="18" x2="20" y2="18"></line>
                     </svg>
-                    Filters
+                    More Filters
                 </button>
             </div>
         </div>
 
-        <!-- Collapsible Filters -->
+        <!-- Category Tabs - Always Visible -->
+        <div style="display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="mini-tab active" data-filter-type="category" data-filter="all">All</button>
+            <button class="mini-tab" data-filter-type="category" data-filter="business">Business</button>
+            <button class="mini-tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
+            <button class="mini-tab" data-filter-type="category" data-filter="landing">Landing</button>
+            <button class="mini-tab" data-filter-type="category" data-filter="linktree">Linktree</button>
+        </div>
+
+        <!-- Advanced Filters - Collapsible -->
         <div id="filtersPanel" style="display: none; margin-bottom: 20px; padding: 16px; background: #F8FAFC; border-radius: 10px; border: 1px solid #E2E8F0;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                <!-- Category -->
-                <div>
-                    <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Category</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                        <button class="mini-tab active" data-filter-type="category" data-filter="all">All</button>
-                        <button class="mini-tab" data-filter-type="category" data-filter="business">Business</button>
-                        <button class="mini-tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
-                        <button class="mini-tab" data-filter-type="category" data-filter="landing">Landing</button>
-                        <button class="mini-tab" data-filter-type="category" data-filter="linktree">Linktree</button>
-                    </div>
-                </div>
-
                 <!-- Color -->
                 <div>
                     <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 6px;">Color</div>
