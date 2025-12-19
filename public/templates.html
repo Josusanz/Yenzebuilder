@@ -415,7 +415,7 @@
 
             try {
                 console.log(`[Preview] Loading template: ${templateId}`);
-                const response = await fetch(`/templates/${templateId}.html?v=20241219-3`);
+                const response = await fetch(`/templates/${templateId}.html?v=20241219-4`);
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -485,7 +485,7 @@
             const availableTemplates = ['yenze-modern', 'finwise', 'yenze-ai-agency', 'yenze-cinematic', 'portfolio-digital-architect', 'linktree-creative', 'linktree-business', 'linktree-influencer', 'linktree-creator'];
 
             if (availableTemplates.includes(templateId)) {
-                window.open(`/templates/${templateId}.html?v=20241219-3`, '_blank');
+                window.open(`/templates/${templateId}.html?v=20241219-4`, '_blank');
             } else {
                 alert('Demo coming soon for this template!');
             }
@@ -513,7 +513,7 @@
                     console.log('[Template Select] Fetching template:', templateId);
 
                     // Fetch the template HTML
-                    const response = await fetch(`/templates/${templateId}.html?v=20241219-3`);
+                    const response = await fetch(`/templates/${templateId}.html?v=20241219-4`);
 
                     if (!response.ok) {
                         throw new Error('Failed to load template');
