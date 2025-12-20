@@ -18,6 +18,8 @@ BEGIN
     ELSE
         RAISE NOTICE 'Column google_accounts already exists in profiles table';
     END IF;
+
+    RAISE NOTICE 'Migration completed successfully';
 END $$;
 
 -- Example usage:
@@ -50,5 +52,3 @@ SELECT
 FROM information_schema.columns
 WHERE table_name = 'profiles'
 AND column_name = 'google_accounts';
-
-RAISE NOTICE 'Migration completed successfully';
