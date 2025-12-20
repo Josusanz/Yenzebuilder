@@ -594,12 +594,14 @@ class DashboardApp {
                 document.getElementById('seoTitle').value = result.metadata.meta_title || '';
                 document.getElementById('seoDescription').value = result.metadata.meta_description || '';
                 document.getElementById('seoKeywords').value = result.metadata.keywords || '';
+                document.getElementById('seoCanonical').value = result.metadata.canonical_url || '';
+                document.getElementById('seoOgImage').value = result.metadata.og_image || '';
 
                 // Update char counts
                 document.getElementById('seoTitle').dispatchEvent(new Event('input'));
                 document.getElementById('seoDescription').dispatchEvent(new Event('input'));
 
-                this.showToast('SEO metadata generated with AI!', 'success');
+                this.showToast('SEO metadata generated with AI! ✨', 'success');
             } else {
                 throw new Error(result.error || 'Failed to generate SEO metadata');
             }

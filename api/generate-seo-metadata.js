@@ -28,10 +28,10 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        // Get project details
+        // Get project details with all necessary fields
         const { data: project, error: projectError } = await supabase
             .from('projects')
-            .select('html, name')
+            .select('html, name, custom_domain, subdomain, public_slug, published_url')
             .eq('id', projectId)
             .single();
 
@@ -42,14 +42,26 @@ module.exports = async function handler(req, res) {
         const content = html || project.html || '';
         const name = projectName || project.name || 'My Website';
 
+        // Determine canonical URL
+        const canonicalUrl = project.custom_domain
+            ? `https://${project.custom_domain}`
+            : project.subdomain
+            ? `https://${project.subdomain}.yenze.io`
+            : project.published_url
+            ? project.published_url
+            : `https://yenze.io/s/${project.public_slug}`;
+
+        // Try to find OG image in HTML
+        const ogImageFromHtml = extractOgImageFromHtml(content);
+
         let generatedMetadata;
 
         if (genAI) {
             // Use AI to generate metadata
-            generatedMetadata = await generateWithAI(content, name);
+            generatedMetadata = await generateWithAI(content, name, canonicalUrl, ogImageFromHtml);
         } else {
             // Fallback to simple extraction
-            generatedMetadata = extractBasicMetadata(content, name);
+            generatedMetadata = extractBasicMetadata(content, name, canonicalUrl, ogImageFromHtml);
         }
 
         return res.status(200).json({
@@ -69,7 +81,7 @@ module.exports = async function handler(req, res) {
 /**
  * Generate metadata using AI
  */
-async function generateWithAI(html, projectName) {
+async function generateWithAI(html, projectName, canonicalUrl, ogImageFromHtml) {
     try {
         const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
@@ -115,7 +127,9 @@ Return ONLY the JSON object, no additional text.`;
             return {
                 meta_title: metadata.meta_title || `${projectName} - Website`,
                 meta_description: metadata.meta_description || `Visit ${projectName} for more information.`,
-                keywords: metadata.keywords || projectName
+                keywords: metadata.keywords || projectName,
+                canonical_url: canonicalUrl,
+                og_image: ogImageFromHtml || `${canonicalUrl}/og-image.jpg`
             };
         }
 
@@ -124,14 +138,14 @@ Return ONLY the JSON object, no additional text.`;
     } catch (error) {
         console.error('AI generation error:', error);
         // Fallback to basic extraction
-        return extractBasicMetadata(html, projectName);
+        return extractBasicMetadata(html, projectName, canonicalUrl, ogImageFromHtml);
     }
 }
 
 /**
  * Extract basic metadata from HTML (fallback)
  */
-function extractBasicMetadata(html, projectName) {
+function extractBasicMetadata(html, projectName, canonicalUrl, ogImageFromHtml) {
     // Extract existing title
     const titleMatch = html.match(/<title>(.*?)<\/title>/i);
     const existingTitle = titleMatch ? titleMatch[1] : projectName;
@@ -165,6 +179,31 @@ function extractBasicMetadata(html, projectName) {
     return {
         meta_title: existingTitle.length > 60 ? existingTitle.substring(0, 57) + '...' : existingTitle,
         meta_description: description,
-        keywords: keywords.substring(0, 200) // Limit keywords length
+        keywords: keywords.substring(0, 200), // Limit keywords length
+        canonical_url: canonicalUrl,
+        og_image: ogImageFromHtml || `${canonicalUrl}/og-image.jpg`
     };
+}
+
+/**
+ * Extract OG image from HTML if present
+ */
+function extractOgImageFromHtml(html) {
+    // Try to find og:image meta tag
+    const ogImageMatch = html.match(/<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/i);
+    if (ogImageMatch) {
+        return ogImageMatch[1];
+    }
+
+    // Try to find first image tag
+    const imgMatch = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (imgMatch) {
+        const src = imgMatch[1];
+        // Only return if it's an absolute URL
+        if (src.startsWith('http://') || src.startsWith('https://')) {
+            return src;
+        }
+    }
+
+    return null;
 }
