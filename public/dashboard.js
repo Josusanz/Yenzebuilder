@@ -1595,6 +1595,72 @@ class DashboardApp {
         }
     }
 
+    async verifyGoogleProperty() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        const verificationInput = document.getElementById('verificationFileInput');
+        const verificationFile = verificationInput?.value.trim();
+
+        if (!verificationFile) {
+            this.showToast('Please enter the verification filename', 'error');
+            return;
+        }
+
+        // Validate format (should be like google4aa3d892271c286b.html)
+        if (!verificationFile.match(/^google[a-f0-9]+\.html$/i)) {
+            this.showToast('Invalid verification file format. Should be like: google4aa3d892271c286b.html', 'error');
+            return;
+        }
+
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
+
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding verification...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch('/api/verify-google-property', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id,
+                    verificationFile: verificationFile
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Hide form, show success message
+                document.getElementById('verificationForm').style.display = 'none';
+                document.getElementById('verificationSuccess').style.display = 'block';
+                document.getElementById('verifyStatus').textContent = 'Added';
+                document.getElementById('verifyStatus').style.background = '#dcfce7';
+                document.getElementById('verifyStatus').style.color = '#166534';
+
+                this.showToast('✅ Verification code added to your website!', 'success');
+
+                // Reload project to get updated HTML
+                await this.loadProjects();
+            } else {
+                this.showToast(result.message || 'Failed to add verification code', 'error');
+            }
+        } catch (error) {
+            console.error('Verify Google property error:', error);
+            this.showToast('Error adding verification code: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
     async generateSitemap() {
         if (!this.selectedSeoProject) {
             this.showToast('Please select a project first', 'error');

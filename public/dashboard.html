@@ -590,13 +590,53 @@
                                     </div>
                                 </div>
 
-                                <!-- Step 4: Submit to Google -->
+                                <!-- Step 4: Verify Google Property -->
+                                <div
+                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            4</div>
+                                        <div style="flex: 1;">
+                                            <h4
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                Verify Google Property (Optional)
+                                                <span id="verifyStatus"
+                                                    style="font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Optional</span>
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">
+                                                Add Google verification code to your website automatically
+                                            </p>
+                                            <div id="verificationForm" style="background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #0f172a;">
+                                                    📋 Paste your verification filename:
+                                                </label>
+                                                <input type="text" id="verificationFileInput"
+                                                    placeholder="e.g., google4aa3d892271c286b.html"
+                                                    style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; font-family: monospace; margin-bottom: 12px;">
+                                                <p style="margin: 0 0 12px 0; color: #64748b; font-size: 12px;">
+                                                    ℹ️ Copy the filename from Google Search Console (e.g., google4aa3d892271c286b.html). We'll automatically add the verification meta tag to your website.
+                                                </p>
+                                                <button onclick="dashboardApp.verifyGoogleProperty()" class="btn-primary"
+                                                    style="font-size: 14px;">✓ Add Verification Code</button>
+                                            </div>
+                                            <div id="verificationSuccess" style="display: none; background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 3px solid #10b981;">
+                                                <h5 style="margin: 0 0 8px 0; color: #059669; font-size: 14px;">✅ Verification code added!</h5>
+                                                <p style="margin: 0; color: #047857; font-size: 13px;">
+                                                    The verification meta tag has been added to your website. Now go to Google Search Console and click "Verify".
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 5: Submit to Google -->
                                 <div
                                     style="padding: 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
                                     <div style="display: flex; align-items: start; gap: 16px;">
                                         <div
                                             style="flex-shrink: 0; width: 48px; height: 48px; background: rgba(255, 255, 255, 0.3); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px;">
-                                            4</div>
+                                            5</div>
                                         <div style="flex: 1;">
                                             <h4
                                                 style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px; color: white;">
