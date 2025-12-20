@@ -3,14 +3,14 @@
  * Crawls the HTML and tests all links
  */
 
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -182,7 +182,8 @@ async function checkSingleLink(link) {
             ...link,
             status: 'skipped',
             message: 'Relative URL - cannot check without domain',
-            statusCode: null
+            statusCode: null,
+            suggestion: null
         };
     }
 
@@ -214,7 +215,8 @@ async function checkSingleLink(link) {
                 ...link,
                 status: 'ok',
                 message: 'Link is working',
-                statusCode
+                statusCode,
+                suggestion: null
             };
         } else if (statusCode >= 300 && statusCode < 400) {
             return {
@@ -222,14 +224,22 @@ async function checkSingleLink(link) {
                 status: 'warning',
                 message: 'Redirect detected',
                 statusCode,
-                redirectUrl: response.url
+                redirectUrl: response.url,
+                suggestion: {
+                    action: 'Update link to final destination',
+                    fix: `Change "${link.url}" to "${response.url}"`,
+                    reason: 'Redirects slow down page load and hurt SEO',
+                    severity: 'medium'
+                }
             };
         } else if (statusCode >= 400) {
+            const suggestion = generateFixSuggestion(link, statusCode, url);
             return {
                 ...link,
                 status: 'broken',
                 message: `HTTP ${statusCode}`,
-                statusCode
+                statusCode,
+                suggestion
             };
         }
 
@@ -237,7 +247,8 @@ async function checkSingleLink(link) {
             ...link,
             status: 'warning',
             message: 'Unexpected status code',
-            statusCode
+            statusCode,
+            suggestion: null
         };
 
     } catch (error) {
@@ -246,15 +257,146 @@ async function checkSingleLink(link) {
                 ...link,
                 status: 'broken',
                 message: 'Timeout - server not responding',
-                statusCode: null
+                statusCode: null,
+                suggestion: {
+                    action: 'Check server or remove link',
+                    fix: 'The server is not responding. Verify the URL is correct or remove this link.',
+                    reason: 'Timeouts indicate the server is down or unreachable',
+                    severity: 'high'
+                }
             };
         }
 
+        const suggestion = generateErrorSuggestion(link, error);
         return {
             ...link,
             status: 'broken',
             message: error.message || 'Failed to fetch',
-            statusCode: null
+            statusCode: null,
+            suggestion
         };
     }
+}
+
+/**
+ * Generate intelligent fix suggestion based on status code
+ */
+function generateFixSuggestion(link, statusCode, url) {
+    const suggestions = {
+        404: {
+            action: 'Fix or remove broken link',
+            fix: `The page at "${url}" does not exist. Check for typos in the URL or remove the link.`,
+            reason: '404 errors hurt SEO and create a bad user experience',
+            severity: 'high',
+            possibleFixes: [
+                'Check if the URL has a typo',
+                'Search for the correct URL on the website',
+                'Use web.archive.org to find the old content',
+                'Remove the link if the page no longer exists'
+            ]
+        },
+        403: {
+            action: 'Check permissions',
+            fix: `Access forbidden to "${url}". This might be behind authentication or have IP restrictions.`,
+            reason: 'Users won\'t be able to access this resource',
+            severity: 'high',
+            possibleFixes: [
+                'Verify the URL is meant to be public',
+                'Check if login is required',
+                'Contact the website owner for access',
+                'Remove link if it should not be public'
+            ]
+        },
+        500: {
+            action: 'Server error - may be temporary',
+            fix: `Server error at "${url}". This might be temporary, check again later.`,
+            reason: 'Server errors are usually temporary but should be monitored',
+            severity: 'medium',
+            possibleFixes: [
+                'Wait and check again in a few hours',
+                'Contact the website administrator',
+                'Find an alternative resource',
+                'Add a note that the link may be temporarily unavailable'
+            ]
+        },
+        default: {
+            action: 'Investigate and fix',
+            fix: `HTTP error ${statusCode} for "${url}". Check the URL and server status.`,
+            reason: 'Unexpected HTTP errors should be investigated',
+            severity: 'medium',
+            possibleFixes: [
+                'Verify the URL is correct',
+                'Check if the website is down',
+                'Try accessing the URL in a browser',
+                'Consider finding an alternative link'
+            ]
+        }
+    };
+
+    return suggestions[statusCode] || suggestions.default;
+}
+
+/**
+ * Generate suggestion based on error type
+ */
+function generateErrorSuggestion(link, error) {
+    const errorMsg = error.message.toLowerCase();
+
+    if (errorMsg.includes('dns') || errorMsg.includes('getaddrinfo')) {
+        return {
+            action: 'DNS error - domain does not exist',
+            fix: `The domain in "${link.url}" cannot be found. Check if the domain name is correct.`,
+            reason: 'DNS errors mean the domain doesn\'t exist or is misconfigured',
+            severity: 'critical',
+            possibleFixes: [
+                'Check for typos in the domain name',
+                'Verify the domain is still registered',
+                'Use a domain checker tool',
+                'Remove the link if the site is permanently gone'
+            ]
+        };
+    }
+
+    if (errorMsg.includes('ssl') || errorMsg.includes('certificate')) {
+        return {
+            action: 'SSL/Certificate error',
+            fix: `SSL certificate issue with "${link.url}". The site may be insecure or misconfigured.`,
+            reason: 'SSL errors indicate security issues',
+            severity: 'high',
+            possibleFixes: [
+                'Try changing https:// to http:// (if appropriate)',
+                'Contact the website owner about their SSL certificate',
+                'Find an alternative secure resource',
+                'Warn users if linking is necessary'
+            ]
+        };
+    }
+
+    if (errorMsg.includes('network') || errorMsg.includes('econnrefused')) {
+        return {
+            action: 'Network error',
+            fix: `Cannot connect to "${link.url}". The server may be down or blocking requests.`,
+            reason: 'Connection refused means the server is unreachable',
+            severity: 'high',
+            possibleFixes: [
+                'Check if the website is down using a service like downforeveryoneorjustme.com',
+                'Verify the URL is correct',
+                'Try again later - may be temporary',
+                'Find an alternative resource'
+            ]
+        };
+    }
+
+    return {
+        action: 'Fix or remove link',
+        fix: `Error accessing "${link.url}": ${error.message}`,
+        reason: 'Link cannot be accessed',
+        severity: 'medium',
+        possibleFixes: [
+            'Verify the URL is correct',
+            'Check if the resource exists',
+            'Try accessing in a browser',
+            'Consider removing if permanently broken'
+        ]
+    };
 }

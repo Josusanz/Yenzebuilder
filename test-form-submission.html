@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Form Submission - YENZE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            font-family: monospace;
+            color: #4a5568;
+        }
+
+        .debug-info pre {
+            margin-top: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .instructions {
+            background: #fff7ed;
+            border: 2px solid #fb923c;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h3 {
+            color: #9a3412;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #9a3412;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Form Submission</h1>
+        <p class="subtitle">Prueba el sistema de mensajes de YENZE</p>
+
+        <div class="instructions">
+            <h3>📝 Instrucciones:</h3>
+            <ol>
+                <li>Primero, selecciona uno de tus proyectos del dropdown</li>
+                <li>Llena el formulario de prueba</li>
+                <li>Envía el mensaje</li>
+                <li>Ve a tu Dashboard → Mensajes</li>
+                <li>El mensaje debería aparecer allí</li>
+            </ol>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="projectId">Proyecto <span class="required">*</span></label>
+                <select id="projectId" required>
+                    <option value="">-- Cargando tus proyectos... --</option>
+                </select>
+                <small style="color: #718096; display: block; margin-top: 4px;">
+                    Selecciona el proyecto donde quieres recibir el mensaje
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nombre <span class="required">*</span></label>
+                <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input type="tel" id="phone" name="phone" placeholder="+51 999 999 999">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Asunto</label>
+                <input type="text" id="subject" name="subject" placeholder="Mensaje de prueba" value="Mensaje de prueba desde test-form-submission.html">
+            </div>
+
+            <div class="form-group">
+                <label for="message">Mensaje <span class="required">*</span></label>
+                <textarea id="message" name="message" placeholder="Escribe tu mensaje aquí..." required>Este es un mensaje de prueba para verificar que el sistema de form submissions funciona correctamente.</textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                📨 Enviar Mensaje de Prueba
+            </button>
+        </form>
+
+        <div id="status" class="status"></div>
+
+        <div class="debug-info">
+            <strong>🔍 Debug Info:</strong>
+            <pre id="debugInfo">Esperando envío de formulario...</pre>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // Configuración de Supabase - REEMPLAZA CON TUS VALORES
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Ej: https://xxxxx.supabase.co
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        // Detectar si estamos en localhost o producción
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+        let supabase;
+        let currentUser = null;
+
+        // Intentar cargar configuración desde config.js si existe
+        async function loadConfig() {
+            try {
+                // Intentar importar configuración
+                const configModule = await import('/config.js');
+                if (configModule.supabaseUrl && configModule.supabaseAnonKey) {
+                    return {
+                        url: configModule.supabaseUrl,
+                        key: configModule.supabaseAnonKey
+                    };
+                }
+            } catch (e) {
+                console.log('No se pudo cargar config.js, usando valores por defecto');
+            }
+            return {
+                url: SUPABASE_URL,
+                key: SUPABASE_ANON_KEY
+            };
+        }
+
+        // Inicializar
+        async function init() {
+            const config = await loadConfig();
+
+            if (config.url === 'YOUR_SUPABASE_URL' || !config.url) {
+                showStatus('error', '❌ Error: Debes configurar SUPABASE_URL y SUPABASE_ANON_KEY en este archivo (líneas 194-195)');
+                document.getElementById('debugInfo').textContent = 'Por favor edita test-form-submission.html y reemplaza:\n- YOUR_SUPABASE_URL con tu URL de Supabase\n- YOUR_SUPABASE_ANON_KEY con tu Anon Key de Supabase\n\nLos encuentras en: Supabase Dashboard → Settings → API';
+                return;
+            }
+
+            supabase = createClient(config.url, config.key);
+
+            // Verificar autenticación
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+
+            if (!currentUser) {
+                showStatus('info', '⚠️ No estás autenticado. Por favor inicia sesión primero en el dashboard.');
+                document.getElementById('debugInfo').textContent = 'Usuario: No autenticado\nPor favor ve a https://builder.yenze.io e inicia sesión, luego vuelve a esta página.';
+                document.getElementById('submitBtn').disabled = true;
+                return;
+            }
+
+            // Cargar proyectos
+            await loadProjects();
+
+            document.getElementById('debugInfo').textContent = `Usuario: ${currentUser.email}\nID: ${currentUser.id}\nEstado: ✅ Autenticado correctamente`;
+        }
+
+        // Cargar proyectos del usuario
+        async function loadProjects() {
+            const projectSelect = document.getElementById('projectId');
+
+            try {
+                const { data: projects, error } = await supabase
+                    .from('projects')
+                    .select('id, name, subdomain_slug, public_slug')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!projects || projects.length === 0) {
+                    projectSelect.innerHTML = '<option value="">-- No tienes proyectos --</option>';
+                    showStatus('info', 'No tienes proyectos. Crea uno primero en el dashboard.');
+                    return;
+                }
+
+                projectSelect.innerHTML = '<option value="">-- Selecciona un proyecto --</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project.id;
+                    option.textContent = `${project.name || 'Sin nombre'} ${project.subdomain_slug ? `(${project.subdomain_slug}.yenze.io)` : ''}`;
+                    projectSelect.appendChild(option);
+                });
+
+                showStatus('success', `✅ ${projects.length} proyecto(s) cargado(s)`);
+
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                showStatus('error', `❌ Error cargando proyectos: ${error.message}`);
+                projectSelect.innerHTML = '<option value="">-- Error cargando proyectos --</option>';
+            }
+        }
+
+        // Manejar envío de formulario
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Enviando...';
+
+            const formData = {
+                project_id: document.getElementById('projectId').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value || null,
+                subject: document.getElementById('subject').value || 'Mensaje de prueba',
+                message: document.getElementById('message').value,
+                site_url: window.location.href
+            };
+
+            try {
+                // Enviar a la API
+                const response = await fetch('/api/submit-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                document.getElementById('debugInfo').textContent = `Respuesta del servidor:\n${JSON.stringify(result, null, 2)}`;
+
+                if (response.ok && result.success) {
+                    showStatus('success', `✅ ¡Mensaje enviado correctamente!\n\n🎉 Ahora ve a tu Dashboard → Mensajes para verlo.`);
+                    // Resetear formulario
+                    document.getElementById('testForm').reset();
+                } else {
+                    showStatus('error', `❌ Error: ${result.error || 'Error desconocido'}\n\nDetalles: ${JSON.stringify(result.debug || {}, null, 2)}`);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('error', `❌ Error de red: ${error.message}`);
+                document.getElementById('debugInfo').textContent = `Error:\n${error.message}\n\n${error.stack}`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📨 Enviar Mensaje de Prueba';
+            }
+        });
+
+        // Mostrar status
+        function showStatus(type, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusEl.style.display = 'block';
+        }
+
+        // Inicializar al cargar
+        init();
+    </script>
+</body>
+</html>

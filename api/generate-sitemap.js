@@ -3,14 +3,14 @@
  * Returns XML sitemap based on project pages
  */
 
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'GET' && req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -50,18 +50,21 @@ export default async function handler(req, res) {
         await supabase
             .from('projects')
             .update({
-                metadata: {
-                    ...project.metadata,
-                    sitemap: sitemap,
+                seo_metadata: {
+                    ...(project.seo_metadata || {}),
+                    sitemap_generated: true,
                     sitemap_generated_at: new Date().toISOString()
                 }
             })
             .eq('id', projectId);
 
-        // Return XML
-        res.setHeader('Content-Type', 'application/xml');
-        res.setHeader('Content-Disposition', `attachment; filename="sitemap-${project.public_slug}.xml"`);
-        return res.status(200).send(sitemap);
+        // Return JSON with sitemap data
+        return res.status(200).json({
+            success: true,
+            sitemap: sitemap,
+            totalUrls: pages.length,
+            baseUrl: baseUrl
+        });
 
     } catch (error) {
         console.error('Generate sitemap error:', error);

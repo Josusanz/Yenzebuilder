@@ -859,6 +859,68 @@ class DashboardApp {
             if (auditScoreDesc && fullData) {
                 auditScoreDesc.textContent = `${fullData.passed.length} checks passed, ${fullData.issues.length} critical issues, ${fullData.warnings.length} warnings`;
             }
+
+            // Display detailed results
+            if (fullData) {
+                const auditDetails = document.getElementById('auditDetails');
+                if (auditDetails) auditDetails.style.display = 'block';
+
+                // Display critical issues
+                const issuesSection = document.getElementById('auditIssuesSection');
+                const issuesList = document.getElementById('auditIssuesList');
+                if (fullData.issues && fullData.issues.length > 0 && issuesList) {
+                    issuesSection.style.display = 'block';
+                    issuesList.innerHTML = fullData.issues.map(issue =>
+                        `<div style="margin-bottom: 8px;">
+                            <div style="font-weight: 600; color: #991b1b;">${issue.message}</div>
+                            <div style="color: #64748b; font-size: 12px; margin-top: 2px;">Impact: ${issue.impact} points | Category: ${issue.category}</div>
+                        </div>`
+                    ).join('');
+                } else if (issuesSection) {
+                    issuesSection.style.display = 'none';
+                }
+
+                // Display warnings
+                const warningsSection = document.getElementById('auditWarningsSection');
+                const warningsList = document.getElementById('auditWarningsList');
+                if (fullData.warnings && fullData.warnings.length > 0 && warningsList) {
+                    warningsSection.style.display = 'block';
+                    warningsList.innerHTML = fullData.warnings.map(warning =>
+                        `<div style="margin-bottom: 8px;">
+                            <div style="font-weight: 600; color: #92400e;">${warning.message}</div>
+                            <div style="color: #64748b; font-size: 12px; margin-top: 2px;">Impact: ${warning.impact} points | Category: ${warning.category}</div>
+                        </div>`
+                    ).join('');
+                } else if (warningsSection) {
+                    warningsSection.style.display = 'none';
+                }
+
+                // Display recommendations
+                const recommendationsSection = document.getElementById('auditRecommendationsSection');
+                const recommendationsList = document.getElementById('auditRecommendationsList');
+                if (fullData.recommendations && fullData.recommendations.length > 0 && recommendationsList) {
+                    recommendationsSection.style.display = 'block';
+                    recommendationsList.innerHTML = fullData.recommendations.map((rec, index) =>
+                        `<div style="margin-bottom: 6px; color: #0f172a;">
+                            ${index + 1}. ${rec}
+                        </div>`
+                    ).join('');
+                } else if (recommendationsSection) {
+                    recommendationsSection.style.display = 'none';
+                }
+
+                // Display passed checks
+                const passedSection = document.getElementById('auditPassedSection');
+                const passedList = document.getElementById('auditPassedList');
+                if (fullData.passed && fullData.passed.length > 0 && passedList) {
+                    passedSection.style.display = 'block';
+                    passedList.innerHTML = fullData.passed.map(check =>
+                        `<div style="margin-bottom: 4px; color: #065f46;">✓ ${check}</div>`
+                    ).join('');
+                } else if (passedSection) {
+                    passedSection.style.display = 'none';
+                }
+            }
         } else if (step === 'sitemap') {
             const sitemapStatus = document.getElementById('sitemapStatus');
             if (sitemapStatus) {
@@ -1150,6 +1212,7 @@ class DashboardApp {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     projectId: this.selectedSeoProject.id,
+                    userId: this.currentUser?.id,
                     sitemapUrl: `${domain}/sitemap.xml`
                 })
             });
@@ -1157,18 +1220,52 @@ class DashboardApp {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                this.showToast('Sitemap submitted to Google successfully!', 'success');
+                const accountMsg = result.accountUsed ? ` (via ${result.accountUsed})` : '';
+                this.showToast(`Sitemap submitted to Google successfully!${accountMsg}`, 'success');
 
                 // Update UI
                 this.updateSEOChecklistUI('google');
 
                 // Also open Google Search Console for manual verification
-                const gscUrl = `https://search.google.com/search-console/sitemaps?resource_id=${encodeURIComponent(domain)}`;
                 setTimeout(() => {
-                    window.open(gscUrl, '_blank');
+                    window.open(result.gscUrl, '_blank');
                 }, 1000);
             } else {
-                throw new Error(result.error || 'Failed to submit to Google');
+                // Show manual instructions
+                let instructionsHtml = `
+                    <div style="padding: 20px; background: white; border-radius: 8px; max-width: 500px;">
+                        <h3 style="margin: 0 0 12px 0; color: #0f172a;">Manual Submission Required</h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">${result.message}</p>
+                        ${result.accountToUse ? `<div style="background: #f0f9ff; padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #0284c7;">
+                            <strong>Google Account:</strong> ${result.accountToUse}
+                        </div>` : ''}
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 6px; margin-bottom: 16px;">
+                            <strong style="display: block; margin-bottom: 8px;">Follow these steps:</strong>
+                            <ol style="margin: 0; padding-left: 20px; color: #0f172a;">
+                                ${result.instructions.map(inst => `<li style="margin-bottom: 6px;">${inst}</li>`).join('')}
+                            </ol>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="${result.gscUrl}" target="_blank" style="flex: 1; background: #3b82f6; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Open Google Search Console</a>
+                            <button onclick="this.closest('div').parentElement.remove()" style="padding: 10px 16px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Close</button>
+                        </div>
+                    </div>
+                `;
+
+                // Show instructions in modal or inject into DOM
+                const googleSection = document.querySelector('[onclick*="submitToGoogle"]')?.closest('[style*="padding: 20px"]');
+                if (googleSection) {
+                    const existingInstructions = googleSection.querySelector('#googleInstructions');
+                    if (existingInstructions) existingInstructions.remove();
+
+                    const instructionsDiv = document.createElement('div');
+                    instructionsDiv.id = 'googleInstructions';
+                    instructionsDiv.style.marginTop = '16px';
+                    instructionsDiv.innerHTML = instructionsHtml;
+                    googleSection.appendChild(instructionsDiv);
+                }
+
+                this.showToast('Please submit manually - instructions shown below', 'warning');
             }
         } catch (error) {
             console.error('Submit to Google error:', error);
@@ -1390,10 +1487,83 @@ ${result.robotsTxt}
                 // Log detailed results to console
                 console.log('Broken Link Check Results:', result);
 
-                // Show broken links if any
+                // Show broken links with suggestions if any
                 if (result.broken > 0) {
                     const brokenLinks = result.links.filter(l => l.status === 'broken');
                     console.error('Broken Links:', brokenLinks);
+
+                    // Show detailed suggestions in UI
+                    let suggestionsHtml = '<div style="margin-top: 20px; padding: 20px; background: #fef2f2; border-radius: 8px; border-left: 4px solid #dc2626;"><h4 style="margin: 0 0 12px 0; color: #dc2626;">🔴 Broken Links - Fix Suggestions</h4>';
+
+                    brokenLinks.forEach((link, index) => {
+                        const suggestion = link.suggestion || {};
+                        suggestionsHtml += `
+                            <div style="margin-bottom: 16px; padding: 12px; background: white; border-radius: 6px;">
+                                <div style="font-weight: 600; color: #dc2626; margin-bottom: 4px;">${index + 1}. ${link.url}</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">${link.message} (Type: ${link.type})</div>
+                                ${suggestion.action ? `
+                                    <div style="background: #fffbeb; padding: 10px; border-radius: 4px; margin-top: 8px;">
+                                        <div style="font-weight: 600; font-size: 13px; color: #d97706; margin-bottom: 6px;">💡 ${suggestion.action}</div>
+                                        <div style="font-size: 12px; color: #0f172a; margin-bottom: 8px;">${suggestion.fix}</div>
+                                        <div style="font-size: 11px; color: #64748b; font-style: italic; margin-bottom: 8px;">${suggestion.reason}</div>
+                                        ${suggestion.possibleFixes ? `
+                                            <div style="font-size: 12px; color: #0f172a; font-weight: 600; margin-bottom: 4px;">Possible fixes:</div>
+                                            <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #0f172a;">
+                                                ${suggestion.possibleFixes.map(fix => `<li>${fix}</li>`).join('')}
+                                            </ul>
+                                        ` : ''}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    });
+
+                    suggestionsHtml += '</div>';
+
+                    // Insert suggestions into the DOM
+                    const linksCheckSection = document.querySelector('[onclick*="checkBrokenLinks"]')?.closest('[style*="padding: 20px"]');
+                    if (linksCheckSection) {
+                        const existingSuggestions = linksCheckSection.querySelector('#brokenLinkSuggestions');
+                        if (existingSuggestions) existingSuggestions.remove();
+
+                        const suggestionsDiv = document.createElement('div');
+                        suggestionsDiv.id = 'brokenLinkSuggestions';
+                        suggestionsDiv.innerHTML = suggestionsHtml;
+                        linksCheckSection.appendChild(suggestionsDiv);
+                    }
+                }
+
+                // Show warnings with suggestions
+                if (result.warnings > 0) {
+                    const warningLinks = result.links.filter(l => l.status === 'warning');
+                    console.warn('Warning Links:', warningLinks);
+
+                    let warningsHtml = '<div style="margin-top: 16px; padding: 16px; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;"><h4 style="margin: 0 0 12px 0; color: #d97706;">⚠️ Warnings - Optimization Suggestions</h4>';
+
+                    warningLinks.forEach((link, index) => {
+                        const suggestion = link.suggestion || {};
+                        warningsHtml += `
+                            <div style="margin-bottom: 12px; padding: 10px; background: white; border-radius: 6px;">
+                                <div style="font-weight: 600; color: #d97706; margin-bottom: 4px;">${index + 1}. ${link.url}</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 6px;">${link.message}</div>
+                                ${link.redirectUrl ? `<div style="font-size: 12px; color: #0f172a; margin-bottom: 6px;">Redirects to: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-size: 11px;">${link.redirectUrl}</code></div>` : ''}
+                                ${suggestion.fix ? `<div style="font-size: 12px; color: #92400e;">💡 ${suggestion.fix}</div>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    warningsHtml += '</div>';
+
+                    const linksCheckSection = document.querySelector('[onclick*="checkBrokenLinks"]')?.closest('[style*="padding: 20px"]');
+                    if (linksCheckSection) {
+                        const existingWarnings = linksCheckSection.querySelector('#warningLinkSuggestions');
+                        if (existingWarnings) existingWarnings.remove();
+
+                        const warningsDiv = document.createElement('div');
+                        warningsDiv.id = 'warningLinkSuggestions';
+                        warningsDiv.innerHTML = warningsHtml;
+                        linksCheckSection.appendChild(warningsDiv);
+                    }
                 }
             } else {
                 throw new Error(result.error || 'Failed to check links');

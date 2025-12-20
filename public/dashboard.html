@@ -383,7 +383,7 @@
                                                 website for SEO issues and get recommendations</p>
                                             <div id="auditResults"
                                                 style="display: none; background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-                                                <div style="display: flex; align-items: center; gap: 16px;">
+                                                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
                                                     <div style="position: relative; width: 60px; height: 60px;">
                                                         <svg viewBox="0 0 36 36"
                                                             style="width: 100%; height: 100%; transform: rotate(-90deg);">
@@ -406,6 +406,41 @@
                                                         <div id="auditScoreDesc"
                                                             style="font-size: 13px; color: #64748b;">Click "Run Audit"
                                                             to analyze your website</div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Detailed Audit Results -->
+                                                <div id="auditDetails" style="display: none;">
+                                                    <!-- Critical Issues -->
+                                                    <div id="auditIssuesSection" style="display: none; margin-bottom: 12px;">
+                                                        <div style="font-weight: 600; font-size: 13px; color: #dc2626; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span>❌</span> Critical Issues
+                                                        </div>
+                                                        <div id="auditIssuesList" style="background: #fef2f2; border-left: 3px solid #dc2626; padding: 10px; border-radius: 4px; font-size: 13px;"></div>
+                                                    </div>
+
+                                                    <!-- Warnings -->
+                                                    <div id="auditWarningsSection" style="display: none; margin-bottom: 12px;">
+                                                        <div style="font-weight: 600; font-size: 13px; color: #d97706; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span>⚠️</span> Warnings
+                                                        </div>
+                                                        <div id="auditWarningsList" style="background: #fffbeb; border-left: 3px solid #d97706; padding: 10px; border-radius: 4px; font-size: 13px;"></div>
+                                                    </div>
+
+                                                    <!-- Recommendations -->
+                                                    <div id="auditRecommendationsSection" style="display: none; margin-bottom: 12px;">
+                                                        <div style="font-weight: 600; font-size: 13px; color: #0284c7; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span>💡</span> Recommendations
+                                                        </div>
+                                                        <div id="auditRecommendationsList" style="background: #f0f9ff; border-left: 3px solid #0284c7; padding: 10px; border-radius: 4px; font-size: 13px;"></div>
+                                                    </div>
+
+                                                    <!-- Passed Checks -->
+                                                    <div id="auditPassedSection" style="display: none;">
+                                                        <div style="font-weight: 600; font-size: 13px; color: #059669; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                                            <span>✅</span> Passed Checks
+                                                        </div>
+                                                        <div id="auditPassedList" style="background: #f0fdf4; border-left: 3px solid #059669; padding: 10px; border-radius: 4px; font-size: 13px;"></div>
                                                     </div>
                                                 </div>
                                             </div>

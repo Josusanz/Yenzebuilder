@@ -3,14 +3,14 @@
  * Returns robots.txt content based on project settings
  */
 
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'GET' && req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
             : `https://yenze.io/s/${project.public_slug}`;
 
         // Get SEO settings from project metadata
-        const seoSettings = project.metadata?.seo || {};
+        const seoSettings = project.seo_metadata?.seo || {};
         const allowCrawling = seoSettings.allow_crawling !== false; // Default to true
         const disallowPaths = seoSettings.disallow_paths || [];
 
@@ -52,18 +52,20 @@ export default async function handler(req, res) {
         await supabase
             .from('projects')
             .update({
-                metadata: {
-                    ...project.metadata,
-                    robots_txt: robotsTxt,
+                seo_metadata: {
+                    ...(project.seo_metadata || {}),
+                    robots_generated: true,
                     robots_generated_at: new Date().toISOString()
                 }
             })
             .eq('id', projectId);
 
-        // Return text
-        res.setHeader('Content-Type', 'text/plain');
-        res.setHeader('Content-Disposition', `attachment; filename="robots-${project.public_slug}.txt"`);
-        return res.status(200).send(robotsTxt);
+        // Return JSON with robots.txt content
+        return res.status(200).json({
+            success: true,
+            robotsTxt: robotsTxt,
+            baseUrl: baseUrl
+        });
 
     } catch (error) {
         console.error('Generate robots.txt error:', error);
