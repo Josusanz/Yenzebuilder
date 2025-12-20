@@ -414,8 +414,202 @@ class DashboardApp {
             btnRunAudit.dataset.initialized = 'true';
         }
 
+        // Setup SEO Editor buttons
+        this.setupSEOEditor();
+
         // Load SEO projects overview (stats)
         this.loadSEOProjectsOverview();
+    }
+
+    setupSEOEditor() {
+        const btnOpenSEOEditor = document.getElementById('btnOpenSEOEditor');
+        const btnCloseSEOEditor = document.getElementById('btnCloseSEOEditor');
+        const btnSaveSEO = document.getElementById('btnSaveSEO');
+        const btnGenerateSEO = document.getElementById('btnGenerateSEO');
+        const seoEditorForm = document.getElementById('seoEditorForm');
+
+        const seoTitle = document.getElementById('seoTitle');
+        const seoDescription = document.getElementById('seoDescription');
+        const titleCharCount = document.getElementById('titleCharCount');
+        const descCharCount = document.getElementById('descCharCount');
+
+        // Character counters
+        if (seoTitle) {
+            seoTitle.addEventListener('input', (e) => {
+                const count = e.target.value.length;
+                const color = count >= 50 && count <= 60 ? '#059669' : count > 60 ? '#dc2626' : '#d97706';
+                titleCharCount.textContent = `(${count}/60 chars)`;
+                titleCharCount.style.color = color;
+            });
+        }
+
+        if (seoDescription) {
+            seoDescription.addEventListener('input', (e) => {
+                const count = e.target.value.length;
+                const color = count >= 150 && count <= 160 ? '#059669' : count > 160 ? '#dc2626' : '#d97706';
+                descCharCount.textContent = `(${count}/160 chars)`;
+                descCharCount.style.color = color;
+            });
+        }
+
+        // Open editor
+        if (btnOpenSEOEditor && !btnOpenSEOEditor.dataset.initialized) {
+            btnOpenSEOEditor.addEventListener('click', () => {
+                if (!this.selectedSeoProject) {
+                    this.showToast('Please select a project first', 'error');
+                    return;
+                }
+                this.openSEOEditor();
+            });
+            btnOpenSEOEditor.dataset.initialized = 'true';
+        }
+
+        // Close editor
+        if (btnCloseSEOEditor && !btnCloseSEOEditor.dataset.initialized) {
+            btnCloseSEOEditor.addEventListener('click', () => {
+                seoEditorForm.style.display = 'none';
+                btnOpenSEOEditor.style.display = 'block';
+            });
+            btnCloseSEOEditor.dataset.initialized = 'true';
+        }
+
+        // Save SEO
+        if (btnSaveSEO && !btnSaveSEO.dataset.initialized) {
+            btnSaveSEO.addEventListener('click', () => this.saveSEOMetadataForm());
+            btnSaveSEO.dataset.initialized = 'true';
+        }
+
+        // Generate SEO with AI
+        if (btnGenerateSEO && !btnGenerateSEO.dataset.initialized) {
+            btnGenerateSEO.addEventListener('click', () => this.generateSEOWithAI());
+            btnGenerateSEO.dataset.initialized = 'true';
+        }
+    }
+
+    openSEOEditor() {
+        const seoEditorForm = document.getElementById('seoEditorForm');
+        const btnOpenSEOEditor = document.getElementById('btnOpenSEOEditor');
+
+        const seoTitle = document.getElementById('seoTitle');
+        const seoDescription = document.getElementById('seoDescription');
+        const seoCanonical = document.getElementById('seoCanonical');
+        const seoOgImage = document.getElementById('seoOgImage');
+        const seoKeywords = document.getElementById('seoKeywords');
+
+        // Load existing metadata
+        const metadata = this.selectedSeoProject.seo_metadata || {};
+
+        seoTitle.value = metadata.meta_title || this.selectedSeoProject.name || '';
+        seoDescription.value = metadata.meta_description || '';
+        seoCanonical.value = metadata.canonical_url || '';
+        seoOgImage.value = metadata.og_image || '';
+        seoKeywords.value = metadata.keywords || '';
+
+        // Update char counts
+        seoTitle.dispatchEvent(new Event('input'));
+        seoDescription.dispatchEvent(new Event('input'));
+
+        // Show form
+        seoEditorForm.style.display = 'block';
+        btnOpenSEOEditor.style.display = 'none';
+    }
+
+    async saveSEOMetadataForm() {
+        const btnSaveSEO = document.getElementById('btnSaveSEO');
+        const originalText = btnSaveSEO.innerHTML;
+
+        const seoTitle = document.getElementById('seoTitle').value.trim();
+        const seoDescription = document.getElementById('seoDescription').value.trim();
+        const seoCanonical = document.getElementById('seoCanonical').value.trim();
+        const seoOgImage = document.getElementById('seoOgImage').value.trim();
+        const seoKeywords = document.getElementById('seoKeywords').value.trim();
+
+        if (!seoTitle || !seoDescription) {
+            this.showToast('Title and Description are required', 'error');
+            return;
+        }
+
+        btnSaveSEO.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btnSaveSEO.disabled = true;
+
+        try {
+            const metadata = {
+                meta_title: seoTitle,
+                meta_description: seoDescription,
+                canonical_url: seoCanonical,
+                og_image: seoOgImage,
+                og_title: seoTitle,
+                og_description: seoDescription,
+                keywords: seoKeywords,
+                updated_at: new Date().toISOString()
+            };
+
+            await this.saveSEOMetadata(metadata);
+
+            this.showToast('SEO metadata saved successfully!', 'success');
+
+            // Close editor
+            document.getElementById('seoEditorForm').style.display = 'none';
+            document.getElementById('btnOpenSEOEditor').style.display = 'block';
+
+            // Reload project to reflect changes
+            await this.loadSEOProjectsOverview();
+
+        } catch (error) {
+            console.error('Save SEO error:', error);
+            this.showToast('Error saving SEO metadata: ' + error.message, 'error');
+        } finally {
+            btnSaveSEO.innerHTML = originalText;
+            btnSaveSEO.disabled = false;
+        }
+    }
+
+    async generateSEOWithAI() {
+        const btnGenerateSEO = document.getElementById('btnGenerateSEO');
+        const originalText = btnGenerateSEO.innerHTML;
+
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        btnGenerateSEO.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        btnGenerateSEO.disabled = true;
+
+        try {
+            const response = await fetch('/api/generate-seo-metadata', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id,
+                    html: this.selectedSeoProject.html || '',
+                    projectName: this.selectedSeoProject.name || ''
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                // Fill form with AI-generated content
+                document.getElementById('seoTitle').value = result.metadata.meta_title || '';
+                document.getElementById('seoDescription').value = result.metadata.meta_description || '';
+                document.getElementById('seoKeywords').value = result.metadata.keywords || '';
+
+                // Update char counts
+                document.getElementById('seoTitle').dispatchEvent(new Event('input'));
+                document.getElementById('seoDescription').dispatchEvent(new Event('input'));
+
+                this.showToast('SEO metadata generated with AI!', 'success');
+            } else {
+                throw new Error(result.error || 'Failed to generate SEO metadata');
+            }
+        } catch (error) {
+            console.error('Generate SEO error:', error);
+            this.showToast('Error generating SEO: ' + error.message, 'error');
+        } finally {
+            btnGenerateSEO.innerHTML = originalText;
+            btnGenerateSEO.disabled = false;
+        }
     }
 
     async loadSEOProjects(loadMore = false) {

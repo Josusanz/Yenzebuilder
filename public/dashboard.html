@@ -365,6 +365,84 @@
                                 <p class="text-muted" style="margin-bottom: 24px; color: #64748b;">Complete these steps
                                     to optimize your website for search engines</p>
 
+                                <!-- Step 0: Edit SEO Metadata -->
+                                <div
+                                    style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; margin-bottom: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                    <div style="display: flex; align-items: start; gap: 16px;">
+                                        <div
+                                            style="flex-shrink: 0; width: 40px; height: 40px; background: white; color: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            ✏️</div>
+                                        <div style="flex: 1;">
+                                            <h4 style="margin: 0 0 8px 0; color: white; font-size: 16px;">
+                                                SEO Metadata Editor
+                                            </h4>
+                                            <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                                                Edit title, description, and social media tags for your website
+                                            </p>
+
+                                            <!-- SEO Editor Form -->
+                                            <div id="seoEditorForm" style="background: white; padding: 20px; border-radius: 8px; display: none;">
+                                                <div style="margin-bottom: 16px;">
+                                                    <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #0f172a; font-size: 13px;">
+                                                        Page Title <span style="color: #dc2626;">*</span>
+                                                        <span style="font-weight: 400; color: #64748b; font-size: 12px;" id="titleCharCount">(0/60 chars)</span>
+                                                    </label>
+                                                    <input type="text" id="seoTitle" maxlength="60" placeholder="Enter your page title (50-60 characters recommended)"
+                                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">This appears in search results and browser tabs</div>
+                                                </div>
+
+                                                <div style="margin-bottom: 16px;">
+                                                    <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #0f172a; font-size: 13px;">
+                                                        Meta Description <span style="color: #dc2626;">*</span>
+                                                        <span style="font-weight: 400; color: #64748b; font-size: 12px;" id="descCharCount">(0/160 chars)</span>
+                                                    </label>
+                                                    <textarea id="seoDescription" maxlength="160" rows="3" placeholder="Write a compelling description (150-160 characters recommended)"
+                                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; resize: vertical;"></textarea>
+                                                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">This appears below your title in search results</div>
+                                                </div>
+
+                                                <div style="margin-bottom: 16px;">
+                                                    <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #0f172a; font-size: 13px;">
+                                                        Canonical URL
+                                                    </label>
+                                                    <input type="url" id="seoCanonical" placeholder="https://yourdomain.com (leave empty to auto-generate)"
+                                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Prevents duplicate content issues</div>
+                                                </div>
+
+                                                <div style="margin-bottom: 16px;">
+                                                    <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #0f172a; font-size: 13px;">
+                                                        Open Graph Image URL (Social sharing)
+                                                    </label>
+                                                    <input type="url" id="seoOgImage" placeholder="https://yourdomain.com/image.jpg (1200x630px recommended)"
+                                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Image shown when shared on Facebook, Twitter, LinkedIn</div>
+                                                </div>
+
+                                                <div style="margin-bottom: 16px;">
+                                                    <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #0f172a; font-size: 13px;">
+                                                        Keywords (comma-separated)
+                                                    </label>
+                                                    <input type="text" id="seoKeywords" placeholder="web design, portfolio, creative agency"
+                                                        style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Helps categorize your content (5-10 keywords recommended)</div>
+                                                </div>
+
+                                                <div style="display: flex; gap: 8px; margin-top: 20px;">
+                                                    <button id="btnSaveSEO" class="btn-primary" style="font-size: 14px;">💾 Save SEO Metadata</button>
+                                                    <button id="btnGenerateSEO" class="btn-secondary" style="font-size: 14px;">✨ AI Generate</button>
+                                                    <button id="btnCloseSEOEditor" class="btn-secondary" style="font-size: 14px;">Cancel</button>
+                                                </div>
+                                            </div>
+
+                                            <button id="btnOpenSEOEditor" class="btn-primary" style="font-size: 14px; background: white; color: #667eea; border: 2px solid white;">
+                                                ✏️ Edit SEO Metadata
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Step 1: SEO Audit -->
                                 <div
                                     style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
