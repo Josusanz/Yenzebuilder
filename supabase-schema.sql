@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS projects (
     name VARCHAR(255) NOT NULL DEFAULT 'Untitled Project',
     html TEXT NOT NULL,
     published_url TEXT,
+    subdomain_slug TEXT UNIQUE,
+    public_slug TEXT UNIQUE,
     plan VARCHAR(20) NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'one_time', 'pro')),
     custom_domain TEXT,
     seo_metadata JSONB DEFAULT '{}'::jsonb,
@@ -32,6 +34,8 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
 CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects(updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_projects_seo_metadata ON projects USING GIN (seo_metadata);
+CREATE INDEX IF NOT EXISTS idx_projects_subdomain_slug ON projects(subdomain_slug);
+CREATE INDEX IF NOT EXISTS idx_projects_public_slug ON projects(public_slug);
 
 -- Row Level Security (RLS) Policies for projects
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
@@ -179,6 +183,72 @@ CREATE POLICY "Users can view own project analytics"
     );
 
 -- =====================================================
+-- FORM SUBMISSIONS TABLE
+-- Stores contact form submissions from published websites
+-- =====================================================
+CREATE TABLE IF NOT EXISTS form_submissions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    name TEXT,
+    email TEXT NOT NULL,
+    phone TEXT,
+    subject TEXT DEFAULT 'New Contact Form Submission',
+    message TEXT NOT NULL,
+    custom_fields JSONB DEFAULT '{}'::jsonb,
+    site_url TEXT,
+    ip_address TEXT,
+    user_agent TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_form_submissions_project_id ON form_submissions(project_id);
+CREATE INDEX IF NOT EXISTS idx_form_submissions_is_read ON form_submissions(is_read);
+CREATE INDEX IF NOT EXISTS idx_form_submissions_created_at ON form_submissions(created_at DESC);
+
+-- Row Level Security (RLS) Policies for form_submissions
+ALTER TABLE form_submissions ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to insert submissions (from public websites)
+CREATE POLICY "Anyone can insert form submissions"
+    ON form_submissions FOR INSERT
+    WITH CHECK (true);
+
+-- Users can view submissions for their own projects
+CREATE POLICY "Users can view own project submissions"
+    ON form_submissions FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM projects
+            WHERE projects.id = form_submissions.project_id
+            AND projects.user_id = auth.uid()
+        )
+    );
+
+-- Users can update (mark as read) submissions for their own projects
+CREATE POLICY "Users can update own project submissions"
+    ON form_submissions FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM projects
+            WHERE projects.id = form_submissions.project_id
+            AND projects.user_id = auth.uid()
+        )
+    );
+
+-- Users can delete submissions for their own projects
+CREATE POLICY "Users can delete own project submissions"
+    ON form_submissions FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM projects
+            WHERE projects.id = form_submissions.project_id
+            AND projects.user_id = auth.uid()
+        )
+    );
+
+-- =====================================================
 -- USER PROFILES TABLE (Optional - for additional user data)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS profiles (
@@ -187,6 +257,8 @@ CREATE TABLE IF NOT EXISTS profiles (
     avatar_url TEXT,
     company TEXT,
     website TEXT,
+    plan VARCHAR(20) DEFAULT 'free',
+    email TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
