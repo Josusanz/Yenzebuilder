@@ -25,11 +25,19 @@ module.exports = async function handler(req, res) {
         // Get project HTML
         const { data: project, error: projectError } = await supabase
             .from('projects')
-            .select('html, name, subdomain_slug, published_url, meta_description, meta_keywords')
+            .select('html, name, subdomain_slug, published_url, seo_metadata')
             .eq('id', projectId)
             .single();
 
-        if (projectError || !project) {
+        if (projectError) {
+            console.error('SEO Audit - Database error:', projectError);
+            return res.status(404).json({
+                error: 'Project not found',
+                details: projectError.message
+            });
+        }
+
+        if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
@@ -94,7 +102,8 @@ function performSEOAudit(project) {
 
     // 2. Check for meta description
     const metaDescMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
-    if (!metaDescMatch && !project.meta_description) {
+    const seoMetaDesc = project.seo_metadata?.meta_description;
+    if (!metaDescMatch && !seoMetaDesc) {
         issues.push({
             severity: 'error',
             message: 'Missing meta description',
@@ -104,7 +113,7 @@ function performSEOAudit(project) {
         score -= 10;
         recommendations.push('Add meta description (150-160 characters)');
     } else {
-        const descLength = (metaDescMatch?.[1] || project.meta_description || '').length;
+        const descLength = (metaDescMatch?.[1] || seoMetaDesc || '').length;
         if (descLength < 120 || descLength > 160) {
             warnings.push({
                 severity: 'warning',
