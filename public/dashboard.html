@@ -544,11 +544,14 @@
                                             </h4>
                                             <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Create XML
                                                 sitemap and robots.txt files for search engines</p>
+                                            <p style="margin: 0 0 12px 0; color: #94a3b8; font-size: 12px; font-style: italic;">
+                                                💡 Tip: These files are generated automatically when you submit to Google below. Only download manually if you need them for other purposes.
+                                            </p>
                                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                                <button onclick="dashboardApp.generateSitemap()" class="btn-primary"
-                                                    style="font-size: 14px;">📄 Generate Sitemap</button>
+                                                <button onclick="dashboardApp.generateSitemap()" class="btn-secondary"
+                                                    style="font-size: 13px; padding: 8px 14px;">📄 Download Sitemap</button>
                                                 <button onclick="dashboardApp.openRobotsTxt()" class="btn-secondary"
-                                                    style="font-size: 14px;">🤖 Generate Robots.txt</button>
+                                                    style="font-size: 13px; padding: 8px 14px;">🤖 Download Robots.txt</button>
                                             </div>
                                         </div>
                                     </div>
@@ -589,23 +592,26 @@
 
                                 <!-- Step 4: Submit to Google -->
                                 <div
-                                    style="padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                    style="padding: 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
                                     <div style="display: flex; align-items: start; gap: 16px;">
                                         <div
-                                            style="flex-shrink: 0; width: 40px; height: 40px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+                                            style="flex-shrink: 0; width: 48px; height: 48px; background: rgba(255, 255, 255, 0.3); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px;">
                                             4</div>
                                         <div style="flex: 1;">
                                             <h4
-                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                                                style="margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px; color: white;">
                                                 Submit to Google Search Console
                                                 <span id="googleStatus"
-                                                    style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Not
+                                                    style="font-size: 11px; background: rgba(255, 255, 255, 0.3); color: white; padding: 3px 10px; border-radius: 99px; font-weight: 600;">Not
                                                     Connected</span>
                                             </h4>
-                                            <p style="margin: 0 0 12px 0; color: #64748b; font-size: 14px;">Submit your
-                                                sitemap to Google for faster indexing</p>
-                                            <button onclick="dashboardApp.submitToGoogle()" class="btn-primary"
-                                                style="font-size: 14px;">🚀 Submit to Google</button>
+                                            <p style="margin: 0 0 16px 0; color: rgba(255, 255, 255, 0.95); font-size: 14px;">
+                                                🎯 One-click automatic submission: We'll generate your sitemap, robots.txt, and submit everything to Google for you!
+                                            </p>
+                                            <button onclick="dashboardApp.submitToGoogleAutomatic()" class="btn-primary"
+                                                style="font-size: 16px; padding: 14px 28px; font-weight: 600; background: white; color: #059669; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                                                🚀 Submit to Google (Automatic)
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

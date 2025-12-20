@@ -1385,6 +1385,127 @@ class DashboardApp {
         }, 1200);
     }
 
+    async submitToGoogleAutomatic() {
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        const btn = event?.target?.closest('button');
+        const originalText = btn?.innerHTML || '';
+
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+        }
+
+        try {
+            this.showToast('🔄 Step 1/3: Generating sitemap...', 'info');
+
+            // Step 1: Generate sitemap (silently)
+            const sitemapResponse = await fetch('/api/generate-sitemap', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            if (!sitemapResponse.ok) {
+                throw new Error('Failed to generate sitemap');
+            }
+
+            this.showToast('🔄 Step 2/3: Generating robots.txt...', 'info');
+
+            // Step 2: Generate robots.txt (silently)
+            const robotsResponse = await fetch('/api/generate-robots', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            if (!robotsResponse.ok) {
+                throw new Error('Failed to generate robots.txt');
+            }
+
+            this.showToast('🔄 Step 3/3: Submitting to Google...', 'info');
+
+            // Step 3: Submit to Google
+            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
+
+            const response = await fetch('/api/submit-to-google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id,
+                    userId: this.currentUser?.id,
+                    sitemapUrl: `${domain}/sitemap.xml`
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                const accountMsg = result.accountUsed ? ` (via ${result.accountUsed})` : '';
+                this.showToast(`✅ Success! Sitemap submitted to Google${accountMsg}`, 'success');
+
+                // Update UI
+                this.updateSEOChecklistUI('google');
+                this.updateSEOChecklistUI('sitemap');
+
+                // Also open Google Search Console for verification
+                setTimeout(() => {
+                    window.open(result.gscUrl, '_blank');
+                }, 1500);
+            } else {
+                // Show manual instructions
+                let instructionsHtml = `
+                    <div style="padding: 20px; background: white; border-radius: 8px; max-width: 500px; margin-top: 16px;">
+                        <h3 style="margin: 0 0 12px 0; color: #0f172a;">✅ Files Generated - Manual Submission Required</h3>
+                        <p style="color: #64748b; margin-bottom: 16px;">${result.message}</p>
+                        ${result.accountToUse ? `<div style="background: #f0f9ff; padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #0284c7;">
+                            <strong>Google Account:</strong> ${result.accountToUse}
+                        </div>` : ''}
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 6px; margin-bottom: 16px;">
+                            <strong style="display: block; margin-bottom: 8px;">Follow these steps:</strong>
+                            <ol style="margin: 0; padding-left: 20px; color: #0f172a;">
+                                ${result.instructions.map(inst => `<li style="margin-bottom: 6px;">${inst}</li>`).join('')}
+                            </ol>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="${result.gscUrl}" target="_blank" style="flex: 1; background: #3b82f6; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Open Google Search Console</a>
+                            <button onclick="this.closest('div').parentElement.remove()" style="padding: 10px 16px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Close</button>
+                        </div>
+                    </div>
+                `;
+
+                // Show instructions in modal or inject into DOM
+                const googleSection = document.querySelector('[onclick*="submitToGoogleAutomatic"]')?.closest('[style*="padding: 24px"]');
+                if (googleSection) {
+                    const existingInstructions = googleSection.querySelector('#googleInstructions');
+                    if (existingInstructions) existingInstructions.remove();
+
+                    const instructionsDiv = document.createElement('div');
+                    instructionsDiv.id = 'googleInstructions';
+                    instructionsDiv.innerHTML = instructionsHtml;
+                    googleSection.appendChild(instructionsDiv);
+                }
+
+                this.showToast('Files generated! Please complete manual submission', 'warning');
+            }
+        } catch (error) {
+            console.error('Automatic submission error:', error);
+            this.showToast('Error during automatic submission: ' + error.message, 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
     async submitToGoogle() {
         if (!this.selectedSeoProject) {
             this.showToast('Please select a project first', 'error');
