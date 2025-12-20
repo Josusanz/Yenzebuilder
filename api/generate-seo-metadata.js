@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
         // Get project details with all necessary fields
         const { data: project, error: projectError } = await supabase
             .from('projects')
-            .select('html, name, custom_domain, subdomain, public_slug, published_url')
+            .select('html, name, custom_domain, subdomain_slug, public_slug, published_url')
             .eq('id', projectId)
             .single();
 
@@ -45,8 +45,8 @@ module.exports = async function handler(req, res) {
         // Determine canonical URL
         const canonicalUrl = project.custom_domain
             ? `https://${project.custom_domain}`
-            : project.subdomain
-            ? `https://${project.subdomain}.yenze.io`
+            : project.subdomain_slug
+            ? `https://${project.subdomain_slug}.yenze.io`
             : project.published_url
             ? project.published_url
             : `https://yenze.io/s/${project.public_slug}`;

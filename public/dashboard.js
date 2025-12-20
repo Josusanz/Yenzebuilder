@@ -1433,7 +1433,7 @@ class DashboardApp {
             this.showToast('🔄 Step 3/3: Submitting to Google...', 'info');
 
             // Step 3: Submit to Google
-            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
+            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain_slug}.yenze.io`;
 
             const response = await fetch('/api/submit-to-google', {
                 method: 'POST',
@@ -1521,7 +1521,7 @@ class DashboardApp {
         }
 
         try {
-            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain}.yenze.io`;
+            const domain = this.selectedSeoProject.published_url || `https://${this.selectedSeoProject.subdomain_slug}.yenze.io`;
 
             // Call API to submit to Google
             const response = await fetch('/api/submit-to-google', {

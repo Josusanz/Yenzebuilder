@@ -36,8 +36,8 @@ module.exports = async function handler(req, res) {
         // Determine the base URL
         const baseUrl = project.custom_domain
             ? `https://${project.custom_domain}`
-            : project.subdomain
-            ? `https://${project.subdomain}.yenze.io`
+            : project.subdomain_slug
+            ? `https://${project.subdomain_slug}.yenze.io`
             : `https://yenze.io/s/${project.public_slug}`;
 
         // Parse HTML to find pages
