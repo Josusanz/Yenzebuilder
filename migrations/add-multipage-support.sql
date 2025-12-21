@@ -3,9 +3,9 @@
  * Adds support for multi-page projects while maintaining backward compatibility
  */
 
-DO $
+-- Add project_type column if it doesn't exist
+DO $$
 BEGIN
-    -- Add project_type column if it doesn't exist
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'projects' AND column_name = 'project_type'
@@ -16,8 +16,11 @@ BEGIN
     ELSE
         RAISE NOTICE 'Column project_type already exists';
     END IF;
+END $$;
 
-    -- Add pages JSONB column if it doesn't exist
+-- Add pages JSONB column if it doesn't exist
+DO $$
+BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'projects' AND column_name = 'pages'
@@ -28,8 +31,11 @@ BEGIN
     ELSE
         RAISE NOTICE 'Column pages already exists';
     END IF;
+END $$;
 
-    -- Add navigation JSONB column if it doesn't exist
+-- Add navigation JSONB column if it doesn't exist
+DO $$
+BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'projects' AND column_name = 'navigation'
@@ -40,9 +46,7 @@ BEGIN
     ELSE
         RAISE NOTICE 'Column navigation already exists';
     END IF;
-
-    RAISE NOTICE 'Multi-page support migration completed successfully';
-END $;
+END $$;
 
 -- Create index for fast page searching
 CREATE INDEX IF NOT EXISTS idx_projects_pages ON projects USING GIN (pages);
