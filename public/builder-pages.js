@@ -254,55 +254,136 @@ class BuilderPagesManager {
     }
 
     /**
-     * Show new page modal
+     * Show new page modal - Simple Framer-style
      */
     showNewPageModal() {
-        // Create modal HTML
         const modal = document.createElement('div');
         modal.className = 'modal';
-        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000;';
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px);';
 
         modal.innerHTML = `
-            <div style="background: white; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%;">
-                <h2 style="margin: 0 0 20px 0; font-size: 1.25rem;">Create New Page</h2>
-
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">Page Name</label>
-                    <input type="text" id="newPageName" placeholder="About Us" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.875rem;">
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">URL Slug</label>
-                    <input type="text" id="newPageSlug" placeholder="about" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.875rem; font-family: monospace;">
-                    <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 4px;">Lowercase, no spaces. Leave empty for homepage.</div>
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 6px;">Template</label>
-                    <select id="newPageTemplate" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.875rem;">
-                        <option value="blank">Blank Page</option>
-                        <option value="home">Home Page (Hero Section)</option>
-                        <option value="about">About Page</option>
-                        <option value="contact">Contact Page (with Form)</option>
-                        <option value="blog">Blog Page</option>
-                    </select>
-                </div>
+            <div style="background: white; dark:bg-gray-900; border-radius: 16px; padding: 32px; max-width: 560px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <h2 style="margin: 0 0 8px 0; font-size: 1.5rem; font-weight: 700; color: #18181B;">New Page</h2>
+                <p style="margin: 0 0 24px 0; font-size: 0.875rem; color: #71717A;">Create a new page for your website</p>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="display: flex; align-items: center; cursor: pointer;">
-                        <input type="checkbox" id="newPageIsHomepage" style="margin-right: 8px;">
-                        <span style="font-size: 0.875rem; font-weight: 500;">Set as Homepage</span>
-                    </label>
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: #18181B;">Page Name</label>
+                    <input type="text" id="newPageName" placeholder="e.g., About, Contact, Services"
+                        style="width: 100%; padding: 12px 16px; border: 2px solid #E4E4E7; border-radius: 8px; font-size: 0.9375rem; transition: all 0.2s; outline: none;"
+                        onfocus="this.style.borderColor='#3B82F6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)';"
+                        onblur="this.style.borderColor='#E4E4E7'; this.style.boxShadow='none';">
                 </div>
 
-                <div style="display: flex; gap: 12px;">
-                    <button id="cancelNewPage" style="flex: 1; padding: 10px; background: var(--bg-tertiary); border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Cancel</button>
-                    <button id="createNewPage" style="flex: 1; padding: 10px; background: #000; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Create Page</button>
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 8px; color: #18181B;">
+                        Import HTML
+                        <span style="font-weight: 400; color: #71717A; margin-left: 4px;">(Optional)</span>
+                    </label>
+
+                    <!-- Import Options Tabs -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px; border-bottom: 2px solid #F4F4F5; padding-bottom: 0;">
+                        <button class="import-tab-btn active" data-tab="paste"
+                            style="padding: 8px 16px; border: none; background: none; font-size: 0.875rem; font-weight: 600; color: #71717A; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;">
+                            📝 Paste Code
+                        </button>
+                        <button class="import-tab-btn" data-tab="upload"
+                            style="padding: 8px 16px; border: none; background: none; font-size: 0.875rem; font-weight: 600; color: #71717A; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;">
+                            📁 Upload File
+                        </button>
+                    </div>
+
+                    <!-- Paste HTML Tab -->
+                    <div id="pasteHtmlTab" class="import-tab-content">
+                        <textarea id="newPageHtmlPaste" placeholder="Paste your HTML code here... (optional)"
+                            style="width: 100%; min-height: 120px; padding: 12px 16px; border: 2px solid #E4E4E7; border-radius: 8px; font-size: 0.8125rem; font-family: 'Monaco', 'Menlo', monospace; resize: vertical; outline: none; transition: all 0.2s;"
+                            onfocus="this.style.borderColor='#3B82F6'; this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)';"
+                            onblur="this.style.borderColor='#E4E4E7'; this.style.boxShadow='none';"></textarea>
+                    </div>
+
+                    <!-- Upload HTML Tab -->
+                    <div id="uploadHtmlTab" class="import-tab-content" style="display: none;">
+                        <label style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; border: 2px dashed #E4E4E7; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #FAFAFA;"
+                            onmouseover="this.style.borderColor='#3B82F6'; this.style.background='#F0F7FF';"
+                            onmouseout="this.style.borderColor='#E4E4E7'; this.style.background='#FAFAFA';">
+                            <input type="file" id="newPageHtmlFile" accept=".html,.htm" style="display: none;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" style="margin-bottom: 8px;">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span style="font-size: 0.875rem; font-weight: 600; color: #3B82F6;">Choose HTML File</span>
+                            <span style="font-size: 0.75rem; color: #71717A; margin-top: 4px;">or drag and drop</span>
+                        </label>
+                        <div id="uploadedFileName" style="margin-top: 8px; font-size: 0.75rem; color: #71717A; display: none;"></div>
+                    </div>
+
+                    <div style="margin-top: 8px; font-size: 0.75rem; color: #71717A;">
+                        💡 Tip: Leave empty to start with a blank page
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button id="cancelNewPage" style="flex: 1; padding: 12px 24px; background: #F4F4F5; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: all 0.2s; color: #18181B;"
+                        onmouseover="this.style.background='#E4E4E7';"
+                        onmouseout="this.style.background='#F4F4F5';">
+                        Cancel
+                    </button>
+                    <button id="createNewPage" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);"
+                        onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.4)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(59, 130, 246, 0.3)';">
+                        Create Page
+                    </button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(modal);
+
+        // Tab switching for import options
+        const tabButtons = modal.querySelectorAll('.import-tab-btn');
+        const pasteTab = modal.querySelector('#pasteHtmlTab');
+        const uploadTab = modal.querySelector('#uploadHtmlTab');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+
+                // Update buttons
+                tabButtons.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = '#71717A';
+                    b.style.borderBottomColor = 'transparent';
+                });
+                btn.classList.add('active');
+                btn.style.color = '#18181B';
+                btn.style.borderBottomColor = '#3B82F6';
+
+                // Show/hide tabs
+                if (tab === 'paste') {
+                    pasteTab.style.display = 'block';
+                    uploadTab.style.display = 'none';
+                } else {
+                    pasteTab.style.display = 'none';
+                    uploadTab.style.display = 'block';
+                }
+            });
+        });
+
+        // Set initial active state
+        tabButtons[0].style.borderBottomColor = '#3B82F6';
+        tabButtons[0].style.color = '#18181B';
+
+        // File upload handler
+        const fileInput = modal.querySelector('#newPageHtmlFile');
+        const fileNameDisplay = modal.querySelector('#uploadedFileName');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `📄 ${file.name}`;
+                fileNameDisplay.style.display = 'block';
+            }
+        });
 
         // Event listeners
         modal.querySelector('#cancelNewPage').addEventListener('click', () => {
@@ -310,38 +391,70 @@ class BuilderPagesManager {
         });
 
         modal.querySelector('#createNewPage').addEventListener('click', async () => {
-            await this.createPage();
+            await this.createPage(modal);
             document.body.removeChild(modal);
         });
 
-        // Auto-generate slug from name
-        const nameInput = modal.querySelector('#newPageName');
-        const slugInput = modal.querySelector('#newPageSlug');
-        nameInput.addEventListener('input', (e) => {
-            if (!slugInput.dataset.userEdited) {
-                slugInput.value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-            }
-        });
-        slugInput.addEventListener('input', () => {
-            slugInput.dataset.userEdited = 'true';
-        });
-
         // Focus name input
-        setTimeout(() => nameInput.focus(), 100);
+        setTimeout(() => modal.querySelector('#newPageName').focus(), 100);
     }
 
     /**
-     * Create new page
+     * Create new page - Simplified version
      */
-    async createPage() {
-        const name = document.getElementById('newPageName').value.trim();
-        const slug = document.getElementById('newPageSlug').value.trim();
-        const template = document.getElementById('newPageTemplate').value;
-        const isHomepage = document.getElementById('newPageIsHomepage').checked;
+    async createPage(modal) {
+        const name = modal.querySelector('#newPageName').value.trim();
+        const htmlPaste = modal.querySelector('#newPageHtmlPaste').value.trim();
+        const htmlFile = modal.querySelector('#newPageHtmlFile').files[0];
 
         if (!name) {
             alert('Please enter a page name');
             return;
+        }
+
+        // Auto-generate slug from name
+        const slug = name.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+
+        // Get HTML content
+        let html = '';
+
+        if (htmlFile) {
+            // Read file content
+            html = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(htmlFile);
+            });
+        } else if (htmlPaste) {
+            html = htmlPaste;
+        } else {
+            // Create blank page with basic structure
+            html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${name}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>${name}</h1>
+    <p>Start building your ${name} page...</p>
+</body>
+</html>`;
         }
 
         try {
@@ -351,9 +464,9 @@ class BuilderPagesManager {
                 body: JSON.stringify({
                     projectId: this.currentProject.id,
                     name,
-                    slug: slug.toLowerCase(),
-                    template,
-                    isHomepage
+                    slug,
+                    html,
+                    isHomepage: this.pages.length === 0 // First page is always homepage
                 })
             });
 
@@ -362,13 +475,11 @@ class BuilderPagesManager {
                 throw new Error(error.error || 'Failed to create page');
             }
 
-            const result = await response.json();
-
             // Reload project
             await this.loadProject(this.currentProject.id);
 
             // Show success message
-            this.showToast('Page created successfully!', 'success');
+            this.showToast(`✨ ${name} page created!`, 'success');
         } catch (error) {
             console.error('Error creating page:', error);
             alert(error.message);
