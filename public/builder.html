@@ -449,6 +449,109 @@
             letter-spacing: 0.04em;
         }
 
+        /* Pages Panel */
+        .page-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .page-item:hover {
+            border-color: var(--accent);
+            transform: translateX(2px);
+        }
+
+        .page-item.active {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.05);
+        }
+
+        .page-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .page-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .page-name {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.125rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .page-slug {
+            font-size: 0.6875rem;
+            color: var(--text-tertiary);
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .page-badge {
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .page-badge.home {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .page-menu-btn {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            color: var(--text-tertiary);
+            opacity: 0;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover .page-menu-btn {
+            opacity: 1;
+        }
+
+        .page-menu-btn:hover {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        .empty-pages-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-tertiary);
+        }
+
+        .empty-pages-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
         /* Import Area */
         .import-area {
             background: var(--bg-tertiary);
@@ -2961,14 +3064,35 @@
         <!-- Left Sidebar -->
         <div class="left-sidebar">
             <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="import">Import</button>
+                <button class="sidebar-tab active" data-tab="pages">Pages</button>
                 <button class="sidebar-tab" data-tab="layers">Layers</button>
                 <button class="sidebar-tab" data-tab="elements">Elements</button>
             </div>
 
             <div class="sidebar-content">
-                <!-- Import Tab -->
-                <div class="tab-panel active" id="importPanel">
+                <!-- Pages Tab -->
+                <div class="tab-panel active" id="pagesPanel">
+                    <!-- Pages Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <div class="section-title" style="margin-bottom: 0;">PROJECT PAGES</div>
+                        <button id="addPageBtn" class="btn btn-icon" title="Add new page" style="width: 28px; height: 28px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Pages List -->
+                    <div id="pagesList" style="margin-bottom: 1.5rem;">
+                        <!-- Will be populated dynamically -->
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="height: 1px; background: var(--border); margin: 1.5rem 0;"></div>
+
+                    <!-- Import Tab (collapsed by default) -->
+                    <div id="importPanel">
                     <!-- Import HTML Section with Tabs -->
                     <div class="section-title">Import HTML</div>
 
@@ -3056,7 +3180,10 @@
                             Browse Templates →
                         </a>
                     </div>
+                    </div>
+                    <!-- End Import Section -->
                 </div>
+                <!-- End Pages Panel -->
 
                 <!-- Layers Tab -->
                 <div class="tab-panel" id="layersPanel">
@@ -3319,6 +3446,9 @@
 
     <!-- Authentication UI -->
     <script src="/auth-ui.js?v=1.5.3"></script>
+
+    <!-- Builder Pages Manager -->
+    <script src="/builder-pages.js?v=1.0.0"></script>
 
     <!-- Main App -->
     <script src="/app.js?v=1.7.5"></script>
