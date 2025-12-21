@@ -40,8 +40,15 @@ module.exports = async function handler(req, res) {
             ? `https://${project.subdomain_slug}.yenze.io`
             : `https://yenze.io/s/${project.public_slug}`;
 
-        // Parse HTML to find pages
-        const pages = extractPagesFromHTML(project.html, baseUrl);
+        // Generate pages array based on project type
+        let pages;
+        if (project.project_type === 'multi' && project.pages && Array.isArray(project.pages) && project.pages.length > 0) {
+            // Multi-page project: use pages from database
+            pages = extractPagesFromMultiPageProject(project.pages, baseUrl);
+        } else {
+            // Single-page project: parse HTML to find links
+            pages = extractPagesFromHTML(project.html, baseUrl);
+        }
 
         // Generate sitemap XML
         const sitemap = generateSitemapXML(pages);
@@ -73,7 +80,24 @@ module.exports = async function handler(req, res) {
 }
 
 /**
- * Extract pages from HTML
+ * Extract pages from multi-page project structure
+ */
+function extractPagesFromMultiPageProject(pagesArray, baseUrl) {
+    return pagesArray.map(page => {
+        const url = page.slug ? `${baseUrl}/${page.slug}` : baseUrl;
+        const lastmod = page.updated_at ? new Date(page.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+
+        return {
+            loc: url,
+            lastmod: lastmod,
+            changefreq: page.is_homepage ? 'weekly' : 'monthly',
+            priority: page.is_homepage ? '1.0' : '0.8'
+        };
+    });
+}
+
+/**
+ * Extract pages from HTML (for single-page projects)
  */
 function extractPagesFromHTML(html, baseUrl) {
     const pages = [];
