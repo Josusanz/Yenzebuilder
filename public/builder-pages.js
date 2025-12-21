@@ -235,7 +235,7 @@ class BuilderPagesManager {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                         </svg>
-                        Start from Scratch
+                        Use a Template
                     </button>
                 </div>
             </div>
@@ -500,12 +500,48 @@ class BuilderPagesManager {
 </html>`;
         }
 
+        // Check if project exists, if not create one
+        let projectId = this.currentProject?.id;
+
+        if (!projectId) {
+            console.log('No project found, creating new project...');
+            // Try to find project ID in URL or localStorage
+            projectId = new URLSearchParams(window.location.search).get('project') || localStorage.getItem('currentProjectId');
+
+            // If still no project, create a new one
+            if (!projectId) {
+                try {
+                    const projectRes = await fetch('/api/create-project', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: 'Untitled Project' }) // Default name
+                    });
+
+                    if (projectRes.ok) {
+                        const projectData = await projectRes.json();
+                        projectId = projectData.id;
+                        this.currentProject = { id: projectId, name: 'Untitled Project' };
+                        localStorage.setItem('currentProjectId', projectId);
+                    } else {
+                        throw new Error('Failed to create base project');
+                    }
+                } catch (err) {
+                    console.error('Error creating base project:', err);
+                    alert('Could not start project. Please try again.');
+                    return;
+                }
+            } else {
+                // We have an ID but not the object, mock it
+                this.currentProject = { id: projectId, name: 'My Website' };
+            }
+        }
+
         try {
             const response = await fetch('/api/pages/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    projectId: this.currentProject.id,
+                    projectId: projectId,
                     name,
                     slug,
                     html,
@@ -519,7 +555,7 @@ class BuilderPagesManager {
             }
 
             // Reload project
-            await this.loadProject(this.currentProject.id);
+            await this.loadProject(projectId);
 
             // Show success message
             this.showToast(`✨ ${name} page created!`, 'success');
