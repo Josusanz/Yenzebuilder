@@ -53,7 +53,31 @@
     </script>
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3B82F6",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#121212",
+                        "panel-light": "#F9FAFB",
+                        "panel-dark": "#1E1E1E",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#2D2D2D",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    boxShadow: {
+                        'premium': '0 4px 20px -2px rgba(0, 0, 0, 0.1), 0 2px 10px -2px rgba(0, 0, 0, 0.06)',
+                    }
+                },
+            },
+        };
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,10 +90,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="properties-panel.css">
     <style>
-        :root {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4B5563;
+        }
+
+        /* Canvas Grid */
+        .canvas-grid {
+            background-size: 20px 20px;
+            background-image:
+                linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+        }
+        .dark .canvas-grid {
+            background-image:
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
         }
 
         :root {
@@ -2932,7 +2985,7 @@
     </style>
 </head>
 
-<body>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 font-sans antialiased h-screen flex flex-col overflow-hidden">
     <!-- Mobile Header -->
     <div class="mobile-header">
         <div class="logo">
@@ -3132,21 +3185,21 @@
     </div>
 
     <div class="app-container">
-        <!-- Top Bar -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <div class="logo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17" fill="none" stroke="currentColor" stroke-width="2"></polyline>
-                        <polyline points="2 12 12 17 22 12" fill="none" stroke="currentColor" stroke-width="2"></polyline>
+        <!-- Premium Header -->
+        <header class="h-14 bg-background-light dark:bg-panel-dark border-b border-border-light dark:border-border-dark flex items-center justify-between px-4 shrink-0 z-50">
+            <div class="flex items-center space-x-4">
+                <!-- Logo -->
+                <div class="flex items-center justify-center w-8 h-8 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="10 1 1 6 10 11 19 6 10 1"></polygon>
+                        <polyline points="1 14 10 19 19 14" fill="none" stroke="currentColor" stroke-width="2"></polyline>
+                        <polyline points="1 10 10 15 19 10" fill="none" stroke="currentColor" stroke-width="2"></polyline>
                     </svg>
-                    YENZE
                 </div>
 
                 <!-- Menu Bar -->
-                <div class="menu-bar">
-                    <div class="menu-item" id="fileMenu">
+                <div class="flex items-center space-x-2 text-sm font-medium">
+                    <span class="menu-item hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded cursor-pointer" id="fileMenu">
                         File
                         <div class="menu-dropdown">
                             <button class="menu-dropdown-item" onclick="window.location.href='/dashboard.html'">
@@ -3241,61 +3294,61 @@
                     </div>
                 </div>
 
-                <div class="topbar-divider"></div>
-
-                <div class="project-name">
-                    <input type="text" id="projectName" placeholder="Untitled" value="My Website">
+                    <span class="menu-item hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded cursor-pointer">View</span>
                 </div>
             </div>
 
-            <div class="topbar-center">
-                <div class="device-toggle" style="display: flex; align-items: center;">
-                    <button class="device-btn active" data-device="desktop">Desktop</button>
-                    <button class="device-btn" data-device="tablet">Tablet</button>
-                    <button class="device-btn" data-device="mobile">Mobile</button>
-
-                    <div style="width: 1px; height: 16px; background: var(--border); margin: 0 8px;"></div>
-
-                    <div class="device-width-control" style="display: flex; align-items: center; cursor: ew-resize;"
-                        title="Click to edit width">
-                        <input type="number" id="canvasWidthInput" value="1440"
-                            style="width: 50px; background: transparent; border: none; color: var(--text-secondary); font-size: 13px; font-weight: 500; text-align: right; padding-right: 2px; outline: none;">
-                        <span style="color: var(--text-tertiary); font-size: 11px; margin-left: 2px;">px</span>
-                    </div>
-                </div>
+            <!-- Central Toolbar -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex space-x-1">
+                <button class="p-1.5 rounded bg-white dark:bg-gray-700 shadow-sm text-primary" title="Select (Pointer)">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </button>
+                <button class="p-1.5 rounded hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm text-gray-500 dark:text-gray-400 transition-all" title="Layout">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </button>
+                <button class="p-1.5 rounded hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm text-gray-500 dark:text-gray-400 transition-all" title="Text">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </button>
+                <button class="p-1.5 rounded hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm text-gray-500 dark:text-gray-400 transition-all" title="Image">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
+                </button>
             </div>
 
-            <div class="topbar-right">
-                <button class="btn btn-icon" id="undoBtn" disabled title="Undo (Ctrl+Z)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 7v6h6" />
-                        <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
+            <!-- Right Actions -->
+            <div class="flex items-center space-x-3">
+                <span class="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">Draft Saved</span>
+                <button class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition" id="previewBtn" title="Preview">
+                    <svg class="h-4 w-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
                     </svg>
                 </button>
-                <button class="btn btn-icon" id="redoBtn" disabled title="Redo (Ctrl+Y)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 7v6h-6" />
-                        <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7" />
-                    </svg>
+                <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+                <button class="bg-primary hover:bg-blue-600 text-white px-4 py-1.5 rounded text-sm font-medium shadow-sm transition-colors" id="publishBtn">
+                    Publish
                 </button>
-                <button class="btn btn-secondary" id="codeViewBtn">Code</button>
-                <button class="btn btn-secondary" id="previewBtn">Preview</button>
-                <button class="btn btn-primary" id="publishBtn">Publish</button>
-
                 <!-- User Profile (shown when logged in) -->
                 <div id="userProfileContainer" style="display: none;"></div>
             </div>
-        </div>
+        </header>
 
-        <!-- Left Sidebar -->
-        <div class="left-sidebar">
-            <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="pages">Pages</button>
-                <button class="sidebar-tab" data-tab="layers">Layers</button>
-                <button class="sidebar-tab" data-tab="elements">Elements</button>
-            </div>
+        <!-- Main Content Area -->
+        <main class="flex-1 flex overflow-hidden">
+            <!-- Left Sidebar -->
+            <aside class="w-64 bg-panel-light dark:bg-panel-dark border-r border-border-light dark:border-border-dark flex flex-col shrink-0">
+                <div class="flex items-center p-2 space-x-1">
+                    <button class="sidebar-tab flex-1 py-1.5 text-xs font-medium text-center rounded active bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white" data-tab="layers">Layers</button>
+                    <button class="sidebar-tab flex-1 py-1.5 text-xs font-medium text-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors" data-tab="pages">Pages</button>
+                    <button class="sidebar-tab flex-1 py-1.5 text-xs font-medium text-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors" data-tab="elements">Assets</button>
+                </div>
 
             <div class="sidebar-content">
                 <!-- Pages Tab -->
@@ -3595,26 +3648,29 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </aside>
 
-        <!-- Canvas Area -->
-        <div class="canvas-area">
-            <div class="canvas-wrapper desktop" id="canvasWrapper">
-                <div class="empty-state" id="emptyState">
-                    <div class="empty-state-icon">✨</div>
-                    <h2>Start by importing HTML</h2>
-                    <p>Drop a file or paste code to begin editing</p>
+            <!-- Canvas Area -->
+            <section class="flex-1 bg-gray-50 dark:bg-gray-900 overflow-hidden relative flex flex-col">
+                <div class="absolute inset-0 canvas-grid pointer-events-none z-0"></div>
+                <div class="flex-1 overflow-auto flex items-center justify-center p-20 z-10">
+                    <div class="canvas-wrapper desktop" id="canvasWrapper">
+                        <div class="empty-state bg-white dark:bg-panel-dark rounded-lg shadow-premium p-12 text-center" id="emptyState">
+                            <div class="empty-state-icon text-6xl mb-4">✨</div>
+                            <h2 class="text-2xl font-semibold mb-2 text-gray-900 dark:text-white">Start by importing HTML</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Drop a file or paste code to begin editing</p>
+                        </div>
+                        <iframe id="canvas" style="display: none;" class="w-full h-full bg-white dark:bg-panel-dark shadow-premium ring-1 ring-gray-900/5 dark:ring-white/10"></iframe>
+                    </div>
                 </div>
-                <iframe id="canvas" style="display: none;"></iframe>
-            </div>
-        </div>
+            </section>
 
-        <!-- Right Sidebar -->
-        <div class="right-sidebar">
-            <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="properties">Properties</button>
-                <button class="sidebar-tab" data-tab="history">History</button>
-            </div>
+            <!-- Right Sidebar -->
+            <aside class="w-72 bg-panel-light dark:bg-panel-dark border-l border-border-light dark:border-border-dark flex flex-col shrink-0 overflow-y-auto">
+                <div class="flex border-b border-border-light dark:border-border-dark">
+                    <button class="sidebar-tab flex-1 py-3 text-xs font-semibold text-gray-900 dark:text-white border-b-2 border-primary active" data-tab="properties">Properties</button>
+                    <button class="sidebar-tab flex-1 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" data-tab="history">Interactions</button>
+                </div>
             <div class="sidebar-content">
                 <!-- Properties Tab -->
                 <div class="tab-panel active" id="propertiesPanel">
@@ -3633,7 +3689,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </aside>
+        </main>
+    </div>
 
         <!-- Code Editor -->
         <div class="code-editor" id="codeEditor">
