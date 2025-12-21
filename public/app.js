@@ -569,6 +569,9 @@ class YenzeBuilder {
         if (input) {
             input.value = width;
         }
+
+        // Refresh properties panel to update breakpoint settings if visible
+        this.showProperties(this.selectedElement);
     }
 
     updateCanvasWidth(width) {
@@ -1634,7 +1637,80 @@ class YenzeBuilder {
     showProperties(element) {
         const panel = document.getElementById('propertiesPanel');
         if (!element) {
-            panel.innerHTML = '<div class="prop-empty">Select an element to edit its properties</div>';
+            // Show Canvas/Page Settings (Framer-like breakpoints)
+            const currentWidth = this.deviceWidths[this.currentDevice];
+
+            let html = `
+                <div class="prop-section">
+                    <div class="prop-header" style="display:flex; align-items:center; justify-content:space-between;">
+                        <span>Template</span>
+                        <i class="fa-solid fa-plus" style="cursor: pointer; opacity: 0.5;"></i>
+                    </div>
+                     <!-- Placeholder for template selection if needed later -->
+                </div>
+
+                <div class="prop-section">
+                    <div class="prop-header">Breakpoint</div>
+                    
+                    <div class="prop-row">
+                         <div class="prop-col">
+                            <label class="prop-label">Device</label>
+                            <div class="prop-btn-group">
+                                 <button class="prop-btn ${this.currentDevice === 'desktop' ? 'active' : ''}" onclick="app.switchDevice('desktop')" title="Desktop">
+                                    <i class="fa-solid fa-desktop"></i>
+                                 </button>
+                                 <button class="prop-btn ${this.currentDevice === 'tablet' ? 'active' : ''}" onclick="app.switchDevice('tablet')" title="Tablet">
+                                    <i class="fa-solid fa-tablet-screen-button"></i>
+                                 </button>
+                                 <button class="prop-btn ${this.currentDevice === 'mobile' ? 'active' : ''}" onclick="app.switchDevice('mobile')" title="Phone">
+                                    <i class="fa-solid fa-mobile-screen-button"></i>
+                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prop-row">
+                        <div class="prop-col">
+                            <label class="prop-label">Width</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="number" class="prop-input" value="${currentWidth}" 
+                                    onchange="app.updateCanvasWidth(this.value)" 
+                                    oninput="app.updateCanvasWidth(this.value)"
+                                    min="200" max="3000">
+                                    
+                                <select class="prop-select" style="width: 80px;">
+                                     <option value="Fixed">Fixed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="prop-col">
+                             <label class="prop-label">Height</label>
+                             <div style="display: flex; gap: 8px;">
+                                 <input type="text" class="prop-input" value="Fit" disabled style="background: transparent; color: var(--text-secondary);">
+                                 <select class="prop-select" style="width: 80px;" disabled>
+                                     <option>Fit</option>
+                                 </select>
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prop-row" style="margin-top: 12px;">
+                        <div class="prop-col">
+                            <label class="prop-label">Background</label>
+                            <div class="prop-color-wrapper">
+                                <div class="prop-color-preview" style="background-color: #ffffff"></div>
+                                <input type="text" class="prop-color-hex" value="#FFFFFF" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prop-empty" style="margin-top: 20px; border-top: 1px solid var(--border);">
+                    Click an element to edit specific properties.
+                </div>
+            `;
+
+            panel.innerHTML = html;
             return;
         }
 
