@@ -204,23 +204,66 @@ class BuilderPagesManager {
         if (!pagesList) return;
 
         pagesList.innerHTML = `
-            <div class="empty-pages-state">
-                <div class="empty-pages-icon">✨</div>
-                <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
-                    Start Building
+            <div class="empty-pages-state" style="padding: 2rem 1rem; text-align: center;">
+                <div class="empty-pages-icon" style="font-size: 2.5rem; margin-bottom: 1rem;">🚀</div>
+                <div style="font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                    Let's Build!
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.5; margin-bottom: 1rem;">
-                    Import HTML below to create your<br>Home page automatically
+                <div style="font-size: 0.8125rem; color: var(--text-tertiary); line-height: 1.5; margin-bottom: 1.5rem;">
+                    Choose how you want to start<br>your new website.
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px; justify-content: center; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white; font-size: 0.75rem; font-weight: 600;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="16 18 22 12 16 6"></polyline>
-                        <polyline points="8 6 2 12 8 18"></polyline>
-                    </svg>
-                    Import creates Home page
+                
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button id="startAiBtn" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); border: none; border-radius: 8px; color: white; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+                            <path d="M12 8v8"></path>
+                            <path d="M8 12h8"></path>
+                        </svg>
+                        Generate with AI
+                    </button>
+
+                    <button id="startImportBtn" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: white; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        Import HTML Code
+                    </button>
+                    
+                    <button id="startBlankBtn" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: transparent; border: 1px dashed var(--border); border-radius: 8px; color: var(--text-tertiary); font-size: 0.8125rem; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        </svg>
+                        Start from Scratch
+                    </button>
                 </div>
             </div>
         `;
+
+        // Attach listeners
+        setTimeout(() => {
+            const aiBtn = pagesList.querySelector('#startAiBtn');
+            const importBtn = pagesList.querySelector('#startImportBtn');
+            const blankBtn = pagesList.querySelector('#startBlankBtn');
+
+            if (aiBtn) {
+                aiBtn.onclick = () => window.location.href = '/prompt-generator.html';
+            }
+            if (importBtn) {
+                importBtn.onclick = () => {
+                    this.showNewPageModal(); // Creates modal
+                    // Short timeout to let modal render, then switch to paste tab
+                    setTimeout(() => {
+                        const pasteTabBtn = document.querySelector('.import-tab-btn[data-tab="paste"]');
+                        if (pasteTabBtn) pasteTabBtn.click();
+                    }, 100);
+                };
+            }
+            if (blankBtn) {
+                blankBtn.onclick = () => this.showNewPageModal();
+            }
+        }, 0);
     }
 
     /**
