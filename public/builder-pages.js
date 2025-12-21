@@ -36,6 +36,67 @@ class BuilderPagesManager {
         if (addPageBtn) {
             addPageBtn.addEventListener('click', () => this.showNewPageModal());
         }
+
+        // Intercept Load HTML button to auto-create first page
+        const loadHtmlBtn = document.getElementById('loadHtmlBtn');
+        if (loadHtmlBtn) {
+            loadHtmlBtn.addEventListener('click', async () => {
+                // Wait for HTML to be loaded in canvas
+                setTimeout(async () => {
+                    await this.handleFirstHTMLLoad();
+                }, 1000);
+            });
+        }
+    }
+
+    /**
+     * Handle first HTML load - automatically create Home page
+     */
+    async handleFirstHTMLLoad() {
+        // Get HTML from canvas
+        const canvas = document.getElementById('canvas');
+        if (!canvas || !canvas.contentDocument) return;
+
+        const html = canvas.contentDocument.documentElement.outerHTML;
+        if (!html || html.length < 100) return;
+
+        // Check if we already have pages
+        if (this.pages.length > 0) return;
+
+        // Get current project ID
+        const projectId = this.currentProject?.id || localStorage.getItem('currentProjectId');
+        if (!projectId) return;
+
+        try {
+            // Auto-create Home page with the loaded HTML
+            const response = await fetch('/api/pages/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: projectId,
+                    name: 'Home',
+                    slug: '',
+                    html: html,
+                    isHomepage: true
+                })
+            });
+
+            if (response.ok) {
+                // Switch to Pages tab automatically
+                const pagesTab = document.querySelector('[data-tab="pages"]');
+                if (pagesTab) {
+                    pagesTab.click();
+                }
+
+                // Reload project to show the new page
+                await this.loadProject(projectId);
+
+                // Show helpful toast
+                this.showToast('🏠 Home page created! Click + to add more pages', 'success');
+            }
+        } catch (error) {
+            console.error('Error auto-creating home page:', error);
+        }
     }
 
     /**
@@ -144,10 +205,19 @@ class BuilderPagesManager {
 
         pagesList.innerHTML = `
             <div class="empty-pages-state">
-                <div class="empty-pages-icon">📄</div>
-                <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">No pages yet</div>
-                <div style="font-size: 0.75rem; color: var(--text-tertiary);">
-                    Create your first page or import HTML below
+                <div class="empty-pages-icon">✨</div>
+                <div style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">
+                    Start Building
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.5; margin-bottom: 1rem;">
+                    Import HTML below to create your<br>Home page automatically
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; justify-content: center; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white; font-size: 0.75rem; font-weight: 600;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    Import creates Home page
                 </div>
             </div>
         `;
