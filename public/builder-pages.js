@@ -261,7 +261,7 @@ class BuilderPagesManager {
                 };
             }
             if (blankBtn) {
-                blankBtn.onclick = () => this.showNewPageModal();
+                blankBtn.onclick = () => window.location.href = 'https://yenze.io/templates.html';
             }
         }, 0);
     }
