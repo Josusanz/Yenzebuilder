@@ -123,6 +123,15 @@
             height: 100%;
             background: white;
         }
+
+        /* Tab Panels */
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -195,6 +204,9 @@
             class="w-64 bg-panel-light dark:bg-panel-dark border-r border-border-light dark:border-border-dark flex flex-col shrink-0">
             <div class="flex items-center p-2 space-x-1 sidebar-tabs">
                 <button
+                    class="sidebar-tab flex-1 py-1.5 text-xs font-medium text-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+                    data-tab="load">Load</button>
+                <button
                     class="sidebar-tab active flex-1 py-1.5 text-xs font-medium text-center rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
                     data-tab="layers">Layers</button>
                 <button
@@ -219,6 +231,40 @@
 
             <!-- CONTENT -->
             <div class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+                <!-- Load Tab -->
+                <div id="loadTab" class="tab-panel">
+                    <div class="p-3">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3 leading-relaxed">
+                            Paste your HTML code from AI or any other source
+                        </p>
+                        <textarea id="htmlPaste" placeholder="Paste your HTML code here..."
+                            class="w-full h-48 p-3 text-xs font-mono border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-gray-100 resize-vertical focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                        <button id="loadHtmlBtn"
+                            class="w-full mt-3 px-4 py-2.5 bg-primary hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors">
+                            Load HTML
+                        </button>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Or import from file:</p>
+                            <button onclick="document.getElementById('htmlFileInput').click()"
+                                class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-upload text-xs"></i>
+                                Import HTML File
+                            </button>
+                            <input type="file" id="htmlFileInput" accept=".html,.htm" style="display: none;">
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Need help creating HTML?</p>
+                            <a href="/prompt-generator.html"
+                                class="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                                AI Prompt Generator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Layers Tab -->
                 <div id="layersTab" class="tab-panel active">
                     <div id="layersContainer" class="space-y-1">
@@ -306,7 +352,8 @@
                     const target = tab.dataset.tab;
                     panels.forEach(p => p.classList.remove('active'));
 
-                    // Only Layers and Elements tabs (Pages removed)
+                    // Load, Layers, and Elements tabs
+                    if (target === 'load') document.getElementById('loadTab').classList.add('active');
                     if (target === 'layers') document.getElementById('layersTab').classList.add('active');
                     if (target === 'elements') document.getElementById('elementsTab').classList.add('active');
                 });
