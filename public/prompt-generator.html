@@ -795,6 +795,19 @@
                     <span class="feature-label">Reviews</span>
                 </div>
             </div>
+
+            <!-- Custom Page Input -->
+            <div
+                style="margin-top: 16px; background: white; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                <label style="font-size: 13px; margin-bottom: 8px; display: block;">Add Custom Page</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="customPageInput" placeholder="e.g. Careers, Press, Legal..."
+                        style="flex: 1; margin: 0;">
+                    <button id="addCustomPageBtn" class="btn btn-secondary" style="width: auto; white-space: nowrap;">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Sections (only shown for single page) -->
@@ -946,6 +959,34 @@
             brandName: '',
             businessContext: ''
         };
+
+
+        // Custom Page Logic
+        document.getElementById('addCustomPageBtn').addEventListener('click', () => {
+            const input = document.getElementById('customPageInput');
+            const pageName = input.value.trim();
+            if (pageName) {
+                const id = pageName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                state.pages.push(id);
+
+                // Add visual chip
+                const container = document.getElementById('pageOptions');
+                const chip = document.createElement('div');
+                chip.className = 'feature selected';
+                chip.dataset.value = id;
+                chip.innerHTML = `<span class="feature-label">${pageName}</span>`;
+                chip.addEventListener('click', () => {
+                    // Allow removing custom pages
+                    chip.remove();
+                    state.pages = state.pages.filter(p => p !== id);
+                    updatePrompt();
+                });
+                container.appendChild(chip);
+
+                input.value = '';
+                updatePrompt();
+            }
+        });
 
         // Type options
         document.querySelectorAll('#typeOptions .option').forEach(el => {
@@ -1310,15 +1351,58 @@ body, html {
 ${state.structure === 'multi' ?
                     `**ARCHITECTURE: SPA (Javascript Router)**
 1. Create a container \`#app\`.
-2. Inside, create \`<section id="page-name" class="page-view">\` for each page:
-${state.pages.map(p => `   - **${pageLabels[p]}**: Full content block.`).join('\\n')}
-3. Implement a \`Router\` class in JS that listens to hash changes or clicks, hides all pages, and fades in the active one.
-4. **BUILDER COMPATIBILITY Helper**: You MUST include this functions for the Visual Builder compatibility:
-   \`window.switchPage = (id) => { window.location.hash = id; };\`` :
+2. Inside, create \`<section id="page-name" class="page-view">\` for each page.
+3. **MANDATORY ROUTER IMPLEMENTATION:**
+   Use this EXACT Javascript Router structure for valid navigation:
+   \`\`\`javascript
+   window.app = {
+       pages: [],
+       init: function() {
+           this.pages = document.querySelectorAll('.page-view');
+           this.navLinks = document.querySelectorAll('.nav-link');
+           window.addEventListener('hashchange', this.handleRoute.bind(this));
+           this.handleRoute();
+       },
+       handleRoute: function() {
+           const hash = window.location.hash.substring(1) || 'home';
+           this.showPage(hash);
+           window.scrollTo(0,0);
+       },
+       showPage: function(id) {
+           let activePage = document.getElementById(id);
+           if(!activePage && this.pages.length > 0) activePage = this.pages[0];
+           
+           this.pages.forEach(p => {
+               p.style.display = 'none';
+               p.classList.remove('active', 'fade-in');
+           });
+           
+           if (activePage) {
+               activePage.style.display = 'block';
+               setTimeout(() => activePage.classList.add('active', 'fade-in'), 10);
+               
+               // Update nav state
+               if(this.navLinks) {
+                   this.navLinks.forEach(link => {
+                       link.classList.remove('active');
+                       if(link.getAttribute('href') === '#' + id) link.classList.add('active');
+                   });
+               }
+           }
+       }
+   };
+   document.addEventListener('DOMContentLoaded', () => window.app.init());
+   
+   // Builder Compatibility Helper
+   window.switchPage = (id) => { window.location.hash = id; };
+   \`\`\`
+
+4. **Detailed Site Map (Pages to Generate):**
+${state.pages.map(p => `   - **${pageLabels[p] || p.charAt(0).toUpperCase() + p.slice(1)}**: Full unique content block.`).join('\n')}` :
                     `**ARCHITECTURE: LONG-SCROLL LANDING**
 Build these sections in order (vertical stack):
 ${state.features.length > 0 ? state.features.map(f => `
-- **REQUIRED SECTION**: Must be wrapped in \`<section id="${f}">\` and implement the look of: ${featureLabels[f]}`).join('\\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
+- **REQUIRED SECTION**: Must be wrapped in \`<section id="${f}">\` and implement the look of: ${featureLabels[f]}`).join('\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
                 }
 
 ### 7. CRITICAL LAYOUT RULES (PREVENT BROKEN LAYOUTS)
