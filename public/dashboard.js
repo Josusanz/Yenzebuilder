@@ -425,6 +425,7 @@ class DashboardApp {
         const btnOpenSEOEditor = document.getElementById('btnOpenSEOEditor');
         const btnCloseSEOEditor = document.getElementById('btnCloseSEOEditor');
         const btnSaveSEO = document.getElementById('btnSaveSEO');
+        const btnApplySEO = document.getElementById('btnApplySEO');
         const btnGenerateSEO = document.getElementById('btnGenerateSEO');
         const seoEditorForm = document.getElementById('seoEditorForm');
 
@@ -477,6 +478,12 @@ class DashboardApp {
         if (btnSaveSEO && !btnSaveSEO.dataset.initialized) {
             btnSaveSEO.addEventListener('click', () => this.saveSEOMetadataForm());
             btnSaveSEO.dataset.initialized = 'true';
+        }
+
+        // Apply SEO to HTML
+        if (btnApplySEO && !btnApplySEO.dataset.initialized) {
+            btnApplySEO.addEventListener('click', () => this.applySEOToHTML());
+            btnApplySEO.dataset.initialized = 'true';
         }
 
         // Generate SEO with AI
@@ -611,6 +618,51 @@ class DashboardApp {
         } finally {
             btnGenerateSEO.innerHTML = originalText;
             btnGenerateSEO.disabled = false;
+        }
+    }
+
+    async applySEOToHTML() {
+        const btnApplySEO = document.getElementById('btnApplySEO');
+        const originalText = btnApplySEO.innerHTML;
+
+        if (!this.selectedSeoProject) {
+            this.showToast('Please select a project first', 'error');
+            return;
+        }
+
+        btnApplySEO.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+        btnApplySEO.disabled = true;
+
+        try {
+            const response = await fetch('/api/apply-seo-to-html', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    projectId: this.selectedSeoProject.id
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                this.showToast('✅ SEO metadata applied to HTML successfully!', 'success');
+
+                // Reload projects to get updated HTML
+                await this.loadProjects();
+
+                // Run audit again to see improvements
+                setTimeout(() => {
+                    this.runSEOAudit();
+                }, 500);
+            } else {
+                throw new Error(result.error || result.message || 'Failed to apply SEO metadata');
+            }
+        } catch (error) {
+            console.error('Apply SEO to HTML error:', error);
+            this.showToast('Error applying SEO: ' + error.message, 'error');
+        } finally {
+            btnApplySEO.innerHTML = originalText;
+            btnApplySEO.disabled = false;
         }
     }
 
