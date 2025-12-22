@@ -16,16 +16,80 @@ class BuilderPagesManager {
     async init() {
         // Get current project ID from URL or localStorage
         const urlParams = new URLSearchParams(window.location.search);
+        const templateId = urlParams.get('template');
         const projectId = urlParams.get('project') || localStorage.getItem('currentProjectId');
 
-        if (projectId) {
+        // Setup event listeners first so they are ready
+        this.setupEventListeners();
+
+        if (templateId) {
+            await this.handleTemplateLoad(templateId, urlParams.get('templateName'));
+        } else if (projectId) {
             await this.loadProject(projectId);
         } else {
             this.showEmptyState();
         }
+    }
 
-        // Setup event listeners
-        this.setupEventListeners();
+    /**
+     * Handle template loading from URL
+     */
+    async handleTemplateLoad(templateId, templateName) {
+        console.log('🏗️ Loading template:', templateId);
+
+        try {
+            // 1. Fetch template HTML
+            const response = await fetch(`/templates/${templateId}.html`);
+            if (!response.ok) throw new Error(`Template not found: ${templateId}`);
+            const html = await response.text();
+
+            // 2. Clear URL params to prevent reload loop (optional but good UX)
+            // window.history.replaceState({}, document.title, window.location.pathname);
+
+            // 3. Create a new "Quick Project" with this template
+            // We use the offline fallback logic from createProject to be safe
+            const projectName = templateName ? `My ${templateName}` : 'My Template Site';
+
+            // Generate a local project ID
+            const newProjectId = 'local-' + Date.now();
+            this.currentProject = {
+                id: newProjectId,
+                name: projectName
+            };
+            localStorage.setItem('currentProjectId', newProjectId);
+
+            // 4. Create the Home page with the template HTML
+            const newPage = {
+                id: 'page-' + Date.now(),
+                projectId: newProjectId,
+                name: 'Home',
+                slug: '',
+                html: html,
+                is_homepage: true
+            };
+
+            // 5. Initialize state
+            this.pages = [newPage];
+
+            // 6. Update UI
+            if (document.getElementById('projectName')) {
+                document.getElementById('projectName').value = projectName;
+            }
+
+            this.renderPages();
+
+            // 7. Load to canvas
+            // Use a short delay to ensure app is ready
+            setTimeout(() => {
+                this.loadPage(newPage.id);
+                this.showToast(`✨ Loaded ${templateName || 'Template'}`, 'success');
+            }, 500);
+
+        } catch (error) {
+            console.error('Error loading template:', error);
+            this.showToast('Failed to load template', 'error');
+            this.showEmptyState();
+        }
     }
 
     /**
@@ -285,8 +349,13 @@ class BuilderPagesManager {
         }
 
         // Load page HTML into canvas
-        if (typeof loadHTMLToCanvas === 'function') {
-            loadHTMLToCanvas(page.html);
+        if (window.app && typeof window.app.loadHTML === 'function') {
+            console.log('Loading page HTML via app.loadHTML...', page.html ? page.html.substring(0, 50) : 'Empty HTML');
+            window.app.loadHTML(page.html);
+        } else if (typeof window.loadHTMLToCanvas === 'function') {
+            window.loadHTMLToCanvas(page.html);
+        } else {
+            console.error('Cannot load HTML: window.app not ready');
         }
 
         // Update project name in topbar

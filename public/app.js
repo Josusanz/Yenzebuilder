@@ -3016,7 +3016,7 @@ class YenzeBuilder {
         // All templates now use minimal styling - just the form elements without decorative containers
         const templates = {
             basic: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="hidden" name="redirect" value="https://web3forms.com/success">
@@ -3030,7 +3030,7 @@ class YenzeBuilder {
 </form>`,
 
             tailwind: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="checkbox" name="botcheck" style="display: none;">
@@ -3055,7 +3055,7 @@ class YenzeBuilder {
 </form>`,
 
             ajax: `
-<form action="https://api.web3forms.com/submit" method="POST" id="ajaxContactForm" style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" id="ajaxContactForm" style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="checkbox" name="botcheck" style="display: none;">
@@ -3114,7 +3114,7 @@ if (ajaxForm) {
 </script>`,
 
             multicolumn: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="checkbox" name="botcheck" style="display: none;">
@@ -3149,7 +3149,7 @@ if (ajaxForm) {
 </form>`,
 
             validation: `
-<form action="https://api.web3forms.com/submit" method="POST" id="validationForm" novalidate style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" id="validationForm" novalidate style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="checkbox" name="botcheck" style="display: none;">
@@ -3237,7 +3237,7 @@ if (validationForm) {
 </script>`,
 
             raw: `
-<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit;">
+<form action="https://api.web3forms.com/submit" method="POST" style="max-width: 100%; font-family: inherit; padding-left: 1.5rem; padding-right: 1.5rem; box-sizing: border-box;">
     <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
     <input type="hidden" name="subject" value="New Contact Form Submission">
     <input type="hidden" name="redirect" value="https://web3forms.com/success">
