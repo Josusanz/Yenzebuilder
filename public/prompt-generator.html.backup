@@ -1039,11 +1039,44 @@ ${state.strategy === 'comparison' ? '- CONTRAST: Before/after images, comparison
 - Include FontAwesome CDN: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
 
 **Form Integration** (if lead-gen or consultation):
-- Form must POST to: https://yenze.io/api/submit-form
-- Fields: name, email (required)
-- Show loading state on submit
-- Display success/error messages
-- Reset form after successful submission
+\`\`\`html
+<form id="leadForm" onsubmit="handleFormSubmit(event)">
+  <input type="text" name="name" placeholder="Full Name" required>
+  <input type="email" name="email" placeholder="Email Address" required>
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+    btn.disabled = true;
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const res = await fetch('https://yenze.io/api/submit-form', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if(res.ok) {
+            alert('Success! Check your email.');
+            e.target.reset();
+        } else {
+            alert('Error submitting form');
+        }
+    } catch(err) {
+        alert('Network error');
+    } finally {
+        btn.innerHTML = 'Submit';
+        btn.disabled = false;
+    }
+}
+</script>
+\`\`\`
 
 **Images**:
 - Use Pollinations AI: \`https://image.pollinations.ai/prompt/[description]?width=X&height=Y&nologo=true\`
