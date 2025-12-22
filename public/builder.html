@@ -3006,10 +3006,12 @@
         <!-- Top Bar -->
         <div class="topbar">
             <div class="topbar-left">
-                <!-- Logo with rounded background -->
+                <!-- Logo with rounded background (YENZE Layers icon) -->
                 <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #18181B; border-radius: 8px; margin-right: 12px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
                     </svg>
                 </div>
 
@@ -3023,71 +3025,71 @@
             </div>
 
             <!-- Central Floating Toolbar -->
-            <div class="topbar-center">
-                <div style="background: #F4F4F5; border-radius: 10px; padding: 4px; display: flex; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <button class="btn btn-icon" id="undoBtn" disabled title="Undo (Ctrl+Z)" style="width: 32px; height: 32px; border: none; background: transparent;">
+            <div class="topbar-center" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                <div style="background: #F4F4F5; border-radius: 10px; padding: 6px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                    <button class="btn btn-icon" id="undoBtn" disabled title="Undo (Ctrl+Z)" style="width: 32px; height: 32px; border: none; background: transparent; display: flex; align-items: center; justify-content: center;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M3 7v6h6" />
                             <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
                         </svg>
                     </button>
-                    <button class="btn btn-icon" id="redoBtn" disabled title="Redo (Ctrl+Y)" style="width: 32px; height: 32px; border: none; background: transparent;">
+                    <button class="btn btn-icon" id="redoBtn" disabled title="Redo (Ctrl+Y)" style="width: 32px; height: 32px; border: none; background: transparent; display: flex; align-items: center; justify-content: center;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 7v6h-6" />
                             <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7" />
                         </svg>
                     </button>
 
-                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 4px;"></div>
+                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 6px;"></div>
 
                     <!-- Device Toggle -->
-                    <button class="device-btn active" data-device="desktop" style="width: 32px; height: 32px; border-radius: 6px;">
+                    <button class="device-btn active" data-device="desktop" style="width: 34px; height: 34px; border-radius: 7px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="2" y="3" width="20" height="14" rx="2"></rect>
                             <line x1="8" y1="21" x2="16" y2="21"></line>
                             <line x1="12" y1="17" x2="12" y2="21"></line>
                         </svg>
                     </button>
-                    <button class="device-btn" data-device="tablet" style="width: 32px; height: 32px; border-radius: 6px;">
+                    <button class="device-btn" data-device="tablet" style="width: 34px; height: 34px; border-radius: 7px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="5" y="2" width="14" height="20" rx="2"></rect>
-                            <line x1="12" y1="18" x2="12" y2="18"></line>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
                         </svg>
                     </button>
-                    <button class="device-btn" data-device="mobile" style="width: 32px; height: 32px; border-radius: 6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button class="device-btn" data-device="mobile" style="width: 34px; height: 34px; border-radius: 7px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="7" y="2" width="10" height="20" rx="2"></rect>
-                            <line x1="12" y1="18" x2="12" y2="18"></line>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
                         </svg>
                     </button>
 
-                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 4px;"></div>
+                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 6px;"></div>
 
                     <!-- Width control -->
-                    <div class="device-width-control" style="display: flex; align-items: center; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
+                    <div class="device-width-control" style="display: flex; align-items: center; gap: 4px; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
                         <input type="number" id="canvasWidthInput" value="1440"
-                            style="width: 45px; background: transparent; border: none; color: var(--text); font-size: 12px; font-weight: 600; text-align: center; outline: none;">
-                        <span style="color: var(--text-tertiary); font-size: 10px; font-weight: 600;">PX</span>
+                            style="width: 48px; background: transparent; border: none; color: var(--text); font-size: 13px; font-weight: 600; text-align: center; outline: none;">
+                        <span style="color: var(--text-tertiary); font-size: 11px; font-weight: 600;">px</span>
                     </div>
                 </div>
             </div>
 
             <div class="topbar-right">
-                <button class="btn btn-secondary" id="codeViewBtn" style="font-size: 13px; padding: 8px 14px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                <button class="btn btn-secondary" id="codeViewBtn" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="16 18 22 12 16 6"></polyline>
                         <polyline points="8 6 2 12 8 18"></polyline>
                     </svg>
                     Code
                 </button>
-                <button class="btn btn-secondary" id="previewBtn" style="font-size: 13px; padding: 8px 14px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                <button class="btn btn-secondary" id="previewBtn" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polygon points="10 8 16 12 10 16 10 8"></polygon>
                     </svg>
                     Preview
                 </button>
-                <button class="btn btn-primary" id="publishBtn" style="font-size: 13px; padding: 8px 16px; font-weight: 600;">Publish</button>
+                <button class="btn btn-primary" id="publishBtn" style="font-size: 13px; padding: 8px 18px; font-weight: 600;">Publish</button>
 
                 <!-- User Profile (shown when logged in) -->
                 <div id="userProfileContainer" style="display: none;"></div>
