@@ -743,94 +743,95 @@
     </button>
 
     <script>
-        const state = {
-            goal: '',
-            strategy: '',
-            style: '',
-            productName: '',
-            valueProposition: '',
-            targetAudience: '',
-            price: '',
-            benefits: '',
-            ctaText: ''
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const state = {
+                goal: '',
+                strategy: '',
+                style: '',
+                productName: '',
+                valueProposition: '',
+                targetAudience: '',
+                price: '',
+                benefits: '',
+                ctaText: ''
+            };
 
-        // Goal options
-        document.querySelectorAll('#goalOptions .option').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('#goalOptions .option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                state.goal = el.dataset.value;
-                updatePrompt();
+            // Goal options
+            document.querySelectorAll('#goalOptions .option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('#goalOptions .option').forEach(o => o.classList.remove('selected'));
+                    el.classList.add('selected');
+                    state.goal = el.dataset.value;
+                    updatePrompt();
+                });
             });
-        });
 
-        // Strategy options
-        document.querySelectorAll('#strategyOptions .option').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('#strategyOptions .option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                state.strategy = el.dataset.value;
-                updatePrompt();
+            // Strategy options
+            document.querySelectorAll('#strategyOptions .option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('#strategyOptions .option').forEach(o => o.classList.remove('selected'));
+                    el.classList.add('selected');
+                    state.strategy = el.dataset.value;
+                    updatePrompt();
+                });
             });
-        });
 
-        // Style options
-        document.querySelectorAll('#styleOptions .option').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('#styleOptions .option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                state.style = el.dataset.value;
-                updatePrompt();
+            // Style options
+            document.querySelectorAll('#styleOptions .option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('#styleOptions .option').forEach(o => o.classList.remove('selected'));
+                    el.classList.add('selected');
+                    state.style = el.dataset.value;
+                    updatePrompt();
+                });
             });
-        });
 
-        // Text inputs
-        ['productName', 'valueProposition', 'targetAudience', 'price', 'benefits', 'ctaText'].forEach(field => {
-            document.getElementById(field).addEventListener('input', (e) => {
-                state[field] = e.target.value;
-                updatePrompt();
+            // Text inputs
+            ['productName', 'valueProposition', 'targetAudience', 'price', 'benefits', 'ctaText'].forEach(field => {
+                document.getElementById(field).addEventListener('input', (e) => {
+                    state[field] = e.target.value;
+                    updatePrompt();
+                });
             });
-        });
 
-        // Copy button
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            const text = document.getElementById('output').textContent;
-            if (text.includes('// Configure')) {
-                alert('Please configure your landing page settings first');
-                return;
-            }
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.getElementById('copyBtn');
-                const originalContent = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            // Copy button
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                const text = document.getElementById('output').textContent;
+                if (text.includes('// Configure')) {
+                    alert('Please configure your landing page settings first');
+                    return;
+                }
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('copyBtn');
+                    const originalContent = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalContent;
+                    }, 2000);
+                });
+            });
+
+            // FAB Copy button
+            document.getElementById('actionCopyBtn').addEventListener('click', () => {
+                document.getElementById('copyBtn').click();
+                const fab = document.getElementById('actionCopyBtn');
+                const originalText = fab.innerHTML;
+                fab.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                fab.classList.add('copied');
                 setTimeout(() => {
-                    btn.innerHTML = originalContent;
+                    fab.innerHTML = originalText;
+                    fab.classList.remove('copied');
                 }, 2000);
             });
-        });
 
-        // FAB Copy button
-        document.getElementById('actionCopyBtn').addEventListener('click', () => {
-            document.getElementById('copyBtn').click();
-            const fab = document.getElementById('actionCopyBtn');
-            const originalText = fab.innerHTML;
-            fab.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-            fab.classList.add('copied');
-            setTimeout(() => {
-                fab.innerHTML = originalText;
-                fab.classList.remove('copied');
-            }, 2000);
-        });
+            function updatePrompt() {
+                // Check if minimum required fields are filled
+                if (!state.goal && !state.productName && !state.valueProposition) {
+                    document.getElementById('output').textContent = '// Configure your landing page settings above to generate your optimized prompt...';
+                    return;
+                }
 
-        function updatePrompt() {
-            // Check if minimum required fields are filled
-            if (!state.goal && !state.productName && !state.valueProposition) {
-                document.getElementById('output').textContent = '// Configure your landing page settings above to generate your optimized prompt...';
-                return;
-            }
-
-            const goalDescriptions = {
+                const goalDescriptions = {
                 'product-launch': 'New Product Launch - Create excitement and drive early adopters',
                 'lead-gen': 'Lead Generation - Capture qualified leads with irresistible offer',
                 'saas-signup': 'SaaS Free Trial/Demo - Convert visitors to active users',
@@ -1131,8 +1132,9 @@ Generate the complete, production-ready landing page HTML now. Make it STUNNING 
             document.getElementById('output').textContent = prompt;
         }
 
-        // Initialize
-        updatePrompt();
+            // Initialize
+            updatePrompt();
+        });
     </script>
 </body>
 
