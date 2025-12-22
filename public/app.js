@@ -651,26 +651,35 @@ class YenzeBuilder {
 
             // Update iframe viewport width override
             const canvas = document.getElementById('canvas');
-            if (canvas && canvas.contentDocument) {
-                const iframeDoc = canvas.contentDocument;
-                let styleElement = iframeDoc.getElementById('yenze-viewport-override');
+            if (canvas) {
+                // Set iframe width
+                canvas.style.width = `${canvasWidth}px`;
 
-                if (styleElement) {
-                    styleElement.textContent = `
-                        html, body {
-                            width: ${canvasWidth}px !important;
-                            min-width: ${canvasWidth}px !important;
-                            max-width: ${canvasWidth}px !important;
-                            overflow-x: hidden !important;
-                            margin: 0 !important;
-                        }
-                    `;
+                if (canvas.contentDocument) {
+                    const iframeDoc = canvas.contentDocument;
+                    let styleElement = iframeDoc.getElementById('yenze-viewport-override');
+
+                    if (styleElement) {
+                        styleElement.textContent = `
+                            html, body {
+                                width: ${canvasWidth}px !important;
+                                min-width: ${canvasWidth}px !important;
+                                max-width: ${canvasWidth}px !important;
+                                overflow-x: hidden !important;
+                                margin: 0 !important;
+                                box-sizing: border-box !important;
+                            }
+                            * {
+                                box-sizing: border-box;
+                            }
+                        `;
+                    }
+
+                    // Recalculate height after transition/reflow
+                    setTimeout(() => {
+                        this.adjustIframeHeight(canvas, iframeDoc);
+                    }, 50);
                 }
-
-                // Recalculate height after transition/reflow
-                setTimeout(() => {
-                    this.adjustIframeHeight(canvas, iframeDoc);
-                }, 50);
             }
         }
     }
@@ -782,6 +791,9 @@ class YenzeBuilder {
         // Get fresh reference
         const canvas = newCanvas;
 
+        // Force iframe to exact width
+        canvas.style.width = `${this.deviceWidths[this.currentDevice]}px`;
+
         // Write HTML to iframe
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
         iframeDoc.open();
@@ -799,6 +811,10 @@ class YenzeBuilder {
                 max-width: ${forceWidth}px !important;
                 overflow-x: hidden !important;
                 margin: 0 !important;
+                box-sizing: border-box !important;
+            }
+            * {
+                box-sizing: border-box;
             }
         `;
 
