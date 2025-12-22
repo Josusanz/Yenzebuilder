@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YENZE | Quantum Prompt Architect</title>
-    <meta name="description" content="Generate elite-grade prompts for AI web development.">
+    <title>YENZE | Stitch Landing Page Generator</title>
+    <meta name="description" content="Generate optimized prompts for Google Stitch to create stunning landing pages.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -604,8 +604,8 @@
 
     <main class="main">
         <div class="header">
-            <h1>Quantum Prompt Architect</h1>
-            <p>Craft elite-grade prompt specifications for the YENZE AI Engine.</p>
+            <h1>Landing Page Prompt Generator</h1>
+            <p>Create optimized prompts for Google Stitch to generate stunning, high-converting landing pages.</p>
         </div>
 
         <!-- How it works (New Look) -->
@@ -744,25 +744,23 @@
             </div>
         </div>
 
-        <!-- Multi-page Option -->
-        <!-- Multi-page Option -->
-        <div class="section">
+        <!-- Landing Page Focus (Multi-page hidden for now) -->
+        <div class="section" style="display: none;">
             <div class="section-label">4. Architecture</div>
-            <div class="options-grid" id="structureOptions" style="grid-template-columns: repeat(2, 1fr);">
-                <div class="option selected" data-value="single">
-                    <i class="fa-solid fa-file option-icon"></i>
-                    <span class="option-label">Landing Page</span>
-                </div>
-                <div class="option" data-value="multi">
-                    <i class="fa-solid fa-layer-group option-icon"></i>
-                    <span class="option-label">Multi-Page SPA</span>
+            <div class="info-box" style="background: #F0F9FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 12px 16px; margin-top: 12px;">
+                <div style="display: flex; align-items: start; gap: 12px;">
+                    <i class="fa-solid fa-info-circle" style="color: #3B82F6; margin-top: 2px;"></i>
+                    <div style="font-size: 0.875rem; color: #1E40AF; line-height: 1.5;">
+                        <strong>Landing Page Focus:</strong> Google Stitch works best for single landing pages. Multi-page support coming soon! For now, create amazing landing pages and import them to YENZE Builder.
+                    </div>
                 </div>
             </div>
+            <input type="hidden" id="structureType" value="single">
         </div>
 
         <!-- Pages to Include (only shown for multipage) -->
         <div class="section" id="pagesSection" style="display: none;">
-            <div class="section-label">5. Site Map (Pages)</div>
+            <div class="section-label">4. Site Map (Pages)</div>
             <div class="features-grid" id="pageOptions">
                 <div class="feature selected" data-value="home">
                     <span class="feature-label">Home</span>
@@ -859,7 +857,7 @@
 
         <!-- Brand Identity & Context -->
         <div class="section">
-            <div class="section-label">6. Brand DNA</div>
+            <div class="section-label">4. Brand DNA</div>
             <div style="display: flex; flex-direction: column; gap: 24px;">
                 <div>
                     <label>Brand Name / Project Title</label>
@@ -889,9 +887,9 @@
 
         <!-- Actions -->
         <div class="actions" style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <a href="https://gemini.google.com/app" target="_blank" class="nav-link primary"
+            <a href="https://stitch.withgoogle.com/" target="_blank" class="nav-link primary"
                 style="text-align: center; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                <i class="fa-solid fa-robot" style="margin-right: 10px;"></i> Open Gemini
+                <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 10px;"></i> Open Google Stitch
             </a>
             <a href="builder.html" class="nav-link"
                 style="text-align: center; height: 56px; background: white; border: 1px solid var(--border); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 16px;">
@@ -914,14 +912,14 @@
                     <div class="guide-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                     <div class="guide-text">
                         <strong>2. Generate</strong><br>
-                        Copy the prompt, open Gemini, and paste it to generate code.
+                        Copy the prompt, open Google Stitch, and paste it to generate your landing page.
                     </div>
                 </div>
                 <div class="guide-step">
                     <div class="guide-icon"><i class="fa-solid fa-code"></i></div>
                     <div class="guide-text">
-                        <strong>3. Build</strong><br>
-                        Copy the HTML code from Gemini and paste it into the YENZE Builder.
+                        <strong>3. Import</strong><br>
+                        Copy the HTML code from Stitch and paste it into the YENZE Builder to edit and publish.
                     </div>
                 </div>
             </div>
@@ -1259,19 +1257,19 @@
 
             const hasContactForm = state.structure === 'multi' ? state.pages.includes('contact') : state.features.includes('contact');
 
-            // Constructing the "Mega Prompt" for Premium Results
-            let prompt = `ACT AS A **SENIOR FRONTEND ARCHITECT, AWWWARDS JURY MEMBER, AND STRICT QUALITY ASSURANCE (QA) SPECIALIST**. Your primary task is to generate a **PERFECTLY VALIDATED, WORLD-CLASS, PREMIUM WEBSITE** that is structurally and visually compliant with ALL constraints. **NON-COMPLIANCE WILL RESULT IN IMMEDIATE REJECTION.**
-The Output MUST be a single, production-ready \`index.html\` file containing HTML, CSS, and JS (if needed).
+            // Constructing the optimized prompt for Google Stitch
+            let prompt = `Create a stunning, modern landing page with the following specifications:
+
+**IMPORTANT FOR GOOGLE STITCH**: Generate a complete, self-contained HTML page in a single file with embedded CSS and minimal JavaScript.
 
 ---
 
-### 1. STRATEGIC DEFINITION
-- **Project Identity**: **${state.brandName || 'Untitled Brand'}**
-- **Archetype**: "${typeLabels[state.type] || 'Premium Brand Website'}"
-- **Structure**: **${state.structure === 'multi' ? 'SINGLE PAGE APPLICATION (SPA) - Javascript Router' : 'LONG-FORM SCROLLING LANDING PAGE'}**
-- **Visual Language**: "${styleLabels[state.style] || 'Modern & Clean'}"
-- **Color Logic**: "${colorLabels[state.color] || 'Premium Palette'}"
-- **User Context**: ${state.businessContext ? `"${state.businessContext}"` : '"Create a high-trust, authority-building presence."'}
+### 1. PROJECT BRIEF
+- **Brand Name**: ${state.brandName || 'Premium Brand'}
+- **Page Type**: ${typeLabels[state.type] || 'Premium Landing Page'}
+- **Design Style**: ${styleLabels[state.style] || 'Modern & Clean'}
+- **Color Palette**: ${colorLabels[state.color] || 'Professional Blue'}
+- **Business Context**: ${state.businessContext || 'Create a professional, high-converting landing page that establishes trust and drives action.'}
 
 ### 2. DESIGN SYSTEM & AESTHETICS (NON-NEGOTIABLE)
 - **Viewport Layout**: 
