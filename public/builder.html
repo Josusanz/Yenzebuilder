@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE - Visual HTML Editor</title>
-    <!-- Version: 1.3.2 - Cache Buster -->
+    <!-- Version: 1.3.3 - Cache Buster -->
 
     <script>
         // Subdomain Router - Must run before any other content loads
@@ -893,21 +893,21 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             border-radius: var(--radius-lg);
-            overflow: hidden;
+            overflow: auto;
         }
 
         .canvas-wrapper.desktop {
-            width: 1680px;
+            /* Width set dynamically by JavaScript */
             height: calc(100vh - var(--topbar-height) - 4rem);
         }
 
         .canvas-wrapper.tablet {
-            width: 768px;
+            /* Width set dynamically by JavaScript */
             height: 1024px;
         }
 
         .canvas-wrapper.mobile {
-            width: 375px;
+            /* Width set dynamically by JavaScript */
             height: 667px;
         }
 
@@ -2577,6 +2577,11 @@
             /* Canvas takes full width */
             .canvas-container {
                 grid-column: 1;
+            }
+
+            /* Add spacing between topbar and canvas for tablet */
+            .canvas-area {
+                padding-top: 3rem;
             }
         }
 
