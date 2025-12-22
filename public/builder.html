@@ -226,26 +226,30 @@
         }
 
         .device-btn {
-            padding: 0.5rem 1rem;
+            padding: 6px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 0.8125rem;
             font-weight: 600;
             position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .device-btn:hover {
             color: var(--text);
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .device-btn.active {
-            background: var(--bg-secondary);
-            color: var(--text);
-            box-shadow: var(--shadow-sm);
+            background: white;
+            color: #3B82F6;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
         }
 
         .topbar-right {
@@ -453,34 +457,35 @@
 
         .sidebar-tabs {
             display: flex;
-            gap: 0.25rem;
-            padding: 0.75rem;
-            background: var(--bg-tertiary);
+            gap: 4px;
+            padding: 12px;
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--border);
         }
 
         .sidebar-tab {
             flex: 1;
-            padding: 0.625rem 0.75rem;
+            padding: 8px 12px;
             background: transparent;
             border: none;
             color: var(--text-tertiary);
             cursor: pointer;
-            font-size: 0.8125rem;
+            font-size: 12px;
             font-weight: 600;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: var(--radius-sm);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 7px;
             position: relative;
         }
 
         .sidebar-tab:hover {
-            color: var(--text-secondary);
-            background: rgba(91, 95, 255, 0.06);
+            color: var(--text);
+            background: rgba(0, 0, 0, 0.04);
         }
 
         .sidebar-tab.active {
-            color: var(--accent);
-            background: var(--accent-light);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            color: var(--text);
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
         }
 
         .sidebar-content {
@@ -957,6 +962,16 @@
 
         .empty-state p {
             font-size: 0.875rem;
+        }
+
+        /* Floating Toolbar Buttons */
+        .tool-btn:hover {
+            background: #F3F4F6 !important;
+        }
+
+        .tool-btn:active {
+            background: #E5E7EB !important;
+            transform: scale(0.95);
         }
 
         /* Right Sidebar */
@@ -2991,55 +3006,88 @@
         <!-- Top Bar -->
         <div class="topbar">
             <div class="topbar-left">
-                <div class="logo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
+                <!-- Logo with rounded background -->
+                <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #18181B; border-radius: 8px; margin-right: 12px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
-                    YENZE
                 </div>
+
+                <!-- Project Name -->
                 <div class="project-name">
-                    <input type="text" id="projectName" placeholder="Untitled" value="My Website">
+                    <input type="text" id="projectName" placeholder="Untitled Project" value="My Website">
                 </div>
+
+                <!-- Draft status -->
+                <span style="font-size: 11px; color: var(--text-tertiary); margin-left: 12px; font-weight: 500;">● Draft Saved</span>
             </div>
 
+            <!-- Central Floating Toolbar -->
             <div class="topbar-center">
-                <div class="device-toggle" style="display: flex; align-items: center;">
-                    <button class="device-btn active" data-device="desktop">Desktop</button>
-                    <button class="device-btn" data-device="tablet">Tablet</button>
-                    <button class="device-btn" data-device="mobile">Mobile</button>
+                <div style="background: #F4F4F5; border-radius: 10px; padding: 4px; display: flex; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <button class="btn btn-icon" id="undoBtn" disabled title="Undo (Ctrl+Z)" style="width: 32px; height: 32px; border: none; background: transparent;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 7v6h6" />
+                            <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-icon" id="redoBtn" disabled title="Redo (Ctrl+Y)" style="width: 32px; height: 32px; border: none; background: transparent;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 7v6h-6" />
+                            <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7" />
+                        </svg>
+                    </button>
 
-                    <div style="width: 1px; height: 16px; background: var(--border); margin: 0 8px;"></div>
+                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 4px;"></div>
 
-                    <div class="device-width-control" style="display: flex; align-items: center; cursor: ew-resize;"
-                        title="Click to edit width">
+                    <!-- Device Toggle -->
+                    <button class="device-btn active" data-device="desktop" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </button>
+                    <button class="device-btn" data-device="tablet" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                            <line x1="12" y1="18" x2="12" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button class="device-btn" data-device="mobile" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+                            <line x1="12" y1="18" x2="12" y2="18"></line>
+                        </svg>
+                    </button>
+
+                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 4px;"></div>
+
+                    <!-- Width control -->
+                    <div class="device-width-control" style="display: flex; align-items: center; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
                         <input type="number" id="canvasWidthInput" value="1440"
-                            style="width: 50px; background: transparent; border: none; color: var(--text-secondary); font-size: 13px; font-weight: 500; text-align: right; padding-right: 2px; outline: none;">
-                        <span style="color: var(--text-tertiary); font-size: 11px; margin-left: 2px;">px</span>
+                            style="width: 45px; background: transparent; border: none; color: var(--text); font-size: 12px; font-weight: 600; text-align: center; outline: none;">
+                        <span style="color: var(--text-tertiary); font-size: 10px; font-weight: 600;">PX</span>
                     </div>
                 </div>
             </div>
 
             <div class="topbar-right">
-                <button class="btn btn-icon" id="undoBtn" disabled title="Undo (Ctrl+Z)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 7v6h6" />
-                        <path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13" />
+                <button class="btn btn-secondary" id="codeViewBtn" style="font-size: 13px; padding: 8px 14px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
                     </svg>
+                    Code
                 </button>
-                <button class="btn btn-icon" id="redoBtn" disabled title="Redo (Ctrl+Y)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 7v6h-6" />
-                        <path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7" />
+                <button class="btn btn-secondary" id="previewBtn" style="font-size: 13px; padding: 8px 14px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
                     </svg>
+                    Preview
                 </button>
-                <button class="btn btn-secondary" id="codeViewBtn">Code</button>
-                <button class="btn btn-secondary" id="previewBtn">Preview</button>
-                <button class="btn btn-primary" id="publishBtn">Publish</button>
+                <button class="btn btn-primary" id="publishBtn" style="font-size: 13px; padding: 8px 16px; font-weight: 600;">Publish</button>
 
                 <!-- User Profile (shown when logged in) -->
                 <div id="userProfileContainer" style="display: none;"></div>
@@ -3332,6 +3380,14 @@
 
         <!-- Canvas Area -->
         <div class="canvas-area">
+            <!-- Page Indicator (Floating Top) -->
+            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 20; background: white; padding: 8px 16px; border-radius: 100px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Page:</span>
+                <span style="font-size: 12px; font-weight: 700; color: var(--text);">Home</span>
+                <div style="width: 1px; height: 16px; background: var(--border);"></div>
+                <span style="font-size: 12px; font-weight: 600; color: var(--text);">100%</span>
+            </div>
+
             <div class="canvas-wrapper desktop" id="canvasWrapper">
                 <!-- Browser Chrome Decoration -->
                 <div class="browser-chrome">
@@ -3345,6 +3401,42 @@
                     <p>Drop a file or paste code to begin editing</p>
                 </div>
                 <iframe id="canvas" style="display: none;"></iframe>
+            </div>
+
+            <!-- Bottom Floating Toolbar -->
+            <div style="position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 20; background: white; padding: 6px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px;">
+                <button class="tool-btn" title="Select" style="width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+                    </svg>
+                </button>
+                <button class="tool-btn" title="Hand Tool" style="width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
+                        <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
+                        <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
+                        <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8v-2a2 2 0 1 1 4 0"></path>
+                    </svg>
+                </button>
+
+                <div style="width: 1px; height: 24px; background: #E5E7EB; margin: 0 4px;"></div>
+
+                <button class="tool-btn" title="Zoom Out" style="width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </button>
+                <span style="font-size: 12px; font-weight: 600; color: var(--text); min-width: 45px; text-align: center;">100%</span>
+                <button class="tool-btn" title="Zoom In" style="width: 36px; height: 36px; border: none; background: transparent; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </button>
             </div>
         </div>
 
