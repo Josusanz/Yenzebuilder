@@ -381,6 +381,15 @@ class YenzeBuilder {
             applyBreakpointsBtn.addEventListener('click', () => this.applyCustomBreakpoints());
         }
 
+        // Window resize - recalculate canvas scale
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
+            }, 100);
+        });
+
         // Import area
         const importArea = document.getElementById('importArea');
         const fileInput = document.getElementById('fileInput');
@@ -621,9 +630,24 @@ class YenzeBuilder {
     updateCanvasWidth(width) {
         const wrapper = document.getElementById('canvasWrapper');
         if (wrapper) {
-            wrapper.style.width = width + 'px';
+            const canvasWidth = parseInt(width);
+            wrapper.style.width = canvasWidth + 'px';
+
+            // Calculate available width (viewport - sidebars - padding)
+            const availableWidth = window.innerWidth - 550; // 250px left + 250px right + 50px padding
+
+            // Apply scale if canvas is wider than available space
+            if (canvasWidth > availableWidth) {
+                const scale = availableWidth / canvasWidth;
+                wrapper.style.transform = `scale(${scale})`;
+                wrapper.style.transformOrigin = 'top center';
+            } else {
+                wrapper.style.transform = 'scale(1)';
+                wrapper.style.transformOrigin = 'top center';
+            }
+
             // Update stored width for current device
-            this.deviceWidths[this.currentDevice] = parseInt(width);
+            this.deviceWidths[this.currentDevice] = canvasWidth;
 
             // Recalculate height after transition/reflow
             setTimeout(() => {
