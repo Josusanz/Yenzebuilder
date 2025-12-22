@@ -322,7 +322,7 @@ class YenzeBuilder {
 
         // Device toggle
         document.querySelectorAll('.device-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchDevice(e.target.dataset.device));
+            btn.addEventListener('click', (e) => this.switchDevice(e.currentTarget.dataset.device));
         });
 
         // Device width input
@@ -583,7 +583,7 @@ class YenzeBuilder {
                 const canvas = document.getElementById('canvas');
                 const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
                 this.adjustIframeHeight(canvas, iframeDoc);
-            }, 300);
+            }, 50);
         }
     }
 
