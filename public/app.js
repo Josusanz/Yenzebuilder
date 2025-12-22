@@ -576,6 +576,15 @@ class YenzeBuilder {
         document.getElementById('addSectionBtn')?.addEventListener('click', () => this.addElement('section'));
         document.getElementById('addDivBtn')?.addEventListener('click', () => this.addElement('div'));
         document.getElementById('addColumnsBtn')?.addEventListener('click', () => this.addColumns());
+
+        // Window resize listener to recalculate canvas scale
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
+            }, 150);
+        });
     }
 
     switchTab(tabName, sidebar = 'left') {
@@ -624,8 +633,23 @@ class YenzeBuilder {
             const canvasWidth = parseInt(width);
             wrapper.style.width = canvasWidth + 'px';
 
-            // Remove any scaling - keep canvas at real size
-            wrapper.style.transform = 'none';
+            // Calculate available space and apply scaling
+            const canvasArea = wrapper.parentElement;
+            if (canvasArea) {
+                const availableWidth = canvasArea.clientWidth - 80; // 80px padding total (40px each side)
+                const availableHeight = canvasArea.clientHeight - 80; // 80px padding total
+
+                // Calculate scale to fit canvas width in available space
+                const scale = Math.min(availableWidth / canvasWidth, 1); // Never scale up, only down
+
+                // Apply scaling
+                if (scale < 1) {
+                    wrapper.style.transform = `scale(${scale})`;
+                    wrapper.style.transformOrigin = 'center center';
+                } else {
+                    wrapper.style.transform = 'none';
+                }
+            }
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
@@ -817,6 +841,8 @@ class YenzeBuilder {
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
+                // Apply canvas scaling after content is loaded
+                this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
                 this.showToast('✅ HTML loaded successfully!', 'success');
 
                 // Add resize observer to body to auto-adjust height
