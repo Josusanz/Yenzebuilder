@@ -862,7 +862,12 @@
 
             const prompt = `Create a high-converting sales landing page with the following specifications:
 
-**IMPORTANT FOR GOOGLE STITCH**: Generate a complete, self-contained HTML page in a single file with embedded CSS and JavaScript.
+**CRITICAL FOR GOOGLE STITCH - READ THIS FIRST**:
+- Generate ONE SINGLE HTML FILE with ALL sections in it
+- This is a SINGLE-PAGE, LONG-SCROLL landing page (NOT multiple pages)
+- All sections (Hero, Social Proof, Benefits, Testimonials, Pricing, FAQ, Footer) must be in ONE continuous HTML document
+- Use embedded <style> and <script> tags within the single HTML file
+- NO separate pages, NO navigation between pages - just ONE long scrollable page
 
 ---
 
@@ -923,6 +928,8 @@ body { font-size: 1.125rem; line-height: 1.7; }
 ---
 
 ### 📋 LANDING PAGE STRUCTURE (ORDERED SECTIONS)
+
+**IMPORTANT**: All these sections must be in ONE SINGLE HTML file, stacked vertically for smooth scrolling. Do NOT create separate HTML files for each section.
 
 1. **HERO SECTION** (Full-height, above the fold)
    - Compelling headline that hooks immediately (use value proposition)
@@ -1093,6 +1100,12 @@ Before generating final code, verify:
 10. ✓ All HTML tags properly closed, valid semantic HTML5
 
 ---
+
+**FINAL REMINDER BEFORE GENERATING**:
+- Output: ONE SINGLE HTML FILE (not multiple files)
+- Format: Long-scroll single-page design with all sections stacked vertically
+- All sections from Hero to Footer must be in the same HTML document
+- User scrolls down through all sections - NO page navigation, NO separate pages
 
 Generate the complete, production-ready landing page HTML now. Make it STUNNING and CONVERSION-OPTIMIZED.`;
 
