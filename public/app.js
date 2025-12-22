@@ -576,6 +576,44 @@ class YenzeBuilder {
         document.getElementById('addSectionBtn')?.addEventListener('click', () => this.addElement('section'));
         document.getElementById('addDivBtn')?.addEventListener('click', () => this.addElement('div'));
         document.getElementById('addColumnsBtn')?.addEventListener('click', () => this.addColumns());
+
+        // Zoom controls
+        const zoomSlider = document.getElementById('zoomSlider');
+        const zoomPercentage = document.getElementById('zoomPercentage');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const fitToScreenBtn = document.getElementById('fitToScreenBtn');
+
+        if (zoomSlider) {
+            zoomSlider.addEventListener('input', (e) => {
+                const zoom = parseInt(e.target.value);
+                this.setZoom(zoom);
+            });
+        }
+
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+                const currentZoom = parseInt(zoomSlider.value);
+                const newZoom = Math.min(100, currentZoom + 10);
+                zoomSlider.value = newZoom;
+                this.setZoom(newZoom);
+            });
+        }
+
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+                const currentZoom = parseInt(zoomSlider.value);
+                const newZoom = Math.max(10, currentZoom - 10);
+                zoomSlider.value = newZoom;
+                this.setZoom(newZoom);
+            });
+        }
+
+        if (fitToScreenBtn) {
+            fitToScreenBtn.addEventListener('click', () => {
+                this.fitToScreen();
+            });
+        }
     }
 
     switchTab(tabName, sidebar = 'left') {
@@ -678,6 +716,49 @@ class YenzeBuilder {
         }
     }
 
+    setZoom(zoomLevel) {
+        const zoomContainer = document.getElementById('canvasZoomContainer');
+        const zoomPercentage = document.getElementById('zoomPercentage');
+
+        if (zoomContainer) {
+            const scale = zoomLevel / 100;
+            zoomContainer.style.transform = `scale(${scale})`;
+        }
+
+        if (zoomPercentage) {
+            zoomPercentage.textContent = `${zoomLevel}%`;
+        }
+    }
+
+    fitToScreen() {
+        const canvasArea = document.getElementById('canvasArea');
+        const multiDevicePreview = document.getElementById('multiDevicePreview');
+
+        if (!canvasArea || !multiDevicePreview) return;
+
+        // Calculate total width needed for all 3 devices + gaps + padding
+        const desktopWidth = 1680;
+        const tabletWidth = 768;
+        const mobileWidth = 375;
+        const gaps = 32 * 2; // 2 gaps between 3 devices
+        const padding = 40 * 2; // padding on both sides
+
+        const totalWidth = desktopWidth + tabletWidth + mobileWidth + gaps + padding;
+        const availableWidth = canvasArea.clientWidth;
+
+        // Calculate zoom to fit
+        const fitZoom = Math.floor((availableWidth / totalWidth) * 100);
+        const finalZoom = Math.min(100, Math.max(10, fitZoom));
+
+        // Update slider and apply zoom
+        const zoomSlider = document.getElementById('zoomSlider');
+        if (zoomSlider) {
+            zoomSlider.value = finalZoom;
+        }
+
+        this.setZoom(finalZoom);
+    }
+
     applyCustomBreakpoints() {
         const desktop = parseInt(document.getElementById('desktopBreakpoint')?.value || 1680);
         const tablet = parseInt(document.getElementById('tabletBreakpoint')?.value || 768);
@@ -771,113 +852,141 @@ class YenzeBuilder {
             this.addToHistory(html, 'Import HTML');
         }
 
-        // Hide empty state
+        // Hide empty state and show multi-device preview
         document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('multiDevicePreview').style.display = 'flex';
 
-        // FORCE RESET IFRAME: Clone and replace to clear all internal state/listeners
-        const oldCanvas = document.getElementById('canvas');
-        const newCanvas = oldCanvas.cloneNode(false);
-        newCanvas.style.display = 'block';
-
-        // Replace in DOM
-        oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
-
-        // Get fresh reference
-        const canvas = newCanvas;
-
-        // Force iframe to exact width
-        canvas.style.width = `${this.deviceWidths[this.currentDevice]}px`;
-
-        // Write HTML to iframe
-        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(html);
-        iframeDoc.close();
-
-        // Force iframe content to render at the specified canvas width
-        const forceWidth = this.deviceWidths[this.currentDevice];
-        const styleElement = iframeDoc.createElement('style');
-        styleElement.id = 'yenze-viewport-override';
-        styleElement.textContent = `
-            html, body {
-                width: ${forceWidth}px !important;
-                min-width: ${forceWidth}px !important;
-                max-width: ${forceWidth}px !important;
-                overflow-x: hidden !important;
-                overflow-y: visible !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                box-sizing: border-box !important;
-            }
-            * {
-                box-sizing: border-box !important;
-            }
-        `;
-
-        // Wait for head to be available
-        const insertStyle = () => {
-            if (iframeDoc.head) {
-                iframeDoc.head.insertBefore(styleElement, iframeDoc.head.firstChild);
-            } else {
-                setTimeout(insertStyle, 10);
-            }
+        // Load HTML into all 3 iframes
+        const devices = ['desktop', 'tablet', 'mobile'];
+        const widths = {
+            desktop: 1680,
+            tablet: 768,
+            mobile: 375
         };
-        insertStyle();
 
-        // Wait for iframe to be fully loaded before making elements editable
-        // Use longer timeout for complex HTML and wait for readyState
-        const initializeEditor = () => {
-            if (iframeDoc.readyState === 'complete') {
-                this.makeEditable(iframeDoc);
-                this.buildLayersTree(iframeDoc);
-                this.setupIframeKeyboardShortcuts(iframeDoc);
-                this.adjustIframeHeight(canvas, iframeDoc);
-                this.showToast('✅ HTML loaded successfully!', 'success');
+        devices.forEach(device => {
+            const iframe = document.querySelector(`.device-iframe[data-device="${device}"]`);
+            if (!iframe) return;
 
-                // Add resize observer to body to auto-adjust height
-                if (iframeDoc.body) {
-                    const resizeObserver = new ResizeObserver(() => {
-                        this.adjustIframeHeight(canvas, iframeDoc);
-                    });
-                    resizeObserver.observe(iframeDoc.body);
+            // Write HTML to iframe
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(html);
+            iframeDoc.close();
 
-                    // Add MutationObserver to handle dynamic content changes (e.g. multipage navigation)
-                    const mutationObserver = new MutationObserver((mutations) => {
-                        let shouldRebuildLayers = false;
-                        mutations.forEach((mutation) => {
-                            if (mutation.type === 'childList') {
-                                mutation.addedNodes.forEach((node) => {
-                                    if (node.nodeType === 1) { // Element node
-                                        this.makeElementEditable(node, iframeDoc);
-                                        // Also make children editable
-                                        node.querySelectorAll('*').forEach(child => {
-                                            this.makeElementEditable(child, iframeDoc);
+            // Force iframe content to render at the specified width
+            const forceWidth = widths[device];
+            const styleElement = iframeDoc.createElement('style');
+            styleElement.id = 'yenze-viewport-override';
+            styleElement.textContent = `
+                html, body {
+                    width: ${forceWidth}px !important;
+                    min-width: ${forceWidth}px !important;
+                    max-width: ${forceWidth}px !important;
+                    overflow-x: hidden !important;
+                    overflow-y: visible !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    box-sizing: border-box !important;
+                }
+                * {
+                    box-sizing: border-box !important;
+                }
+            `;
+
+            // Wait for head to be available
+            const insertStyle = () => {
+                if (iframeDoc.head) {
+                    iframeDoc.head.insertBefore(styleElement, iframeDoc.head.firstChild);
+                } else {
+                    setTimeout(insertStyle, 10);
+                }
+            };
+            insertStyle();
+
+            // Only make the desktop iframe editable (primary editing view)
+            if (device === 'desktop') {
+                const initializeEditor = () => {
+                    if (iframeDoc.readyState === 'complete') {
+                        this.makeEditable(iframeDoc);
+                        this.buildLayersTree(iframeDoc);
+                        this.setupIframeKeyboardShortcuts(iframeDoc);
+                        this.showToast('✅ HTML loaded successfully!', 'success');
+
+                        // Add MutationObserver to sync changes to other iframes
+                        if (iframeDoc.body) {
+                            const mutationObserver = new MutationObserver((mutations) => {
+                                let shouldRebuildLayers = false;
+                                mutations.forEach((mutation) => {
+                                    if (mutation.type === 'childList') {
+                                        mutation.addedNodes.forEach((node) => {
+                                            if (node.nodeType === 1) {
+                                                this.makeElementEditable(node, iframeDoc);
+                                                node.querySelectorAll('*').forEach(child => {
+                                                    this.makeElementEditable(child, iframeDoc);
+                                                });
+                                                shouldRebuildLayers = true;
+                                            }
                                         });
-                                        shouldRebuildLayers = true;
+                                        if (mutation.removedNodes.length > 0) {
+                                            shouldRebuildLayers = true;
+                                        }
                                     }
                                 });
-                                if (mutation.removedNodes.length > 0) {
-                                    shouldRebuildLayers = true;
+
+                                if (shouldRebuildLayers) {
+                                    this.buildLayersTree(iframeDoc);
+                                    // Sync to other iframes
+                                    this.syncToOtherIframes();
                                 }
-                            }
-                        });
-
-                        if (shouldRebuildLayers) {
-                            this.buildLayersTree(iframeDoc);
+                            });
+                            mutationObserver.observe(iframeDoc.body, { childList: true, subtree: true, attributes: true, characterData: true, subtree: true });
                         }
-                    });
-                    mutationObserver.observe(iframeDoc.body, { childList: true, subtree: true });
-                }
-            } else {
-                // If not ready yet, wait a bit more
-                setTimeout(initializeEditor, 200);
+                    } else {
+                        setTimeout(initializeEditor, 200);
+                    }
+                };
+                setTimeout(initializeEditor, 300);
             }
-        };
+        });
 
-        // Start checking after a brief delay to allow initial parsing
-        setTimeout(initializeEditor, 300);
+        // Fit to screen after loading
+        setTimeout(() => {
+            this.fitToScreen();
+        }, 500);
 
         this.saveProject();
+    }
+
+    syncToOtherIframes() {
+        // Get HTML from desktop iframe
+        const desktopIframe = document.querySelector('.device-iframe[data-device="desktop"]');
+        if (!desktopIframe) return;
+
+        const desktopDoc = desktopIframe.contentDocument;
+        if (!desktopDoc || !desktopDoc.body) return;
+
+        const htmlContent = desktopDoc.documentElement.outerHTML;
+
+        // Update tablet and mobile iframes
+        ['tablet', 'mobile'].forEach(device => {
+            const iframe = document.querySelector(`.device-iframe[data-device="${device}"]`);
+            if (!iframe) return;
+
+            const iframeDoc = iframe.contentDocument;
+            if (!iframeDoc) return;
+
+            const scrollTop = iframe.contentWindow.scrollY || 0;
+
+            iframeDoc.open();
+            iframeDoc.write(htmlContent);
+            iframeDoc.close();
+
+            // Restore scroll position
+            setTimeout(() => {
+                iframe.contentWindow.scrollTo(0, scrollTop);
+            }, 50);
+        });
     }
 
     // Adjust iframe height to fit content (especially for mobile)
