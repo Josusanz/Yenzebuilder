@@ -307,8 +307,34 @@ class YenzeBuilder {
     }
 
     async init() {
+        this.loadSavedBreakpoints();
         this.setupEventListeners();
         await this.loadProject();
+    }
+
+    loadSavedBreakpoints() {
+        const saved = localStorage.getItem('customBreakpoints');
+        if (saved) {
+            try {
+                const breakpoints = JSON.parse(saved);
+                this.deviceWidths = breakpoints;
+
+                // Update breakpoint inputs
+                const desktopInput = document.getElementById('desktopBreakpoint');
+                const tabletInput = document.getElementById('tabletBreakpoint');
+                const mobileInput = document.getElementById('mobileBreakpoint');
+
+                if (desktopInput) desktopInput.value = breakpoints.desktop;
+                if (tabletInput) tabletInput.value = breakpoints.tablet;
+                if (mobileInput) mobileInput.value = breakpoints.mobile;
+
+                // Update canvas width input
+                const canvasInput = document.getElementById('canvasWidthInput');
+                if (canvasInput) canvasInput.value = breakpoints.desktop;
+            } catch (e) {
+                console.error('Error loading saved breakpoints:', e);
+            }
+        }
     }
 
     setupEventListeners() {
@@ -335,6 +361,27 @@ class YenzeBuilder {
         document.getElementById('canvasWidthInput')?.addEventListener('input', (e) => {
             this.updateCanvasWidth(e.target.value);
         });
+
+        // Breakpoints panel toggle
+        const breakpointsToggle = document.getElementById('breakpointsToggle');
+        const breakpointsContent = document.getElementById('breakpointsContent');
+        const breakpointsChevron = document.getElementById('breakpointsChevron');
+
+        if (breakpointsToggle && breakpointsContent) {
+            breakpointsToggle.addEventListener('click', () => {
+                const isOpen = breakpointsContent.style.display !== 'none';
+                breakpointsContent.style.display = isOpen ? 'none' : 'block';
+                if (breakpointsChevron) {
+                    breakpointsChevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+        }
+
+        // Apply breakpoints button
+        const applyBreakpointsBtn = document.getElementById('applyBreakpoints');
+        if (applyBreakpointsBtn) {
+            applyBreakpointsBtn.addEventListener('click', () => this.applyCustomBreakpoints());
+        }
 
         // Import area
         const importArea = document.getElementById('importArea');
@@ -661,6 +708,77 @@ class YenzeBuilder {
                 this.adjustIframeHeight(canvas, iframeDoc);
             }, 50);
         }
+    }
+
+    applyCustomBreakpoints() {
+        const desktop = parseInt(document.getElementById('desktopBreakpoint')?.value || 1680);
+        const tablet = parseInt(document.getElementById('tabletBreakpoint')?.value || 768);
+        const mobile = parseInt(document.getElementById('mobileBreakpoint')?.value || 375);
+
+        // Validate breakpoints
+        if (desktop < 1024 || desktop > 3840) {
+            alert('Desktop breakpoint must be between 1024px and 3840px');
+            return;
+        }
+        if (tablet < 480 || tablet > 1024) {
+            alert('Tablet breakpoint must be between 480px and 1024px');
+            return;
+        }
+        if (mobile < 320 || mobile > 480) {
+            alert('Mobile breakpoint must be between 320px and 480px');
+            return;
+        }
+
+        // Update device widths
+        this.deviceWidths.desktop = desktop;
+        this.deviceWidths.tablet = tablet;
+        this.deviceWidths.mobile = mobile;
+
+        // Update current canvas width if viewing current device
+        this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
+
+        // Update width input
+        const input = document.getElementById('canvasWidthInput');
+        if (input) {
+            input.value = this.deviceWidths[this.currentDevice];
+        }
+
+        // Save to localStorage
+        localStorage.setItem('customBreakpoints', JSON.stringify(this.deviceWidths));
+
+        // Show success toast
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            background: white;
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10001;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease;
+        `;
+        toast.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Breakpoints updated!</span>
+        `;
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideIn 0.3s ease reverse';
+            setTimeout(() => document.body.removeChild(toast), 300);
+        }, 2000);
     }
 
     loadHTMLFile(file) {

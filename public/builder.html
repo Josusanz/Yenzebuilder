@@ -3448,6 +3448,91 @@
                 <button class="sidebar-tab" data-tab="history">History</button>
             </div>
             <div class="sidebar-content">
+                <!-- Breakpoints Panel (Collapsible) -->
+                <div class="breakpoints-section" style="border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
+                    <button id="breakpointsToggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: transparent; border: none; color: var(--text); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.background='var(--bg-hover)'"
+                        onmouseout="this.style.background='transparent'">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                                <rect x="8" y="21" width="8" height="2" rx="1"></rect>
+                            </svg>
+                            <span>Breakpoints</span>
+                        </div>
+                        <svg id="breakpointsChevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.2s;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <div id="breakpointsContent" style="display: none; padding: 16px; background: var(--bg-secondary);">
+                        <div style="margin-bottom: 12px; font-size: 0.75rem; color: var(--text-tertiary); line-height: 1.5;">
+                            Configure viewport widths for each device
+                        </div>
+
+                        <!-- Desktop Breakpoint -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 8px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                                Desktop
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="number" id="desktopBreakpoint" value="1680" min="1024" max="3840" step="1"
+                                    style="flex: 1; padding: 8px 12px; border: 2px solid var(--border); border-radius: 6px; font-size: 0.8125rem; background: white; outline: none; transition: border-color 0.2s;"
+                                    onfocus="this.style.borderColor='var(--accent)'"
+                                    onblur="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">px</span>
+                            </div>
+                        </div>
+
+                        <!-- Tablet Breakpoint -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 8px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg>
+                                Tablet
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="number" id="tabletBreakpoint" value="768" min="480" max="1024" step="1"
+                                    style="flex: 1; padding: 8px 12px; border: 2px solid var(--border); border-radius: 6px; font-size: 0.8125rem; background: white; outline: none; transition: border-color 0.2s;"
+                                    onfocus="this.style.borderColor='var(--accent)'"
+                                    onblur="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">px</span>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Breakpoint -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; color: var(--text); margin-bottom: 8px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                </svg>
+                                Mobile
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="number" id="mobileBreakpoint" value="375" min="320" max="480" step="1"
+                                    style="flex: 1; padding: 8px 12px; border: 2px solid var(--border); border-radius: 6px; font-size: 0.8125rem; background: white; outline: none; transition: border-color 0.2s;"
+                                    onfocus="this.style.borderColor='var(--accent)'"
+                                    onblur="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 0.75rem; color: var(--text-tertiary); font-weight: 600;">px</span>
+                            </div>
+                        </div>
+
+                        <button id="applyBreakpoints" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);"
+                            onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(102, 126, 234, 0.2)'">
+                            Apply Breakpoints
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Properties Tab -->
                 <div class="tab-panel active" id="propertiesPanel">
                     <p
