@@ -3015,19 +3015,17 @@
                     </svg>
                 </div>
 
-                <!-- Project Name with clearer edit affordance -->
-                <div style="display: flex; flex-direction: column; gap: 2px;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <input type="text" id="projectName" placeholder="Untitled Project" value="My Website"
-                            style="font-size: 14px; font-weight: 600; color: var(--text); border: none; background: transparent; outline: none; padding: 0; cursor: text;"
-                            title="Click to edit project name">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" style="flex-shrink: 0;">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                    </div>
-                    <!-- Draft status below project name -->
-                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 500;">● Draft Saved</span>
+                <!-- Project Name - Editable with hover effect -->
+                <div style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; transition: background 0.2s; cursor: text;"
+                    onmouseover="this.style.background='rgba(0,0,0,0.04)'"
+                    onmouseout="this.style.background='transparent'">
+                    <input type="text" id="projectName" placeholder="Click to name project" value="My Website"
+                        style="font-size: 14px; font-weight: 600; color: var(--text); border: none; background: transparent; outline: none; padding: 0; cursor: text; min-width: 150px;"
+                        title="Click to edit project name">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" style="flex-shrink: 0;">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
                 </div>
             </div>
 
