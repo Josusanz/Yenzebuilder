@@ -632,14 +632,13 @@ class YenzeBuilder {
         if (wrapper) {
             const canvasWidth = parseInt(width);
 
-            // Set wrapper to exact canvas width (no scaling on wrapper)
+            // Set wrapper to exact canvas width
             wrapper.style.width = canvasWidth + 'px';
-            wrapper.style.transform = 'none';
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
 
-            // Calculate scale for the IFRAME to fit in available space
+            // Calculate scale to fit wrapper in available space
             const canvasArea = wrapper.parentElement;
             const canvas = document.getElementById('canvas');
 
@@ -647,25 +646,20 @@ class YenzeBuilder {
                 const availableWidth = canvasArea.clientWidth - 80; // Padding
                 const scale = Math.min(availableWidth / canvasWidth, 1);
 
-                // Set iframe to full canvas width
+                // Scale the WRAPPER (not iframe) to fit in available space
+                wrapper.style.transform = `scale(${scale})`;
+                wrapper.style.transformOrigin = 'center top';
+
+                // Set iframe to full canvas width (no scaling on iframe itself)
                 canvas.style.width = `${canvasWidth}px`;
-
-                // Scale the iframe visually to fit
-                canvas.style.transform = `scale(${scale})`;
-                canvas.style.transformOrigin = 'top left';
-
-                // Adjust wrapper height to account for scaled iframe
-                if (canvas.contentDocument && canvas.contentDocument.body) {
-                    const iframeHeight = canvas.contentDocument.body.scrollHeight;
-                    wrapper.style.height = `${iframeHeight * scale}px`;
-                }
+                canvas.style.transform = 'none';
 
                 if (canvas.contentDocument) {
                     const iframeDoc = canvas.contentDocument;
                     let styleElement = iframeDoc.getElementById('yenze-viewport-override');
 
                     if (styleElement) {
-                        // Force iframe to render at exact canvas width (no max-width constraints)
+                        // Force iframe to render at exact canvas width
                         styleElement.textContent = `
                             html, body {
                                 width: ${canvasWidth}px !important;
