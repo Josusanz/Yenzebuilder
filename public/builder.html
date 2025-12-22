@@ -3007,7 +3007,7 @@
         <div class="topbar">
             <div class="topbar-left">
                 <!-- Logo with rounded background (YENZE Layers icon) -->
-                <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #18181B; border-radius: 8px; margin-right: 12px;">
+                <div style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #18181B; border-radius: 8px; margin-right: 16px;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
                         <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                         <polyline points="2 17 12 22 22 17"></polyline>
@@ -3015,13 +3015,20 @@
                     </svg>
                 </div>
 
-                <!-- Project Name -->
-                <div class="project-name">
-                    <input type="text" id="projectName" placeholder="Untitled Project" value="My Website">
+                <!-- Project Name with clearer edit affordance -->
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <input type="text" id="projectName" placeholder="Untitled Project" value="My Website"
+                            style="font-size: 14px; font-weight: 600; color: var(--text); border: none; background: transparent; outline: none; padding: 0; cursor: text;"
+                            title="Click to edit project name">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" style="flex-shrink: 0;">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </div>
+                    <!-- Draft status below project name -->
+                    <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 500;">● Draft Saved</span>
                 </div>
-
-                <!-- Draft status -->
-                <span style="font-size: 11px; color: var(--text-tertiary); margin-left: 12px; font-weight: 500;">● Draft Saved</span>
             </div>
 
             <!-- Central Floating Toolbar -->
@@ -3067,7 +3074,7 @@
 
                     <!-- Width control -->
                     <div class="device-width-control" style="display: flex; align-items: center; gap: 4px; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
-                        <input type="number" id="canvasWidthInput" value="1440"
+                        <input type="number" id="canvasWidthInput" value="1680"
                             style="width: 48px; background: transparent; border: none; color: var(--text); font-size: 13px; font-weight: 600; text-align: center; outline: none;">
                         <span style="color: var(--text-tertiary); font-size: 11px; font-weight: 600;">px</span>
                     </div>
