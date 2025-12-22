@@ -594,7 +594,7 @@ class YenzeBuilder {
         if (zoomInBtn) {
             zoomInBtn.addEventListener('click', () => {
                 const currentZoom = parseInt(zoomSlider.value);
-                const newZoom = Math.min(100, currentZoom + 10);
+                const newZoom = Math.min(200, currentZoom + 10);
                 zoomSlider.value = newZoom;
                 this.setZoom(newZoom);
             });
@@ -613,6 +613,72 @@ class YenzeBuilder {
             fitToScreenBtn.addEventListener('click', () => {
                 this.fitToScreen();
             });
+        }
+
+        // Canvas drag functionality (Framer-style)
+        const canvasArea = document.getElementById('canvasArea');
+        const canvasZoomContainer = document.getElementById('canvasZoomContainer');
+
+        if (canvasArea && canvasZoomContainer) {
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let scrollLeft = 0;
+            let scrollTop = 0;
+
+            canvasArea.addEventListener('mousedown', (e) => {
+                // Don't drag if clicking on iframes or controls
+                if (e.target.tagName === 'IFRAME' || e.target.closest('#floatingZoomControls')) {
+                    return;
+                }
+
+                isDragging = true;
+                canvasZoomContainer.style.cursor = 'grabbing';
+                canvasZoomContainer.style.transition = 'none';
+                startX = e.pageX - canvasArea.offsetLeft;
+                startY = e.pageY - canvasArea.offsetTop;
+                scrollLeft = canvasArea.scrollLeft;
+                scrollTop = canvasArea.scrollTop;
+            });
+
+            canvasArea.addEventListener('mouseleave', () => {
+                isDragging = false;
+                canvasZoomContainer.style.cursor = 'grab';
+                canvasZoomContainer.style.transition = 'transform 0.2s ease';
+            });
+
+            canvasArea.addEventListener('mouseup', () => {
+                isDragging = false;
+                canvasZoomContainer.style.cursor = 'grab';
+                canvasZoomContainer.style.transition = 'transform 0.2s ease';
+            });
+
+            canvasArea.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - canvasArea.offsetLeft;
+                const y = e.pageY - canvasArea.offsetTop;
+                const walkX = (x - startX) * 1.5; // Scroll speed multiplier
+                const walkY = (y - startY) * 1.5;
+                canvasArea.scrollLeft = scrollLeft - walkX;
+                canvasArea.scrollTop = scrollTop - walkY;
+            });
+
+            // Zoom with mouse wheel/trackpad (Framer-style)
+            canvasArea.addEventListener('wheel', (e) => {
+                // Check if it's a pinch gesture (ctrlKey is true for pinch on trackpad)
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+
+                    const currentZoom = parseInt(zoomSlider.value);
+                    const delta = -e.deltaY;
+                    const zoomChange = delta > 0 ? 5 : -5;
+                    const newZoom = Math.min(200, Math.max(10, currentZoom + zoomChange));
+
+                    zoomSlider.value = newZoom;
+                    this.setZoom(newZoom);
+                }
+            }, { passive: false });
         }
     }
 
@@ -748,7 +814,7 @@ class YenzeBuilder {
 
         // Calculate zoom to fit
         const fitZoom = Math.floor((availableWidth / totalWidth) * 100);
-        const finalZoom = Math.min(100, Math.max(10, fitZoom));
+        const finalZoom = Math.min(200, Math.max(10, fitZoom));
 
         // Update slider and apply zoom
         const zoomSlider = document.getElementById('zoomSlider');
