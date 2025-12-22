@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YENZE | Stitch Landing Page Generator</title>
-    <meta name="description" content="Generate optimized prompts for Google Stitch to create stunning landing pages.">
+    <title>YENZE | Sales Landing Page Generator</title>
+    <meta name="description" content="Generate high-converting sales landing pages with Google Stitch.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&family=JetBrains+Mono:wght@400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500;700&family=JetBrains+Mono:wght@400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -80,14 +80,14 @@
             position: fixed;
             bottom: 32px;
             right: 32px;
-            background: #0a0a0a;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
             color: white;
-            padding: 16px 32px;
+            padding: 18px 36px;
             border-radius: 100px;
             font-size: 16px;
             font-weight: 600;
             border: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
             cursor: pointer;
             z-index: 1000;
             transition: all 0.2s;
@@ -98,7 +98,7 @@
 
         .fab-generate:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
         }
 
         .fab-generate.copied {
@@ -137,7 +137,7 @@
 
         /* Main Layout */
         .main {
-            max-width: 800px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 0 24px;
         }
@@ -150,20 +150,22 @@
 
         .header h1 {
             font-family: var(--font-display);
-            font-size: 42px;
-            font-weight: 700;
+            font-size: 52px;
+            font-weight: 900;
             letter-spacing: -0.03em;
-            background: linear-gradient(135deg, #000 0%, #444 100%);
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 16px;
+            line-height: 1.1;
         }
 
         .header p {
             color: var(--text-muted);
             font-size: 18px;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
+            font-weight: 500;
         }
 
         /* How it Works */
@@ -171,7 +173,7 @@
             display: flex;
             justify-content: center;
             gap: 24px;
-            margin-bottom: 56px;
+            margin-bottom: 64px;
         }
 
         .step-pill {
@@ -179,89 +181,68 @@
             align-items: center;
             gap: 12px;
             background: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 100px;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             box-shadow: var(--shadow-soft);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
             transition: transform 0.2s;
         }
 
         .step-pill:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
+            border-color: #6366F1;
         }
 
         .step-num {
-            background: #F4F4F5;
-            color: var(--text-main);
-            width: 24px;
-            height: 24px;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            color: white;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
         }
 
         /* Sections */
         .section {
-            margin-bottom: 48px;
+            margin-bottom: 56px;
         }
 
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .section-label {
             font-family: var(--font-display);
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-muted);
+            color: var(--text-main);
         }
 
         /* Option Cards */
-        /* Option Cards & Grids */
-        .options-grid,
-        .features-grid,
-        .color-grid {
-            display: grid;
-            gap: 12px;
-        }
-
         .options-grid {
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
         }
 
-        .features-grid {
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        }
-
-        .color-grid {
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        }
-
-        /* Specific override for the top architecture buttons to be wider if needed, or stick to grid */
-        #structureOptions {
-            grid-template-columns: repeat(2, 1fr);
-            /* Always 2 columns for the big toggle */
-        }
-
-        .option,
-        .feature,
-        .color-option {
+        .option {
             background: #fff;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 24px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
@@ -271,145 +252,38 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            gap: 10px;
+            gap: 12px;
+            min-height: 120px;
         }
 
-        /* Minimum heights for consistency */
-        .option {
-            min-height: 100px;
-        }
-
-        .feature {
-            min-height: 90px;
-        }
-
-        .color-option {
-            min-height: auto;
-            padding: 10px;
-            display: block;
-        }
-
-        /* Block display for color option to stack preview */
-
-        .option:hover,
-        .feature:hover,
-        .color-option:hover {
+        .option:hover {
             border-color: #a1a1aa;
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-hover);
         }
 
-        .option.selected,
-        .feature.selected,
-        .color-option.selected {
-            border-color: var(--accent) !important;
-            background: #FAFAFA !important;
-            box-shadow: 0 0 0 2px var(--accent) !important;
+        .option.selected {
+            border-color: #6366F1 !important;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
         }
 
-        /* Icons & Text */
-        .option-icon,
-        .feature-icon {
-            font-size: 24px;
+        .option-icon {
+            font-size: 32px;
             color: var(--text-muted);
             margin: 0;
             display: block;
         }
 
-        .option.selected .option-icon,
-        .feature.selected .feature-icon {
-            color: var(--text-main);
+        .option.selected .option-icon {
+            color: #6366F1;
         }
 
-        .option-label,
-        .feature-label {
-            font-weight: 500;
-            font-size: 13px;
+        .option-label {
+            font-weight: 600;
+            font-size: 14px;
             color: var(--text-main);
             line-height: 1.3;
-        }
-
-        .feature-check {
-            display: none;
-        }
-
-        /* Color Previews - RESTORED */
-        .color-preview {
-            height: 40px;
-            width: 100%;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-
-        .color-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        /* Instructions Refined */
-        .workflow-guide {
-            margin-top: 48px;
-            padding: 32px;
-            background: #FAFAFA;
-            border-radius: var(--radius-lg);
-            border: 1px dashed #e4e4e7;
-        }
-
-        .guide-title {
-            font-family: var(--font-heading);
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            text-align: center;
-            color: var(--text-main);
-        }
-
-        .guide-steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .guide-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-        }
-
-        .guide-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            font-size: 16px;
-        }
-
-        .guide-text {
-            font-size: 13px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        @media (max-width: 640px) {
-
-            .features-grid,
-            .color-grid {
-                grid-template-columns: repeat(2, 1fr);
-                /* 2 cols on mobile */
-            }
-
-            .guide-steps {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Inputs */
@@ -419,7 +293,7 @@
             width: 100%;
             padding: 16px;
             background: white;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: var(--radius-md);
             font-family: var(--font-body);
             font-size: 15px;
@@ -430,16 +304,16 @@
         input:focus,
         textarea:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--ring-focus);
+            border-color: #6366F1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
         label {
             display: block;
-            font-weight: 500;
-            font-size: 13px;
+            font-weight: 600;
+            font-size: 14px;
             color: var(--text-main);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         /* Output Terminal */
@@ -448,129 +322,179 @@
             border-radius: var(--radius-lg);
             padding: 0;
             overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            margin-top: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            margin-top: 64px;
             border: 1px solid #27272a;
         }
 
         .output-header {
-            background: #18181b;
-            padding: 16px 24px;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 20px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #27272a;
+            border-bottom: 1px solid #4338ca;
         }
 
         .output-title {
             font-family: var(--font-mono);
             color: #e4e4e7;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .output-content {
-            padding: 24px;
+            padding: 32px;
             font-family: var(--font-mono);
             font-size: 13px;
             color: #d4d4d8;
-            line-height: 1.7;
+            line-height: 1.8;
             white-space: pre-wrap;
             max-height: 500px;
             overflow-y: auto;
         }
 
-        .action-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .step-badge {
-            width: 24px;
-            height: 24px;
-            background: #eaeaea;
-            color: #666;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Actions */
+        .actions {
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
         .btn {
-            width: 100%;
-            padding: 14px 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.15s;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
+            height: 60px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            transition: all 0.2s;
+            gap: 12px;
         }
 
         .btn-primary {
-            background: #0a0a0a;
-            color: #fff;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
         }
 
         .btn-primary:hover {
-            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
         }
 
         .btn-secondary {
-            background: #fff;
-            color: #0a0a0a;
-            border: 1px solid #eaeaea;
+            background: white;
+            color: var(--text-main);
+            border: 2px solid var(--border);
         }
 
         .btn-secondary:hover {
-            border-color: #ccc;
-            background: #fafafa;
+            border-color: #a1a1aa;
+            transform: translateY(-2px);
         }
 
-        .btn-accent {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Workflow Guide */
+        .workflow-guide {
+            margin-top: 64px;
+            padding: 40px;
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .guide-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .guide-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .guide-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            font-size: 24px;
         }
 
-        .btn-accent:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
+        .guide-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
-        @media (max-width: 640px) {
-            .main {
-                padding: 32px 16px 60px;
+        .guide-text strong {
+            display: block;
+            color: var(--text-main);
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
             }
 
-            .header h1 {
-                font-size: 24px;
+            .how-it-works {
+                flex-direction: column;
+                align-items: center;
             }
 
             .options-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .actions {
-                flex-direction: column;
-                gap: 24px;
+            .guide-steps {
+                grid-template-columns: 1fr;
             }
 
-            .action-group {
-                width: 100%;
-                flex-direction: row;
-                gap: 12px;
+            .actions {
+                grid-template-columns: 1fr;
             }
 
             .nav-links .nav-link:not(.primary) {
@@ -578,11 +502,6 @@
             }
         }
     </style>
-    <!-- Supabase & Config -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Secure Configuration -->
-    <script src="config.secure.js?v=2.0.0"></script>
-    <script src="supabase-client.js?v=1.9.2"></script>
 </head>
 
 <body>
@@ -598,275 +517,163 @@
         </a>
         <div class="nav-links">
             <a href="https://builder.yenze.io/dashboard.html" class="nav-link">Dashboard</a>
-            <a href="https://builder.yenze.io" class="nav-link primary">Open Editor</a>
+            <a href="https://builder.yenze.io" class="nav-link primary">Open Builder</a>
         </div>
     </nav>
 
     <main class="main">
         <div class="header">
-            <h1>Landing Page Prompt Generator</h1>
-            <p>Create optimized prompts for Google Stitch to generate stunning, high-converting landing pages.</p>
+            <h1>Sales Landing Page Generator</h1>
+            <p>Create high-converting sales landing pages that turn visitors into customers with Google Stitch AI.</p>
         </div>
 
-        <!-- How it works (New Look) -->
+        <!-- How it works -->
         <div class="how-it-works">
             <div class="step-pill">
                 <div class="step-num">1</div>
-                <span>Configure</span>
+                <span>Configure Goal</span>
             </div>
             <div class="step-pill">
                 <div class="step-num">2</div>
-                <span>Generate</span>
+                <span>Generate Prompt</span>
             </div>
             <div class="step-pill">
                 <div class="step-num">3</div>
-                <span>Build</span>
+                <span>Create & Launch</span>
             </div>
         </div>
 
-        <!-- Website Type -->
+        <!-- Landing Page Goal -->
         <div class="section">
-            <div class="section-label">1. Project Artifact</div>
-            <div class="options-grid" id="typeOptions">
-                <div class="option" data-value="landing">
+            <div class="section-label">1. Landing Page Goal</div>
+            <div class="options-grid" id="goalOptions">
+                <div class="option" data-value="product-launch">
                     <i class="fa-solid fa-rocket option-icon"></i>
-                    <span class="option-label">Landing Page</span>
+                    <span class="option-label">Product Launch</span>
                 </div>
-                <div class="option" data-value="business">
-                    <i class="fa-solid fa-briefcase option-icon"></i>
-                    <span class="option-label">Business</span>
+                <div class="option" data-value="lead-gen">
+                    <i class="fa-solid fa-magnet option-icon"></i>
+                    <span class="option-label">Lead Generation</span>
                 </div>
-                <div class="option" data-value="portfolio">
-                    <i class="fa-solid fa-layer-group option-icon"></i>
-                    <span class="option-label">Portfolio</span>
+                <div class="option" data-value="saas-signup">
+                    <i class="fa-solid fa-laptop-code option-icon"></i>
+                    <span class="option-label">SaaS Sign-Up</span>
                 </div>
-                <div class="option" data-value="store">
-                    <i class="fa-solid fa-store option-icon"></i>
-                    <span class="option-label">Storefront</span>
+                <div class="option" data-value="course-sales">
+                    <i class="fa-solid fa-graduation-cap option-icon"></i>
+                    <span class="option-label">Course Sales</span>
                 </div>
-                <div class="option" data-value="saas">
-                    <i class="fa-solid fa-cloud option-icon"></i>
-                    <span class="option-label">SaaS Platform</span>
-                </div>
-                <div class="option" data-value="restaurant">
-                    <i class="fa-solid fa-utensils option-icon"></i>
-                    <span class="option-label">Restaurant</span>
-                </div>
-                <div class="option" data-value="agency">
-                    <i class="fa-solid fa-building option-icon"></i>
-                    <span class="option-label">Agency</span>
-                </div>
-                <div class="option" data-value="blog">
-                    <i class="fa-solid fa-pen-nib option-icon"></i>
-                    <span class="option-label">Editorial</span>
-                </div>
-                <div class="option" data-value="personal">
-                    <i class="fa-solid fa-user-astronaut option-icon"></i>
-                    <span class="option-label">Personal Identity</span>
-                </div>
-                <div class="option" data-value="event">
+                <div class="option" data-value="event-registration">
                     <i class="fa-solid fa-ticket option-icon"></i>
-                    <span class="option-label">Event/Summit</span>
+                    <span class="option-label">Event Registration</span>
+                </div>
+                <div class="option" data-value="waitlist">
+                    <i class="fa-solid fa-clock option-icon"></i>
+                    <span class="option-label">Waitlist/Pre-Launch</span>
+                </div>
+                <div class="option" data-value="ecommerce">
+                    <i class="fa-solid fa-cart-shopping option-icon"></i>
+                    <span class="option-label">E-commerce Product</span>
+                </div>
+                <div class="option" data-value="consultation">
+                    <i class="fa-solid fa-handshake option-icon"></i>
+                    <span class="option-label">Book Consultation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversion Strategy -->
+        <div class="section">
+            <div class="section-label">2. Conversion Strategy</div>
+            <div class="options-grid" id="strategyOptions">
+                <div class="option" data-value="urgency">
+                    <i class="fa-solid fa-fire option-icon"></i>
+                    <span class="option-label">Urgency & Scarcity</span>
+                </div>
+                <div class="option" data-value="social-proof">
+                    <i class="fa-solid fa-users option-icon"></i>
+                    <span class="option-label">Social Proof Heavy</span>
+                </div>
+                <div class="option" data-value="benefit-driven">
+                    <i class="fa-solid fa-chart-line option-icon"></i>
+                    <span class="option-label">Benefit-Driven</span>
+                </div>
+                <div class="option" data-value="problem-solution">
+                    <i class="fa-solid fa-lightbulb option-icon"></i>
+                    <span class="option-label">Problem-Solution</span>
+                </div>
+                <div class="option" data-value="comparison">
+                    <i class="fa-solid fa-scale-balanced option-icon"></i>
+                    <span class="option-label">Before/After Comparison</span>
+                </div>
+                <div class="option" data-value="value-stack">
+                    <i class="fa-solid fa-layer-group option-icon"></i>
+                    <span class="option-label">Value Stack</span>
                 </div>
             </div>
         </div>
 
         <!-- Design Style -->
         <div class="section">
-            <div class="section-label">2. Visual Language</div>
+            <div class="section-label">3. Visual Style</div>
             <div class="options-grid" id="styleOptions">
                 <div class="option" data-value="minimal">
                     <i class="fa-solid fa-circle-notch option-icon"></i>
-                    <span class="option-label">Swiss Minimal</span>
-                </div>
-                <div class="option" data-value="modern">
-                    <i class="fa-solid fa-cube option-icon"></i>
-                    <span class="option-label">Modern Glass</span>
+                    <span class="option-label">Clean Minimal</span>
                 </div>
                 <div class="option" data-value="bold">
                     <i class="fa-solid fa-square-full option-icon"></i>
-                    <span class="option-label">Neo-Brutalism</span>
+                    <span class="option-label">Bold & Vibrant</span>
                 </div>
-                <div class="option" data-value="elegant">
+                <div class="option" data-value="professional">
+                    <i class="fa-solid fa-briefcase option-icon"></i>
+                    <span class="option-label">Professional Corporate</span>
+                </div>
+                <div class="option" data-value="modern">
+                    <i class="fa-solid fa-wand-magic-sparkles option-icon"></i>
+                    <span class="option-label">Modern Tech</span>
+                </div>
+                <div class="option" data-value="luxury">
                     <i class="fa-solid fa-gem option-icon"></i>
-                    <span class="option-label">Luxury Serif</span>
+                    <span class="option-label">Luxury Premium</span>
                 </div>
                 <div class="option" data-value="playful">
-                    <i class="fa-solid fa-shapes option-icon"></i>
-                    <span class="option-label">Playful 3D</span>
-                </div>
-                <div class="option" data-value="dark">
-                    <i class="fa-solid fa-moon option-icon"></i>
-                    <span class="option-label">Pro Dark</span>
+                    <i class="fa-solid fa-smile option-icon"></i>
+                    <span class="option-label">Friendly & Playful</span>
                 </div>
             </div>
         </div>
 
-        <!-- Color Palette -->
+        <!-- Product/Service Details -->
         <div class="section">
-            <div class="section-label">3. Color System</div>
-            <div class="color-grid" id="colorOptions">
-                <div class="color-option" data-value="white">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);">
-                    </div>
-                    <div class="color-label">Pure White</div>
-                </div>
-                <div class="color-option" data-value="monochrome">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #09090b 0%, #27272a 100%);">
-                    </div>
-                    <div class="color-label">Dark Mono</div>
-                </div>
-                <div class="color-option" data-value="blue">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);">
-                    </div>
-                    <div class="color-label">Electric Blue</div>
-                </div>
-                <div class="color-option" data-value="green">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
-                    </div>
-                    <div class="color-label">Emerald</div>
-                </div>
-                <div class="color-option" data-value="warm">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);">
-                    </div>
-                    <div class="color-label">Warm</div>
-                </div>
-                <div class="color-option" data-value="earth">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);">
-                    </div>
-                    <div class="color-label">Earth</div>
-                </div>
-                <div class="color-option" data-value="neon">
-                    <div class="color-preview" style="background: linear-gradient(135deg, #00f260 0%, #0575e6 100%);">
-                    </div>
-                    <div class="color-label">Neon</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Landing Page Focus (Multi-page hidden for now) -->
-        <div class="section" style="display: none;">
-            <div class="section-label">4. Architecture</div>
-            <div class="info-box" style="background: #F0F9FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 12px 16px; margin-top: 12px;">
-                <div style="display: flex; align-items: start; gap: 12px;">
-                    <i class="fa-solid fa-info-circle" style="color: #3B82F6; margin-top: 2px;"></i>
-                    <div style="font-size: 0.875rem; color: #1E40AF; line-height: 1.5;">
-                        <strong>Landing Page Focus:</strong> Google Stitch works best for single landing pages. Multi-page support coming soon! For now, create amazing landing pages and import them to YENZE Builder.
-                    </div>
-                </div>
-            </div>
-            <input type="hidden" id="structureType" value="single">
-        </div>
-
-        <!-- Pages to Include (only shown for multipage) -->
-        <div class="section" id="pagesSection" style="display: none;">
-            <div class="section-label">4. Site Map (Pages)</div>
-            <div class="features-grid" id="pageOptions">
-                <div class="feature selected" data-value="home">
-                    <span class="feature-label">Home</span>
-                </div>
-                <div class="feature" data-value="about">
-                    <span class="feature-label">About</span>
-                </div>
-                <div class="feature" data-value="services">
-                    <span class="feature-label">Services</span>
-                </div>
-                <div class="feature" data-value="portfolio">
-                    <span class="feature-label">Work</span>
-                </div>
-                <div class="feature" data-value="blog">
-                    <span class="feature-label">Journal</span>
-                </div>
-                <div class="feature" data-value="contact">
-                    <span class="feature-label">Contact</span>
-                </div>
-                <div class="feature" data-value="pricing">
-                    <span class="feature-label">Pricing</span>
-                </div>
-                <div class="feature" data-value="team">
-                    <span class="feature-label">Team</span>
-                </div>
-                <div class="feature" data-value="faq">
-                    <span class="feature-label">FAQ</span>
-                </div>
-                <div class="feature" data-value="testimonials">
-                    <span class="feature-label">Reviews</span>
-                </div>
-            </div>
-
-            <!-- Custom Page Input -->
-            <div
-                style="margin-top: 16px; background: white; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md);">
-                <label style="font-size: 13px; margin-bottom: 8px; display: block;">Add Custom Page</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="customPageInput" placeholder="e.g. Careers, Press, Legal..."
-                        style="flex: 1; margin: 0;">
-                    <button id="addCustomPageBtn" class="btn btn-secondary" style="width: auto; white-space: nowrap;">
-                        <i class="fa-solid fa-plus"></i> Add
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sections (only shown for single page) -->
-        <div class="section" id="sectionsSection">
-            <div class="section-label">5. Key Modules</div>
-            <div class="features-grid" id="featureOptions">
-                <div class="feature" data-value="hero">
-                    <i class="fa-solid fa-star option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Hero Header</span>
-                </div>
-                <div class="feature" data-value="about">
-                    <i class="fa-solid fa-user option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">About</span>
-                </div>
-                <div class="feature" data-value="services">
-                    <i class="fa-solid fa-list-check option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Services</span>
-                </div>
-                <div class="feature" data-value="portfolio">
-                    <i class="fa-solid fa-images option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Gallery</span>
-                </div>
-                <div class="feature" data-value="testimonials">
-                    <i class="fa-solid fa-quote-right option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Testimonials</span>
-                </div>
-                <div class="feature" data-value="pricing">
-                    <i class="fa-solid fa-tags option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Pricing</span>
-                </div>
-                <div class="feature" data-value="contact">
-                    <i class="fa-solid fa-envelope option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Contact Form</span>
-                </div>
-                <div class="feature" data-value="faq">
-                    <i class="fa-solid fa-circle-question option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">FAQ</span>
-                </div>
-                <div class="feature" data-value="team">
-                    <i class="fa-solid fa-users option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Team</span>
-                </div>
-                <div class="feature" data-value="blog">
-                    <i class="fa-solid fa-newspaper option-icon" style="font-size: 16px;"></i>
-                    <span class="feature-label">Latest News</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Brand Identity & Context -->
-        <div class="section">
-            <div class="section-label">4. Brand DNA</div>
+            <div class="section-label">4. Product/Service Details</div>
             <div style="display: flex; flex-direction: column; gap: 24px;">
                 <div>
-                    <label>Brand Name / Project Title</label>
-                    <input type="text" id="brandName" placeholder="e.g. Nexus AI, The Coffee House...">
+                    <label>Product/Service Name</label>
+                    <input type="text" id="productName" placeholder="e.g., ProFlow CRM, Master Photography Course...">
                 </div>
                 <div>
-                    <label>Business Context & Copy (The "Source of Truth")</label>
-                    <textarea class="textarea" id="businessContext" style="min-height: 140px;"
-                        placeholder="Paste your business description, value proposition, or existing copy here. The AI will use this to write professional, high-converting content..."></textarea>
+                    <label>Main Value Proposition (What problem does it solve?)</label>
+                    <textarea id="valueProposition" style="min-height: 100px;"
+                        placeholder="e.g., Automate your sales pipeline and close 3x more deals in half the time..."></textarea>
+                </div>
+                <div>
+                    <label>Target Audience</label>
+                    <input type="text" id="targetAudience"
+                        placeholder="e.g., Small business owners, Marketing agencies, Entrepreneurs...">
+                </div>
+                <div>
+                    <label>Price Point (if applicable)</label>
+                    <input type="text" id="price" placeholder="e.g., $49/month, $997 one-time, Free trial...">
+                </div>
+                <div>
+                    <label>Key Benefits (comma-separated)</label>
+                    <textarea id="benefits" style="min-height: 80px;"
+                        placeholder="e.g., Save 10 hours per week, Increase conversions by 40%, 24/7 customer support..."></textarea>
+                </div>
+                <div>
+                    <label>Call-to-Action Text</label>
+                    <input type="text" id="ctaText" placeholder="e.g., Start Free Trial, Get Instant Access, Book Your Spot...">
                 </div>
             </div>
         </div>
@@ -874,124 +681,96 @@
         <!-- Output -->
         <div class="output-section">
             <div class="output-header">
-                <span class="output-title"><i class="fa-solid fa-terminal" style="margin-right: 8px;"></i>
-                    PROMPT_TERMINAL</span>
+                <span class="output-title">
+                    <i class="fa-solid fa-terminal"></i>
+                    SALES_LANDING_PROMPT
+                </span>
                 <button class="copy-btn" id="copyBtn">
-                    <i class="fa-regular fa-clone" style="margin-right: 6px;"></i> Copy Code
+                    <i class="fa-regular fa-clone"></i> Copy Prompt
                 </button>
             </div>
             <div class="output-content" id="output">
-                // Configure options above to initialize prompt generation sequence...
+// Configure your landing page settings above to generate your optimized prompt...
             </div>
         </div>
 
         <!-- Actions -->
-        <div class="actions" style="margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <a href="https://stitch.withgoogle.com/" target="_blank" class="nav-link primary"
-                style="text-align: center; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                <i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 10px;"></i> Open Google Stitch
+        <div class="actions">
+            <a href="https://stitch.withgoogle.com/" target="_blank" class="btn btn-primary">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Open Google Stitch
             </a>
-            <a href="builder.html" class="nav-link"
-                style="text-align: center; height: 56px; background: white; border: 1px solid var(--border); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                <i class="fa-solid fa-code" style="margin-right: 10px;"></i> Go to Builder
+            <a href="builder.html" class="btn btn-secondary">
+                <i class="fa-solid fa-code"></i> Go to Builder
             </a>
         </div>
 
         <!-- Workflow Guide -->
         <div class="workflow-guide">
-            <h3 class="guide-title">How to use YENZE Architect</h3>
+            <h3 class="guide-title">How to Create Your Sales Landing Page</h3>
             <div class="guide-steps">
                 <div class="guide-step">
                     <div class="guide-icon"><i class="fa-solid fa-sliders"></i></div>
                     <div class="guide-text">
-                        <strong>1. Configure</strong><br>
-                        Select your website type, style, and features above.
+                        <strong>1. Configure</strong>
+                        Select your goal, strategy, and fill in your product details above.
                     </div>
                 </div>
                 <div class="guide-step">
                     <div class="guide-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                     <div class="guide-text">
-                        <strong>2. Generate</strong><br>
-                        Copy the prompt, open Google Stitch, and paste it to generate your landing page.
+                        <strong>2. Generate</strong>
+                        Copy the optimized prompt and paste it into Google Stitch to generate your landing page.
                     </div>
                 </div>
                 <div class="guide-step">
-                    <div class="guide-icon"><i class="fa-solid fa-code"></i></div>
+                    <div class="guide-icon"><i class="fa-solid fa-rocket"></i></div>
                     <div class="guide-text">
-                        <strong>3. Import</strong><br>
-                        Copy the HTML code from Stitch and paste it into the YENZE Builder to edit and publish.
+                        <strong>3. Launch</strong>
+                        Import the generated HTML to YENZE Builder, customize, and publish your high-converting page.
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="height: 60px;"></div> <!-- Spacer -->
+        <div style="height: 60px;"></div>
 
     </main>
 
     <!-- Floating Action Button -->
     <button class="fab-generate" id="actionCopyBtn">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <i class="fa-solid fa-copy"></i>
         Copy Prompt
     </button>
 
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- YENZE Supabase Client (assuming this is a custom client wrapper) -->
-    <!-- YENZE Supabase Client (assuming this is a custom client wrapper) -->
-    <!-- <script src="https://builder.yenze.io/supabase-client.js"></script> -->
-
     <script>
-        // Supabase Initialization (replace with your actual project URL and ANON KEY)
-        // const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        // const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        // let supabaseClient = null; // Will be initialized on DOMContentLoaded
-
         const state = {
-            type: 'landing',
-            style: 'modern',
-            color: 'blue',
-            structure: 'single',
-            pages: ['home'],
-            features: [],
-            brandName: '',
-            businessContext: ''
+            goal: '',
+            strategy: '',
+            style: '',
+            productName: '',
+            valueProposition: '',
+            targetAudience: '',
+            price: '',
+            benefits: '',
+            ctaText: ''
         };
 
-
-        // Custom Page Logic
-        document.getElementById('addCustomPageBtn').addEventListener('click', () => {
-            const input = document.getElementById('customPageInput');
-            const pageName = input.value.trim();
-            if (pageName) {
-                const id = pageName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                state.pages.push(id);
-
-                // Add visual chip
-                const container = document.getElementById('pageOptions');
-                const chip = document.createElement('div');
-                chip.className = 'feature selected';
-                chip.dataset.value = id;
-                chip.innerHTML = `<span class="feature-label">${pageName}</span>`;
-                chip.addEventListener('click', () => {
-                    // Allow removing custom pages
-                    chip.remove();
-                    state.pages = state.pages.filter(p => p !== id);
-                    updatePrompt();
-                });
-                container.appendChild(chip);
-
-                input.value = '';
+        // Goal options
+        document.querySelectorAll('#goalOptions .option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('#goalOptions .option').forEach(o => o.classList.remove('selected'));
+                el.classList.add('selected');
+                state.goal = el.dataset.value;
                 updatePrompt();
-            }
+            });
         });
 
-        // Type options
-        document.querySelectorAll('#typeOptions .option').forEach(el => {
+        // Strategy options
+        document.querySelectorAll('#strategyOptions .option').forEach(el => {
             el.addEventListener('click', () => {
-                document.querySelectorAll('#typeOptions .option').forEach(o => o.classList.remove('selected'));
+                document.querySelectorAll('#strategyOptions .option').forEach(o => o.classList.remove('selected'));
                 el.classList.add('selected');
-                state.type = el.dataset.value;
+                state.strategy = el.dataset.value;
                 updatePrompt();
             });
         });
@@ -1006,497 +785,273 @@
             });
         });
 
-        // Color options
-        document.querySelectorAll('#colorOptions .color-option').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('#colorOptions .color-option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                state.color = el.dataset.value;
+        // Text inputs
+        ['productName', 'valueProposition', 'targetAudience', 'price', 'benefits', 'ctaText'].forEach(field => {
+            document.getElementById(field).addEventListener('input', (e) => {
+                state[field] = e.target.value;
                 updatePrompt();
             });
-        });
-
-        // Structure options (single/multi)
-        document.querySelectorAll('#structureOptions .option').forEach(el => {
-            el.addEventListener('click', () => {
-                document.querySelectorAll('#structureOptions .option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                state.structure = el.dataset.value;
-
-                // Show/hide pages section vs sections section
-                const pagesSection = document.getElementById('pagesSection');
-                const sectionsSection = document.getElementById('sectionsSection');
-
-                if (state.structure === 'multi') {
-                    pagesSection.style.display = 'block';
-                    sectionsSection.style.display = 'none';
-                } else {
-                    pagesSection.style.display = 'none';
-                    sectionsSection.style.display = 'block';
-                }
-
-                updatePrompt();
-            });
-        });
-
-        // Page options (multi-select for multipage)
-        document.querySelectorAll('#pageOptions .feature').forEach(el => {
-            el.addEventListener('click', () => {
-                // Home is always required
-                if (el.dataset.value === 'home') return;
-
-                el.classList.toggle('selected');
-                const value = el.dataset.value;
-                if (state.pages.includes(value)) {
-                    state.pages = state.pages.filter(p => p !== value);
-                } else {
-                    state.pages.push(value);
-                }
-                updatePrompt();
-            });
-        });
-
-        // Feature options (multi-select)
-        document.querySelectorAll('#featureOptions .feature').forEach(el => {
-            el.addEventListener('click', () => {
-                el.classList.toggle('selected');
-                const value = el.dataset.value;
-                if (state.features.includes(value)) {
-                    state.features = state.features.filter(f => f !== value);
-                } else {
-                    state.features.push(value);
-                }
-                updatePrompt();
-            });
-        });
-
-        // Brand Name Input
-        document.getElementById('brandName').addEventListener('input', (e) => {
-            state.brandName = e.target.value;
-            updatePrompt();
-        });
-
-        // Business Context Textarea
-        document.getElementById('businessContext').addEventListener('input', (e) => {
-            state.businessContext = e.target.value;
-            updatePrompt();
         });
 
         // Copy button
         document.getElementById('copyBtn').addEventListener('click', () => {
             const text = document.getElementById('output').textContent;
-            if (text.includes('// Configure options')) {
-                alert('Please select some options first');
+            if (text.includes('// Configure')) {
+                alert('Please configure your landing page settings first');
                 return;
             }
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copyBtn');
                 const originalContent = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-                btn.classList.add('copied');
                 setTimeout(() => {
                     btn.innerHTML = originalContent;
-                    btn.classList.remove('copied');
                 }, 2000);
             });
         });
 
+        // FAB Copy button
+        document.getElementById('actionCopyBtn').addEventListener('click', () => {
+            document.getElementById('copyBtn').click();
+            const fab = document.getElementById('actionCopyBtn');
+            const originalText = fab.innerHTML;
+            fab.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            fab.classList.add('copied');
+            setTimeout(() => {
+                fab.innerHTML = originalText;
+                fab.classList.remove('copied');
+            }, 2000);
+        });
+
         function updatePrompt() {
-            if (!state.type && !state.style && !state.color && state.features.length === 0 && state.pages.length <= 1 && !state.brandName && !state.businessContext) {
-                document.getElementById('output').textContent = '// Configure options above to initialize prompt generation sequence...';
+            // Check if minimum required fields are filled
+            if (!state.goal && !state.productName && !state.valueProposition) {
+                document.getElementById('output').textContent = '// Configure your landing page settings above to generate your optimized prompt...';
                 return;
             }
 
-            const typeLabels = {
-                landing: 'High-Fidelity, Conversion-Obsessed Landing Page',
-                business: 'Global Enterprise Authority Platform (Fortune 500 Style)',
-                portfolio: 'Interactive Digital Experience & Visual Storytelling',
-                store: 'Luxury Direct-to-Consumer (DTC) E-commerce Flagship',
-                saas: 'Modern SaaS Product Implementation & Documentation Hub',
-                restaurant: 'Gastronomic Experience & Reservation Platform',
-                agency: 'Award-Winning Digital Agency Showcase',
-                blog: 'Minimalist Editorial Publication (Focus on Readability)',
-                personal: 'Executive Personal Brand & Biography (High Impact)',
-                event: 'Global Summit & Conference Experience'
+            const goalDescriptions = {
+                'product-launch': 'New Product Launch - Create excitement and drive early adopters',
+                'lead-gen': 'Lead Generation - Capture qualified leads with irresistible offer',
+                'saas-signup': 'SaaS Free Trial/Demo - Convert visitors to active users',
+                'course-sales': 'Online Course Sales - Sell educational products with authority',
+                'event-registration': 'Event Registration - Fill seats for webinars/conferences',
+                'waitlist': 'Waitlist/Pre-Launch - Build anticipation and early interest',
+                'ecommerce': 'E-commerce Product - Direct product sales with cart integration',
+                'consultation': 'Book Consultation - Schedule high-ticket sales calls'
             };
 
-            const styleLabels = {
-                minimal: 'Swiss International Style (Grid-based, Helvetica-esque, Airy)',
-                modern: 'Modern Apple-Esque Glassmorphism (Soft shadows, blur, depth)',
-                bold: 'Neo-Brutalism & High Contrast (Oversized typography, harsh borders)',
-                elegant: 'High-Fashion Editorial (Serif headings, fine lines, white space)',
-                playful: 'Dopamine Design (Vibrant, rounded, interactive, 3D elements)',
-                dark: 'Cinematic Dark Mode (OLED Blacks, glowing gradients, tech feel)'
+            const strategyDescriptions = {
+                'urgency': 'LIMITED TIME ONLY - Countdown timers, scarcity indicators, FOMO triggers',
+                'social-proof': 'TRUST AMPLIFICATION - Testimonials, case studies, client logos, review ratings',
+                'benefit-driven': 'BENEFITS SHOWCASE - Feature cards with clear ROI, transformation outcomes',
+                'problem-solution': 'PAIN-AGITATE-SOLVE - Start with pain points, agitate, then present solution',
+                'comparison': 'BEFORE/AFTER - Visual transformations, comparison tables, success metrics',
+                'value-stack': 'VALUE STACKING - Show total value vs price, bonuses, packages'
             };
 
-            const colorLabels = {
-                white: 'Clean Clinical White (Trust, Purity, Minimal)',
-                monochrome: 'Luxury Zinc/Slate Monochromatic (Sophisticated)',
-                blue: 'Electric Cobalt & Deep Navy (Tech, Stability, Future)',
-                green: 'Organic Forest & Sage (Growth, Nature, Calm)',
-                warm: 'Sunset Gradient (Peach, Orange, Warm Grey)',
-                earth: 'Architectural Earth Tones (Concrete, Wood, Clay)',
-                neon: 'Cyberpunk High-Voltage (Black, Neon Green/Cyan)'
+            const styleDescriptions = {
+                'minimal': 'Clean Minimal - Swiss design, lots of white space, Helvetica-style, subtle shadows',
+                'bold': 'Bold & Vibrant - High contrast, bright colors, oversized typography, energetic',
+                'professional': 'Professional Corporate - Trust-building, corporate blues, structured layout',
+                'modern': 'Modern Tech - Glassmorphism, gradients, smooth animations, futuristic',
+                'luxury': 'Luxury Premium - Serif fonts, gold accents, elegant spacing, sophisticated',
+                'playful': 'Friendly & Playful - Rounded corners, warm colors, approachable, fun illustrations'
             };
 
-            const colorPalettes = {
-                white: `
-    --bg-main: 0 0% 100%;
-    --bg-secondary: 0 0% 98%;
-    --text-main: 240 10% 4%;
-    --text-muted: 240 5% 45%;
-    --accent: 240 10% 4%;
-    --accent-contrast: 0 0% 100%;
-    --border: 240 6% 90%;`,
-                monochrome: `
-    --bg-main: 240 10% 4%;
-    --bg-secondary: 240 10% 8%;
-    --text-main: 0 0% 100%;
-    --text-muted: 240 5% 65%;
-    --accent: 0 0% 100%;
-    --accent-contrast: 0 0% 0%;
-    --border: 240 5% 15%;`,
-                blue: `
-    --bg-main: 222 47% 98%;
-    --bg-secondary: 222 47% 96%;
-    --text-main: 222 47% 11%;
-    --text-muted: 215 25% 45%;
-    --accent: 221 83% 53%;
-    --accent-contrast: 0 0% 100%;
-    --border: 215 20% 90%;`,
-                green: `
-    --bg-main: 150 20% 98%;
-    --bg-secondary: 150 20% 96%;
-    --text-main: 164 45% 10%;
-    --text-muted: 160 15% 45%;
-    --accent: 158 64% 35%;
-    --accent-contrast: 0 0% 100%;
-    --border: 150 20% 88%;`,
-                warm: `
-    --bg-main: 30 50% 99%;
-    --bg-secondary: 30 30% 97%;
-    --text-main: 20 20% 15%;
-    --text-muted: 20 10% 45%;
-    --accent: 12 85% 60%;
-    --accent-contrast: 0 0% 100%;
-    --border: 20 20% 90%;`,
-                earth: `
-    --bg-main: 40 20% 97%;
-    --bg-secondary: 40 20% 94%;
-    --text-main: 30 15% 15%;
-    --text-muted: 30 10% 45%;
-    --accent: 28 45% 45%;
-    --accent-contrast: 35 25% 96%;
-    --border: 30 15% 85%;`,
-                neon: `
-    --bg-main: 240 10% 4%;
-    --bg-secondary: 240 10% 8%;
-    --text-main: 0 0% 100%;
-    --text-muted: 240 10% 65%;
-    --accent: 142 77% 53%;
-    --accent-contrast: 0 0% 0%;
-    --border: 240 10% 20%;`
-            };
+            const prompt = `Create a high-converting sales landing page with the following specifications:
 
-            const fonts = {
-                minimal: {
-                    description: 'Heading: "Inter", sans-serif; Body: "Inter", sans-serif;',
-                    variables: '--font-heading: "Inter", sans-serif; \\n    --font-body: "Inter", sans-serif;',
-                },
-                modern: {
-                    description: 'Heading: "Plus Jakarta Sans", sans-serif; Body: "Inter", sans-serif;',
-                    variables: '--font-heading: "Plus Jakarta Sans", sans-serif; \\n    --font-body: "Inter", sans-serif;',
-                },
-                bold: {
-                    description: 'Heading: "Oswald", sans-serif; Body: "Roboto", sans-serif;',
-                    variables: '--font-heading: "Oswald", sans-serif; \\n    --font-body: "Roboto", sans-serif;',
-                },
-                elegant: {
-                    description: 'Heading: "Playfair Display", serif; Body: "Lato", sans-serif;',
-                    variables: '--font-heading: "Playfair Display", serif; \\n    --font-body: "Lato", sans-serif;',
-                },
-                playful: {
-                    description: 'Heading: "Quicksand", sans-serif; Body: "Nunito", sans-serif;',
-                    variables: '--font-heading: "Quicksand", sans-serif; \\n    --font-body: "Nunito", sans-serif;',
-                },
-                dark: {
-                    description: 'Heading: "Space Grotesk", sans-serif; Body: "Inter", sans-serif;',
-                    variables: '--font-heading: "Space Grotesk", sans-serif; \\n    --font-body: "Inter", sans-serif;',
-                }
-            };
-
-            const defaultFontVariables = '--font-heading: "Inter", sans-serif; \\n    --font-body: "Inter", sans-serif;';
-
-            const featureLabels = {
-                hero: 'Cinematic Hero (Full-height, animated headline, floating 3D visual)',
-                about: 'Story-Driven About (Asymmetrical grid, statistical counters, team culture)',
-                services: 'Bento-Grid Services (Interactive cards with glassmorphism and hover lift)',
-                portfolio: 'Masonry Work Gallery (Filtered views, lightbox support, case study hover)',
-                testimonials: 'Marquee Testimonials (Infinite scroll loop, high-trust client logos)',
-                pricing: 'Psychological Pricing (Anchor pricing highlighting "Pro" plan, detailed comparison)',
-                contact: 'Minimalist Contact (Google Map integration, clean form, direct contact info)',
-                faq: 'Smart Accordion FAQ (Smooth expand/collapse, categorized questions)',
-                team: 'Leadership Team (Hover reveals bio/socials, professional headshots)',
-                blog: 'Featured Journal (Magazine layout, read time, category tags)'
-            };
-
-            const pageLabels = {
-                home: 'Home (Landing)',
-                about: 'Our Story (About)',
-                services: 'Capabilities (Services)',
-                portfolio: 'Case Studies (Work)',
-                blog: 'Insights (Blog)',
-                contact: 'Get in Touch (Contact)',
-                pricing: 'Plans (Pricing)',
-                team: 'Leadership (Team)',
-                faq: 'Support (FAQ)',
-                testimonials: 'Clients (Reviews)'
-            };
-
-            const selectedFontVariables = state.style ? fonts[state.style].variables : defaultFontVariables;
-
-            const hasContactForm = state.structure === 'multi' ? state.pages.includes('contact') : state.features.includes('contact');
-
-            // Constructing the optimized prompt for Google Stitch
-            let prompt = `Create a stunning, modern landing page with the following specifications:
-
-**IMPORTANT FOR GOOGLE STITCH**: Generate a complete, self-contained HTML page in a single file with embedded CSS and minimal JavaScript.
+**IMPORTANT FOR GOOGLE STITCH**: Generate a complete, self-contained HTML page in a single file with embedded CSS and JavaScript.
 
 ---
 
-### 1. PROJECT BRIEF
-- **Brand Name**: ${state.brandName || 'Premium Brand'}
-- **Page Type**: ${typeLabels[state.type] || 'Premium Landing Page'}
-- **Design Style**: ${styleLabels[state.style] || 'Modern & Clean'}
-- **Color Palette**: ${colorLabels[state.color] || 'Professional Blue'}
-- **Business Context**: ${state.businessContext || 'Create a professional, high-converting landing page that establishes trust and drives action.'}
+### 🎯 LANDING PAGE MISSION
+**Goal**: ${goalDescriptions[state.goal] || 'High-Converting Sales Landing Page'}
+**Conversion Strategy**: ${strategyDescriptions[state.strategy] || 'Multi-layered conversion approach'}
+**Visual Style**: ${styleDescriptions[state.style] || 'Modern professional design'}
 
-### 2. DESIGN SYSTEM & AESTHETICS (NON-NEGOTIABLE)
-- **Viewport Layout**: 
-  - \`body, html { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }\` to prevent any cutting off.
-  - \`.container { max-width: 1440px; margin: 0 auto; width: 92%; }\` for proper centering.
-- **Grid & Layout**: Use a strict **12-column grid** (\`.grid-12\`). All spacing must follow an **8pt scaling system** (8, 16, 24, 32, 48, 64, 96, 128px) via CSS variables.
-- **Typography**:
-  - Fonts: ${state.style ? fonts[state.style].description : 'Standard Modern Sans'}.
-  - **Headings MUST use \`text-wrap: balance;\`** for perfect editorial readability.
-  - Line-height: Tight for headings (1.1), relaxed for body (1.6).
-- **Visual Depth (Glassmorphism & Shadows)**:
-  - Use \`backdrop-filter: blur(12px)\` for navbars and overlays.
-  - Shadows should be **layered and diffused**: \`box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 20px 25px -5px rgba(0,0,0,0.05);\`. Avoid harsh black shadows.
-- **Borders**: Use subtle, high-class borders (e.g., \`1px solid rgba(0,0,0,0.08)\`) to define structure without clutter.
-- **Images**:
-  - Use **Unsplash** source URLs with semantic keywords (e.g., architecture, tech, office, portrait).
-  - **MANDATORY**: Apply this CSS filter to ALL background/decorative images to unify them: \`filter: grayscale(20%) contrast(1.05) brightness(1.02);\`.
-  - **Rounded Corners**: Consistent use of \`border-radius: var(--radius-md)\` on all cards and images.
+---
 
-### 3. COMPONENT LIBRARY SPECIFICATIONS (PREMIUM FEEL)
-Implement these exact premium behaviors:
-- **Buttons**: NO default browser styles. Use \`padding: 12px 24px\`, font-weight 600, transitions on transform and shadow. Hover should lift the button (\`translateY(-2px)\`).
-- **Cards**: White/Glass background, subtle border, soft shadow. **Hover effect**: Transform translateY(-4px) + increased shadow.
-- **Navbar**: Sticky, glassmorphism effect, logo on left, links center/right, "Get Started" CTA button on far right.
-- **Animations**:
-  - **Scroll Reveal**: Elements must fade in and move up (\`translateY(20px) -> 0\`) as they enter the viewport using IntersectionObserver.
-  - **Micro-interactions**: Subtle scale on card hover (1.02).
-  - **Loading**: No complex loaders, just fade-in content smoothly.
+### 📦 PRODUCT/SERVICE DETAILS
+**Product Name**: ${state.productName || '[Your Product Name]'}
+**Value Proposition**: ${state.valueProposition || '[Main value proposition - what problem you solve]'}
+**Target Audience**: ${state.targetAudience || '[Your ideal customer]'}
+**Price Point**: ${state.price || '[Pricing information]'}
+**Key Benefits**: ${state.benefits || '[List your key benefits]'}
+**Call-to-Action**: "${state.ctaText || 'Get Started Now'}"
 
-### 4. TECHNICAL CONSTRAINTS
-- **Single File**: Output ONE \`index.html\` file with \`<style>\` and \`<script>\`.
-- **Responsive**: **Mobile-First**. You MUST include a functional **Hamburger Menu** for screens < 768px.
-- **Icons**: Use FontAwesome: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
-- **Clean Code**: No spaghetti code. Use semantic HTML5 (<header>, <nav>, <section>, <footer>).
+---
 
-### 5. CSS VARIABLES (USE EXACTLY)
+### 🎨 DESIGN SYSTEM (MANDATORY)
+
+**Layout Requirements**:
+- Single-page, long-scroll format optimized for conversions
+- Full-width hero section (100vh) with compelling headline and CTA above the fold
+- Sticky navigation with CTA button always visible
+- Mobile-first responsive design with hamburger menu < 768px
+- Maximum content width: 1280px with proper centering
+
+**Typography System**:
 \`\`\`css
 :root {
-${colorPalettes[state.color] || colorPalettes.blue}
-    ${selectedFontVariables}
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 24px;
-    --radius-full: 9999px;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-    --space-4: 32px;
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', sans-serif;
 }
+h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; line-height: 1.1; }
+h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; }
+h3 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; }
+body { font-size: 1.125rem; line-height: 1.7; }
+\`\`\`
 
-body, html {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-/* MANDATORY UTILITY CLASSES */
-.grid-12 {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: var(--space-4);
-}
-.card-glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-.img-filter {
-    filter: grayscale(20%) contrast(1.05) brightness(1.02);
+**Color Scheme** (adjust based on visual style):
+\`\`\`css
+:root {
+    --primary: #6366F1;
+    --primary-dark: #4F46E5;
+    --secondary: #8B5CF6;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --bg-main: #FFFFFF;
+    --bg-secondary: #F9FAFB;
+    --text-main: #111827;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
 }
 \`\`\`
 
-### 6. CONTENT ARCHITECTURE
-${state.structure === 'multi' ?
-                    `**ARCHITECTURE: SPA (Javascript Router)**
-1. Create a container \`#app\`.
-2. Inside, create \`<section id="page-name" class="page-view">\` for each page.
-3. **MANDATORY ROUTER IMPLEMENTATION:**
-   Use this EXACT Javascript Router structure for valid navigation:
-   \`\`\`javascript
-   window.app = {
-       pages: [],
-       init: function() {
-           this.pages = document.querySelectorAll('.page-view');
-           this.navLinks = document.querySelectorAll('.nav-link');
-           window.addEventListener('hashchange', this.handleRoute.bind(this));
-           this.handleRoute();
-       },
-       handleRoute: function() {
-           const hash = window.location.hash.substring(1) || 'home';
-           this.showPage(hash);
-           window.scrollTo(0,0);
-       },
-       showPage: function(id) {
-           let activePage = document.getElementById(id);
-           if(!activePage && this.pages.length > 0) activePage = this.pages[0];
-           
-           this.pages.forEach(p => {
-               p.style.display = 'none';
-               p.classList.remove('active', 'fade-in');
-           });
-           
-           if (activePage) {
-               activePage.style.display = 'block';
-               setTimeout(() => activePage.classList.add('active', 'fade-in'), 10);
-               
-               // Update nav state
-               if(this.navLinks) {
-                   this.navLinks.forEach(link => {
-                       link.classList.remove('active');
-                       if(link.getAttribute('href') === '#' + id) link.classList.add('active');
-                   });
-               }
-           }
-       }
-   };
-   document.addEventListener('DOMContentLoaded', () => window.app.init());
-   
-   // Builder Compatibility Helper
-   window.switchPage = (id) => { window.location.hash = id; };
-   \`\`\`
+---
 
-4. **Detailed Site Map (Pages to Generate):**
-${state.pages.map(p => `   - **${pageLabels[p] || p.charAt(0).toUpperCase() + p.slice(1)}**: Full unique content block.`).join('\n')}` :
-                    `**ARCHITECTURE: LONG-SCROLL LANDING**
-Build these sections in order (vertical stack):
-${state.features.length > 0 ? state.features.map(f => `
-- **REQUIRED SECTION**: Must be wrapped in \`<section id="${f}">\` and implement the look of: ${featureLabels[f]}`).join('\n') : '- Hero (High Impact), Features (3-col grid), About (Split layout), Testimonials (Carousel), Contact (Form)'}`
-                }
+### 📋 LANDING PAGE STRUCTURE (ORDERED SECTIONS)
 
-### 7. CRITICAL LAYOUT RULES (PREVENT BROKEN LAYOUTS)
-**GRID SYSTEM - STRICT IMPLEMENTATION:**
-- For multi-column sections (pricing, services, features), you MUST use responsive grid:
-  \`\`\`css
-  .pricing-grid, .services-grid, .features-grid {
-      display: grid;
-      grid-template-columns: repeat(1, 1fr); /* Mobile: 1 column */
-      gap: var(--space-4);
-  }
-  @media (min-width: 768px) {
-      .pricing-grid, .services-grid, .features-grid {
-          grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columns */
-      }
-  }
-  \`\`\`
+1. **HERO SECTION** (Full-height, above the fold)
+   - Compelling headline that hooks immediately (use value proposition)
+   - Subheadline expanding on the benefit
+   - PRIMARY CTA button (large, prominent, ${state.ctaText || 'Get Started Now'})
+   - Hero image/video (use https://image.pollinations.ai/prompt/[relevant-description]?width=1200&height=800&nologo=true)
+   - Trust indicators (e.g., "Join 10,000+ users" or "★★★★★ 4.9/5 rating")
 
-**PRICING SECTION - SPECIFIC REQUIREMENTS:**
-- **NEVER** use \`grid-column: span 12 / span 4\` for pricing cards - this breaks layout!
-- **ALWAYS** wrap pricing cards in a dedicated container with proper grid:
-  \`\`\`html
-  <section id="pricing">
-      <div class="container">
-          <div class="pricing-grid">
-              <div class="pricing-plan">...</div>
-              <div class="pricing-plan">...</div>
-              <div class="pricing-plan">...</div>
-          </div>
-      </div>
-  </section>
-  \`\`\`
-- Each pricing card MUST have:
-  - Equal heights using \`display: flex; flex-direction: column;\`
-  - \`flex-grow: 1\` on the features list to push CTA button to bottom
-  - NO empty white spaces between elements
-  - Consistent padding: \`padding: var(--space-6) var(--space-4);\`
+2. **SOCIAL PROOF BAR**
+   - Client logos or "As seen on" badges (use grayscale filter for uniformity)
+   - Or: Achievement numbers (users, revenue, growth stats)
 
-**PRICING CARD STRUCTURE - MANDATORY:**
+3. **PROBLEM/PAIN SECTION**
+   - Start with "Are you struggling with..." or "Tired of..."
+   - List 3-5 major pain points your audience experiences
+   - Use icons and bold text for each pain point
+
+4. **SOLUTION INTRODUCTION**
+   - Introduce your product as THE solution
+   - 2-3 sentences max, benefit-focused
+   - Visual: Product screenshot or mockup
+
+5. **BENEFITS/FEATURES GRID**
+   - 3-6 benefit cards in responsive grid
+   - Each card: Icon + Headline + 1-2 sentence description
+   - Focus on OUTCOMES not features ("Save 10 hours per week" not "Automation tools")
+
+6. **HOW IT WORKS** (Optional for complex products)
+   - 3-step process showing simplicity
+   - Step 1 → Step 2 → Step 3 with arrows
+   - Each step: Number badge + Headline + Description
+
+7. **TESTIMONIALS/CASE STUDIES**
+   ${state.strategy === 'social-proof' ? `
+   ⭐ EXTRA EMPHASIS ON SOCIAL PROOF:
+   - Minimum 6 testimonials with photos and full names
+   - Include specific results/numbers ("Increased revenue by 145%")
+   - Add company logos if B2B
+   - Star ratings (★★★★★) prominently displayed
+   ` : ''}
+   - 3-6 customer testimonials in card layout
+   - Each testimonial: Photo + Name + Title/Company + Quote + Rating
+   - Use real-looking placeholder images from Pollinations AI
+
+8. **PRICING/OFFER SECTION**
+   ${state.strategy === 'value-stack' ? `
+   ⭐ VALUE STACK APPROACH:
+   - Show itemized value breakdown (Each feature worth $X)
+   - Total value: $XXX
+   - Your price: $XX (70%+ savings)
+   - Display savings in green/highlight
+   ` : ''}
+   - Clear pricing display with ${state.price || 'your price'}
+   - Highlight best value/most popular plan if multiple tiers
+   - List what's included (features with checkmarks ✓)
+   - Money-back guarantee badge if applicable
+   - PRIMARY CTA button
+
+9. **FAQ SECTION**
+   - Accordion-style expandable questions
+   - Address top 5-7 objections/concerns
+   - Smooth animations on expand/collapse
+
+10. **FINAL CTA SECTION**
+    - Restate main benefit
+    - Last chance CTA (${state.ctaText || 'Get Started Now'})
+    ${state.strategy === 'urgency' ? `
+    ⭐ URGENCY ELEMENTS:
+    - Countdown timer (JavaScript)
+    - "Only X spots left" or "Offer ends soon"
+    - Red/orange urgency colors
+    - Flashing or pulsing CTA button
+    ` : ''}
+    - Risk reversal statement ("No credit card required", "Cancel anytime", etc.)
+
+11. **FOOTER**
+    - Simple footer with links, copyright, social media icons
+
+---
+
+### 🎯 CONVERSION OPTIMIZATION (CRITICAL)
+
+**CTA Buttons**:
+- PRIMARY CTA appears minimum 3 times (hero, pricing, final)
+- Button style: \`padding: 18px 48px; font-size: 1.125rem; font-weight: 700; border-radius: 12px;\`
+- Hover effect: \`transform: translateY(-2px); box-shadow: 0 12px 24px rgba(99, 102, 241, 0.3);\`
+- Use action verbs in CTA text
+- Add subtle pulse animation to primary CTAs
+
+**Trust Elements Throughout**:
+- Security badges (SSL, payment icons if e-commerce)
+- Guarantee seals
+- Media mentions/awards
+- Customer count/stats
+
+**Psychological Triggers**:
+${state.strategy === 'urgency' ? '- URGENCY: Countdown timers, limited availability, expiring offers' : ''}
+${state.strategy === 'social-proof' ? '- SOCIAL PROOF: Testimonials, reviews, user counts, celebrity endorsements' : ''}
+${state.strategy === 'comparison' ? '- CONTRAST: Before/after images, comparison tables, transformation stories' : ''}
+- RECIPROCITY: Free resources, trial offers, bonuses
+- AUTHORITY: Credentials, certifications, expert endorsements
+
+**Smooth Scroll Animations**:
+- Use IntersectionObserver API for scroll-triggered animations
+- Fade-in + slide-up effect for sections as they enter viewport
+- Stagger animations for grid items (delay: 100ms, 200ms, 300ms)
+
+---
+
+### 💻 TECHNICAL REQUIREMENTS
+
+**Single File Output**:
+- Complete HTML with embedded \`<style>\` and \`<script>\` tags
+- Include FontAwesome CDN: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
+
+**Form Integration** (if lead-gen or consultation):
 \`\`\`html
-<div class="pricing-plan">
-    <h3>Plan Name</h3>
-    <p class="text-muted">Brief description</p>
-    <div class="price-display">
-        <span class="price-currency">$</span>
-        <span class="price-amount">99</span>
-        <span class="price-period">/month</span>
-    </div>
-    <ul class="pricing-features">
-        <li><i class="fa-solid fa-check"></i> Feature 1</li>
-        <li><i class="fa-solid fa-check"></i> Feature 2</li>
-        <li><i class="fa-solid fa-check"></i> Feature 3</li>
-    </ul>
-    <button class="btn btn-primary">Get Started</button>
-</div>
-\`\`\`
-
-**PREVENT WHITE SPACES:**
-- **NO** empty \`<div>\` containers
-- All text elements MUST have \`margin: 0\` unless specifically needed
-- Use \`gap\` in flexbox/grid instead of margins for consistent spacing
-- Lists should have \`list-style: none; padding-left: 0;\`
-
-**MOBILE RESPONSIVENESS:**
-- ALL grid sections MUST collapse to single column on mobile
-- \`@media (max-width: 768px)\` is MANDATORY for all grid layouts
-- Test that pricing cards stack vertically on mobile without breaking
-
-${state.details ? `### 8. CUSTOM USER INSTRUCTIONS (PRIORITIZE THIS)\\n${state.details}` : ''}
-
-### 9. MANDATORY COPYWRITING RULES (ANTI-GENERIC)
-- **Primary Source**: The content from **User Context** is the sole source of truth. All headlines and body copy must be a confident, professional re-write of that source.
-- **Headlines Structure**:
-    - **MUST** include a muted, upper-cased \`<p class="text-muted mb-2">— PRE-HEADLINE</p>\` above all major \`<h2>\` headings.
-    - **h2/h1 Weight**: Use \`font-weight: 900\` to maximize visual impact.
-- **Tone**: Professional, confident, and specific to the industry of "${state.type}". Avoid cliches like "Unleash your potential" or "We are the best". Focus on value and specifics.
-- **Call-to-Action**: Every section should conclude with a prominent CTA button.
-
-### 10. CONTACT FORM LOGIC (MANDATORY)
-${hasContactForm ? `
-You MUST implement the contact form with this specific API logic:
-HTML:
-<form id="contactForm" onsubmit="handleFormSubmit(event)" class="contact-form">
-  <!-- Use proper input types and semantic labels -->
-  <!-- Include Name, Email, Subject, Message -->
-  <!-- Button must say "Send Message" or similar -->
+<form id="leadForm" onsubmit="handleFormSubmit(event)">
+  <input type="text" name="name" placeholder="Full Name" required>
+  <input type="email" name="email" placeholder="Email Address" required>
+  <button type="submit">Submit</button>
 </form>
 
-JS:
+<script>
 async function handleFormSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
     btn.disabled = true;
-    
+
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
@@ -1506,110 +1061,78 @@ async function handleFormSubmit(e) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
-        const json = await res.json();
-        if(json.success) {
-            alert('Message Sent Successfully!');
+        if(res.ok) {
+            alert('Success! Check your email.');
             e.target.reset();
         } else {
-            alert('Error: ' + json.error);
+            alert('Error submitting form');
         }
     } catch(err) {
-        alert('Network Error');
+        alert('Network error');
     } finally {
-        btn.innerHTML = originalText;
+        btn.innerHTML = 'Submit';
         btn.disabled = false;
     }
 }
-` : 'No functional contact form required, but you may include a mailto link if appropriate.'}
+</script>
+\`\`\`
 
-### 11. POST-GENERATION AUDIT CHECKLIST (MANDATORY SELF-VALIDATION)
-Before wrapping the code in the final markdown block, you MUST internally verify compliance with these critical, non-negotiable points. Do not proceed if any check fails:
+**Images**:
+- Use Pollinations AI: \`https://image.pollinations.ai/prompt/[description]?width=X&height=Y&nologo=true\`
+- Examples:
+  - Hero: \`/prompt/modern%20professional%20working%20on%20laptop?width=1200&height=800&nologo=true\`
+  - Testimonials: \`/prompt/professional%20headshot%20portrait?width=200&height=200&nologo=true\`
+- ALWAYS include descriptive \`alt\` attributes for SEO
 
-1. **Grid System Integrity**: Confirm \`.pricing-grid\`, \`.services-grid\`, and \`.features-grid\` use the strict responsive media query check: mobile (1 col) and desktop (3 cols). **NO** use of \`grid-column: span X / span Y\` in the pricing cards themselves.
-2. **Pricing Card Vertical Alignment**: Confirm all pricing cards (\`.pricing-plan\`) utilize \`display: flex; flex-direction: column; height: 100%;\` and \`.pricing-features\` has \`flex-grow: 1\` to push the CTA button to the absolute bottom, ensuring equal card heights.
-3. **Visual Depth Implementation**: Confirm the sticky navigation bar uses \`backdrop-filter: blur(12px)\` (Glassmorphism) and \`box-shadow\` is the specified layered, diffused type.
-4. **Image Unification Filter**: Confirm the \`.img-filter\` class (applied to ALL decorative images) contains the exact \`filter: grayscale(20%) contrast(1.05) brightness(1.02);\` property.
-5. **Scroll Reveal**: Confirm the JavaScript uses \`IntersectionObserver\` to implement the \`translateY(20px) -> 0\` fade-in scroll reveal on key sections.
+**Performance**:
+- Lazy load images below the fold: \`loading="lazy"\`
+- Minimize JavaScript, prefer CSS animations
+- Use CSS custom properties (variables) for easy theming
 
-Failure to confirm all 5 points results in an immediate project failure (i.e., do not generate the code).
+---
 
-### 12. FINAL CODE EXECUTION
-- **Output**: A single markdown code block with the complete \`index.html\`.
-- **Validation**: 
-  - **MUST** close all HTML tags (e.g., \`</div>\`, \`</section>\`). 
-  - **MUST** include the FontAwesome CDN in \`<head>\`: \`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\`
-  - **NO** placeholders like \`[Insert Content]\`. Fill EVERYTHING with real, professional copy.
-- **Images**: 
-  - **STOP**: \`source.unsplash.com\` is DEPRECATED and BROKEN. **DO NOT USE IT.**
-  - **USE**: \`https://image.pollinations.ai/prompt/{description}?nologo=true\` for AI-generated images matching the context.
-    - Example: \`https://image.pollinations.ai/prompt/futuristic%20office?width=1200&height=600&nologo=true\`
-  - **ALWAYS** include \`alt\` attributes.
+### ✍️ COPYWRITING RULES
 
-Generate the "Site of the Day" worthy code now. Ensure it is **PERFECT** and **PRODUCTION-READY**.
-`;
+**Headlines**:
+- Focus on BENEFIT not feature
+- Use numbers when possible ("3X Your Sales", "Save $10,000/Year")
+- Create curiosity or promise transformation
+- Keep under 10 words
+
+**Body Copy**:
+- Write for ${state.targetAudience || 'your target audience'}
+- Use "You" and "Your" (customer-focused)
+- Short paragraphs (2-3 lines max)
+- Bullet points for easy scanning
+- Bold important phrases
+
+**Tone**: ${state.style === 'professional' ? 'Professional, trustworthy, data-driven' : state.style === 'playful' ? 'Friendly, conversational, energetic' : state.style === 'luxury' ? 'Sophisticated, exclusive, premium' : 'Confident, modern, results-oriented'}
+
+---
+
+### ✅ PRE-SUBMISSION CHECKLIST
+
+Before generating final code, verify:
+1. ✓ Hero section takes full viewport height with CTA above fold
+2. ✓ Minimum 3 CTA buttons throughout page
+3. ✓ Mobile responsive (grid collapses to 1 column < 768px)
+4. ✓ Smooth scroll animations with IntersectionObserver
+5. ✓ All images use Pollinations AI URLs with nologo=true
+6. ✓ Form submits to https://yenze.io/api/submit-form
+7. ✓ Testimonials include photos, names, and specific results
+8. ✓ FAQ section uses smooth accordion animation
+9. ✓ Sticky navigation with visible CTA
+10. ✓ All HTML tags properly closed, valid semantic HTML5
+
+---
+
+Generate the complete, production-ready landing page HTML now. Make it STUNNING and CONVERSION-OPTIMIZED.`;
 
             document.getElementById('output').textContent = prompt;
-            return prompt;
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Init Supabase
-            if (window.supabaseClient) {
-                await window.supabaseClient.init();
-            }
-            updatePrompt();
-        });
-
-    </script>
-
-    <script>
-        // Link the main action copy button to the same logic
-        const actionCopyBtn = document.getElementById('actionCopyBtn');
-        if (actionCopyBtn) {
-            actionCopyBtn.addEventListener('click', () => {
-                document.getElementById('copyBtn').click();
-
-                // Visual feedback on the big button too
-                const originalText = actionCopyBtn.innerHTML;
-                actionCopyBtn.innerHTML = '✅ Copied!';
-                actionCopyBtn.classList.add('copied');
-                setTimeout(() => {
-                    actionCopyBtn.innerHTML = originalText;
-                    actionCopyBtn.classList.remove('copied');
-                }, 2000);
-            });
-        }
-
-        function processManualCode() {
-            const code = document.getElementById('manualCodeInput').value.trim();
-            if (!code) {
-                alert('Please paste some code first');
-                return;
-            }
-            // Basic validation
-            if (!code.includes('<html') && !code.includes('<body') && !code.includes('<div')) {
-                if (!confirm('This doesn\'t look like HTML code. Import anyway?')) return;
-            }
-            saveAndRedirect(code);
-        }
-
-        function saveAndRedirect(code) {
-            // Clean up markdown if present
-            code = code.replace(/```html/g, '').replace(/```/g, '').trim();
-
-            // Store code in localStorage to pass to builder
-            try {
-                localStorage.setItem('yenze_imported_code', code);
-                // Also set a flag to tell builder to load it
-                localStorage.setItem('yenze_load_import', 'true');
-
-                // Redirect to builder
-                window.location.href = 'builder.html?import=true';
-            } catch (e) {
-                alert('Error saving code: ' + e.message);
-            }
-        }
+        updatePrompt();
     </script>
 </body>
 
