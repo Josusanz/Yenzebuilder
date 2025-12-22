@@ -273,8 +273,6 @@ class YenzeBuilder {
             tablet: 768,
             mobile: 375
         };
-        this.responsiveInheritance = true; // Framer-like responsive inheritance
-        this.hasShownResponsiveTooltip = false;
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
         this.draggedElement = null;
@@ -599,12 +597,6 @@ class YenzeBuilder {
     switchDevice(device) {
         this.currentDevice = device;
 
-        // Show responsive inheritance tooltip on first switch to tablet/mobile
-        if (!this.hasShownResponsiveTooltip && (device === 'tablet' || device === 'mobile')) {
-            this.showResponsiveInheritanceTooltip(device);
-            this.hasShownResponsiveTooltip = true;
-        }
-
         // Update active button
         document.querySelectorAll('.device-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -624,74 +616,6 @@ class YenzeBuilder {
         if (input) {
             input.value = width;
         }
-    }
-
-    showResponsiveInheritanceTooltip(device) {
-        const deviceName = device === 'tablet' ? 'Tablet' : 'Mobile';
-        const toast = document.createElement('div');
-        toast.style.cssText = `
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-            z-index: 10001;
-            font-size: 14px;
-            font-weight: 500;
-            max-width: 500px;
-            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            line-height: 1.5;
-        `;
-
-        toast.innerHTML = `
-            <div style="display: flex; align-items: start; gap: 12px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-                <div>
-                    <div style="font-weight: 600; margin-bottom: 4px;">Responsive Breakpoints</div>
-                    <div style="font-size: 13px; opacity: 0.95;">
-                        Changes in <strong>Desktop</strong> affect all devices.
-                        Changes in <strong>${deviceName}</strong> only affect ${deviceName.toLowerCase()} and smaller screens.
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Add animation keyframe
-        if (!document.getElementById('responsive-toast-animation')) {
-            const style = document.createElement('style');
-            style.id = 'responsive-toast-animation';
-            style.textContent = `
-                @keyframes slideDown {
-                    from {
-                        opacity: 0;
-                        transform: translateX(-50%) translateY(-20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(-50%) translateY(0);
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        document.body.appendChild(toast);
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            toast.style.animation = 'slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse';
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 5000);
     }
 
     updateCanvasWidth(width) {
