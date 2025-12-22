@@ -576,6 +576,15 @@ class YenzeBuilder {
         document.getElementById('addSectionBtn')?.addEventListener('click', () => this.addElement('section'));
         document.getElementById('addDivBtn')?.addEventListener('click', () => this.addElement('div'));
         document.getElementById('addColumnsBtn')?.addEventListener('click', () => this.addColumns());
+
+        // Window resize listener to recalculate iframe scale
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
+            }, 150);
+        });
     }
 
     switchTab(tabName, sidebar = 'left') {
@@ -622,25 +631,41 @@ class YenzeBuilder {
         const wrapper = document.getElementById('canvasWrapper');
         if (wrapper) {
             const canvasWidth = parseInt(width);
-            wrapper.style.width = canvasWidth + 'px';
 
-            // NO SCALING - keep canvas at real size
+            // Set wrapper to exact canvas width (no scaling on wrapper)
+            wrapper.style.width = canvasWidth + 'px';
             wrapper.style.transform = 'none';
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
 
-            // Update iframe viewport width override
+            // Calculate scale for the IFRAME to fit in available space
+            const canvasArea = wrapper.parentElement;
             const canvas = document.getElementById('canvas');
-            if (canvas) {
-                // Set iframe width
+
+            if (canvas && canvasArea) {
+                const availableWidth = canvasArea.clientWidth - 80; // Padding
+                const scale = Math.min(availableWidth / canvasWidth, 1);
+
+                // Set iframe to full canvas width
                 canvas.style.width = `${canvasWidth}px`;
+
+                // Scale the iframe visually to fit
+                canvas.style.transform = `scale(${scale})`;
+                canvas.style.transformOrigin = 'top left';
+
+                // Adjust wrapper height to account for scaled iframe
+                if (canvas.contentDocument && canvas.contentDocument.body) {
+                    const iframeHeight = canvas.contentDocument.body.scrollHeight;
+                    wrapper.style.height = `${iframeHeight * scale}px`;
+                }
 
                 if (canvas.contentDocument) {
                     const iframeDoc = canvas.contentDocument;
                     let styleElement = iframeDoc.getElementById('yenze-viewport-override');
 
                     if (styleElement) {
+                        // Force iframe to render at exact canvas width (no max-width constraints)
                         styleElement.textContent = `
                             html, body {
                                 width: ${canvasWidth}px !important;
@@ -654,11 +679,6 @@ class YenzeBuilder {
                             }
                             * {
                                 box-sizing: border-box !important;
-                                max-width: 100% !important;
-                            }
-                            img, video, iframe, svg {
-                                max-width: 100% !important;
-                                height: auto !important;
                             }
                         `;
                     }
@@ -805,11 +825,6 @@ class YenzeBuilder {
             }
             * {
                 box-sizing: border-box !important;
-                max-width: 100% !important;
-            }
-            img, video, iframe, svg {
-                max-width: 100% !important;
-                height: auto !important;
             }
         `;
 
@@ -831,6 +846,8 @@ class YenzeBuilder {
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
+                // Apply iframe scaling to fit in available space
+                this.updateCanvasWidth(this.deviceWidths[this.currentDevice]);
                 this.showToast('✅ HTML loaded successfully!', 'success');
 
                 // Add resize observer to body to auto-adjust height
