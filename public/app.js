@@ -627,9 +627,15 @@ class YenzeBuilder {
             // Calculate available width (canvas area minus padding)
             const availableWidth = canvasArea ? canvasArea.clientWidth - 80 : canvasWidth;
 
-            // Set wrapper width to available width (NOT canvas width)
-            wrapper.style.width = availableWidth + 'px';
-            wrapper.style.transform = 'none';
+            // Calculate scale to fit wrapper in available space
+            const scale = availableWidth / canvasWidth;
+
+            // Set wrapper to full canvas width
+            wrapper.style.width = canvasWidth + 'px';
+
+            // Scale down to fit in available space
+            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.transformOrigin = 'top center';
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
