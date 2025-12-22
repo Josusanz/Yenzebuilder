@@ -649,12 +649,29 @@ class YenzeBuilder {
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
 
-            // Recalculate height after transition/reflow
-            setTimeout(() => {
-                const canvas = document.getElementById('canvas');
-                const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
-                this.adjustIframeHeight(canvas, iframeDoc);
-            }, 50);
+            // Update iframe viewport width override
+            const canvas = document.getElementById('canvas');
+            if (canvas && canvas.contentDocument) {
+                const iframeDoc = canvas.contentDocument;
+                let styleElement = iframeDoc.getElementById('yenze-viewport-override');
+
+                if (styleElement) {
+                    styleElement.textContent = `
+                        html, body {
+                            width: ${canvasWidth}px !important;
+                            min-width: ${canvasWidth}px !important;
+                            max-width: ${canvasWidth}px !important;
+                            overflow-x: hidden !important;
+                            margin: 0 !important;
+                        }
+                    `;
+                }
+
+                // Recalculate height after transition/reflow
+                setTimeout(() => {
+                    this.adjustIframeHeight(canvas, iframeDoc);
+                }, 50);
+            }
         }
     }
 
@@ -770,6 +787,30 @@ class YenzeBuilder {
         iframeDoc.open();
         iframeDoc.write(html);
         iframeDoc.close();
+
+        // Force iframe content to render at the specified canvas width
+        const forceWidth = this.deviceWidths[this.currentDevice];
+        const styleElement = iframeDoc.createElement('style');
+        styleElement.id = 'yenze-viewport-override';
+        styleElement.textContent = `
+            html, body {
+                width: ${forceWidth}px !important;
+                min-width: ${forceWidth}px !important;
+                max-width: ${forceWidth}px !important;
+                overflow-x: hidden !important;
+                margin: 0 !important;
+            }
+        `;
+
+        // Wait for head to be available
+        const insertStyle = () => {
+            if (iframeDoc.head) {
+                iframeDoc.head.insertBefore(styleElement, iframeDoc.head.firstChild);
+            } else {
+                setTimeout(insertStyle, 10);
+            }
+        };
+        insertStyle();
 
         // Wait for iframe to be fully loaded before making elements editable
         // Use longer timeout for complex HTML and wait for readyState
