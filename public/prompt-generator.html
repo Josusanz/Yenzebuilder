@@ -1012,14 +1012,15 @@
 
             // Platform-specific intro
             const platformIntros = {
-                'stitch': `Create a high-converting sales landing page with the following specifications:
+                'stitch': `Design a SINGLE DESKTOP WEB SCREEN (1440px wide) for a high-converting sales landing page.
 
-**CRITICAL FOR GOOGLE STITCH - READ THIS FIRST**:
-- Generate ONE SINGLE HTML FILE with ALL sections in it
-- This is a SINGLE-PAGE, LONG-SCROLL landing page (NOT multiple pages)
-- All sections (Hero, Social Proof, Benefits, Testimonials, Pricing, FAQ, Footer) must be in ONE continuous HTML document
-- Use embedded <style> and <script> tags within the single HTML file
-- NO separate pages, NO navigation between pages - just ONE long scrollable page`,
+**CRITICAL INSTRUCTIONS FOR STITCH**:
+- Generate ONE complete DESKTOP WEB SCREEN design (NOT mobile)
+- Screen type: WEB (desktop), width 1440px
+- This is a FULL-PAGE long-scroll landing page - include ALL sections in ONE design
+- Include every section stacked vertically: Hero → Social Proof → Problem → Solution → Benefits → Testimonials → Pricing → FAQ → CTA → Footer
+- Do NOT generate separate screens for each section
+- Do NOT generate mobile versions`,
 
                 'gemini': `Generate a complete, production-ready HTML landing page. Follow these specifications exactly:
 
@@ -1043,13 +1044,15 @@
 
             // Platform-specific outros
             const platformOutros = {
-                'stitch': `**FINAL REMINDER BEFORE GENERATING**:
-- Output: ONE SINGLE HTML FILE (not multiple files)
-- Format: Long-scroll single-page design with all sections stacked vertically
-- All sections from Hero to Footer must be in the same HTML document
-- User scrolls down through all sections - NO page navigation, NO separate pages
+                'stitch': `**FINAL INSTRUCTIONS**:
+- Output: ONE SINGLE DESKTOP WEB SCREEN DESIGN
+- Screen type: WEB (not mobile)
+- Resolution: 1440px width desktop
+- Format: One long scrollable page with ALL sections included vertically
+- Do NOT ask which sections to generate - include ALL of them in one design
+- Do NOT generate multiple separate screens
 
-Generate the complete, production-ready landing page HTML now. Make it STUNNING and CONVERSION-OPTIMIZED.`,
+Generate the complete desktop web landing page design now.`,
 
                 'gemini': `**FINAL OUTPUT REQUIREMENTS**:
 - Provide the complete HTML code in a single code block
