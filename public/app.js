@@ -1091,16 +1091,15 @@ class YenzeBuilder {
             }
         });
 
-        // Prevent anchor link scrolling in edit mode - intercept at document level
+        // Prevent anchor link scrolling in edit mode - only prevent default, allow propagation for selection
         doc.addEventListener('click', (e) => {
             // Find if click was on or inside an anchor with hash href
             const anchor = e.target.closest('a[href^="#"]');
             if (anchor) {
                 e.preventDefault();
-                e.stopPropagation();
-                // Don't scroll - we're in edit mode
+                // Don't use stopPropagation - we still need the click to reach element selection handlers
             }
-        }, true); // Use capture phase to catch before element handlers
+        }, true); // Use capture phase to prevent scroll before it happens
 
         // Add drag-and-drop listeners to iframe document
         console.log('🎯 Setting up drag-and-drop in iframe');
