@@ -444,19 +444,8 @@ class YenzeBuilder {
             this.redo();
         });
 
-        // Prevent browser zoom (Ctrl+Wheel and Ctrl+Plus/Minus)
-        document.addEventListener('wheel', (e) => {
-            if (e.ctrlKey) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            // Prevent browser zoom with Ctrl/Cmd + Plus/Minus/0
-            if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
-                e.preventDefault();
-            }
             // Undo
             if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
                 e.preventDefault();
@@ -587,112 +576,6 @@ class YenzeBuilder {
         document.getElementById('addSectionBtn')?.addEventListener('click', () => this.addElement('section'));
         document.getElementById('addDivBtn')?.addEventListener('click', () => this.addElement('div'));
         document.getElementById('addColumnsBtn')?.addEventListener('click', () => this.addColumns());
-
-        // Zoom controls
-        const zoomSlider = document.getElementById('zoomSlider');
-        const zoomPercentage = document.getElementById('zoomPercentage');
-        const zoomInBtn = document.getElementById('zoomInBtn');
-        const zoomOutBtn = document.getElementById('zoomOutBtn');
-        const fitToScreenBtn = document.getElementById('fitToScreenBtn');
-
-        if (zoomSlider) {
-            zoomSlider.addEventListener('input', (e) => {
-                const zoom = parseInt(e.target.value);
-                this.setZoom(zoom);
-            });
-        }
-
-        if (zoomInBtn) {
-            zoomInBtn.addEventListener('click', () => {
-                const currentZoom = parseInt(zoomSlider.value);
-                const newZoom = Math.min(200, currentZoom + 10);
-                zoomSlider.value = newZoom;
-                this.setZoom(newZoom);
-            });
-        }
-
-        if (zoomOutBtn) {
-            zoomOutBtn.addEventListener('click', () => {
-                const currentZoom = parseInt(zoomSlider.value);
-                const newZoom = Math.max(10, currentZoom - 10);
-                zoomSlider.value = newZoom;
-                this.setZoom(newZoom);
-            });
-        }
-
-        if (fitToScreenBtn) {
-            fitToScreenBtn.addEventListener('click', () => {
-                this.fitToScreen();
-            });
-        }
-
-        // Canvas drag functionality (Framer-style)
-        const canvasAreaForDrag = document.getElementById('canvasArea');
-        const canvasZoomContainer = document.getElementById('canvasZoomContainer');
-
-        if (canvasAreaForDrag && canvasZoomContainer) {
-            let isDragging = false;
-            let startX = 0;
-            let startY = 0;
-            let scrollLeft = 0;
-            let scrollTop = 0;
-
-            canvasAreaForDrag.addEventListener('mousedown', (e) => {
-                // Don't drag if clicking on iframes or controls
-                if (e.target.tagName === 'IFRAME' || e.target.closest('#floatingZoomControls')) {
-                    return;
-                }
-
-                isDragging = true;
-                canvasZoomContainer.style.cursor = 'grabbing';
-                canvasZoomContainer.style.transition = 'none';
-                startX = e.pageX - canvasAreaForDrag.offsetLeft;
-                startY = e.pageY - canvasAreaForDrag.offsetTop;
-                scrollLeft = canvasAreaForDrag.scrollLeft;
-                scrollTop = canvasAreaForDrag.scrollTop;
-            });
-
-            canvasAreaForDrag.addEventListener('mouseleave', () => {
-                isDragging = false;
-                canvasZoomContainer.style.cursor = 'grab';
-                canvasZoomContainer.style.transition = 'transform 0.2s ease';
-            });
-
-            canvasAreaForDrag.addEventListener('mouseup', () => {
-                isDragging = false;
-                canvasZoomContainer.style.cursor = 'grab';
-                canvasZoomContainer.style.transition = 'transform 0.2s ease';
-            });
-
-            canvasAreaForDrag.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const x = e.pageX - canvasAreaForDrag.offsetLeft;
-                const y = e.pageY - canvasAreaForDrag.offsetTop;
-                const walkX = (x - startX) * 1.5; // Scroll speed multiplier
-                const walkY = (y - startY) * 1.5;
-                canvasAreaForDrag.scrollLeft = scrollLeft - walkX;
-                canvasAreaForDrag.scrollTop = scrollTop - walkY;
-            });
-
-            // Zoom with mouse wheel/trackpad (Framer-style)
-            canvasAreaForDrag.addEventListener('wheel', (e) => {
-                // Check if it's a pinch gesture (ctrlKey is true for pinch on trackpad)
-                if (e.ctrlKey) {
-                    e.preventDefault();
-
-                    const currentZoom = parseInt(zoomSlider.value);
-                    // Use deltaY for smooth zoom (trackpad gives fine-grained values)
-                    const delta = -e.deltaY;
-                    // Adjust sensitivity: smaller values = more sensitive
-                    const zoomChange = Math.sign(delta) * Math.min(Math.abs(delta) / 10, 10);
-                    const newZoom = Math.min(200, Math.max(10, currentZoom + zoomChange));
-
-                    zoomSlider.value = Math.round(newZoom);
-                    this.setZoom(Math.round(newZoom));
-                }
-            }, { passive: false });
-        }
     }
 
     switchTab(tabName, sidebar = 'left') {
@@ -739,36 +622,25 @@ class YenzeBuilder {
         const wrapper = document.getElementById('canvasWrapper');
         if (wrapper) {
             const canvasWidth = parseInt(width);
-            const canvasArea = wrapper.parentElement;
-
-            // Calculate available width (canvas area minus padding)
-            const availableWidth = canvasArea ? canvasArea.clientWidth - 80 : canvasWidth;
-
-            // Calculate scale to fit wrapper in available space
-            const scale = availableWidth / canvasWidth;
-
-            // Set wrapper to full canvas width
             wrapper.style.width = canvasWidth + 'px';
 
-            // Scale down to fit in available space
-            wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.transformOrigin = 'top center';
+            // NO SCALING - keep canvas at real size
+            wrapper.style.transform = 'none';
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
 
+            // Update iframe viewport width override
             const canvas = document.getElementById('canvas');
             if (canvas) {
-                // Set iframe to full canvas width (1680px)
+                // Set iframe width
                 canvas.style.width = `${canvasWidth}px`;
-                canvas.style.transform = 'none';
 
                 if (canvas.contentDocument) {
                     const iframeDoc = canvas.contentDocument;
                     let styleElement = iframeDoc.getElementById('yenze-viewport-override');
 
                     if (styleElement) {
-                        // Force iframe content to render at exact 1680px
                         styleElement.textContent = `
                             html, body {
                                 width: ${canvasWidth}px !important;
@@ -782,6 +654,11 @@ class YenzeBuilder {
                             }
                             * {
                                 box-sizing: border-box !important;
+                                max-width: 100% !important;
+                            }
+                            img, video, iframe, svg {
+                                max-width: 100% !important;
+                                height: auto !important;
                             }
                         `;
                     }
@@ -793,49 +670,6 @@ class YenzeBuilder {
                 }
             }
         }
-    }
-
-    setZoom(zoomLevel) {
-        const zoomContainer = document.getElementById('canvasZoomContainer');
-        const zoomPercentage = document.getElementById('zoomPercentage');
-
-        if (zoomContainer) {
-            const scale = zoomLevel / 100;
-            zoomContainer.style.transform = `scale(${scale})`;
-        }
-
-        if (zoomPercentage) {
-            zoomPercentage.textContent = `${zoomLevel}%`;
-        }
-    }
-
-    fitToScreen() {
-        const canvasArea = document.getElementById('canvasArea');
-        const multiDevicePreview = document.getElementById('multiDevicePreview');
-
-        if (!canvasArea || !multiDevicePreview) return;
-
-        // Calculate total width needed for all 3 devices + gaps + padding
-        const desktopWidth = 1680;
-        const tabletWidth = 768;
-        const mobileWidth = 375;
-        const gaps = 32 * 2; // 2 gaps between 3 devices
-        const padding = 40 * 2; // padding on both sides
-
-        const totalWidth = desktopWidth + tabletWidth + mobileWidth + gaps + padding;
-        const availableWidth = canvasArea.clientWidth;
-
-        // Calculate zoom to fit
-        const fitZoom = Math.floor((availableWidth / totalWidth) * 100);
-        const finalZoom = Math.min(200, Math.max(10, fitZoom));
-
-        // Update slider and apply zoom
-        const zoomSlider = document.getElementById('zoomSlider');
-        if (zoomSlider) {
-            zoomSlider.value = finalZoom;
-        }
-
-        this.setZoom(finalZoom);
     }
 
     applyCustomBreakpoints() {
@@ -931,141 +765,118 @@ class YenzeBuilder {
             this.addToHistory(html, 'Import HTML');
         }
 
-        // Hide empty state and show multi-device preview
+        // Hide empty state
         document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('multiDevicePreview').classList.add('active');
 
-        // Load HTML into all 3 iframes
-        const devices = ['desktop', 'tablet', 'mobile'];
-        const widths = {
-            desktop: 1680,
-            tablet: 768,
-            mobile: 375
+        // FORCE RESET IFRAME: Clone and replace to clear all internal state/listeners
+        const oldCanvas = document.getElementById('canvas');
+        const newCanvas = oldCanvas.cloneNode(false);
+        newCanvas.style.display = 'block';
+
+        // Replace in DOM
+        oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+
+        // Get fresh reference
+        const canvas = newCanvas;
+
+        // Force iframe to exact width
+        canvas.style.width = `${this.deviceWidths[this.currentDevice]}px`;
+
+        // Write HTML to iframe
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(html);
+        iframeDoc.close();
+
+        // Force iframe content to render at the specified canvas width
+        const forceWidth = this.deviceWidths[this.currentDevice];
+        const styleElement = iframeDoc.createElement('style');
+        styleElement.id = 'yenze-viewport-override';
+        styleElement.textContent = `
+            html, body {
+                width: ${forceWidth}px !important;
+                min-width: ${forceWidth}px !important;
+                max-width: ${forceWidth}px !important;
+                overflow-x: hidden !important;
+                overflow-y: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+            }
+            * {
+                box-sizing: border-box !important;
+                max-width: 100% !important;
+            }
+            img, video, iframe, svg {
+                max-width: 100% !important;
+                height: auto !important;
+            }
+        `;
+
+        // Wait for head to be available
+        const insertStyle = () => {
+            if (iframeDoc.head) {
+                iframeDoc.head.insertBefore(styleElement, iframeDoc.head.firstChild);
+            } else {
+                setTimeout(insertStyle, 10);
+            }
         };
+        insertStyle();
 
-        devices.forEach(device => {
-            const iframe = document.querySelector(`.device-iframe[data-device="${device}"]`);
-            if (!iframe) return;
+        // Wait for iframe to be fully loaded before making elements editable
+        // Use longer timeout for complex HTML and wait for readyState
+        const initializeEditor = () => {
+            if (iframeDoc.readyState === 'complete') {
+                this.makeEditable(iframeDoc);
+                this.buildLayersTree(iframeDoc);
+                this.setupIframeKeyboardShortcuts(iframeDoc);
+                this.adjustIframeHeight(canvas, iframeDoc);
+                this.showToast('✅ HTML loaded successfully!', 'success');
 
-            // Write HTML to iframe
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(html);
-            iframeDoc.close();
+                // Add resize observer to body to auto-adjust height
+                if (iframeDoc.body) {
+                    const resizeObserver = new ResizeObserver(() => {
+                        this.adjustIframeHeight(canvas, iframeDoc);
+                    });
+                    resizeObserver.observe(iframeDoc.body);
 
-            // Force iframe content to render at the specified width
-            const forceWidth = widths[device];
-            const styleElement = iframeDoc.createElement('style');
-            styleElement.id = 'yenze-viewport-override';
-            styleElement.textContent = `
-                html, body {
-                    width: ${forceWidth}px !important;
-                    min-width: ${forceWidth}px !important;
-                    max-width: ${forceWidth}px !important;
-                    overflow-x: hidden !important;
-                    overflow-y: visible !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    box-sizing: border-box !important;
-                }
-                * {
-                    box-sizing: border-box !important;
-                }
-            `;
-
-            // Wait for head to be available
-            const insertStyle = () => {
-                if (iframeDoc.head) {
-                    iframeDoc.head.insertBefore(styleElement, iframeDoc.head.firstChild);
-                } else {
-                    setTimeout(insertStyle, 10);
-                }
-            };
-            insertStyle();
-
-            // Only make the desktop iframe editable (primary editing view)
-            if (device === 'desktop') {
-                const initializeEditor = () => {
-                    if (iframeDoc.readyState === 'complete') {
-                        this.makeEditable(iframeDoc);
-                        this.buildLayersTree(iframeDoc);
-                        this.setupIframeKeyboardShortcuts(iframeDoc);
-                        this.showToast('✅ HTML loaded successfully!', 'success');
-
-                        // Add MutationObserver to sync changes to other iframes
-                        if (iframeDoc.body) {
-                            const mutationObserver = new MutationObserver((mutations) => {
-                                let shouldRebuildLayers = false;
-                                mutations.forEach((mutation) => {
-                                    if (mutation.type === 'childList') {
-                                        mutation.addedNodes.forEach((node) => {
-                                            if (node.nodeType === 1) {
-                                                this.makeElementEditable(node, iframeDoc);
-                                                node.querySelectorAll('*').forEach(child => {
-                                                    this.makeElementEditable(child, iframeDoc);
-                                                });
-                                                shouldRebuildLayers = true;
-                                            }
+                    // Add MutationObserver to handle dynamic content changes (e.g. multipage navigation)
+                    const mutationObserver = new MutationObserver((mutations) => {
+                        let shouldRebuildLayers = false;
+                        mutations.forEach((mutation) => {
+                            if (mutation.type === 'childList') {
+                                mutation.addedNodes.forEach((node) => {
+                                    if (node.nodeType === 1) { // Element node
+                                        this.makeElementEditable(node, iframeDoc);
+                                        // Also make children editable
+                                        node.querySelectorAll('*').forEach(child => {
+                                            this.makeElementEditable(child, iframeDoc);
                                         });
-                                        if (mutation.removedNodes.length > 0) {
-                                            shouldRebuildLayers = true;
-                                        }
+                                        shouldRebuildLayers = true;
                                     }
                                 });
-
-                                if (shouldRebuildLayers) {
-                                    this.buildLayersTree(iframeDoc);
-                                    // Sync to other iframes
-                                    this.syncToOtherIframes();
+                                if (mutation.removedNodes.length > 0) {
+                                    shouldRebuildLayers = true;
                                 }
-                            });
-                            mutationObserver.observe(iframeDoc.body, { childList: true, subtree: true, attributes: true, characterData: true, subtree: true });
-                        }
-                    } else {
-                        setTimeout(initializeEditor, 200);
-                    }
-                };
-                setTimeout(initializeEditor, 300);
-            }
-        });
+                            }
+                        });
 
-        // Fit to screen after loading
-        setTimeout(() => {
-            this.fitToScreen();
-        }, 500);
+                        if (shouldRebuildLayers) {
+                            this.buildLayersTree(iframeDoc);
+                        }
+                    });
+                    mutationObserver.observe(iframeDoc.body, { childList: true, subtree: true });
+                }
+            } else {
+                // If not ready yet, wait a bit more
+                setTimeout(initializeEditor, 200);
+            }
+        };
+
+        // Start checking after a brief delay to allow initial parsing
+        setTimeout(initializeEditor, 300);
 
         this.saveProject();
-    }
-
-    syncToOtherIframes() {
-        // Get HTML from desktop iframe
-        const desktopIframe = document.querySelector('.device-iframe[data-device="desktop"]');
-        if (!desktopIframe) return;
-
-        const desktopDoc = desktopIframe.contentDocument;
-        if (!desktopDoc || !desktopDoc.body) return;
-
-        const htmlContent = desktopDoc.documentElement.outerHTML;
-
-        // Update tablet and mobile iframes
-        ['tablet', 'mobile'].forEach(device => {
-            const iframe = document.querySelector(`.device-iframe[data-device="${device}"]`);
-            if (!iframe) return;
-
-            const iframeDoc = iframe.contentDocument;
-            if (!iframeDoc) return;
-
-            const scrollTop = iframe.contentWindow.scrollY || 0;
-
-            iframeDoc.open();
-            iframeDoc.write(htmlContent);
-            iframeDoc.close();
-
-            // Restore scroll position
-            setTimeout(() => {
-                iframe.contentWindow.scrollTo(0, scrollTop);
-            }, 50);
-        });
     }
 
     // Adjust iframe height to fit content (especially for mobile)

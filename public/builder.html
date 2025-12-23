@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE - Visual HTML Editor</title>
-    <!-- Version: 1.4.2 - Cache Buster -->
+    <!-- Version: 1.3.2 - Cache Buster -->
 
     <script>
         // Subdomain Router - Must run before any other content loads
@@ -86,13 +86,6 @@
     </script>
 
     <style>
-        /* Disable browser zoom/pinch gestures */
-        html, body {
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
         :root {
             margin: 0;
             padding: 0;
@@ -892,39 +885,6 @@
                 linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
         }
 
-        /* Multi-device preview */
-        #multiDevicePreview {
-            gap: 32px;
-            padding: 40px;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        #multiDevicePreview.active {
-            display: flex !important;
-        }
-
-        .device-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .device-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .device-dimensions {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-tertiary);
-        }
-
         .canvas-wrapper {
             background: white;
             box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1),
@@ -936,27 +896,19 @@
             overflow: hidden;
         }
 
-        .device-preview[data-device="desktop"] .canvas-wrapper {
+        .canvas-wrapper.desktop {
             width: 1680px;
-            height: 900px;
+            height: calc(100vh - var(--topbar-height) - 4rem);
         }
 
-        .device-preview[data-device="tablet"] .canvas-wrapper {
+        .canvas-wrapper.tablet {
             width: 768px;
             height: 1024px;
         }
 
-        .device-preview[data-device="mobile"] .canvas-wrapper {
+        .canvas-wrapper.mobile {
             width: 375px;
             height: 667px;
-        }
-
-        .device-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-            background: white;
         }
 
         /* Browser Chrome Decoration */
@@ -2626,11 +2578,6 @@
             .canvas-container {
                 grid-column: 1;
             }
-
-            /* Add spacing between topbar and canvas for tablet */
-            .canvas-area {
-                padding-top: 3rem;
-            }
         }
 
         @media (max-width: 768px) {
@@ -3183,8 +3130,31 @@
 
                     <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 12px;"></div>
 
-                    <!-- Width control (hidden for now) -->
-                    <div class="device-width-control" style="display: none; align-items: center; gap: 4px; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
+                    <!-- Device Toggle -->
+                    <button class="device-btn active" data-device="desktop" style="width: 34px; height: 34px; border-radius: 7px; margin-right: 2px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </button>
+                    <button class="device-btn" data-device="tablet" style="width: 34px; height: 34px; border-radius: 7px; margin: 0 2px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button class="device-btn" data-device="mobile" style="width: 34px; height: 34px; border-radius: 7px; margin-left: 2px;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </button>
+
+                    <div style="width: 1px; height: 24px; background: #D4D4D8; margin: 0 12px;"></div>
+
+                    <!-- Width control -->
+                    <div class="device-width-control" style="display: flex; align-items: center; gap: 4px; padding: 0 8px; cursor: ew-resize;" title="Canvas width">
                         <input type="number" id="canvasWidthInput" value="1680"
                             style="width: 48px; background: transparent; border: none; color: var(--text); font-size: 13px; font-weight: 600; text-align: center; outline: none;">
                         <span style="color: var(--text-tertiary); font-size: 11px; font-weight: 600;">px</span>
@@ -3499,94 +3469,20 @@
         </div>
 
         <!-- Canvas Area -->
-        <div class="canvas-area" id="canvasArea">
-            <!-- Floating Zoom Controls (Framer-style) - Fixed position -->
-            <div id="floatingZoomControls" style="position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; background: white; border-radius: 10px; padding: 8px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 1px solid #E5E7EB;">
-                <button class="btn btn-icon" id="zoomOutBtn" title="Zoom Out (-)" style="width: 32px; height: 32px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                        <line x1="8" y1="11" x2="14" y2="11"></line>
-                    </svg>
-                </button>
-
-                <div style="display: flex; align-items: center; gap: 8px; padding: 0 8px;">
-                    <input type="range" id="zoomSlider" min="10" max="200" value="50" style="width: 120px; height: 4px; cursor: pointer;">
-                    <span id="zoomPercentage" style="font-size: 12px; color: var(--text-secondary); min-width: 45px; font-weight: 600;">50%</span>
+        <div class="canvas-area">
+            <div class="canvas-wrapper desktop" id="canvasWrapper">
+                <!-- Browser Chrome Decoration -->
+                <div class="browser-chrome">
+                    <div class="browser-chrome-dot red"></div>
+                    <div class="browser-chrome-dot yellow"></div>
+                    <div class="browser-chrome-dot green"></div>
                 </div>
-
-                <button class="btn btn-icon" id="zoomInBtn" title="Zoom In (+)" style="width: 32px; height: 32px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                        <line x1="11" y1="8" x2="11" y2="14"></line>
-                        <line x1="8" y1="11" x2="14" y2="11"></line>
-                    </svg>
-                </button>
-
-                <div style="width: 1px; height: 24px; background: #E5E7EB; margin: 0 4px;"></div>
-
-                <button class="btn btn-icon" id="fitToScreenBtn" title="Fit to Screen" style="width: 32px; height: 32px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <div id="canvasZoomContainer" style="transform-origin: center center; transition: transform 0.2s ease; cursor: grab;">
-                <!-- Empty State (shown when no HTML loaded) -->
                 <div class="empty-state" id="emptyState">
                     <div class="empty-state-icon">✨</div>
                     <h2>Start by importing HTML</h2>
                     <p>Drop a file or paste code to begin editing</p>
                 </div>
-
-                <!-- Multi-device preview container -->
-                <div id="multiDevicePreview" style="display: none;">
-
-                    <!-- Desktop Preview -->
-                    <div class="device-preview" data-device="desktop">
-                        <div class="device-label">Desktop</div>
-                        <div class="canvas-wrapper">
-                            <div class="browser-chrome">
-                                <div class="browser-chrome-dot red"></div>
-                                <div class="browser-chrome-dot yellow"></div>
-                                <div class="browser-chrome-dot green"></div>
-                            </div>
-                            <iframe class="device-iframe" data-device="desktop"></iframe>
-                        </div>
-                        <div class="device-dimensions">1680px</div>
-                    </div>
-
-                    <!-- Tablet Preview -->
-                    <div class="device-preview" data-device="tablet">
-                        <div class="device-label">Tablet</div>
-                        <div class="canvas-wrapper">
-                            <div class="browser-chrome">
-                                <div class="browser-chrome-dot red"></div>
-                                <div class="browser-chrome-dot yellow"></div>
-                                <div class="browser-chrome-dot green"></div>
-                            </div>
-                            <iframe class="device-iframe" data-device="tablet"></iframe>
-                        </div>
-                        <div class="device-dimensions">768px</div>
-                    </div>
-
-                    <!-- Mobile Preview -->
-                    <div class="device-preview" data-device="mobile">
-                        <div class="device-label">Mobile</div>
-                        <div class="canvas-wrapper">
-                            <div class="browser-chrome">
-                                <div class="browser-chrome-dot red"></div>
-                                <div class="browser-chrome-dot yellow"></div>
-                                <div class="browser-chrome-dot green"></div>
-                            </div>
-                            <iframe class="device-iframe" data-device="mobile"></iframe>
-                        </div>
-                        <div class="device-dimensions">375px</div>
-                    </div>
-
-                </div>
+                <iframe id="canvas" style="display: none;"></iframe>
             </div>
         </div>
 
