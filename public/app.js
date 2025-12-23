@@ -876,19 +876,21 @@ class YenzeBuilder {
         // Set iframe to fill wrapper
         canvas.style.width = '100%';
 
-        // Get current device width for responsive simulation
-        const deviceWidth = this.deviceWidths[this.currentDevice];
-
-        // Modify HTML to inject viewport simulation
+        // Modify HTML for responsive simulation
         let modifiedHTML = html;
 
-        // Replace or add viewport meta tag to match device width
-        const viewportMeta = `<meta name="viewport" content="width=${deviceWidth}, initial-scale=1.0">`;
-        if (modifiedHTML.includes('<meta') && modifiedHTML.includes('viewport')) {
-            modifiedHTML = modifiedHTML.replace(/<meta[^>]*viewport[^>]*>/gi, viewportMeta);
-        } else if (modifiedHTML.includes('<head>')) {
-            modifiedHTML = modifiedHTML.replace('<head>', `<head>\n${viewportMeta}`);
+        // Only apply viewport modification for MOBILE to trigger responsive CSS
+        // Desktop and Tablet should show the desktop layout (no viewport modification)
+        if (this.currentDevice === 'mobile') {
+            const deviceWidth = this.deviceWidths[this.currentDevice]; // 375px
+            const viewportMeta = `<meta name="viewport" content="width=${deviceWidth}, initial-scale=1.0">`;
+            if (modifiedHTML.includes('<meta') && modifiedHTML.includes('viewport')) {
+                modifiedHTML = modifiedHTML.replace(/<meta[^>]*viewport[^>]*>/gi, viewportMeta);
+            } else if (modifiedHTML.includes('<head>')) {
+                modifiedHTML = modifiedHTML.replace('<head>', `<head>\n${viewportMeta}`);
+            }
         }
+        // For desktop and tablet, keep original viewport (or use desktop width) so responsive CSS doesn't trigger
 
         // Write HTML to iframe
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
