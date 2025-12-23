@@ -344,6 +344,17 @@ class YenzeBuilder {
     }
 
     setupEventListeners() {
+        // Left Sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const leftSidebar = document.getElementById('leftSidebar');
+        if (sidebarToggle && leftSidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                leftSidebar.classList.toggle('collapsed');
+                // Recalculate canvas scale after transition
+                setTimeout(() => this.autoScaleCanvas(), 350);
+            });
+        }
+
         // Left Sidebar tabs
         document.querySelectorAll('.left-sidebar .sidebar-tab').forEach(tab => {
             tab.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab, 'left'));

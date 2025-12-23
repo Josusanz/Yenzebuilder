@@ -451,8 +451,60 @@
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            width: var(--sidebar-width);
             min-width: var(--sidebar-width);
             z-index: 5;
+            transition: width 0.3s ease, min-width 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        .left-sidebar.collapsed {
+            width: 0;
+            min-width: 0;
+            overflow: hidden;
+            border-right: none;
+        }
+
+        .left-sidebar.collapsed .sidebar-content,
+        .left-sidebar.collapsed .sidebar-tabs {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 48px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .sidebar-toggle svg {
+            transition: transform 0.3s ease;
+        }
+
+        .left-sidebar.collapsed .sidebar-toggle {
+            right: -24px;
+        }
+
+        .left-sidebar.collapsed .sidebar-toggle svg {
+            transform: rotate(180deg);
         }
 
         .sidebar-tabs {
@@ -3193,7 +3245,13 @@
         </div>
 
         <!-- Left Sidebar -->
-        <div class="left-sidebar">
+        <div class="left-sidebar" id="leftSidebar">
+            <!-- Toggle Button -->
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
             <div class="sidebar-tabs">
                 <button class="sidebar-tab active" data-tab="import">Import</button>
                 <button class="sidebar-tab" data-tab="layers">Layers</button>
