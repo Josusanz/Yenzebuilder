@@ -711,7 +711,7 @@ class YenzeBuilder {
             zoomIndicator.style.display = 'block';
         }
 
-        // Calculate available space with minimal padding
+        // Calculate available space
         const topbarHeight = 60;
         const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
         const rightSidebarWidth = 280;
@@ -724,16 +724,28 @@ class YenzeBuilder {
             return;
         }
 
-        // Get wrapper dimensions
+        // Canvas aspect ratio (16:10 for desktop)
+        const aspectRatio = 16 / 10;
+
+        // Calculate dimensions to fill available space while maintaining aspect ratio
+        let canvasWidth, canvasHeight;
+
+        if (availableWidth / availableHeight > aspectRatio) {
+            // Height is limiting factor - fill height
+            canvasHeight = availableHeight;
+            canvasWidth = canvasHeight * aspectRatio;
+        } else {
+            // Width is limiting factor - fill width
+            canvasWidth = availableWidth;
+            canvasHeight = canvasWidth / aspectRatio;
+        }
+
+        // Get wrapper's base dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = 900;
 
-        // Prioritize filling vertical space (like collapsed version)
-        let scale = availableHeight / wrapperHeight;
-
-        // Limit by width if needed
-        const maxScaleForWidth = availableWidth / wrapperWidth;
-        scale = Math.min(scale, maxScaleForWidth);
+        // Calculate scale to achieve the target canvas size
+        let scale = canvasWidth / wrapperWidth;
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
