@@ -1864,8 +1864,8 @@ class YenzeBuilder {
         if (layerItem) {
             layerItem.classList.add('selected');
 
-            // Scroll into view if needed
-            layerItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Scroll into view centered so user can see layers above and below
+            layerItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
 
