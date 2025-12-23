@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE | AI Landing Page Generator</title>
-    <meta name="description" content="Generate high-converting sales landing pages with Google Stitch, Gemini, or Claude AI.">
+    <meta name="description"
+        content="Generate high-converting sales landing pages with Google Stitch, Gemini, or Claude AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -155,6 +156,7 @@
             letter-spacing: -0.03em;
             background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 16px;
             line-height: 1.1;
@@ -524,7 +526,8 @@
     <main class="main">
         <div class="header">
             <h1>AI Landing Page Generator</h1>
-            <p>Create high-converting sales landing pages that turn visitors into customers with your favorite AI platform.</p>
+            <p>Create high-converting sales landing pages that turn visitors into customers with your favorite AI
+                platform.</p>
         </div>
 
         <!-- How it works -->
@@ -548,17 +551,51 @@
             <div class="section-label">0. Choose AI Platform</div>
             <div class="options-grid" id="platformOptions" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="option selected" data-value="stitch" data-url="https://stitch.withgoogle.com/">
-                    <i class="fa-brands fa-google option-icon" style="color: #4285F4;"></i>
+                    <div
+                        style="width: 32px; height: 32px; margin-bottom: 0; display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                            <path
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                                fill="#4285F4" />
+                            <path
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                                fill="#34A853" />
+                            <path
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.21-1.19-2.22z"
+                                fill="#FBBC05" />
+                            <path
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                                fill="#EA4335" />
+                        </svg>
+                    </div>
                     <span class="option-label">Google Stitch</span>
-                    <span style="font-size: 11px; color: var(--text-muted);">Best for visual sites</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Best for visual design</span>
                 </div>
                 <div class="option" data-value="gemini" data-url="https://gemini.google.com/">
-                    <i class="fa-solid fa-gem option-icon" style="color: #8E75B2;"></i>
+                    <div
+                        style="width: 32px; height: 32px; margin-bottom: 0; display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                            <path
+                                d="M19.07 10.97L16.03 4.88C15.68 4.18 14.78 4.18 14.43 4.88L11.39 10.97C11.13 11.49 10.73 11.89 10.21 12.16L4.12 15.2C3.42 15.55 3.42 16.45 4.12 16.8L10.21 19.84C10.73 20.1 11.13 20.5 11.39 21.03L14.43 27.12C14.78 27.82 15.68 27.82 16.03 27.12L19.07 21.03C19.34 20.5 19.74 20.1 20.26 19.84L26.35 16.8C27.05 16.45 27.05 15.55 26.35 15.2L20.26 12.16C19.74 11.89 19.34 11.49 19.07 10.97Z"
+                                fill="url(#gemini-gradient)" transform="translate(-3 -3) scale(0.9)" />
+                            <defs>
+                                <linearGradient id="gemini-gradient" x1="4" y1="4" x2="26" y2="26"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#4E79F3" />
+                                    <stop offset="0.5" stop-color="#7B56E6" />
+                                    <stop offset="1" stop-color="#F25E5E" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
                     <span class="option-label">Gemini</span>
                     <span style="font-size: 11px; color: var(--text-muted);">Fast code generation</span>
                 </div>
                 <div class="option" data-value="claude" data-url="https://claude.ai/">
-                    <i class="fa-solid fa-brain option-icon" style="color: #D97706;"></i>
+                    <div
+                        style="width: 32px; height: 32px; margin-bottom: 0; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-brain" style="color: #D97706; font-size: 24px;"></i>
+                    </div>
                     <span class="option-label">Claude</span>
                     <span style="font-size: 11px; color: var(--text-muted);">Best code quality</span>
                 </div>
@@ -782,7 +819,8 @@
                 </div>
                 <div>
                     <label>Call-to-Action Text</label>
-                    <input type="text" id="ctaText" placeholder="e.g., Start Free Trial, Get Instant Access, Book Your Spot...">
+                    <input type="text" id="ctaText"
+                        placeholder="e.g., Start Free Trial, Get Instant Access, Book Your Spot...">
                 </div>
             </div>
         </div>
@@ -799,7 +837,7 @@
                 </button>
             </div>
             <div class="output-content" id="output">
-// Configure your landing page settings above to generate your optimized prompt...
+                // Configure your landing page settings above to generate your optimized prompt...
             </div>
         </div>
 
@@ -852,7 +890,7 @@
     </button>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const state = {
                 platform: 'stitch',
                 platformUrl: 'https://stitch.withgoogle.com/',
@@ -982,97 +1020,103 @@
                 }
 
                 const goalDescriptions = {
-                'product-launch': 'New Product Launch - Create excitement and drive early adopters',
-                'lead-gen': 'Lead Generation - Capture qualified leads with irresistible offer',
-                'saas-signup': 'SaaS Free Trial/Demo - Convert visitors to active users',
-                'course-sales': 'Online Course Sales - Sell educational products with authority',
-                'event-registration': 'Event Registration - Fill seats for webinars/conferences',
-                'waitlist': 'Waitlist/Pre-Launch - Build anticipation and early interest',
-                'ecommerce': 'E-commerce Product - Direct product sales with cart integration',
-                'consultation': 'Book Consultation - Schedule high-ticket sales calls'
-            };
+                    'product-launch': 'New Product Launch - Create excitement and drive early adopters',
+                    'lead-gen': 'Lead Generation - Capture qualified leads with irresistible offer',
+                    'saas-signup': 'SaaS Free Trial/Demo - Convert visitors to active users',
+                    'course-sales': 'Online Course Sales - Sell educational products with authority',
+                    'event-registration': 'Event Registration - Fill seats for webinars/conferences',
+                    'waitlist': 'Waitlist/Pre-Launch - Build anticipation and early interest',
+                    'ecommerce': 'E-commerce Product - Direct product sales with cart integration',
+                    'consultation': 'Book Consultation - Schedule high-ticket sales calls'
+                };
 
-            const strategyDescriptions = {
-                'urgency': 'LIMITED TIME ONLY - Countdown timers, scarcity indicators, FOMO triggers',
-                'social-proof': 'TRUST AMPLIFICATION - Testimonials, case studies, client logos, review ratings',
-                'benefit-driven': 'BENEFITS SHOWCASE - Feature cards with clear ROI, transformation outcomes',
-                'problem-solution': 'PAIN-AGITATE-SOLVE - Start with pain points, agitate, then present solution',
-                'comparison': 'BEFORE/AFTER - Visual transformations, comparison tables, success metrics',
-                'value-stack': 'VALUE STACKING - Show total value vs price, bonuses, packages'
-            };
+                const strategyDescriptions = {
+                    'urgency': 'LIMITED TIME ONLY - Countdown timers, scarcity indicators, FOMO triggers',
+                    'social-proof': 'TRUST AMPLIFICATION - Testimonials, case studies, client logos, review ratings',
+                    'benefit-driven': 'BENEFITS SHOWCASE - Feature cards with clear ROI, transformation outcomes',
+                    'problem-solution': 'PAIN-AGITATE-SOLVE - Start with pain points, agitate, then present solution',
+                    'comparison': 'BEFORE/AFTER - Visual transformations, comparison tables, success metrics',
+                    'value-stack': 'VALUE STACKING - Show total value vs price, bonuses, packages'
+                };
 
-            const styleDescriptions = {
-                'minimal': 'Clean Minimal - Swiss design, lots of white space, Helvetica-style, subtle shadows',
-                'bold': 'Bold & Vibrant - High contrast, bright colors, oversized typography, energetic',
-                'professional': 'Professional Corporate - Trust-building, corporate blues, structured layout',
-                'modern': 'Modern Tech - Glassmorphism, gradients, smooth animations, futuristic',
-                'luxury': 'Luxury Premium - Serif fonts, gold accents, elegant spacing, sophisticated',
-                'playful': 'Friendly & Playful - Rounded corners, warm colors, approachable, fun illustrations'
-            };
+                const styleDescriptions = {
+                    'minimal': 'Clean Minimal - Swiss design, lots of white space, Helvetica-style, subtle shadows',
+                    'bold': 'Bold & Vibrant - High contrast, bright colors, oversized typography, energetic',
+                    'professional': 'Professional Corporate - Trust-building, corporate blues, structured layout',
+                    'modern': 'Modern Tech - Glassmorphism, gradients, smooth animations, futuristic',
+                    'luxury': 'Luxury Premium - Serif fonts, gold accents, elegant spacing, sophisticated',
+                    'playful': 'Friendly & Playful - Rounded corners, warm colors, approachable, fun illustrations'
+                };
 
-            // Platform-specific intro
-            const platformIntros = {
-                'stitch': `Design a SINGLE DESKTOP WEB SCREEN (1440px wide) for a high-converting sales landing page.
+                // Platform-specific intro
+                const platformIntros = {
+                    'stitch': `You are an expert UI/UX Designer and Frontend Specialist.
+Design a SINGLE, CONTIGUOUS DESKTOP WEB SCREEN (1440px wide) for a high-converting sales landing page.
 
-**CRITICAL INSTRUCTIONS FOR STITCH**:
-- Generate ONE complete DESKTOP WEB SCREEN design (NOT mobile)
-- Screen type: WEB (desktop), width 1440px
-- This is a FULL-PAGE long-scroll landing page - include ALL sections in ONE design
-- Include every section stacked vertically: Hero → Social Proof → Problem → Solution → Benefits → Testimonials → Pricing → FAQ → CTA → Footer
-- Do NOT generate separate screens for each section
-- Do NOT generate mobile versions`,
+**VISUAL & DESIGN REQUIREMENTS (CRITICAL)**:
+- **Format**: ONE continuous scrolling page (Canvas/Web Design mock). width: 1440px.
+- **Aesthetic**: Premium, Modern, and High-Fidelity. No wireframes.
+- **Layout**: Stack sections vertically without gaps.
+- **Components**: Use realistic images (people, devices, products) not placeholders.
+- **Typography**: Use modern sans-serif fonts (Inter, SF Pro) with hierarchical scaling.
 
-                'gemini': `Generate a complete, production-ready HTML landing page. Follow these specifications exactly:
+**DESIGN GOAL**: Create a visual masterpiece that looks like a live, award-winning SaaS or E-commerce site.`,
 
-**OUTPUT FORMAT REQUIREMENTS**:
-- Generate ONE complete HTML file with embedded CSS and JavaScript
-- Include all sections in a single long-scroll page design
-- Use modern CSS (flexbox, grid, custom properties)
-- Make it fully responsive (mobile-first approach)
-- Include smooth scroll animations using IntersectionObserver`,
+                    'gemini': `You are an expert Full-Stack Web Developer specialized in Conversion Rate Optimization (CRO).
+Generate a PRODUCTION-READY, SINGLE-FILE HTML Sales Landing Page.
 
-                'claude': `Create a high-converting, production-ready landing page. I need complete, clean HTML code.
+**TECH STACK REQUIREMENTS**:
+- **HTML5**: Semantic, accessible structure (header, main, section, footer).
+- **CSS**: Vanilla CSS with modern features (CSS Grid, Flexbox, Custom Properties). Embed in <style>.
+- **JavaScript**: Vanilla JS for interactivity (Mobile menu, FAQ toggle, Sticky header). Embed in <script>.
+- **Responsiveness**: Mobile-first approach (min-width media queries).
+
+**CODE QUALITY GOALS**:
+- Clean, indented, and commented code.
+- Fast loading performance (inline critical CSS).
+- SEO Optimized (Meta tags, proper heading hierarchy h1-h6).`,
+
+                    'claude': `You are a Senior Frontend Engineer and UI/UX Architect.
+Create a high-converting, production-ready landing page. I need complete, clean HTML code.
 
 **CODE QUALITY REQUIREMENTS**:
-- Generate a single HTML file with embedded <style> and <script> sections
-- Use semantic HTML5 elements (header, main, section, footer)
-- Follow accessibility best practices (ARIA labels, alt text, proper heading hierarchy)
-- Write clean, well-commented CSS with custom properties
-- Use vanilla JavaScript for any interactions (no frameworks needed)
-- Ensure the page is fully responsive with mobile-first CSS`
-            };
+- Generate a single HTML file with embedded <style> and <script> sections.
+- Use semantic HTML5 elements.
+- Follow accessibility best practices (ARIA labels, alt text).
+- Write clean, well-commented CSS with custom properties (CSS Variables).
+- Use vanilla JavaScript for interactions.
+- Ensure the page is fully responsive with mobile-first CSS.`
+                };
 
-            // Platform-specific outros
-            const platformOutros = {
-                'stitch': `**FINAL INSTRUCTIONS**:
-- Output: ONE SINGLE DESKTOP WEB SCREEN DESIGN
-- Screen type: WEB (not mobile)
-- Resolution: 1440px width desktop
-- Format: One long scrollable page with ALL sections included vertically
-- Do NOT ask which sections to generate - include ALL of them in one design
-- Do NOT generate multiple separate screens
+                // Platform-specific outros
+                const platformOutros = {
+                    'stitch': `**FINAL STITCH INSTRUCTIONS**:
+- **Output**: ONE SINGLE DESKTOP WEB SCREEN DESIGN (1440px).
+- **Detail Level**: High Fidelity (Real text, real images, shadows, gradients).
+- **Do NOT** generate mobile screens or separate components.
+- **Do NOT** explain the design. Just generate the visual.
 
-Generate the complete desktop web landing page design now.`,
+Render the complete desktop landing page design now.`,
 
-                'gemini': `**FINAL OUTPUT REQUIREMENTS**:
-- Provide the complete HTML code in a single code block
-- Do not explain the code, just generate it
-- Make sure all CSS is in a <style> tag and all JS is in a <script> tag
-- The page must work immediately when opened in a browser
+                    'gemini': `**FINAL GEMINI INSTRUCTIONS**:
+- **Output**: ONE SINGLE HTML CODEBLOCK.
+- **Completeness**: Include ALL sections (Hero -> Footer) in one file.
+- **Functionality**: Ensure mobile menu works, buttons hover, and FAQ toggles.
+- **Constraint**: Do not use external CSS/JS frameworks (like Bootstrap) unless explicitly asked. Use pure CSS.
 
-Generate the full HTML now.`,
+Generate the full, working HTML code now.`,
 
-                'claude': `**DELIVERABLE**:
+                    'claude': `**DELIVERABLE**:
 Please generate the complete HTML file now. Include:
-1. All CSS in a <style> tag in the head
-2. All JavaScript in a <script> tag before </body>
-3. Beautiful, modern design that converts visitors to customers
-4. Proper meta tags for SEO and social sharing
+1. All CSS in a <style> tag in the head.
+2. All JavaScript in a <script> tag before </body>.
+3. Beautiful, modern design that converts visitors to customers.
+4. Proper meta tags for SEO and social sharing.
 
 Output the full, working HTML code.`
-            };
+                };
 
-            const prompt = `${platformIntros[state.platform]}
+                const prompt = `${platformIntros[state.platform]}
 
 ---
 
@@ -1335,8 +1379,8 @@ Before generating final code, verify:
 
 ${platformOutros[state.platform]}`;
 
-            document.getElementById('output').textContent = prompt;
-        }
+                document.getElementById('output').textContent = prompt;
+            }
 
             // Initialize
             updatePrompt();
