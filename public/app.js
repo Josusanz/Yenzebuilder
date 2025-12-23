@@ -444,8 +444,19 @@ class YenzeBuilder {
             this.redo();
         });
 
+        // Prevent browser zoom (Ctrl+Wheel and Ctrl+Plus/Minus)
+        document.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            // Prevent browser zoom with Ctrl/Cmd + Plus/Minus/0
+            if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                e.preventDefault();
+            }
             // Undo
             if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
                 e.preventDefault();
