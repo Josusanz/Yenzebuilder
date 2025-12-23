@@ -623,6 +623,12 @@ class YenzeBuilder {
         });
         document.querySelector(`[data-device="${device}"]`).classList.add('active');
 
+        // Reset scaler transform first
+        const canvasScaler = document.getElementById('canvasScaler');
+        if (canvasScaler) {
+            canvasScaler.style.transform = 'scale(1)';
+        }
+
         // Update canvas wrapper class and reset inline styles
         const wrapper = document.getElementById('canvasWrapper');
         wrapper.className = `canvas-wrapper ${device}`;
@@ -637,36 +643,8 @@ class YenzeBuilder {
             input.value = width;
         }
 
-        // Refresh iframe content to adapt to new width
-        const canvas = document.getElementById('canvas');
-        if (canvas && canvas.contentDocument) {
-            const iframeDoc = canvas.contentDocument;
-            let styleElement = iframeDoc.getElementById('yenze-viewport-override');
-            if (styleElement) {
-                styleElement.textContent = `
-                    html, body {
-                        width: 100% !important;
-                        min-width: 100% !important;
-                        max-width: 100% !important;
-                        overflow-x: hidden !important;
-                        overflow-y: auto !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        box-sizing: border-box !important;
-                    }
-                    * {
-                        box-sizing: border-box !important;
-                    }
-                    img, video, svg {
-                        max-width: 100% !important;
-                        height: auto !important;
-                    }
-                `;
-            }
-        }
-
-        // Auto-scale after device switch
-        setTimeout(() => this.autoScaleCanvas(), 150);
+        // Auto-scale after device switch (with delay for CSS to apply)
+        setTimeout(() => this.autoScaleCanvas(), 50);
     }
 
     autoScaleCanvas() {
