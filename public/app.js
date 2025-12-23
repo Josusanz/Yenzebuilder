@@ -637,23 +637,23 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space (canvas area minus padding)
-        const availableWidth = canvasArea.clientWidth - 48; // 24px padding on each side
-        const availableHeight = canvasArea.clientHeight - 48;
+        // Get available space (canvas area minus small padding)
+        const availableWidth = canvasArea.clientWidth - 32; // 16px padding on each side
+        const availableHeight = canvasArea.clientHeight - 32;
 
         // Get canvas wrapper dimensions
         const wrapperWidth = wrapper.offsetWidth;
         const wrapperHeight = wrapper.offsetHeight;
 
-        // Calculate scale to fit width (primary) and height
+        // Calculate scale to fit both dimensions
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
 
-        // Use the smaller scale to fit both dimensions, but cap at 1 (no upscaling)
+        // Use the smaller scale to ensure it fits, cap at 1 (no upscaling)
         let scale = Math.min(scaleX, scaleY, 1);
 
-        // Minimum scale of 0.3 for usability
-        scale = Math.max(scale, 0.3);
+        // Minimum scale of 0.25 for very small screens
+        scale = Math.max(scale, 0.25);
 
         this.currentScale = scale;
         canvasScaler.style.transform = `scale(${scale})`;
