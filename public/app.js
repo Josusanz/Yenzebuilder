@@ -669,9 +669,10 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space
-        const availableWidth = canvasArea.clientWidth;
-        const availableHeight = canvasArea.clientHeight;
+        // Get available space (with minimal margin)
+        const margin = 8;
+        const availableWidth = canvasArea.clientWidth - margin;
+        const availableHeight = canvasArea.clientHeight - margin;
 
         // Device dimensions
         const deviceDimensions = {
@@ -684,27 +685,16 @@ class YenzeBuilder {
         const wrapperWidth = dims.width;
         const wrapperHeight = dims.height;
 
-        // Calculate scale based on desktop reference (1440px)
-        // Desktop fills available space, tablet/mobile scale proportionally
-        const margin = 16;
-        const desktopWidth = 1440;
+        // Calculate scale to fit canvas in available space
+        const scaleX = availableWidth / wrapperWidth;
+        const scaleY = availableHeight / wrapperHeight;
 
-        // Calculate what scale desktop would need
-        const desktopScaleX = (availableWidth - margin) / desktopWidth;
-        const desktopScaleY = (availableHeight - margin) / 900;
-        const desktopScale = Math.min(desktopScaleX, desktopScaleY, 1);
+        // Use the smaller scale to fit, but allow scaling up to fill space
+        let scale = Math.min(scaleX, scaleY);
 
-        let scale;
-        if (this.currentDevice === 'desktop') {
-            // Desktop: fill available space (up to 100%)
-            scale = desktopScale;
-        } else {
-            // Tablet/Mobile: use same scale as desktop would use
-            // This makes them appear smaller proportionally
-            const scaleX = (availableWidth - margin) / wrapperWidth;
-            const scaleY = (availableHeight - margin) / wrapperHeight;
-            scale = Math.min(scaleX, scaleY, 1);
-        }
+        // Cap at 1 for desktop (don't upscale beyond 100%)
+        // For tablet/mobile, also cap at 1
+        scale = Math.min(scale, 1);
 
         // Minimum scale
         scale = Math.max(scale, 0.2);
