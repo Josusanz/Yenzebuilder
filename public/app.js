@@ -1091,6 +1091,17 @@ class YenzeBuilder {
             }
         });
 
+        // Prevent anchor link scrolling in edit mode - intercept at document level
+        doc.addEventListener('click', (e) => {
+            // Find if click was on or inside an anchor with hash href
+            const anchor = e.target.closest('a[href^="#"]');
+            if (anchor) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Don't scroll - we're in edit mode
+            }
+        }, true); // Use capture phase to catch before element handlers
+
         // Add drag-and-drop listeners to iframe document
         console.log('🎯 Setting up drag-and-drop in iframe');
 
