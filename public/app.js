@@ -647,7 +647,7 @@ class YenzeBuilder {
 
         // Reload HTML content to trigger responsive recalculation at new width
         if (this.currentHTML) {
-            this.loadHTML(this.currentHTML, false); // false = don't add to history
+            this.loadHTML(this.currentHTML, false, false); // false = don't add to history, false = don't show toast
         }
 
         // Force reflow then recalculate scale
@@ -856,7 +856,7 @@ class YenzeBuilder {
         reader.readAsText(file);
     }
 
-    loadHTML(html, addToHistory = true) {
+    loadHTML(html, addToHistory = true, showToast = true) {
         this.currentHTML = html;
         this.projectData.html = html;
 
@@ -947,7 +947,9 @@ class YenzeBuilder {
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
-                this.showToast('✅ HTML loaded successfully!', 'success');
+                if (showToast) {
+                    this.showToast('✅ HTML loaded successfully!', 'success');
+                }
 
                 // Add resize observer to body to auto-adjust height
                 if (iframeDoc.body) {
