@@ -730,8 +730,12 @@ class YenzeBuilder {
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // FORCE HEIGHT: Scale to fill available height
-        let scale = availableHeight / wrapperHeight;
+        // Calculate scale for both dimensions
+        const scaleByHeight = availableHeight / wrapperHeight;
+        const scaleByWidth = availableWidth / wrapperWidth;
+
+        // Use the LARGER scale (prioritize filling space) but cap at width limit
+        let scale = Math.min(scaleByHeight, scaleByWidth);
 
         this.currentScale = scale;
 
