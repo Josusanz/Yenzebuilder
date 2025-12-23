@@ -716,7 +716,7 @@ class YenzeBuilder {
         if (!canvasArea) return;
 
         const canvasAreaRect = canvasArea.getBoundingClientRect();
-        const margin = 24; // Small margin around canvas
+        const margin = 16; // Small margin around canvas
 
         const availableWidth = canvasAreaRect.width - (margin * 2);
         const availableHeight = canvasAreaRect.height - (margin * 2);
@@ -730,14 +730,8 @@ class YenzeBuilder {
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // Scale to fill available HEIGHT (full screen height)
+        // FORCE HEIGHT: Scale to fill available height
         let scale = availableHeight / wrapperHeight;
-
-        // If canvas would overflow width, limit scale to fit width
-        const scaledWidth = wrapperWidth * scale;
-        if (scaledWidth > availableWidth) {
-            scale = availableWidth / wrapperWidth;
-        }
 
         this.currentScale = scale;
 
