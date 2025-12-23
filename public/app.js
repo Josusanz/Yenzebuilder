@@ -269,10 +269,11 @@ class YenzeBuilder {
         this.selectedElement = null;
         this.currentDevice = 'desktop';
         this.deviceWidths = {
-            desktop: 1680,
+            desktop: 1440,
             tablet: 768,
             mobile: 375
         };
+        this.currentScale = 1;
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
         this.draggedElement = null;
@@ -308,6 +309,13 @@ class YenzeBuilder {
         this.loadSavedBreakpoints();
         this.setupEventListeners();
         await this.loadProject();
+
+        // Auto-scale on init and window resize
+        setTimeout(() => this.autoScaleCanvas(), 300);
+        window.addEventListener('resize', () => {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => this.autoScaleCanvas(), 150);
+        });
     }
 
     loadSavedBreakpoints() {
@@ -616,6 +624,49 @@ class YenzeBuilder {
         if (input) {
             input.value = width;
         }
+
+        // Auto-scale after device switch
+        setTimeout(() => this.autoScaleCanvas(), 100);
+    }
+
+    autoScaleCanvas() {
+        const canvasArea = document.getElementById('canvasArea');
+        const canvasScaler = document.getElementById('canvasScaler');
+        const wrapper = document.getElementById('canvasWrapper');
+        const zoomIndicator = document.getElementById('zoomIndicator');
+
+        if (!canvasArea || !canvasScaler || !wrapper) return;
+
+        // Get available space (canvas area minus padding)
+        const availableWidth = canvasArea.clientWidth - 48; // 24px padding on each side
+        const availableHeight = canvasArea.clientHeight - 48;
+
+        // Get canvas wrapper dimensions
+        const wrapperWidth = wrapper.offsetWidth;
+        const wrapperHeight = wrapper.offsetHeight;
+
+        // Calculate scale to fit width (primary) and height
+        const scaleX = availableWidth / wrapperWidth;
+        const scaleY = availableHeight / wrapperHeight;
+
+        // Use the smaller scale to fit both dimensions, but cap at 1 (no upscaling)
+        let scale = Math.min(scaleX, scaleY, 1);
+
+        // Minimum scale of 0.3 for usability
+        scale = Math.max(scale, 0.3);
+
+        this.currentScale = scale;
+        canvasScaler.style.transform = `scale(${scale})`;
+
+        // Show zoom indicator briefly
+        if (zoomIndicator) {
+            zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
+            zoomIndicator.style.display = 'block';
+            clearTimeout(this.zoomIndicatorTimeout);
+            this.zoomIndicatorTimeout = setTimeout(() => {
+                zoomIndicator.style.display = 'none';
+            }, 1500);
+        }
     }
 
     updateCanvasWidth(width) {
@@ -623,9 +674,6 @@ class YenzeBuilder {
         if (wrapper) {
             const canvasWidth = parseInt(width);
             wrapper.style.width = canvasWidth + 'px';
-
-            // NO SCALING - keep canvas at real size
-            wrapper.style.transform = 'none';
 
             // Update stored width for current device
             this.deviceWidths[this.currentDevice] = canvasWidth;
@@ -669,6 +717,9 @@ class YenzeBuilder {
                     }, 50);
                 }
             }
+
+            // Auto-scale after width change
+            setTimeout(() => this.autoScaleCanvas(), 100);
         }
     }
 
