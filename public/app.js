@@ -711,29 +711,29 @@ class YenzeBuilder {
             zoomIndicator.style.display = 'block';
         }
 
-        // Calculate available space
+        // Calculate available space with minimal padding
         const topbarHeight = 60;
-        const paddingH = 24; // Horizontal padding
-        const paddingV = 12; // Minimal vertical padding
         const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
         const rightSidebarWidth = 280;
 
-        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - paddingH;
-        const availableHeight = window.innerHeight - topbarHeight - paddingV;
+        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - 16;
+        const availableHeight = window.innerHeight - topbarHeight - 8;
 
         if (availableWidth <= 100 || availableHeight <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
             return;
         }
 
-        // Get desktop wrapper dimensions - use actual wrapper height
+        // Get wrapper dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-        const wrapperHeight = wrapper.offsetHeight || 900;
+        const wrapperHeight = 900;
 
-        // Calculate scale to fill available space (prioritize filling the space)
-        const scaleX = availableWidth / wrapperWidth;
-        const scaleY = availableHeight / wrapperHeight;
-        let scale = Math.min(scaleX, scaleY);
+        // Prioritize filling vertical space (like collapsed version)
+        let scale = availableHeight / wrapperHeight;
+
+        // Limit by width if needed
+        const maxScaleForWidth = availableWidth / wrapperWidth;
+        scale = Math.min(scale, maxScaleForWidth);
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
