@@ -711,41 +711,18 @@ class YenzeBuilder {
             zoomIndicator.style.display = 'block';
         }
 
-        // Calculate available space
+        // Calculate available height (this is what matters - fill top to bottom)
         const topbarHeight = 60;
-        const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
-        const rightSidebarWidth = 280;
-
-        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - 16;
         const availableHeight = window.innerHeight - topbarHeight - 8;
 
-        if (availableWidth <= 100 || availableHeight <= 100) {
+        if (availableHeight <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
             return;
         }
 
-        // Canvas aspect ratio (16:10 for desktop)
-        const aspectRatio = 16 / 10;
-
-        // Calculate dimensions to fill available space while maintaining aspect ratio
-        let canvasWidth, canvasHeight;
-
-        if (availableWidth / availableHeight > aspectRatio) {
-            // Height is limiting factor - fill height
-            canvasHeight = availableHeight;
-            canvasWidth = canvasHeight * aspectRatio;
-        } else {
-            // Width is limiting factor - fill width
-            canvasWidth = availableWidth;
-            canvasHeight = canvasWidth / aspectRatio;
-        }
-
-        // Get wrapper's base dimensions
-        const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
+        // Scale based on HEIGHT only - fill vertical space completely
         const wrapperHeight = 900;
-
-        // Calculate scale to achieve the target canvas size
-        let scale = canvasWidth / wrapperWidth;
+        let scale = availableHeight / wrapperHeight;
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
