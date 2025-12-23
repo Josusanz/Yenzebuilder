@@ -316,6 +316,16 @@ class YenzeBuilder {
             clearTimeout(this.resizeTimeout);
             this.resizeTimeout = setTimeout(() => this.autoScaleCanvas(), 150);
         });
+
+        // Use ResizeObserver to detect when canvas area changes size (e.g., sidebar toggle)
+        const canvasArea = document.getElementById('canvasArea');
+        if (canvasArea && typeof ResizeObserver !== 'undefined') {
+            const resizeObserver = new ResizeObserver(() => {
+                clearTimeout(this.canvasResizeTimeout);
+                this.canvasResizeTimeout = setTimeout(() => this.autoScaleCanvas(), 50);
+            });
+            resizeObserver.observe(canvasArea);
+        }
     }
 
     loadSavedBreakpoints() {
@@ -671,7 +681,7 @@ class YenzeBuilder {
 
         // Get available space using getBoundingClientRect for accurate dimensions
         const rect = canvasArea.getBoundingClientRect();
-        const margin = 24;
+        const margin = 32;
         const availableWidth = rect.width - margin;
         const availableHeight = rect.height - margin;
 
@@ -692,6 +702,10 @@ class YenzeBuilder {
         };
         const wrapperHeight = defaultHeights[this.currentDevice] || 900;
 
+        // Ensure wrapper has correct explicit dimensions
+        wrapper.style.width = `${wrapperWidth}px`;
+        wrapper.style.height = `${wrapperHeight}px`;
+
         // Calculate scale to fit canvas in available space
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
@@ -706,16 +720,13 @@ class YenzeBuilder {
         scale = Math.max(scale, 0.2);
 
         this.currentScale = scale;
+
+        // Apply scale transform
         canvasScaler.style.transform = `scale(${scale})`;
 
-        // Show zoom indicator briefly
+        // Update zoom indicator (no popup, just update value)
         if (zoomIndicator) {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
-            zoomIndicator.style.display = 'block';
-            clearTimeout(this.zoomIndicatorTimeout);
-            this.zoomIndicatorTimeout = setTimeout(() => {
-                zoomIndicator.style.display = 'none';
-            }, 1500);
         }
     }
 
