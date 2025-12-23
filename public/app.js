@@ -616,17 +616,17 @@ class YenzeBuilder {
         }
 
         // Canvas drag functionality (Framer-style)
-        const canvasArea = document.getElementById('canvasArea');
+        const canvasAreaForDrag = document.getElementById('canvasArea');
         const canvasZoomContainer = document.getElementById('canvasZoomContainer');
 
-        if (canvasArea && canvasZoomContainer) {
+        if (canvasAreaForDrag && canvasZoomContainer) {
             let isDragging = false;
             let startX = 0;
             let startY = 0;
             let scrollLeft = 0;
             let scrollTop = 0;
 
-            canvasArea.addEventListener('mousedown', (e) => {
+            canvasAreaForDrag.addEventListener('mousedown', (e) => {
                 // Don't drag if clicking on iframes or controls
                 if (e.target.tagName === 'IFRAME' || e.target.closest('#floatingZoomControls')) {
                     return;
@@ -635,37 +635,37 @@ class YenzeBuilder {
                 isDragging = true;
                 canvasZoomContainer.style.cursor = 'grabbing';
                 canvasZoomContainer.style.transition = 'none';
-                startX = e.pageX - canvasArea.offsetLeft;
-                startY = e.pageY - canvasArea.offsetTop;
-                scrollLeft = canvasArea.scrollLeft;
-                scrollTop = canvasArea.scrollTop;
+                startX = e.pageX - canvasAreaForDrag.offsetLeft;
+                startY = e.pageY - canvasAreaForDrag.offsetTop;
+                scrollLeft = canvasAreaForDrag.scrollLeft;
+                scrollTop = canvasAreaForDrag.scrollTop;
             });
 
-            canvasArea.addEventListener('mouseleave', () => {
+            canvasAreaForDrag.addEventListener('mouseleave', () => {
                 isDragging = false;
                 canvasZoomContainer.style.cursor = 'grab';
                 canvasZoomContainer.style.transition = 'transform 0.2s ease';
             });
 
-            canvasArea.addEventListener('mouseup', () => {
+            canvasAreaForDrag.addEventListener('mouseup', () => {
                 isDragging = false;
                 canvasZoomContainer.style.cursor = 'grab';
                 canvasZoomContainer.style.transition = 'transform 0.2s ease';
             });
 
-            canvasArea.addEventListener('mousemove', (e) => {
+            canvasAreaForDrag.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
                 e.preventDefault();
-                const x = e.pageX - canvasArea.offsetLeft;
-                const y = e.pageY - canvasArea.offsetTop;
+                const x = e.pageX - canvasAreaForDrag.offsetLeft;
+                const y = e.pageY - canvasAreaForDrag.offsetTop;
                 const walkX = (x - startX) * 1.5; // Scroll speed multiplier
                 const walkY = (y - startY) * 1.5;
-                canvasArea.scrollLeft = scrollLeft - walkX;
-                canvasArea.scrollTop = scrollTop - walkY;
+                canvasAreaForDrag.scrollLeft = scrollLeft - walkX;
+                canvasAreaForDrag.scrollTop = scrollTop - walkY;
             });
 
             // Zoom with mouse wheel/trackpad (Framer-style)
-            canvasArea.addEventListener('wheel', (e) => {
+            canvasAreaForDrag.addEventListener('wheel', (e) => {
                 // Check if it's a pinch gesture (ctrlKey is true for pinch on trackpad)
                 if (e.ctrlKey) {
                     e.preventDefault();

@@ -42,7 +42,7 @@ const PRICING_PLANS = {
         id: 'starter',
         name: 'Starter',
         price: 2.99,
-        priceId: process.env.STRIPE_PRICE_STARTER || 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
+        priceId: 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
         interval: 'month',
         features: {
             pages: 3,
@@ -80,7 +80,7 @@ const PRICING_PLANS = {
         id: 'pro',
         name: 'Pro',
         price: 6.99,
-        priceId: process.env.STRIPE_PRICE_PRO || 'price_1SWiCYIDLJ66zkJzlw0IY25L',
+        priceId: 'price_1SWiCYIDLJ66zkJzlw0IY25L',
         interval: 'month',
         features: {
             pages: 'unlimited',
@@ -118,7 +118,7 @@ const PRICING_PLANS = {
         id: 'business',
         name: 'Business',
         price: 14.99,
-        priceId: process.env.STRIPE_PRICE_BUSINESS || 'price_1SWiDFIDLJ66zkJzyNmDga03',
+        priceId: 'price_1SWiDFIDLJ66zkJzyNmDga03',
         interval: 'month',
         features: {
             pages: 'unlimited',
