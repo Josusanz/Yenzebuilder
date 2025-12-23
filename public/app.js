@@ -350,6 +350,7 @@ class YenzeBuilder {
         if (sidebarToggle && leftSidebar) {
             sidebarToggle.addEventListener('click', () => {
                 leftSidebar.classList.toggle('collapsed');
+                sidebarToggle.classList.toggle('collapsed');
                 // Recalculate canvas scale after transition
                 setTimeout(() => this.autoScaleCanvas(), 350);
             });
@@ -649,8 +650,8 @@ class YenzeBuilder {
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
         // Get available space (canvas area minus padding)
-        const availableWidth = canvasArea.clientWidth - 24; // 12px padding on each side
-        const availableHeight = canvasArea.clientHeight - 24;
+        const availableWidth = canvasArea.clientWidth - 16; // 8px padding on each side
+        const availableHeight = canvasArea.clientHeight - 16;
 
         // Get canvas wrapper dimensions
         const wrapperWidth = wrapper.offsetWidth;
