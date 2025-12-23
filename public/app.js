@@ -727,17 +727,10 @@ class YenzeBuilder {
         }
 
         // Get wrapper dimensions
-        const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // Scale based on HEIGHT to fill vertical space
+        // Scale based on HEIGHT to fill vertical space (same as mobile)
         let scale = availableHeight / wrapperHeight;
-
-        // If canvas would overflow width, reduce scale to fit
-        const scaledWidth = wrapperWidth * scale;
-        if (scaledWidth > availableWidth) {
-            scale = availableWidth / wrapperWidth;
-        }
 
         this.currentScale = scale;
 
