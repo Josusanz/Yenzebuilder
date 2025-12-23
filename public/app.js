@@ -1762,7 +1762,10 @@ class YenzeBuilder {
         // Show properties
         this.showProperties(element);
 
-        // Switch to properties tab automatically
+        // Switch to layers tab in left sidebar to show selected element
+        this.switchTab('layers', 'left');
+
+        // Switch to properties tab in right sidebar
         this.switchTab('properties', 'right');
     }
 
