@@ -693,8 +693,8 @@ class YenzeBuilder {
             // Update iframe viewport width override
             const canvas = document.getElementById('canvas');
             if (canvas) {
-                // Set iframe width
-                canvas.style.width = `${canvasWidth}px`;
+                // Keep iframe at 100% width to fill wrapper
+                canvas.style.width = '100%';
 
                 if (canvas.contentDocument) {
                     const iframeDoc = canvas.contentDocument;
@@ -703,20 +703,19 @@ class YenzeBuilder {
                     if (styleElement) {
                         styleElement.textContent = `
                             html, body {
-                                width: ${canvasWidth}px !important;
-                                min-width: ${canvasWidth}px !important;
-                                max-width: ${canvasWidth}px !important;
+                                width: 100% !important;
+                                min-width: 100% !important;
+                                max-width: 100% !important;
                                 overflow-x: hidden !important;
-                                overflow-y: visible !important;
+                                overflow-y: auto !important;
                                 margin: 0 !important;
                                 padding: 0 !important;
                                 box-sizing: border-box !important;
                             }
                             * {
                                 box-sizing: border-box !important;
-                                max-width: 100% !important;
                             }
-                            img, video, iframe, svg {
+                            img, video, svg {
                                 max-width: 100% !important;
                                 height: auto !important;
                             }
@@ -851,26 +850,24 @@ class YenzeBuilder {
         iframeDoc.write(html);
         iframeDoc.close();
 
-        // Force iframe content to render at the specified canvas width
-        const forceWidth = this.deviceWidths[this.currentDevice];
+        // Force iframe content to render properly within the canvas
         const styleElement = iframeDoc.createElement('style');
         styleElement.id = 'yenze-viewport-override';
         styleElement.textContent = `
             html, body {
-                width: ${forceWidth}px !important;
-                min-width: ${forceWidth}px !important;
-                max-width: ${forceWidth}px !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
                 overflow-x: hidden !important;
-                overflow-y: visible !important;
+                overflow-y: auto !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 box-sizing: border-box !important;
             }
             * {
                 box-sizing: border-box !important;
-                max-width: 100% !important;
             }
-            img, video, iframe, svg {
+            img, video, svg {
                 max-width: 100% !important;
                 height: auto !important;
             }
