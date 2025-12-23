@@ -732,18 +732,14 @@ class YenzeBuilder {
         // Keep wrapper at desktop breakpoint width
         wrapper.style.width = desktopBreakpoint + 'px';
 
-        // Calculate scale to fit in available space
-        const scaleByWidth = availableWidth / desktopBreakpoint;
-        const scaleByHeight = availableHeight / (wrapper.offsetHeight || 900);
-
-        // Use the smaller scale to ensure it fits, prioritize width for margins
-        let scale = Math.min(scaleByWidth, scaleByHeight);
+        // Scale to fit width with margins
+        let scale = availableWidth / desktopBreakpoint;
 
         this.currentScale = scale;
 
-        // Apply zoom/scale transform
+        // Apply zoom/scale transform - center it
         canvasScaler.style.transform = `scale(${scale})`;
-        canvasScaler.style.transformOrigin = 'top center';
+        canvasScaler.style.transformOrigin = 'center center';
 
         if (zoomIndicator) {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
