@@ -1253,6 +1253,11 @@ class YenzeBuilder {
             e.stopPropagation();
             if (!this.isDragging) {
                 this.selectElement(e.target);
+
+                // Check if this is a burger menu button
+                if (this.isBurgerMenu(e.target)) {
+                    this.showMobileMenuPanel(e.target, doc);
+                }
             }
         });
 
@@ -1463,6 +1468,144 @@ class YenzeBuilder {
         );
 
         return allInline;
+    }
+
+    // Check if element is a burger/hamburger menu button
+    isBurgerMenu(element) {
+        // Check common burger menu patterns
+        const el = element;
+        const parent = element.parentElement;
+
+        // Check for hamburger icon classes
+        const burgerClasses = ['hamburger', 'burger', 'menu-toggle', 'mobile-menu', 'nav-toggle', 'menu-btn', 'menu-icon'];
+        const hasClass = burgerClasses.some(cls =>
+            el.className?.toLowerCase().includes(cls) ||
+            parent?.className?.toLowerCase().includes(cls)
+        );
+
+        // Check for SVG hamburger icon (3 lines)
+        const isSvgBurger = el.tagName === 'svg' || el.closest('svg');
+
+        // Check for button with hamburger pattern (3 spans/divs as lines)
+        const hasThreeLines = el.querySelectorAll('span, div').length === 3 ||
+            parent?.querySelectorAll('span, div').length === 3;
+
+        // Check for aria-label
+        const hasAriaLabel = el.getAttribute('aria-label')?.toLowerCase().includes('menu') ||
+            parent?.getAttribute('aria-label')?.toLowerCase().includes('menu');
+
+        // Check for common icon fonts
+        const hasIconClass = el.className?.includes('fa-bars') ||
+            el.className?.includes('bi-list') ||
+            el.className?.includes('menu');
+
+        return hasClass || hasAriaLabel || hasIconClass || (isSvgBurger && hasThreeLines);
+    }
+
+    // Show mobile menu panel with nav links
+    showMobileMenuPanel(burgerElement, doc) {
+        // Find the associated nav element
+        const header = burgerElement.closest('header') || burgerElement.closest('nav') || burgerElement.closest('[class*="nav"]');
+        if (!header) return;
+
+        // Find all nav links
+        const navLinks = header.querySelectorAll('a[href], button');
+        if (navLinks.length === 0) return;
+
+        // Check if panel already exists
+        let panel = doc.getElementById('yenze-mobile-menu-panel');
+        if (panel) {
+            // Toggle visibility
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                setTimeout(() => panel.style.transform = 'translateX(0)', 10);
+            } else {
+                panel.style.transform = 'translateX(100%)';
+                setTimeout(() => panel.style.display = 'none', 300);
+            }
+            return;
+        }
+
+        // Create panel
+        panel = doc.createElement('div');
+        panel.id = 'yenze-mobile-menu-panel';
+        panel.style.cssText = `
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            z-index: 99999;
+            padding: 20px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        `;
+
+        // Create close button
+        const closeBtn = doc.createElement('button');
+        closeBtn.innerHTML = '✕';
+        closeBtn.style.cssText = `
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        `;
+        closeBtn.onclick = () => {
+            panel.style.transform = 'translateX(100%)';
+            setTimeout(() => panel.style.display = 'none', 300);
+        };
+        panel.appendChild(closeBtn);
+
+        // Create title
+        const title = doc.createElement('h3');
+        title.textContent = 'Menu';
+        title.style.cssText = 'margin: 0 0 20px; font-size: 18px; font-weight: 600; color: #333;';
+        panel.appendChild(title);
+
+        // Create nav list
+        const navList = doc.createElement('nav');
+        navList.style.cssText = 'display: flex; flex-direction: column; gap: 8px;';
+
+        navLinks.forEach(link => {
+            const text = link.textContent?.trim();
+            if (!text || text.length > 50) return; // Skip empty or too long
+
+            const item = doc.createElement('a');
+            item.href = link.href || '#';
+            item.textContent = text;
+            item.style.cssText = `
+                padding: 12px 16px;
+                color: #333;
+                text-decoration: none;
+                border-radius: 8px;
+                transition: background 0.2s;
+                font-size: 15px;
+            `;
+            item.onmouseenter = () => item.style.background = '#f3f4f6';
+            item.onmouseleave = () => item.style.background = 'transparent';
+            item.onclick = (e) => {
+                e.preventDefault();
+                // Select the original link in the editor
+                this.selectElement(link);
+                this.showToast('Link selected in editor', 'info');
+            };
+            navList.appendChild(item);
+        });
+
+        panel.appendChild(navList);
+        doc.body.appendChild(panel);
+
+        // Animate in
+        setTimeout(() => panel.style.transform = 'translateX(0)', 10);
+
+        this.showToast('Mobile menu opened - click items to select', 'info');
     }
 
     enableInlineTextEdit(element) {
