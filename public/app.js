@@ -669,8 +669,8 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space (with minimal margin)
-        const margin = 8;
+        // Get available space (with comfortable margin)
+        const margin = 16;
         const availableWidth = canvasArea.clientWidth - margin;
         const availableHeight = canvasArea.clientHeight - margin;
 
@@ -689,14 +689,13 @@ class YenzeBuilder {
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
 
-        // Use the smaller scale to fit, but allow scaling up to fill space
+        // Use the smaller scale to fit both dimensions
         let scale = Math.min(scaleX, scaleY);
 
-        // Cap at 1 for desktop (don't upscale beyond 100%)
-        // For tablet/mobile, also cap at 1
+        // Cap at 1 (don't upscale beyond 100% - the canvas should never be bigger than its natural size)
         scale = Math.min(scale, 1);
 
-        // Minimum scale
+        // Minimum scale for usability
         scale = Math.max(scale, 0.2);
 
         this.currentScale = scale;
