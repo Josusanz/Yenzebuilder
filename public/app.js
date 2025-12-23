@@ -759,7 +759,16 @@ class YenzeBuilder {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
 
-        console.log('AutoScale applied:', { scale: Math.round(scale * 100) + '%', availableWidth, wrapperWidth });
+        console.log('AutoScale applied:', {
+            scale: Math.round(scale * 100) + '%',
+            availableWidth,
+            availableHeight,
+            wrapperWidth,
+            windowWidth: window.innerWidth,
+            leftSidebarWidth,
+            rightSidebarWidth,
+            deviceWidths: this.deviceWidths
+        });
     }
 
     updateCanvasWidth(width) {
