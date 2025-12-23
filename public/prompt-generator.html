@@ -644,9 +644,96 @@
             </div>
         </div>
 
+        <!-- Landing Page Elements -->
+        <div class="section">
+            <div class="section-label">4. Landing Page Elements (Select Multiple)</div>
+            <div class="options-grid" id="elementsOptions">
+                <div class="option" data-value="contact-form">
+                    <i class="fa-solid fa-envelope option-icon"></i>
+                    <span class="option-label">Contact Form</span>
+                </div>
+                <div class="option" data-value="buy-button">
+                    <i class="fa-solid fa-credit-card option-icon"></i>
+                    <span class="option-label">Buy Button</span>
+                </div>
+                <div class="option" data-value="book-call">
+                    <i class="fa-solid fa-calendar-check option-icon"></i>
+                    <span class="option-label">Book a Call</span>
+                </div>
+                <div class="option" data-value="newsletter">
+                    <i class="fa-solid fa-paper-plane option-icon"></i>
+                    <span class="option-label">Newsletter Signup</span>
+                </div>
+                <div class="option" data-value="countdown">
+                    <i class="fa-solid fa-hourglass-half option-icon"></i>
+                    <span class="option-label">Countdown Timer</span>
+                </div>
+                <div class="option" data-value="pricing-table">
+                    <i class="fa-solid fa-table-columns option-icon"></i>
+                    <span class="option-label">Pricing Table</span>
+                </div>
+                <div class="option" data-value="video-embed">
+                    <i class="fa-solid fa-play-circle option-icon"></i>
+                    <span class="option-label">Video Embed</span>
+                </div>
+                <div class="option" data-value="faq-accordion">
+                    <i class="fa-solid fa-circle-question option-icon"></i>
+                    <span class="option-label">FAQ Accordion</span>
+                </div>
+                <div class="option" data-value="testimonials">
+                    <i class="fa-solid fa-quote-left option-icon"></i>
+                    <span class="option-label">Testimonials</span>
+                </div>
+                <div class="option" data-value="feature-grid">
+                    <i class="fa-solid fa-th-large option-icon"></i>
+                    <span class="option-label">Feature Grid</span>
+                </div>
+                <div class="option" data-value="comparison-table">
+                    <i class="fa-solid fa-arrows-left-right option-icon"></i>
+                    <span class="option-label">Comparison Table</span>
+                </div>
+                <div class="option" data-value="stats-counter">
+                    <i class="fa-solid fa-chart-simple option-icon"></i>
+                    <span class="option-label">Stats Counter</span>
+                </div>
+                <div class="option" data-value="trust-badges">
+                    <i class="fa-solid fa-shield-halved option-icon"></i>
+                    <span class="option-label">Trust Badges</span>
+                </div>
+                <div class="option" data-value="client-logos">
+                    <i class="fa-solid fa-building option-icon"></i>
+                    <span class="option-label">Client Logos</span>
+                </div>
+                <div class="option" data-value="sticky-cta">
+                    <i class="fa-solid fa-thumbtack option-icon"></i>
+                    <span class="option-label">Sticky CTA Bar</span>
+                </div>
+                <div class="option" data-value="exit-popup">
+                    <i class="fa-solid fa-door-open option-icon"></i>
+                    <span class="option-label">Exit Popup</span>
+                </div>
+                <div class="option" data-value="social-share">
+                    <i class="fa-solid fa-share-nodes option-icon"></i>
+                    <span class="option-label">Social Share</span>
+                </div>
+                <div class="option" data-value="live-chat">
+                    <i class="fa-solid fa-comments option-icon"></i>
+                    <span class="option-label">Live Chat Widget</span>
+                </div>
+                <div class="option" data-value="money-back">
+                    <i class="fa-solid fa-rotate-left option-icon"></i>
+                    <span class="option-label">Money-Back Guarantee</span>
+                </div>
+                <div class="option" data-value="limited-spots">
+                    <i class="fa-solid fa-fire option-icon"></i>
+                    <span class="option-label">Limited Spots Alert</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Product/Service Details -->
         <div class="section">
-            <div class="section-label">4. Product/Service Details</div>
+            <div class="section-label">5. Product/Service Details</div>
             <div style="display: flex; flex-direction: column; gap: 24px;">
                 <div>
                     <label>Product/Service Name</label>
@@ -748,6 +835,7 @@
                 goal: '',
                 strategy: '',
                 style: '',
+                elements: [],
                 productName: '',
                 valueProposition: '',
                 targetAudience: '',
@@ -782,6 +870,22 @@
                     document.querySelectorAll('#styleOptions .option').forEach(o => o.classList.remove('selected'));
                     el.classList.add('selected');
                     state.style = el.dataset.value;
+                    updatePrompt();
+                });
+            });
+
+            // Elements options (multi-select)
+            document.querySelectorAll('#elementsOptions .option').forEach(el => {
+                el.addEventListener('click', () => {
+                    el.classList.toggle('selected');
+                    const value = el.dataset.value;
+                    if (el.classList.contains('selected')) {
+                        if (!state.elements.includes(value)) {
+                            state.elements.push(value);
+                        }
+                    } else {
+                        state.elements = state.elements.filter(e => e !== value);
+                    }
                     updatePrompt();
                 });
             });
@@ -885,6 +989,33 @@
 **Price Point**: ${state.price || '[Pricing information]'}
 **Key Benefits**: ${state.benefits || '[List your key benefits]'}
 **Call-to-Action**: "${state.ctaText || 'Get Started Now'}"
+
+---
+
+### 🧩 REQUIRED LANDING PAGE ELEMENTS
+${state.elements.length > 0 ? `
+**Include these specific elements in the landing page:**
+${state.elements.includes('contact-form') ? '- ✅ **Contact Form**: Full contact form with name, email, phone, message fields. Style matching the page design. Submit to https://yenze.io/api/submit-form' : ''}
+${state.elements.includes('buy-button') ? '- ✅ **Buy Button**: Prominent purchase/checkout button with price display. Include secure payment badges (Visa, Mastercard, PayPal icons). Add hover animation.' : ''}
+${state.elements.includes('book-call') ? '- ✅ **Book a Call Section**: Calendar booking widget placeholder or Calendly-style embed. Include "Schedule a Free Call" CTA and available time slots display.' : ''}
+${state.elements.includes('newsletter') ? '- ✅ **Newsletter Signup**: Email capture form with compelling lead magnet offer. "Get our free guide" style. Inline form with email + submit button.' : ''}
+${state.elements.includes('countdown') ? '- ✅ **Countdown Timer**: JavaScript countdown timer showing days:hours:minutes:seconds. Style with urgency colors (red/orange). Place near CTA buttons.' : ''}
+${state.elements.includes('pricing-table') ? '- ✅ **Pricing Table**: 2-3 tier pricing comparison table. Highlight "Most Popular" plan. Include feature checkmarks, prices, and CTA for each tier.' : ''}
+${state.elements.includes('video-embed') ? '- ✅ **Video Embed**: YouTube/Vimeo embed placeholder with play button overlay. 16:9 aspect ratio. Add thumbnail image with play icon.' : ''}
+${state.elements.includes('faq-accordion') ? '- ✅ **FAQ Accordion**: Expandable Q&A section with smooth animations. 5-7 common questions. Include schema markup for SEO.' : ''}
+${state.elements.includes('testimonials') ? '- ✅ **Testimonials Carousel/Grid**: Customer reviews with photos, names, titles. Star ratings. Include specific results/numbers. Minimum 4 testimonials.' : ''}
+${state.elements.includes('feature-grid') ? '- ✅ **Feature Grid**: 6-9 feature cards in responsive grid. Icon + title + description for each. Hover effects.' : ''}
+${state.elements.includes('comparison-table') ? '- ✅ **Comparison Table**: Before/After or Us vs Competitors table. Checkmarks and X marks. Highlight advantages.' : ''}
+${state.elements.includes('stats-counter') ? '- ✅ **Stats Counter**: Animated number counters (count up on scroll). Show key metrics: users, revenue, savings, etc. 3-4 stats in a row.' : ''}
+${state.elements.includes('trust-badges') ? '- ✅ **Trust Badges**: Security badges, SSL icon, money-back guarantee seal, payment icons, industry certifications.' : ''}
+${state.elements.includes('client-logos') ? '- ✅ **Client Logos Bar**: Grayscale client/partner logos in horizontal scroll or grid. "Trusted by" heading. 5-8 logos.' : ''}
+${state.elements.includes('sticky-cta') ? '- ✅ **Sticky CTA Bar**: Fixed bottom bar that appears on scroll with CTA button. Include brief value prop and dismiss option.' : ''}
+${state.elements.includes('exit-popup') ? '- ✅ **Exit Intent Popup**: JavaScript exit-intent detection. Show special offer popup when user moves to leave. Include discount/bonus offer.' : ''}
+${state.elements.includes('social-share') ? '- ✅ **Social Share Buttons**: Share buttons for Twitter, Facebook, LinkedIn. Floating sidebar or inline placement.' : ''}
+${state.elements.includes('live-chat') ? '- ✅ **Live Chat Widget**: Chat bubble in bottom-right corner. Expandable chat window mockup. "Chat with us" prompt.' : ''}
+${state.elements.includes('money-back') ? '- ✅ **Money-Back Guarantee Badge**: Prominent guarantee seal with "30-Day Money Back Guarantee" or similar. Place near pricing/CTA.' : ''}
+${state.elements.includes('limited-spots') ? '- ✅ **Limited Spots Alert**: "Only X spots remaining" dynamic counter. Red/orange urgency styling. Animated pulse effect.' : ''}
+` : '**No specific elements selected - use default landing page structure.**'}
 
 ---
 
