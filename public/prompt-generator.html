@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YENZE | Sales Landing Page Generator</title>
-    <meta name="description" content="Generate high-converting sales landing pages with Google Stitch.">
+    <title>YENZE | AI Landing Page Generator</title>
+    <meta name="description" content="Generate high-converting sales landing pages with Google Stitch, Gemini, or Claude AI.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -523,23 +523,45 @@
 
     <main class="main">
         <div class="header">
-            <h1>Sales Landing Page Generator</h1>
-            <p>Create high-converting sales landing pages that turn visitors into customers with Google Stitch AI.</p>
+            <h1>AI Landing Page Generator</h1>
+            <p>Create high-converting sales landing pages that turn visitors into customers with your favorite AI platform.</p>
         </div>
 
         <!-- How it works -->
         <div class="how-it-works">
             <div class="step-pill">
                 <div class="step-num">1</div>
-                <span>Configure Goal</span>
+                <span>Choose AI Platform</span>
             </div>
             <div class="step-pill">
                 <div class="step-num">2</div>
-                <span>Generate Prompt</span>
+                <span>Configure & Generate</span>
             </div>
             <div class="step-pill">
                 <div class="step-num">3</div>
                 <span>Create & Launch</span>
+            </div>
+        </div>
+
+        <!-- AI Platform Selection -->
+        <div class="section">
+            <div class="section-label">0. Choose AI Platform</div>
+            <div class="options-grid" id="platformOptions" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="option selected" data-value="stitch" data-url="https://stitch.withgoogle.com/">
+                    <i class="fa-brands fa-google option-icon" style="color: #4285F4;"></i>
+                    <span class="option-label">Google Stitch</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Best for visual sites</span>
+                </div>
+                <div class="option" data-value="gemini" data-url="https://gemini.google.com/">
+                    <i class="fa-solid fa-gem option-icon" style="color: #8E75B2;"></i>
+                    <span class="option-label">Gemini</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Fast code generation</span>
+                </div>
+                <div class="option" data-value="claude" data-url="https://claude.ai/">
+                    <i class="fa-solid fa-brain option-icon" style="color: #D97706;"></i>
+                    <span class="option-label">Claude</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Best code quality</span>
+                </div>
             </div>
         </div>
 
@@ -783,8 +805,8 @@
 
         <!-- Actions -->
         <div class="actions">
-            <a href="https://stitch.withgoogle.com/" target="_blank" class="btn btn-primary">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Open Google Stitch
+            <a href="https://stitch.withgoogle.com/" target="_blank" class="btn btn-primary" id="openAiBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="openAiBtnText">Open Google Stitch</span>
             </a>
             <a href="builder.html" class="btn btn-secondary">
                 <i class="fa-solid fa-code"></i> Go to Builder
@@ -832,6 +854,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const state = {
+                platform: 'stitch',
+                platformUrl: 'https://stitch.withgoogle.com/',
                 goal: '',
                 strategy: '',
                 style: '',
@@ -843,6 +867,28 @@
                 benefits: '',
                 ctaText: ''
             };
+
+            const platformNames = {
+                'stitch': 'Google Stitch',
+                'gemini': 'Gemini',
+                'claude': 'Claude'
+            };
+
+            // Platform options
+            document.querySelectorAll('#platformOptions .option').forEach(el => {
+                el.addEventListener('click', () => {
+                    document.querySelectorAll('#platformOptions .option').forEach(o => o.classList.remove('selected'));
+                    el.classList.add('selected');
+                    state.platform = el.dataset.value;
+                    state.platformUrl = el.dataset.url;
+
+                    // Update button text and href
+                    document.getElementById('openAiBtnText').textContent = 'Open ' + platformNames[state.platform];
+                    document.getElementById('openAiBtn').href = state.platformUrl;
+
+                    updatePrompt();
+                });
+            });
 
             // Goal options
             document.querySelectorAll('#goalOptions .option').forEach(el => {
@@ -964,14 +1010,66 @@
                 'playful': 'Friendly & Playful - Rounded corners, warm colors, approachable, fun illustrations'
             };
 
-            const prompt = `Create a high-converting sales landing page with the following specifications:
+            // Platform-specific intro
+            const platformIntros = {
+                'stitch': `Create a high-converting sales landing page with the following specifications:
 
 **CRITICAL FOR GOOGLE STITCH - READ THIS FIRST**:
 - Generate ONE SINGLE HTML FILE with ALL sections in it
 - This is a SINGLE-PAGE, LONG-SCROLL landing page (NOT multiple pages)
 - All sections (Hero, Social Proof, Benefits, Testimonials, Pricing, FAQ, Footer) must be in ONE continuous HTML document
 - Use embedded <style> and <script> tags within the single HTML file
-- NO separate pages, NO navigation between pages - just ONE long scrollable page
+- NO separate pages, NO navigation between pages - just ONE long scrollable page`,
+
+                'gemini': `Generate a complete, production-ready HTML landing page. Follow these specifications exactly:
+
+**OUTPUT FORMAT REQUIREMENTS**:
+- Generate ONE complete HTML file with embedded CSS and JavaScript
+- Include all sections in a single long-scroll page design
+- Use modern CSS (flexbox, grid, custom properties)
+- Make it fully responsive (mobile-first approach)
+- Include smooth scroll animations using IntersectionObserver`,
+
+                'claude': `Create a high-converting, production-ready landing page. I need complete, clean HTML code.
+
+**CODE QUALITY REQUIREMENTS**:
+- Generate a single HTML file with embedded <style> and <script> sections
+- Use semantic HTML5 elements (header, main, section, footer)
+- Follow accessibility best practices (ARIA labels, alt text, proper heading hierarchy)
+- Write clean, well-commented CSS with custom properties
+- Use vanilla JavaScript for any interactions (no frameworks needed)
+- Ensure the page is fully responsive with mobile-first CSS`
+            };
+
+            // Platform-specific outros
+            const platformOutros = {
+                'stitch': `**FINAL REMINDER BEFORE GENERATING**:
+- Output: ONE SINGLE HTML FILE (not multiple files)
+- Format: Long-scroll single-page design with all sections stacked vertically
+- All sections from Hero to Footer must be in the same HTML document
+- User scrolls down through all sections - NO page navigation, NO separate pages
+
+Generate the complete, production-ready landing page HTML now. Make it STUNNING and CONVERSION-OPTIMIZED.`,
+
+                'gemini': `**FINAL OUTPUT REQUIREMENTS**:
+- Provide the complete HTML code in a single code block
+- Do not explain the code, just generate it
+- Make sure all CSS is in a <style> tag and all JS is in a <script> tag
+- The page must work immediately when opened in a browser
+
+Generate the full HTML now.`,
+
+                'claude': `**DELIVERABLE**:
+Please generate the complete HTML file now. Include:
+1. All CSS in a <style> tag in the head
+2. All JavaScript in a <script> tag before </body>
+3. Beautiful, modern design that converts visitors to customers
+4. Proper meta tags for SEO and social sharing
+
+Output the full, working HTML code.`
+            };
+
+            const prompt = `${platformIntros[state.platform]}
 
 ---
 
@@ -1232,13 +1330,7 @@ Before generating final code, verify:
 
 ---
 
-**FINAL REMINDER BEFORE GENERATING**:
-- Output: ONE SINGLE HTML FILE (not multiple files)
-- Format: Long-scroll single-page design with all sections stacked vertically
-- All sections from Hero to Footer must be in the same HTML document
-- User scrolls down through all sections - NO page navigation, NO separate pages
-
-Generate the complete, production-ready landing page HTML now. Make it STUNNING and CONVERSION-OPTIMIZED.`;
+${platformOutros[state.platform]}`;
 
             document.getElementById('output').textContent = prompt;
         }

@@ -44,18 +44,6 @@
                     </svg>
                     My Projects
                 </a>
-                <a href="#pages" class="sidebar-item" data-section="pages">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    Pages
-                    <span class="new-badge"
-                        style="margin-left: auto; background: #667eea; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">NEW</span>
-                </a>
                 <a href="#messages" class="sidebar-item" data-section="messages">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -146,72 +134,6 @@
                     <div class="loading-container">
                         <div class="loading-spinner"></div>
                         <p>Loading your projects...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pages Section -->
-            <section id="pagesSection" class="dashboard-section">
-                <div class="section-header">
-                    <div>
-                        <h2>Pages</h2>
-                        <p class="text-muted">Multi-page websites made easy. Create, manage, and optimize individual pages.</p>
-                    </div>
-                    <button class="btn-primary" onclick="dashboardApp.showNewPageModal()" id="newPageBtn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                        </svg>
-                        New Page
-                    </button>
-                </div>
-
-                <!-- Project Selector -->
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; border-radius: 12px; margin-bottom: 24px; color: white;">
-                    <div style="margin-bottom: 12px;">
-                        <label style="font-weight: 600; font-size: 14px; display: block; margin-bottom: 8px;">Select Project</label>
-                        <select id="pagesProjectSelector" onchange="dashboardApp.loadProjectPages(this.value)"
-                            style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid white; background: white; font-size: 14px; cursor: pointer;">
-                            <option value="">Choose a project...</option>
-                        </select>
-                    </div>
-                    <div id="projectTypeInfo" style="display: none; margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 8px; font-size: 13px;">
-                        <div id="singlePageInfo" style="display: none;">
-                            📄 This is a <strong>single-page</strong> project.
-                            <button onclick="dashboardApp.convertToMultiPage()"
-                                style="background: white; color: #667eea; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 600; cursor: pointer; margin-left: 8px;">
-                                Convert to Multi-Page
-                            </button>
-                        </div>
-                        <div id="multiPageInfo" style="display: none;">
-                            ✨ This is a <strong>multi-page</strong> project. Add pages below!
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pages Grid -->
-                <div id="pagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 24px;">
-                    <div style="text-align: center; padding: 60px 20px; color: #9ca3af; grid-column: 1 / -1;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 16px; opacity: 0.3;">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                        </svg>
-                        <p style="font-size: 16px; margin: 0;">Select a project to manage its pages</p>
-                    </div>
-                </div>
-
-                <!-- Navigation Builder -->
-                <div id="navigationBuilder" style="display: none;">
-                    <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border: 2px dashed #e2e8f0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Navigation Menu</h3>
-                            <button onclick="dashboardApp.saveNavigation()" class="btn-secondary">
-                                💾 Save Navigation
-                            </button>
-                        </div>
-                        <div id="navigationItems" style="display: flex; flex-direction: column; gap: 8px;">
-                            <!-- Navigation items will be rendered here -->
-                        </div>
                     </div>
                 </div>
             </section>
