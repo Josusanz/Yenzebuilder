@@ -1930,18 +1930,8 @@ class YenzeBuilder {
             element.style.boxShadow = '0 0 0 4px rgba(0, 102, 255, 0.1)';
         }
 
-        // Scroll element into view in the canvas (unless we just scrolled to its target!)
-        // We prioritize showing the element we selected, unless it's a nav link where we probably want to see the result.
-        // But if we scroll the target into view, the nav link might go out of view (if sticky, it stays).
-        // Let's scroll the element into view ONLY if it's NOT a nav link that successfully found a target
-        const isNavLink = element.tagName === 'A' && element.getAttribute('href')?.startsWith('#');
-        if (!isNavLink) {
-            element.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'center'
-            });
-        }
+        // Don't scroll element into view - it causes canvas to move unexpectedly
+        // The user can scroll manually if needed
 
         // Highlight in layers panel
         this.highlightInLayers(element);
