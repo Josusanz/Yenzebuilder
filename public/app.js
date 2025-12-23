@@ -671,7 +671,7 @@ class YenzeBuilder {
 
         // Get available space using getBoundingClientRect for accurate dimensions
         const rect = canvasArea.getBoundingClientRect();
-        const margin = 16;
+        const margin = 24;
         const availableWidth = rect.width - margin;
         const availableHeight = rect.height - margin;
 
@@ -681,16 +681,16 @@ class YenzeBuilder {
             return;
         }
 
-        // Device dimensions
-        const deviceDimensions = {
-            desktop: { width: 1440, height: 900 },
-            tablet: { width: 768, height: 600 },
-            mobile: { width: 375, height: 667 }
-        };
+        // Get actual wrapper dimensions (may have been customized via input)
+        const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
 
-        const dims = deviceDimensions[this.currentDevice] || deviceDimensions.desktop;
-        const wrapperWidth = dims.width;
-        const wrapperHeight = dims.height;
+        // Default heights for each device
+        const defaultHeights = {
+            desktop: 900,
+            tablet: 600,
+            mobile: 667
+        };
+        const wrapperHeight = defaultHeights[this.currentDevice] || 900;
 
         // Calculate scale to fit canvas in available space
         const scaleX = availableWidth / wrapperWidth;
@@ -2657,13 +2657,8 @@ class YenzeBuilder {
             // Click to select
             li.addEventListener('click', (e) => {
                 e.stopPropagation();
+                // selectElement already calls highlightInLayers which handles the visual selection
                 this.selectElement(element);
-
-                // Highlight in tree
-                document.querySelectorAll('.layer-item').forEach(item => {
-                    item.classList.remove('selected');
-                });
-                li.classList.add('selected');
             });
 
             // Drag and drop in layers
