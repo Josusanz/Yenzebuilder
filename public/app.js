@@ -730,11 +730,8 @@ class YenzeBuilder {
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // Scale based on WIDTH to make canvas as wide as possible
-        let scale = availableWidth / wrapperWidth;
-
-        // Ensure minimum scale of 0.65 for better visibility
-        scale = Math.max(scale, 0.65);
+        // Scale to fill available HEIGHT (full screen height)
+        let scale = availableHeight / wrapperHeight;
 
         this.currentScale = scale;
 
