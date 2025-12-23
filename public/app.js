@@ -724,6 +724,7 @@ class YenzeBuilder {
 
         // DEBUG: Log values to console
         console.log('AutoScale Desktop:', {
+            canvasAreaRect: { width: rect.width, height: rect.height },
             availableWidth,
             availableHeight,
             wrapperWidth,
@@ -731,7 +732,7 @@ class YenzeBuilder {
             scaleX,
             scaleY,
             finalScale: scale,
-            canvasScalerId: canvasScaler?.id
+            windowSize: { w: window.innerWidth, h: window.innerHeight }
         });
 
         // Apply scale transform to desktop canvas - use setProperty for reliability
