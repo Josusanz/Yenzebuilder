@@ -664,11 +664,11 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space (use full area)
+        // Get available space
         const availableWidth = canvasArea.clientWidth;
         const availableHeight = canvasArea.clientHeight;
 
-        // Get the device dimensions directly
+        // Device dimensions
         const deviceDimensions = {
             desktop: { width: 1440, height: 900 },
             tablet: { width: 768, height: 600 },
@@ -679,15 +679,29 @@ class YenzeBuilder {
         const wrapperWidth = dims.width;
         const wrapperHeight = dims.height;
 
-        // Calculate scale to fit with small margin
-        const margin = 16; // 8px on each side
-        const scaleX = (availableWidth - margin) / wrapperWidth;
-        const scaleY = (availableHeight - margin) / wrapperHeight;
+        // Calculate scale based on desktop reference (1440px)
+        // Desktop fills available space, tablet/mobile scale proportionally
+        const margin = 16;
+        const desktopWidth = 1440;
 
-        // Use the smaller scale to ensure it fits, cap at 1 (no upscaling)
-        let scale = Math.min(scaleX, scaleY, 1);
+        // Calculate what scale desktop would need
+        const desktopScaleX = (availableWidth - margin) / desktopWidth;
+        const desktopScaleY = (availableHeight - margin) / 900;
+        const desktopScale = Math.min(desktopScaleX, desktopScaleY, 1);
 
-        // Minimum scale of 0.2 for very small screens
+        let scale;
+        if (this.currentDevice === 'desktop') {
+            // Desktop: fill available space (up to 100%)
+            scale = desktopScale;
+        } else {
+            // Tablet/Mobile: use same scale as desktop would use
+            // This makes them appear smaller proportionally
+            const scaleX = (availableWidth - margin) / wrapperWidth;
+            const scaleY = (availableHeight - margin) / wrapperHeight;
+            scale = Math.min(scaleX, scaleY, 1);
+        }
+
+        // Minimum scale
         scale = Math.max(scale, 0.2);
 
         this.currentScale = scale;
