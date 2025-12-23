@@ -669,10 +669,17 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space (with comfortable margin)
-        const margin = 16;
-        const availableWidth = canvasArea.clientWidth - margin;
-        const availableHeight = canvasArea.clientHeight - margin;
+        // Get available space using getBoundingClientRect for accurate dimensions
+        const rect = canvasArea.getBoundingClientRect();
+        const margin = 24;
+        const availableWidth = rect.width - margin;
+        const availableHeight = rect.height - margin;
+
+        // Skip if dimensions aren't ready yet
+        if (availableWidth <= 0 || availableHeight <= 0) {
+            setTimeout(() => this.autoScaleCanvas(), 100);
+            return;
+        }
 
         // Device dimensions
         const deviceDimensions = {
