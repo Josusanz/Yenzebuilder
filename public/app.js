@@ -711,29 +711,21 @@ class YenzeBuilder {
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
         const leftSidebar = document.querySelector('.left-sidebar');
-        const rightSidebar = document.querySelector('.right-sidebar');
 
         if (!canvasScaler || !wrapper) return;
 
-        // Calculate available space by subtracting sidebar widths from window
+        // Use fixed CSS values for sidebar widths (more reliable than measuring)
+        // Left sidebar: 260px when visible, 0 when collapsed
+        // Right sidebar: 280px (always visible on desktop)
         const topbarHeight = 60;
-        const margin = 60; // Increased margin for better visual spacing
+        const padding = 40; // Padding around canvas
 
-        // Get sidebar widths using getBoundingClientRect for accuracy
-        let leftSidebarWidth = 0;
-        let rightSidebarWidth = 0;
+        const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
+        const rightSidebarWidth = 280;
 
-        if (leftSidebar && !leftSidebar.classList.contains('collapsed')) {
-            leftSidebarWidth = leftSidebar.getBoundingClientRect().width || 260;
-        }
-
-        if (rightSidebar) {
-            rightSidebarWidth = rightSidebar.getBoundingClientRect().width || 280;
-        }
-
-        // Calculate available space
-        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - margin;
-        const availableHeight = window.innerHeight - topbarHeight - margin;
+        // Calculate available space for canvas
+        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - padding;
+        const availableHeight = window.innerHeight - topbarHeight - padding;
 
         // Skip if dimensions aren't ready yet
         if (availableWidth <= 100 || availableHeight <= 100) {
