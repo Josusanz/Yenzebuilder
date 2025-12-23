@@ -733,6 +733,12 @@ class YenzeBuilder {
         // Scale based on HEIGHT to fill vertical space
         let scale = availableHeight / wrapperHeight;
 
+        // If canvas would overflow width, reduce scale to fit
+        const scaledWidth = wrapperWidth * scale;
+        if (scaledWidth > availableWidth) {
+            scale = availableWidth / wrapperWidth;
+        }
+
         this.currentScale = scale;
 
         // Apply scale
