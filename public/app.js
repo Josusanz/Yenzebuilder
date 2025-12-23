@@ -711,15 +711,15 @@ class YenzeBuilder {
             zoomIndicator.style.display = 'block';
         }
 
-        // Calculate available space
-        const topbarHeight = 60;
-        const marginV = 16; // Vertical margin
-        const marginH = 12; // Horizontal margin
-        const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
-        const rightSidebarWidth = 280;
+        // Calculate available space using canvas-area directly
+        const canvasArea = document.querySelector('.canvas-area');
+        if (!canvasArea) return;
 
-        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - (marginH * 2);
-        const availableHeight = window.innerHeight - topbarHeight - (marginV * 2);
+        const canvasAreaRect = canvasArea.getBoundingClientRect();
+        const margin = 24; // Small margin around canvas
+
+        const availableWidth = canvasAreaRect.width - (margin * 2);
+        const availableHeight = canvasAreaRect.height - (margin * 2);
 
         if (availableHeight <= 100 || availableWidth <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
@@ -728,12 +728,12 @@ class YenzeBuilder {
 
         // Get wrapper dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-        const wrapperHeight = 900;
+        const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // Prioritize HEIGHT to fill vertical space
+        // Scale to fill available HEIGHT first
         let scale = availableHeight / wrapperHeight;
 
-        // Only reduce scale if canvas would be wider than available width
+        // Only reduce scale if canvas would overflow horizontally
         const scaledWidth = wrapperWidth * scale;
         if (scaledWidth > availableWidth) {
             scale = availableWidth / wrapperWidth;
