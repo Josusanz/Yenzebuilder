@@ -684,35 +684,28 @@ class YenzeBuilder {
             return;
         }
 
-        const canvasArea = document.getElementById('canvasArea');
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
         const zoomIndicator = document.getElementById('zoomIndicator');
         const leftSidebar = document.querySelector('.left-sidebar');
         const rightSidebar = document.querySelector('.right-sidebar');
 
-        if (!canvasArea || !canvasScaler || !wrapper) return;
+        if (!canvasScaler || !wrapper) return;
 
         // Calculate available space by subtracting sidebar widths from window
-        // This is more reliable than getBoundingClientRect which can return wrong values
         const topbarHeight = 60;
-        const margin = 40;
+        const margin = 60; // Increased margin for better visual spacing
 
-        // Get sidebar widths
+        // Get sidebar widths using getBoundingClientRect for accuracy
         let leftSidebarWidth = 0;
         let rightSidebarWidth = 0;
 
-        if (leftSidebar) {
-            // Check if collapsed
-            if (leftSidebar.classList.contains('collapsed')) {
-                leftSidebarWidth = 0;
-            } else {
-                leftSidebarWidth = leftSidebar.offsetWidth || 260;
-            }
+        if (leftSidebar && !leftSidebar.classList.contains('collapsed')) {
+            leftSidebarWidth = leftSidebar.getBoundingClientRect().width || 260;
         }
 
         if (rightSidebar) {
-            rightSidebarWidth = rightSidebar.offsetWidth || 280;
+            rightSidebarWidth = rightSidebar.getBoundingClientRect().width || 280;
         }
 
         // Calculate available space
@@ -720,14 +713,14 @@ class YenzeBuilder {
         const availableHeight = window.innerHeight - topbarHeight - margin;
 
         // Skip if dimensions aren't ready yet
-        if (availableWidth <= 0 || availableHeight <= 0) {
+        if (availableWidth <= 100 || availableHeight <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
             return;
         }
 
-        // Get actual wrapper dimensions (may have been customized via input)
+        // Get actual wrapper dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-        const wrapperHeight = 900; // Desktop height
+        const wrapperHeight = 900;
 
         // Calculate scale to fit canvas in available space
         const scaleX = availableWidth / wrapperWidth;
@@ -744,16 +737,16 @@ class YenzeBuilder {
 
         this.currentScale = scale;
 
-        // Apply scale transform to desktop canvas - use setProperty for reliability
-        canvasScaler.style.setProperty('transform', `scale(${scale})`, 'important');
-
-        // Also set transform-origin to ensure proper scaling
-        canvasScaler.style.setProperty('transform-origin', 'center center', 'important');
+        // Apply scale transform directly to canvas scaler
+        canvasScaler.style.transform = `scale(${scale})`;
+        canvasScaler.style.transformOrigin = 'center center';
 
         // Update zoom indicator
         if (zoomIndicator) {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
+
+        console.log('AutoScale applied:', { scale: Math.round(scale * 100) + '%', availableWidth, wrapperWidth });
     }
 
     updateCanvasWidth(width) {
