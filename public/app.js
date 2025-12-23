@@ -729,21 +729,24 @@ class YenzeBuilder {
         // Get the configured desktop width (breakpoint)
         const desktopBreakpoint = this.deviceWidths[this.currentDevice] || 1440;
 
-        // Minimum width to prevent switching to tablet breakpoint
-        const minDesktopWidth = 1024;
+        // Keep wrapper at desktop breakpoint width
+        wrapper.style.width = desktopBreakpoint + 'px';
 
-        // Calculate wrapper width: fit available space but respect min desktop width
-        let wrapperWidth = Math.max(availableWidth, minDesktopWidth);
+        // Calculate scale to fit in available space
+        const scaleByWidth = availableWidth / desktopBreakpoint;
+        const scaleByHeight = availableHeight / (wrapper.offsetHeight || 900);
 
-        // Set wrapper to fill available width (responsive)
-        wrapper.style.width = availableWidth + 'px';
+        // Use the smaller scale to ensure it fits, prioritize width for margins
+        let scale = Math.min(scaleByWidth, scaleByHeight);
 
-        // Scale is 1:1 - no transform scaling needed
-        canvasScaler.style.transform = 'scale(1)';
-        this.currentScale = 1;
+        this.currentScale = scale;
+
+        // Apply zoom/scale transform
+        canvasScaler.style.transform = `scale(${scale})`;
+        canvasScaler.style.transformOrigin = 'top center';
 
         if (zoomIndicator) {
-            zoomIndicator.textContent = `${Math.round(availableWidth)}px`;
+            zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
     }
 
