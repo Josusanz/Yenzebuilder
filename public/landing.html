@@ -132,53 +132,37 @@
     line-height: 1.1;
 }
 
-/* Logo animations - Smooth and elegant */
-@keyframes float-layer-1 {
+/* Logo animations - Layers moving top to bottom */
+@keyframes layer-wave-1 {
     0%, 100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
         opacity: 1;
-    }
-    25% {
-        transform: translateY(-1.5px) scale(1.02);
-        opacity: 0.95;
     }
     50% {
-        transform: translateY(-3px) scale(1.04);
+        transform: translateY(-4px);
+        opacity: 0.85;
+    }
+}
+
+@keyframes layer-wave-2 {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-3px);
         opacity: 0.9;
     }
-    75% {
-        transform: translateY(-1.5px) scale(1.02);
-        opacity: 0.95;
-    }
 }
 
-@keyframes float-layer-2 {
+@keyframes layer-wave-3 {
     0%, 100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
         opacity: 1;
     }
-    33% {
-        transform: translateY(2px) scale(0.98);
+    50% {
+        transform: translateY(-2px);
         opacity: 0.95;
-    }
-    66% {
-        transform: translateY(-1px) scale(1.01);
-        opacity: 0.92;
-    }
-}
-
-@keyframes float-layer-3 {
-    0%, 100% {
-        transform: translateX(0) scale(1);
-        opacity: 1;
-    }
-    40% {
-        transform: translateX(1.5px) scale(1.01);
-        opacity: 0.96;
-    }
-    80% {
-        transform: translateX(-1px) scale(0.99);
-        opacity: 0.94;
     }
 }
 
@@ -191,12 +175,31 @@
     }
 }
 
-@keyframes logo-rotate {
-    0% {
-        transform: rotate(0deg);
+/* Hover: layers cascade down one by one */
+@keyframes layer-cascade-1 {
+    0%, 100% {
+        transform: translateY(0);
     }
-    100% {
-        transform: rotate(360deg);
+    20%, 40% {
+        transform: translateY(3px);
+    }
+}
+
+@keyframes layer-cascade-2 {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    30%, 50% {
+        transform: translateY(3px);
+    }
+}
+
+@keyframes layer-cascade-3 {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    40%, 60% {
+        transform: translateY(3px);
     }
 }
 
@@ -206,41 +209,41 @@
 }
 
 .logo-layer-1 {
-    animation: float-layer-1 4s ease-in-out infinite;
+    animation: layer-wave-1 3s ease-in-out infinite;
     transform-origin: center;
     transition: all 0.3s ease;
 }
 
 .logo-layer-2 {
-    animation: float-layer-2 3.5s ease-in-out infinite 0.3s;
+    animation: layer-wave-2 3s ease-in-out infinite 0.15s;
     transform-origin: center;
     transition: all 0.3s ease;
 }
 
 .logo-layer-3 {
-    animation: float-layer-3 3.8s ease-in-out infinite 0.6s;
+    animation: layer-wave-3 3s ease-in-out infinite 0.3s;
     transform-origin: center;
     transition: all 0.3s ease;
 }
 
-/* Hover effects - More dynamic */
+/* Hover effects - Cascade layers down sequentially */
 .group:hover .logo-animated {
     animation: logo-glow 2s ease-in-out infinite;
     transform: scale(1.1);
 }
 
 .group:hover .logo-layer-1 {
-    animation: float-layer-1 1.5s ease-in-out infinite, logo-rotate 8s linear infinite;
+    animation: layer-cascade-1 1.2s ease-in-out infinite;
     stroke-width: 3;
 }
 
 .group:hover .logo-layer-2 {
-    animation: float-layer-2 1.2s ease-in-out infinite 0.1s;
+    animation: layer-cascade-2 1.2s ease-in-out infinite;
     stroke-width: 3;
 }
 
 .group:hover .logo-layer-3 {
-    animation: float-layer-3 1.3s ease-in-out infinite 0.2s;
+    animation: layer-cascade-3 1.2s ease-in-out infinite;
     stroke-width: 3;
 }
 </style>
