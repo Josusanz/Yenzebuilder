@@ -687,6 +687,8 @@ class YenzeBuilder {
     autoScaleCanvas() {
         // Only auto-scale for DESKTOP when sidebars are visible
         // Tablet and mobile should NOT be auto-scaled
+        const zoomIndicator = document.getElementById('zoomIndicator');
+
         if (this.currentDevice !== 'desktop') {
             // For tablet/mobile, reset scale to 1 (no scaling)
             const canvasScaler = document.getElementById('canvasScaler');
@@ -694,12 +696,20 @@ class YenzeBuilder {
                 canvasScaler.style.transform = 'scale(1)';
             }
             this.currentScale = 1;
+            // Hide zoom indicator for tablet/mobile
+            if (zoomIndicator) {
+                zoomIndicator.style.display = 'none';
+            }
             return;
+        }
+
+        // Show zoom indicator for desktop
+        if (zoomIndicator) {
+            zoomIndicator.style.display = 'block';
         }
 
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
-        const zoomIndicator = document.getElementById('zoomIndicator');
         const leftSidebar = document.querySelector('.left-sidebar');
         const rightSidebar = document.querySelector('.right-sidebar');
 
