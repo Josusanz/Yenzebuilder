@@ -346,7 +346,20 @@ class YenzeBuilder {
 
                 // Update canvas width input
                 const canvasInput = document.getElementById('canvasWidthInput');
-                if (canvasInput) canvasInput.value = breakpoints.desktop;
+                // Only update input if currently on desktop (default)
+                if (canvasInput && this.currentDevice === 'desktop') {
+                    canvasInput.value = breakpoints.desktop;
+                }
+
+                // Update canvas wrapper width immediately if on desktop
+                if (this.currentDevice === 'desktop') {
+                    const wrapper = document.getElementById('canvasWrapper');
+                    if (wrapper) {
+                        wrapper.style.width = breakpoints.desktop + 'px';
+                        // Force autoscale recalculation after width change
+                        setTimeout(() => this.autoScaleCanvas(), 100);
+                    }
+                }
             } catch (e) {
                 console.error('Error loading saved breakpoints:', e);
             }
