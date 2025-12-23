@@ -714,11 +714,9 @@ class YenzeBuilder {
 
         if (!canvasScaler || !wrapper) return;
 
-        // Use fixed CSS values for sidebar widths (more reliable than measuring)
-        // Left sidebar: 260px when visible, 0 when collapsed
-        // Right sidebar: 280px (always visible on desktop)
+        // Use fixed CSS values for sidebar widths
         const topbarHeight = 60;
-        const padding = 40; // Padding around canvas
+        const padding = 24; // Small padding around canvas
 
         const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
         const rightSidebarWidth = 280;
@@ -733,26 +731,24 @@ class YenzeBuilder {
             return;
         }
 
-        // Get actual wrapper dimensions
+        // Get wrapper dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = 900;
 
-        // Calculate scale to fit canvas in available space
+        // Calculate scale to FILL available space (like Framer/Wix)
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
 
         // Use the smaller scale to fit both dimensions
+        // NO CAP at 1 - allow upscaling to fill available space
         let scale = Math.min(scaleX, scaleY);
-
-        // Cap at 1 (don't upscale beyond 100%)
-        scale = Math.min(scale, 1);
 
         // Minimum scale for usability
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
 
-        // Apply scale transform directly to canvas scaler
+        // Apply scale transform
         canvasScaler.style.transform = `scale(${scale})`;
         canvasScaler.style.transformOrigin = 'center center';
 
@@ -760,17 +756,6 @@ class YenzeBuilder {
         if (zoomIndicator) {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
-
-        console.log('AutoScale applied:', {
-            scale: Math.round(scale * 100) + '%',
-            availableWidth,
-            availableHeight,
-            wrapperWidth,
-            windowWidth: window.innerWidth,
-            leftSidebarWidth,
-            rightSidebarWidth,
-            deviceWidths: this.deviceWidths
-        });
     }
 
     updateCanvasWidth(width) {
