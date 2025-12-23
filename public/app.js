@@ -726,14 +726,19 @@ class YenzeBuilder {
             return;
         }
 
-        // Get the configured desktop width (breakpoint)
-        const desktopBreakpoint = this.deviceWidths[this.currentDevice] || 1440;
+        // Get wrapper height
+        const wrapperHeight = wrapper.offsetHeight || 900;
 
-        // Keep wrapper at desktop breakpoint width
-        wrapper.style.width = desktopBreakpoint + 'px';
+        // FORCE HEIGHT: Scale based on available height to fill vertical space
+        let scale = availableHeight / wrapperHeight;
 
-        // Scale to fit width with margins
-        let scale = availableWidth / desktopBreakpoint;
+        // Calculate what width the wrapper needs to be at this scale to fit
+        const scaledAvailableWidth = availableWidth / scale;
+
+        // Set wrapper width to fit the available width at this scale
+        // But minimum 1024px to stay in desktop mode
+        const newWidth = Math.max(scaledAvailableWidth, 1024);
+        wrapper.style.width = newWidth + 'px';
 
         this.currentScale = scale;
 
