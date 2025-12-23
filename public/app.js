@@ -672,6 +672,18 @@ class YenzeBuilder {
     }
 
     autoScaleCanvas() {
+        // Only auto-scale for DESKTOP when sidebars are visible
+        // Tablet and mobile should NOT be auto-scaled
+        if (this.currentDevice !== 'desktop') {
+            // For tablet/mobile, reset scale to 1 (no scaling)
+            const canvasScaler = document.getElementById('canvasScaler');
+            if (canvasScaler) {
+                canvasScaler.style.transform = 'scale(1)';
+            }
+            this.currentScale = 1;
+            return;
+        }
+
         const canvasArea = document.getElementById('canvasArea');
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
@@ -681,7 +693,7 @@ class YenzeBuilder {
 
         // Get available space using getBoundingClientRect for accurate dimensions
         const rect = canvasArea.getBoundingClientRect();
-        const margin = 32;
+        const margin = 40;
         const availableWidth = rect.width - margin;
         const availableHeight = rect.height - margin;
 
@@ -693,18 +705,7 @@ class YenzeBuilder {
 
         // Get actual wrapper dimensions (may have been customized via input)
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-
-        // Default heights for each device
-        const defaultHeights = {
-            desktop: 900,
-            tablet: 600,
-            mobile: 667
-        };
-        const wrapperHeight = defaultHeights[this.currentDevice] || 900;
-
-        // Ensure wrapper has correct explicit dimensions
-        wrapper.style.width = `${wrapperWidth}px`;
-        wrapper.style.height = `${wrapperHeight}px`;
+        const wrapperHeight = 900; // Desktop height
 
         // Calculate scale to fit canvas in available space
         const scaleX = availableWidth / wrapperWidth;
@@ -713,18 +714,18 @@ class YenzeBuilder {
         // Use the smaller scale to fit both dimensions
         let scale = Math.min(scaleX, scaleY);
 
-        // Cap at 1 (don't upscale beyond 100% - the canvas should never be bigger than its natural size)
+        // Cap at 1 (don't upscale beyond 100%)
         scale = Math.min(scale, 1);
 
         // Minimum scale for usability
-        scale = Math.max(scale, 0.2);
+        scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
 
-        // Apply scale transform
+        // Apply scale transform to desktop canvas
         canvasScaler.style.transform = `scale(${scale})`;
 
-        // Update zoom indicator (no popup, just update value)
+        // Update zoom indicator
         if (zoomIndicator) {
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
