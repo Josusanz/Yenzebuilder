@@ -726,20 +726,24 @@ class YenzeBuilder {
             return;
         }
 
-        // Get wrapper dimensions
-        const wrapperHeight = wrapper.offsetHeight || 900;
+        // Get the configured desktop width (breakpoint)
+        const desktopBreakpoint = this.deviceWidths[this.currentDevice] || 1440;
 
-        // Scale based on HEIGHT to fill vertical space (same as mobile)
-        let scale = availableHeight / wrapperHeight;
+        // Minimum width to prevent switching to tablet breakpoint
+        const minDesktopWidth = 1024;
 
-        this.currentScale = scale;
+        // Calculate wrapper width: fit available space but respect min desktop width
+        let wrapperWidth = Math.max(availableWidth, minDesktopWidth);
 
-        // Apply scale
-        canvasScaler.style.transform = `scale(${scale})`;
-        canvasScaler.style.transformOrigin = 'center center';
+        // Set wrapper to fill available width (responsive)
+        wrapper.style.width = availableWidth + 'px';
+
+        // Scale is 1:1 - no transform scaling needed
+        canvasScaler.style.transform = 'scale(1)';
+        this.currentScale = 1;
 
         if (zoomIndicator) {
-            zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
+            zoomIndicator.textContent = `${Math.round(availableWidth)}px`;
         }
     }
 
