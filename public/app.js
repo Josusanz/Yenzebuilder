@@ -945,6 +945,10 @@ class YenzeBuilder {
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
+
+                // Auto-scale canvas after content loads
+                setTimeout(() => this.autoScaleCanvas(), 100);
+
                 if (showToast) {
                     this.showToast('✅ HTML loaded successfully!', 'success');
                 }
