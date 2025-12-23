@@ -685,54 +685,63 @@ class YenzeBuilder {
     }
 
     autoScaleCanvas() {
-        // Auto-scale canvas to fill available space for ALL devices
         const zoomIndicator = document.getElementById('zoomIndicator');
         const canvasScaler = document.getElementById('canvasScaler');
+
+        // Only auto-scale for DESKTOP - tablet and mobile stay at 100%
+        if (this.currentDevice !== 'desktop') {
+            if (canvasScaler) {
+                canvasScaler.style.transform = 'scale(1)';
+            }
+            this.currentScale = 1;
+            if (zoomIndicator) {
+                zoomIndicator.style.display = 'none';
+            }
+            return;
+        }
+
+        // DESKTOP ONLY: Auto-scale to fill available space
         const wrapper = document.getElementById('canvasWrapper');
         const leftSidebar = document.querySelector('.left-sidebar');
 
         if (!canvasScaler || !wrapper) return;
 
-        // Use fixed CSS values for sidebar widths
+        // Show zoom indicator for desktop
+        if (zoomIndicator) {
+            zoomIndicator.style.display = 'block';
+        }
+
+        // Calculate available space
         const topbarHeight = 60;
         const padding = 24;
-
         const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
         const rightSidebarWidth = 280;
 
-        // Calculate available space for canvas
         const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - padding;
         const availableHeight = window.innerHeight - topbarHeight - padding;
 
-        // Skip if dimensions aren't ready yet
         if (availableWidth <= 100 || availableHeight <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
             return;
         }
 
-        // Get wrapper dimensions based on current device
+        // Get desktop wrapper dimensions
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-        const wrapperHeight = this.currentDevice === 'mobile' ? 667 : (this.currentDevice === 'tablet' ? 600 : 900);
+        const wrapperHeight = 900;
 
         // Calculate scale to fill available space
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
-
-        // Use the smaller scale to fit both dimensions
         let scale = Math.min(scaleX, scaleY);
-
-        // Minimum scale for usability
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
 
-        // Apply scale transform
+        // Apply scale
         canvasScaler.style.transform = `scale(${scale})`;
         canvasScaler.style.transformOrigin = 'center center';
 
-        // Update zoom indicator (show for all devices now)
         if (zoomIndicator) {
-            zoomIndicator.style.display = 'block';
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
     }
