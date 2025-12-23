@@ -711,18 +711,28 @@ class YenzeBuilder {
             zoomIndicator.style.display = 'block';
         }
 
-        // Calculate available height (this is what matters - fill top to bottom)
+        // Calculate available space with margins
         const topbarHeight = 60;
-        const availableHeight = window.innerHeight - topbarHeight - 8;
+        const margin = 24; // Margin on all sides
+        const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
+        const rightSidebarWidth = 280;
 
-        if (availableHeight <= 100) {
+        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - (margin * 2);
+        const availableHeight = window.innerHeight - topbarHeight - (margin * 2);
+
+        if (availableHeight <= 100 || availableWidth <= 100) {
             setTimeout(() => this.autoScaleCanvas(), 100);
             return;
         }
 
-        // Scale based on HEIGHT only - fill vertical space completely
+        // Get wrapper dimensions
+        const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
         const wrapperHeight = 900;
-        let scale = availableHeight / wrapperHeight;
+
+        // Calculate scale to fit with margins (use the smaller of width/height ratios)
+        const scaleX = availableWidth / wrapperWidth;
+        const scaleY = availableHeight / wrapperHeight;
+        let scale = Math.min(scaleX, scaleY);
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
