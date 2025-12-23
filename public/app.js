@@ -688,14 +688,36 @@ class YenzeBuilder {
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
         const zoomIndicator = document.getElementById('zoomIndicator');
+        const leftSidebar = document.querySelector('.left-sidebar');
+        const rightSidebar = document.querySelector('.right-sidebar');
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space using getBoundingClientRect for accurate dimensions
-        const rect = canvasArea.getBoundingClientRect();
+        // Calculate available space by subtracting sidebar widths from window
+        // This is more reliable than getBoundingClientRect which can return wrong values
+        const topbarHeight = 60;
         const margin = 40;
-        const availableWidth = rect.width - margin;
-        const availableHeight = rect.height - margin;
+
+        // Get sidebar widths
+        let leftSidebarWidth = 0;
+        let rightSidebarWidth = 0;
+
+        if (leftSidebar) {
+            // Check if collapsed
+            if (leftSidebar.classList.contains('collapsed')) {
+                leftSidebarWidth = 0;
+            } else {
+                leftSidebarWidth = leftSidebar.offsetWidth || 260;
+            }
+        }
+
+        if (rightSidebar) {
+            rightSidebarWidth = rightSidebar.offsetWidth || 280;
+        }
+
+        // Calculate available space
+        const availableWidth = window.innerWidth - leftSidebarWidth - rightSidebarWidth - margin;
+        const availableHeight = window.innerHeight - topbarHeight - margin;
 
         // Skip if dimensions aren't ready yet
         if (availableWidth <= 0 || availableHeight <= 0) {
@@ -721,19 +743,6 @@ class YenzeBuilder {
         scale = Math.max(scale, 0.3);
 
         this.currentScale = scale;
-
-        // DEBUG: Log values to console
-        console.log('AutoScale Desktop:', {
-            canvasAreaRect: { width: rect.width, height: rect.height },
-            availableWidth,
-            availableHeight,
-            wrapperWidth,
-            wrapperHeight,
-            scaleX,
-            scaleY,
-            finalScale: scale,
-            windowSize: { w: window.innerWidth, h: window.innerHeight }
-        });
 
         // Apply scale transform to desktop canvas - use setProperty for reliability
         canvasScaler.style.setProperty('transform', `scale(${scale})`, 'important');
