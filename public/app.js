@@ -645,6 +645,11 @@ class YenzeBuilder {
             input.value = width;
         }
 
+        // Reload HTML content to trigger responsive recalculation at new width
+        if (this.currentHTML) {
+            this.loadHTML(this.currentHTML, false); // false = don't add to history
+        }
+
         // Force reflow then recalculate scale
         wrapper.offsetHeight;
 
@@ -878,13 +883,27 @@ class YenzeBuilder {
         // Get fresh reference
         const canvas = newCanvas;
 
-        // Force iframe to exact width
-        canvas.style.width = `${this.deviceWidths[this.currentDevice]}px`;
+        // Set iframe to fill wrapper
+        canvas.style.width = '100%';
+
+        // Get current device width for responsive simulation
+        const deviceWidth = this.deviceWidths[this.currentDevice];
+
+        // Modify HTML to inject viewport simulation
+        let modifiedHTML = html;
+
+        // Replace or add viewport meta tag to match device width
+        const viewportMeta = `<meta name="viewport" content="width=${deviceWidth}, initial-scale=1.0">`;
+        if (modifiedHTML.includes('<meta') && modifiedHTML.includes('viewport')) {
+            modifiedHTML = modifiedHTML.replace(/<meta[^>]*viewport[^>]*>/gi, viewportMeta);
+        } else if (modifiedHTML.includes('<head>')) {
+            modifiedHTML = modifiedHTML.replace('<head>', `<head>\n${viewportMeta}`);
+        }
 
         // Write HTML to iframe
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
         iframeDoc.open();
-        iframeDoc.write(html);
+        iframeDoc.write(modifiedHTML);
         iframeDoc.close();
 
         // Force iframe content to render properly within the canvas
