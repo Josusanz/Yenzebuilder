@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YENZE - Visual HTML Editor</title>
-    <!-- Version: 1.4.1 - Cache Buster -->
+    <!-- Version: 1.4.2 - Cache Buster -->
 
     <script>
         // Subdomain Router - Must run before any other content loads
@@ -887,6 +887,13 @@
 
         /* Multi-device preview */
         #multiDevicePreview {
+            gap: 32px;
+            padding: 40px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #multiDevicePreview.active {
             display: flex !important;
         }
 
@@ -3528,7 +3535,7 @@
                 </div>
 
                 <!-- Multi-device preview container -->
-                <div id="multiDevicePreview" style="display: none; gap: 32px; padding: 40px; justify-content: center; align-items: flex-start;">
+                <div id="multiDevicePreview" style="display: none;">
 
                     <!-- Desktop Preview -->
                     <div class="device-preview" data-device="desktop">

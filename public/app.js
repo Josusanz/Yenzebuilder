@@ -667,16 +667,18 @@ class YenzeBuilder {
             // Zoom with mouse wheel/trackpad (Framer-style)
             canvasArea.addEventListener('wheel', (e) => {
                 // Check if it's a pinch gesture (ctrlKey is true for pinch on trackpad)
-                if (e.ctrlKey || e.metaKey) {
+                if (e.ctrlKey) {
                     e.preventDefault();
 
                     const currentZoom = parseInt(zoomSlider.value);
+                    // Use deltaY for smooth zoom (trackpad gives fine-grained values)
                     const delta = -e.deltaY;
-                    const zoomChange = delta > 0 ? 5 : -5;
+                    // Adjust sensitivity: smaller values = more sensitive
+                    const zoomChange = Math.sign(delta) * Math.min(Math.abs(delta) / 10, 10);
                     const newZoom = Math.min(200, Math.max(10, currentZoom + zoomChange));
 
-                    zoomSlider.value = newZoom;
-                    this.setZoom(newZoom);
+                    zoomSlider.value = Math.round(newZoom);
+                    this.setZoom(Math.round(newZoom));
                 }
             }, { passive: false });
         }
@@ -920,7 +922,7 @@ class YenzeBuilder {
 
         // Hide empty state and show multi-device preview
         document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('multiDevicePreview').style.display = 'flex';
+        document.getElementById('multiDevicePreview').classList.add('active');
 
         // Load HTML into all 3 iframes
         const devices = ['desktop', 'tablet', 'mobile'];
