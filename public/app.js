@@ -671,7 +671,7 @@ class YenzeBuilder {
 
         // Get available space using getBoundingClientRect for accurate dimensions
         const rect = canvasArea.getBoundingClientRect();
-        const margin = 24;
+        const margin = 16;
         const availableWidth = rect.width - margin;
         const availableHeight = rect.height - margin;
 
