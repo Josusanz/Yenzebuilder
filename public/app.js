@@ -989,27 +989,6 @@ class YenzeBuilder {
             };
             insertStyle();
 
-            // Auto-resize iframe to fit content
-            const resizeIframeToContent = () => {
-                if (iframeDoc.body) {
-                    const contentHeight = iframeDoc.body.scrollHeight;
-                    const wrapper = iframe.closest('.canvas-wrapper');
-                    if (wrapper && contentHeight > 0) {
-                        // Add browser chrome height (32px) + some padding
-                        const totalHeight = contentHeight + 32 + 20;
-                        iframe.style.height = contentHeight + 'px';
-                        wrapper.style.height = totalHeight + 'px';
-                    }
-                }
-            };
-
-            // Resize after content loads
-            iframe.addEventListener('load', () => {
-                setTimeout(resizeIframeToContent, 100);
-                setTimeout(resizeIframeToContent, 500);
-                setTimeout(resizeIframeToContent, 1000);
-            });
-
             // Only make the desktop iframe editable (primary editing view)
             if (device === 'desktop') {
                 const initializeEditor = () => {
@@ -1018,9 +997,6 @@ class YenzeBuilder {
                         this.buildLayersTree(iframeDoc);
                         this.setupIframeKeyboardShortcuts(iframeDoc);
                         this.showToast('✅ HTML loaded successfully!', 'success');
-
-                        // Resize after editor initialized
-                        setTimeout(resizeIframeToContent, 200);
 
                         // Add MutationObserver to sync changes to other iframes
                         if (iframeDoc.body) {
