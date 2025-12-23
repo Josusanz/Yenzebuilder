@@ -941,6 +941,9 @@
         .canvas-scaler {
             transform-origin: center center;
             transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .canvas-wrapper {
@@ -952,6 +955,7 @@
             position: relative;
             border-radius: var(--radius-lg);
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .canvas-wrapper.desktop {
