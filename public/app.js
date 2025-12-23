@@ -623,14 +623,16 @@ class YenzeBuilder {
         });
         document.querySelector(`[data-device="${device}"]`).classList.add('active');
 
-        // Reset scaler transform first
+        // Reset scaler transform immediately
         const canvasScaler = document.getElementById('canvasScaler');
         if (canvasScaler) {
+            canvasScaler.style.transition = 'none';
             canvasScaler.style.transform = 'scale(1)';
         }
 
         // Update canvas wrapper class and reset inline styles
         const wrapper = document.getElementById('canvasWrapper');
+        wrapper.style.transition = 'none';
         wrapper.className = `canvas-wrapper ${device}`;
         wrapper.style.width = ''; // Clear inline width to use CSS class width
 
@@ -643,8 +645,15 @@ class YenzeBuilder {
             input.value = width;
         }
 
-        // Auto-scale after device switch (with delay for CSS to apply)
-        setTimeout(() => this.autoScaleCanvas(), 50);
+        // Force reflow then recalculate scale
+        wrapper.offsetHeight;
+
+        // Re-enable transitions and auto-scale
+        requestAnimationFrame(() => {
+            if (canvasScaler) canvasScaler.style.transition = '';
+            wrapper.style.transition = '';
+            this.autoScaleCanvas();
+        });
     }
 
     autoScaleCanvas() {
@@ -655,24 +664,31 @@ class YenzeBuilder {
 
         if (!canvasArea || !canvasScaler || !wrapper) return;
 
-        // Get available space with minimal padding (4px on each side)
-        const availableWidth = canvasArea.clientWidth - 8;
-        const availableHeight = canvasArea.clientHeight - 8;
+        // Get available space (use full area)
+        const availableWidth = canvasArea.clientWidth;
+        const availableHeight = canvasArea.clientHeight;
 
-        // Get canvas wrapper dimensions from CSS (not inline styles)
-        const computedStyle = window.getComputedStyle(wrapper);
-        const wrapperWidth = parseInt(computedStyle.width) || wrapper.offsetWidth;
-        const wrapperHeight = parseInt(computedStyle.height) || wrapper.offsetHeight;
+        // Get the device dimensions directly
+        const deviceDimensions = {
+            desktop: { width: 1440, height: 900 },
+            tablet: { width: 768, height: 600 },
+            mobile: { width: 375, height: 667 }
+        };
 
-        // Calculate scale to fit - fill as much space as possible
-        const scaleX = availableWidth / wrapperWidth;
-        const scaleY = availableHeight / wrapperHeight;
+        const dims = deviceDimensions[this.currentDevice] || deviceDimensions.desktop;
+        const wrapperWidth = dims.width;
+        const wrapperHeight = dims.height;
+
+        // Calculate scale to fit with small margin
+        const margin = 16; // 8px on each side
+        const scaleX = (availableWidth - margin) / wrapperWidth;
+        const scaleY = (availableHeight - margin) / wrapperHeight;
 
         // Use the smaller scale to ensure it fits, cap at 1 (no upscaling)
         let scale = Math.min(scaleX, scaleY, 1);
 
-        // Minimum scale of 0.25 for very small screens
-        scale = Math.max(scale, 0.25);
+        // Minimum scale of 0.2 for very small screens
+        scale = Math.max(scale, 0.2);
 
         this.currentScale = scale;
         canvasScaler.style.transform = `scale(${scale})`;
