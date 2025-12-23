@@ -722,6 +722,17 @@ class YenzeBuilder {
 
         this.currentScale = scale;
 
+        // DEBUG: Log values to console
+        console.log('AutoScale Desktop:', {
+            availableWidth,
+            availableHeight,
+            wrapperWidth,
+            wrapperHeight,
+            scaleX,
+            scaleY,
+            finalScale: scale
+        });
+
         // Apply scale transform to desktop canvas
         canvasScaler.style.transform = `scale(${scale})`;
 
