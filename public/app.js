@@ -730,11 +730,15 @@ class YenzeBuilder {
             wrapperHeight,
             scaleX,
             scaleY,
-            finalScale: scale
+            finalScale: scale,
+            canvasScalerId: canvasScaler?.id
         });
 
-        // Apply scale transform to desktop canvas
-        canvasScaler.style.transform = `scale(${scale})`;
+        // Apply scale transform to desktop canvas - use setProperty for reliability
+        canvasScaler.style.setProperty('transform', `scale(${scale})`, 'important');
+
+        // Also set transform-origin to ensure proper scaling
+        canvasScaler.style.setProperty('transform-origin', 'center center', 'important');
 
         // Update zoom indicator
         if (zoomIndicator) {
