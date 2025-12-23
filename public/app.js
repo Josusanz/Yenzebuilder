@@ -685,29 +685,8 @@ class YenzeBuilder {
     }
 
     autoScaleCanvas() {
-        // Only auto-scale for DESKTOP when sidebars are visible
-        // Tablet and mobile should NOT be auto-scaled
+        // Auto-scale canvas to fill available space for ALL devices
         const zoomIndicator = document.getElementById('zoomIndicator');
-
-        if (this.currentDevice !== 'desktop') {
-            // For tablet/mobile, reset scale to 1 (no scaling)
-            const canvasScaler = document.getElementById('canvasScaler');
-            if (canvasScaler) {
-                canvasScaler.style.transform = 'scale(1)';
-            }
-            this.currentScale = 1;
-            // Hide zoom indicator for tablet/mobile
-            if (zoomIndicator) {
-                zoomIndicator.style.display = 'none';
-            }
-            return;
-        }
-
-        // Show zoom indicator for desktop
-        if (zoomIndicator) {
-            zoomIndicator.style.display = 'block';
-        }
-
         const canvasScaler = document.getElementById('canvasScaler');
         const wrapper = document.getElementById('canvasWrapper');
         const leftSidebar = document.querySelector('.left-sidebar');
@@ -716,7 +695,7 @@ class YenzeBuilder {
 
         // Use fixed CSS values for sidebar widths
         const topbarHeight = 60;
-        const padding = 24; // Small padding around canvas
+        const padding = 24;
 
         const leftSidebarWidth = (leftSidebar && !leftSidebar.classList.contains('collapsed')) ? 260 : 0;
         const rightSidebarWidth = 280;
@@ -731,16 +710,15 @@ class YenzeBuilder {
             return;
         }
 
-        // Get wrapper dimensions
+        // Get wrapper dimensions based on current device
         const wrapperWidth = this.deviceWidths[this.currentDevice] || 1440;
-        const wrapperHeight = 900;
+        const wrapperHeight = this.currentDevice === 'mobile' ? 667 : (this.currentDevice === 'tablet' ? 600 : 900);
 
-        // Calculate scale to FILL available space (like Framer/Wix)
+        // Calculate scale to fill available space
         const scaleX = availableWidth / wrapperWidth;
         const scaleY = availableHeight / wrapperHeight;
 
         // Use the smaller scale to fit both dimensions
-        // NO CAP at 1 - allow upscaling to fill available space
         let scale = Math.min(scaleX, scaleY);
 
         // Minimum scale for usability
@@ -752,8 +730,9 @@ class YenzeBuilder {
         canvasScaler.style.transform = `scale(${scale})`;
         canvasScaler.style.transformOrigin = 'center center';
 
-        // Update zoom indicator
+        // Update zoom indicator (show for all devices now)
         if (zoomIndicator) {
+            zoomIndicator.style.display = 'block';
             zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
         }
     }
