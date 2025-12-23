@@ -938,7 +938,7 @@ class YenzeBuilder {
         // Load HTML into all 3 iframes
         const devices = ['desktop', 'tablet', 'mobile'];
         const widths = {
-            desktop: 1400,
+            desktop: 1680,
             tablet: 768,
             mobile: 375
         };
@@ -958,16 +958,10 @@ class YenzeBuilder {
             const styleElement = iframeDoc.createElement('style');
             styleElement.id = 'yenze-viewport-override';
             styleElement.textContent = `
-                html {
-                    width: 100% !important;
-                    height: auto !important;
-                    overflow-x: hidden !important;
-                    overflow-y: auto !important;
-                }
-                body {
-                    width: 100% !important;
-                    min-height: 100% !important;
-                    height: auto !important;
+                html, body {
+                    width: ${forceWidth}px !important;
+                    min-width: ${forceWidth}px !important;
+                    max-width: ${forceWidth}px !important;
                     overflow-x: hidden !important;
                     overflow-y: visible !important;
                     margin: 0 !important;
