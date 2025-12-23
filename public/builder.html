@@ -938,26 +938,29 @@
 
         .device-preview[data-device="desktop"] .canvas-wrapper {
             width: 1400px;
-            height: 900px;
+            min-height: 800px;
+            height: auto;
         }
 
         .device-preview[data-device="tablet"] .canvas-wrapper {
             width: 768px;
-            height: 1024px;
+            min-height: 600px;
+            height: auto;
         }
 
         .device-preview[data-device="mobile"] .canvas-wrapper {
             width: 375px;
-            height: 812px;
+            min-height: 600px;
+            height: auto;
         }
 
         .device-iframe {
             width: 100%;
-            height: 100%;
+            min-height: 600px;
             border: none;
             display: block;
             background: white;
-            overflow: auto;
+            overflow: hidden;
         }
 
         /* Browser Chrome Decoration */
