@@ -217,31 +217,33 @@
 .prop-position-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    width: 80px;
-    margin: 0 auto;
+    gap: 3px;
+    width: 72px;
     background: #f3f4f6;
-    padding: 4px;
+    padding: 3px;
     border-radius: var(--prop-radius);
+    border: 1px solid var(--prop-border);
 }
 
 .pos-item {
-    width: 100%;
-    padding-top: 100%;
-    /* Aspect ratio 1:1 */
+    width: 20px;
+    height: 20px;
     background: #e5e7eb;
-    border-radius: 2px;
+    border-radius: 3px;
     cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
 }
 
 .pos-item:hover {
     background: #d1d5db;
+    border-color: #9ca3af;
 }
 
 .pos-item.active {
     background: var(--prop-accent);
+    border-color: var(--prop-accent);
+    box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.2);
 }
 
 /* Advanced */

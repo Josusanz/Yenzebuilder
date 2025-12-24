@@ -2229,32 +2229,34 @@ class YenzeBuilder {
             `;
         }
 
-        // 2. Colors
-        html += `
-            <div class="prop-section">
-                <div class="prop-header">Colors</div>
-                <div class="prop-row">
-                    <div class="prop-col">
-                        <label class="prop-label">Text Color</label>
-                        <div class="prop-color-wrapper">
-                            <div class="prop-color-preview" style="background-color: ${textColor}">
-                                <input type="color" id="propTextColor" class="prop-color-input" value="${textColor}">
+        // 2. Colors (not for images)
+        if (!isImage) {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Colors</div>
+                    <div class="prop-row">
+                        <div class="prop-col">
+                            <label class="prop-label">Text Color</label>
+                            <div class="prop-color-wrapper">
+                                <div class="prop-color-preview" style="background-color: ${textColor}">
+                                    <input type="color" id="propTextColor" class="prop-color-input" value="${textColor}">
+                                </div>
+                                <input type="text" class="prop-color-hex" value="${textColor}" onchange="document.getElementById('propTextColor').value = this.value; document.getElementById('propTextColor').dispatchEvent(new Event('input'));">
                             </div>
-                            <input type="text" class="prop-color-hex" value="${textColor}" onchange="document.getElementById('propTextColor').value = this.value; document.getElementById('propTextColor').dispatchEvent(new Event('input'));">
                         </div>
-                    </div>
-                    <div class="prop-col">
-                        <label class="prop-label">Background</label>
-                        <div class="prop-color-wrapper">
-                            <div class="prop-color-preview" style="background-color: ${bgColor}">
-                                <input type="color" id="propBgColor" class="prop-color-input" value="${bgColor}">
+                        <div class="prop-col">
+                            <label class="prop-label">Background</label>
+                            <div class="prop-color-wrapper">
+                                <div class="prop-color-preview" style="background-color: ${bgColor}">
+                                    <input type="color" id="propBgColor" class="prop-color-input" value="${bgColor}">
+                                </div>
+                                <input type="text" class="prop-color-hex" value="${bgColor}" onchange="document.getElementById('propBgColor').value = this.value; document.getElementById('propBgColor').dispatchEvent(new Event('input'));">
                             </div>
-                            <input type="text" class="prop-color-hex" value="${bgColor}" onchange="document.getElementById('propBgColor').value = this.value; document.getElementById('propBgColor').dispatchEvent(new Event('input'));">
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
 
         // 3. Spacing
         html += `
@@ -2307,14 +2309,15 @@ class YenzeBuilder {
             </div>
         `;
 
-        // 4. Typography
-        html += `
-            <div class="prop-section">
-                <div class="prop-header">Typography</div>
-                <div class="prop-row">
-                    <div class="prop-col">
-                        <label class="prop-label">Font Family</label>
-                        <select id="propFontFamily" class="prop-select">
+        // 4. Typography (not for images)
+        if (!isImage) {
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Typography</div>
+                    <div class="prop-row">
+                        <div class="prop-col">
+                            <label class="prop-label">Font Family</label>
+                            <select id="propFontFamily" class="prop-select">
                             <optgroup label="System">
                                 <option value="Arial" ${typography.family === 'Arial' ? 'selected' : ''}>Arial</option>
                                 <option value="Helvetica" ${typography.family === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
@@ -2391,7 +2394,8 @@ class YenzeBuilder {
                     </div>
                 </div>
             </div>
-        `;
+            `;
+        }
 
         // 5. Image (Specific)
         if (isImage) {
