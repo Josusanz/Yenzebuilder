@@ -1091,7 +1091,7 @@ class YenzeBuilder {
             }
         });
 
-        // Prevent anchor link scrolling in edit mode - only prevent default, allow propagation for selection
+        // Prevent anchor link scrolling in edit mode - block all hash navigation
         doc.addEventListener('click', (e) => {
             // Find if click was on or inside an anchor with hash href
             const anchor = e.target.closest('a[href^="#"]');
@@ -1100,6 +1100,23 @@ class YenzeBuilder {
                 // Don't use stopPropagation - we still need the click to reach element selection handlers
             }
         }, true); // Use capture phase to prevent scroll before it happens
+
+        // Also prevent hashchange from causing scroll
+        const iframeWindow = doc.defaultView || doc.parentWindow;
+        if (iframeWindow) {
+            iframeWindow.addEventListener('hashchange', (e) => {
+                e.preventDefault();
+            }, true);
+        }
+
+        // Disable smooth scroll behavior in edit mode
+        const disableSmoothScroll = doc.createElement('style');
+        disableSmoothScroll.textContent = `
+            html, body, * {
+                scroll-behavior: auto !important;
+            }
+        `;
+        doc.head.appendChild(disableSmoothScroll);
 
         // Add drag-and-drop listeners to iframe document
         console.log('🎯 Setting up drag-and-drop in iframe');
