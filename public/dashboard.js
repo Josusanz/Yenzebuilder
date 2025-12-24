@@ -2498,8 +2498,11 @@ ${result.robotsTxt}
                 const projectPlan = customDomain ? this.userPlan : 'free';
                 const projectUrl = customDomain ? `https://${customDomain}` : project.published_url;
 
+                // Clean HTML for preview (remove editor artifacts like selection outlines)
+                const cleanedHtml = this.cleanHtmlForPreview(project.html);
+
                 // Create a data URL for the preview iframe
-                const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(project.html)}`;
+                const previewDataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(cleanedHtml)}`;
 
                 return `
                     <div class="project-card">
@@ -2579,7 +2582,7 @@ ${result.robotsTxt}
                                     View
                                 </button>
                                 <div class="project-menu-container" style="position: relative;">
-                                    <button class="action-btn" onclick="dashboardApp.toggleProjectMenu('${project.id}')" style="padding: 8px 12px;">
+                                    <button class="action-btn" onclick="event.stopPropagation(); dashboardApp.toggleProjectMenu('${project.id}')" style="padding: 8px 12px;">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <circle cx="12" cy="12" r="1"></circle>
                                             <circle cx="12" cy="5" r="1"></circle>
@@ -2692,6 +2695,37 @@ ${result.robotsTxt}
         if (project && project.published_url) {
             window.open(project.published_url, '_blank');
         }
+    }
+
+    cleanHtmlForPreview(html) {
+        if (!html) return '';
+
+        // Remove editor-specific inline styles that cause selection outlines
+        let cleaned = html
+            // Remove outline styles (selection indicator)
+            .replace(/outline:\s*[^;]+;?/gi, '')
+            // Remove box-shadow that might be used for selection
+            .replace(/box-shadow:\s*0\s*0\s*0\s*[^;]*#[36][0-9a-f]{5}[^;]*;?/gi, '')
+            // Remove any yenze-selected or data-selected attributes
+            .replace(/\s*(data-yenze-selected|data-selected|yenze-selected)="[^"]*"/gi, '')
+            // Remove contenteditable attributes
+            .replace(/\s*contenteditable="[^"]*"/gi, '')
+            // Remove draggable attributes from editor
+            .replace(/\s*draggable="true"/gi, '');
+
+        // Add CSS to ensure no outlines show in preview
+        const noOutlineStyle = `<style>*{outline:none!important;box-shadow:none!important;}</style>`;
+
+        // Insert style before closing </head> or at the beginning
+        if (cleaned.includes('</head>')) {
+            cleaned = cleaned.replace('</head>', noOutlineStyle + '</head>');
+        } else if (cleaned.includes('<body')) {
+            cleaned = cleaned.replace('<body', noOutlineStyle + '<body');
+        } else {
+            cleaned = noOutlineStyle + cleaned;
+        }
+
+        return cleaned;
     }
 
     editProject(projectId) {
