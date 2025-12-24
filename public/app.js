@@ -463,6 +463,14 @@ class YenzeBuilder {
             }
         });
 
+        // Layers search/filter
+        const layersSearchInput = document.getElementById('layersSearchInput');
+        if (layersSearchInput) {
+            layersSearchInput.addEventListener('input', (e) => {
+                this.filterLayers(e.target.value);
+            });
+        }
+
         // Code view
         document.getElementById('codeViewBtn').addEventListener('click', () => {
             this.toggleCodeEditor();
@@ -1963,6 +1971,9 @@ class YenzeBuilder {
         // Highlight in layers panel
         this.highlightInLayers(element);
 
+        // Update breadcrumb path
+        this.updateLayersBreadcrumb(element);
+
         // Show properties
         this.showProperties(element);
 
@@ -2808,7 +2819,7 @@ class YenzeBuilder {
 
             const li = document.createElement('li');
             li.className = 'layer-item';
-            li.style.paddingLeft = `${level * 0.875}rem`;
+            li.style.paddingLeft = `${4 + level * 20}px`;
             li.draggable = true;
             li.dataset.elementId = this.generateElementId(element);
 
@@ -2816,17 +2827,39 @@ class YenzeBuilder {
                 child.tagName && child.tagName.toLowerCase() !== 'script' && child.tagName.toLowerCase() !== 'style'
             );
 
-            const icon = this.getElementIcon(tagName);
+            // Get Material Symbol icon and color class for this element type
+            const { icon, colorClass, displayName } = this.getLayerIconInfo(tagName, element);
+
+            // Get meta info (id, class, or text preview)
+            const metaInfo = this.getLayerMetaInfo(element);
+
+            // Check collapsed state
+            const elementId = this.generateElementId(element);
+            const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
 
             // Add collapse/expand toggle if element has children
             const collapseToggle = hasChildren ?
-                `<span class="layer-toggle" data-element-id="${this.generateElementId(element)}">▸</span>` :
+                `<button class="layer-toggle ${isCollapsed ? 'collapsed' : ''}" data-element-id="${elementId}">
+                    <span class="material-symbols-outlined">expand_more</span>
+                </button>` :
                 '<span class="layer-toggle-spacer"></span>';
 
             li.innerHTML = `
-                ${collapseToggle}
-                <span class="layer-icon">${icon}</span>
-                <span class="layer-name">${tagName}</span>
+                <div class="layer-content">
+                    ${collapseToggle}
+                    <div class="layer-icon ${colorClass}">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                    <div class="layer-info">
+                        <span class="layer-name">${displayName}</span>
+                        ${metaInfo ? `<span class="layer-meta">${metaInfo}</span>` : ''}
+                    </div>
+                </div>
+                <div class="layer-actions">
+                    <button class="layer-action-btn" data-action="visibility" title="Toggle visibility">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                </div>
             `;
 
             // Store element reference
@@ -2835,23 +2868,31 @@ class YenzeBuilder {
             // Toggle collapse/expand
             const toggle = li.querySelector('.layer-toggle');
             if (toggle) {
-                // Set initial rotation based on collapsed state
-                const elementId = this.generateElementId(element);
-                const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
-                toggle.style.transform = isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)';
-
                 toggle.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    toggle.classList.toggle('collapsed');
                     this.toggleLayerCollapse(element);
                 });
             }
 
-            // Click to select
-            li.addEventListener('click', (e) => {
-                e.stopPropagation();
-                // selectElement already calls highlightInLayers which handles the visual selection
-                this.selectElement(element);
-            });
+            // Click to select (on the content area, not the whole li)
+            const content = li.querySelector('.layer-content');
+            if (content) {
+                content.addEventListener('click', (e) => {
+                    if (e.target.closest('.layer-toggle')) return;
+                    e.stopPropagation();
+                    this.selectElement(element);
+                });
+            }
+
+            // Visibility toggle
+            const visibilityBtn = li.querySelector('[data-action="visibility"]');
+            if (visibilityBtn) {
+                visibilityBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleElementVisibility(element, visibilityBtn);
+                });
+            }
 
             // Drag and drop in layers
             li.addEventListener('dragstart', (e) => {
@@ -3845,7 +3886,227 @@ if (validationForm) {
         });
     }
 
-    getElementIcon(tagName) {
+    // Check if element has a background image
+    hasBackgroundImage(element) {
+        if (!element) return false;
+
+        // Check inline style for background-image
+        const inlineStyle = element.getAttribute('style') || '';
+        if (inlineStyle.includes('background-image') && inlineStyle.includes('url(')) {
+            return true;
+        }
+
+        // Check computed style
+        try {
+            const canvas = document.getElementById('canvas');
+            const iframeDoc = canvas?.contentDocument || canvas?.contentWindow?.document;
+            if (iframeDoc && iframeDoc.defaultView) {
+                const computedStyle = iframeDoc.defaultView.getComputedStyle(element);
+                const bgImage = computedStyle.backgroundImage;
+                if (bgImage && bgImage !== 'none' && bgImage.includes('url(')) {
+                    return true;
+                }
+            }
+        } catch (e) {
+            // Ignore cross-origin errors
+        }
+
+        return false;
+    }
+
+    // Get Material Symbol icon info for layer tree
+    getLayerIconInfo(tagName, element) {
+        const hasBgImage = this.hasBackgroundImage(element);
+
+        // If has background image, show as image
+        if (hasBgImage) {
+            return {
+                icon: 'image',
+                colorClass: 'icon-image',
+                displayName: 'Background Image'
+            };
+        }
+
+        // Map tag names to Material Symbols and colors
+        const iconMap = {
+            'body': { icon: 'web', colorClass: 'icon-body', displayName: 'Body' },
+            'html': { icon: 'code', colorClass: 'icon-body', displayName: 'HTML' },
+            'head': { icon: 'settings', colorClass: 'icon-default', displayName: 'Head' },
+            'header': { icon: 'dock_to_top', colorClass: 'icon-header', displayName: 'Header' },
+            'nav': { icon: 'menu', colorClass: 'icon-nav', displayName: 'Navigation' },
+            'main': { icon: 'dashboard', colorClass: 'icon-section', displayName: 'Main' },
+            'section': { icon: 'splitscreen', colorClass: 'icon-section', displayName: 'Section' },
+            'article': { icon: 'article', colorClass: 'icon-section', displayName: 'Article' },
+            'aside': { icon: 'side_navigation', colorClass: 'icon-section', displayName: 'Aside' },
+            'footer': { icon: 'call_to_action', colorClass: 'icon-footer', displayName: 'Footer' },
+            'div': { icon: 'check_box_outline_blank', colorClass: 'icon-container', displayName: 'Container' },
+            'span': { icon: 'text_fields', colorClass: 'icon-text', displayName: 'Span' },
+            'p': { icon: 'format_align_left', colorClass: 'icon-text', displayName: 'Paragraph' },
+            'h1': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 1' },
+            'h2': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 2' },
+            'h3': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 3' },
+            'h4': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 4' },
+            'h5': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 5' },
+            'h6': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 6' },
+            'a': { icon: 'link', colorClass: 'icon-link', displayName: 'Link' },
+            'button': { icon: 'smart_button', colorClass: 'icon-button', displayName: 'Button' },
+            'img': { icon: 'image', colorClass: 'icon-image', displayName: 'Image' },
+            'video': { icon: 'videocam', colorClass: 'icon-image', displayName: 'Video' },
+            'audio': { icon: 'volume_up', colorClass: 'icon-image', displayName: 'Audio' },
+            'svg': { icon: 'draw', colorClass: 'icon-image', displayName: 'SVG' },
+            'ul': { icon: 'format_list_bulleted', colorClass: 'icon-list', displayName: 'Unordered List' },
+            'ol': { icon: 'format_list_numbered', colorClass: 'icon-list', displayName: 'Ordered List' },
+            'li': { icon: 'remove', colorClass: 'icon-list', displayName: 'List Item' },
+            'form': { icon: 'description', colorClass: 'icon-form', displayName: 'Form' },
+            'input': { icon: 'input', colorClass: 'icon-form', displayName: 'Input' },
+            'textarea': { icon: 'notes', colorClass: 'icon-form', displayName: 'Textarea' },
+            'select': { icon: 'arrow_drop_down_circle', colorClass: 'icon-form', displayName: 'Select' },
+            'label': { icon: 'label', colorClass: 'icon-form', displayName: 'Label' },
+            'table': { icon: 'table_chart', colorClass: 'icon-default', displayName: 'Table' },
+            'tr': { icon: 'table_rows', colorClass: 'icon-default', displayName: 'Table Row' },
+            'td': { icon: 'grid_on', colorClass: 'icon-default', displayName: 'Table Cell' },
+            'th': { icon: 'grid_on', colorClass: 'icon-default', displayName: 'Table Header' },
+            'iframe': { icon: 'web_asset', colorClass: 'icon-default', displayName: 'iFrame' },
+            'br': { icon: 'keyboard_return', colorClass: 'icon-default', displayName: 'Line Break' },
+            'hr': { icon: 'horizontal_rule', colorClass: 'icon-default', displayName: 'Divider' },
+        };
+
+        return iconMap[tagName] || {
+            icon: 'code',
+            colorClass: 'icon-default',
+            displayName: tagName.toUpperCase()
+        };
+    }
+
+    // Get meta info for layer (id, class, or text preview)
+    getLayerMetaInfo(element) {
+        // First priority: ID
+        if (element.id) {
+            return `#${element.id}`;
+        }
+
+        // Second priority: Main classes (limit to 3)
+        const classes = element.className?.split?.(' ')?.filter(c => c && !c.startsWith('yenze-')) || [];
+        if (classes.length > 0) {
+            const displayClasses = classes.slice(0, 3).map(c => `.${c}`).join(' ');
+            return displayClasses + (classes.length > 3 ? '...' : '');
+        }
+
+        // Third priority: Text content preview for text elements
+        const tagName = element.tagName.toLowerCase();
+        if (['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'a', 'button', 'label', 'li'].includes(tagName)) {
+            const text = element.textContent?.trim().substring(0, 30);
+            if (text) {
+                return `"${text}${text.length >= 30 ? '...' : ''}"`;
+            }
+        }
+
+        return '';
+    }
+
+    // Toggle element visibility in canvas
+    toggleElementVisibility(element, btn) {
+        const isHidden = element.style.visibility === 'hidden' || element.dataset.yenzeHidden === 'true';
+
+        if (isHidden) {
+            element.style.visibility = '';
+            element.style.opacity = '';
+            element.dataset.yenzeHidden = 'false';
+            btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+            btn.style.color = '';
+        } else {
+            element.style.visibility = 'hidden';
+            element.style.opacity = '0.3';
+            element.dataset.yenzeHidden = 'true';
+            btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+            btn.style.color = '#ef4444';
+        }
+    }
+
+    // Filter layers by search term
+    filterLayers(searchTerm) {
+        const tree = document.getElementById('layersTree');
+        const items = tree.querySelectorAll('.layer-item');
+        const term = searchTerm.toLowerCase().trim();
+
+        items.forEach(item => {
+            if (!term) {
+                item.style.display = '';
+                return;
+            }
+
+            const name = item.querySelector('.layer-name')?.textContent?.toLowerCase() || '';
+            const meta = item.querySelector('.layer-meta')?.textContent?.toLowerCase() || '';
+
+            if (name.includes(term) || meta.includes(term)) {
+                item.style.display = '';
+                // Also show all parent items
+                let parent = item.parentElement?.closest('.layer-item');
+                while (parent) {
+                    parent.style.display = '';
+                    parent = parent.parentElement?.closest('.layer-item');
+                }
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Update breadcrumb when element is selected
+    updateLayersBreadcrumb(element) {
+        const breadcrumb = document.getElementById('layersBreadcrumb');
+        if (!breadcrumb || !element) {
+            if (breadcrumb) breadcrumb.style.display = 'none';
+            return;
+        }
+
+        const path = [];
+        let current = element;
+
+        while (current && current.tagName) {
+            const tagName = current.tagName.toLowerCase();
+            if (tagName === 'html') break;
+
+            let label = tagName;
+            if (current.id) label = `${tagName}#${current.id}`;
+            else if (current.className) {
+                const firstClass = current.className.split(' ')[0];
+                if (firstClass && !firstClass.startsWith('yenze-')) {
+                    label = `${tagName}.${firstClass}`;
+                }
+            }
+
+            path.unshift({ label, element: current });
+            current = current.parentElement;
+        }
+
+        if (path.length > 0) {
+            breadcrumb.style.display = 'flex';
+            breadcrumb.innerHTML = path.map((item, i) => {
+                const isLast = i === path.length - 1;
+                return `
+                    <span class="breadcrumb-item ${isLast ? 'active' : ''}" data-element-index="${i}">${item.label}</span>
+                    ${!isLast ? '<span class="breadcrumb-separator material-symbols-outlined" style="font-size: 10px;">chevron_right</span>' : ''}
+                `;
+            }).join('');
+
+            // Add click handlers
+            breadcrumb.querySelectorAll('.breadcrumb-item').forEach((item, i) => {
+                item.addEventListener('click', () => {
+                    this.selectElement(path[i].element);
+                });
+            });
+        } else {
+            breadcrumb.style.display = 'none';
+        }
+    }
+
+    getElementIcon(tagName, element = null) {
+        // Check if element has background image - show image icon
+        if (element && this.hasBackgroundImage(element)) {
+            return '🖼';
+        }
+
         const icons = {
             'body': '□',
             'html': '□',

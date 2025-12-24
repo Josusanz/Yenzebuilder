@@ -1,18 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Content-Type', 'application/json');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
+    }
+
+    // Check environment variables
+    if (!supabaseUrl || !supabaseServiceKey) {
+        console.error('Missing Supabase environment variables');
+        return res.status(500).json({ error: 'Server configuration error' });
     }
 
     // Get authorization token
@@ -22,13 +27,18 @@ export default async function handler(req, res) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-        return res.status(401).json({ error: 'Invalid token' });
-    }
 
     try {
+        // Create supabase client inside handler
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !user) {
+            console.error('Auth error:', authError);
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+
         // GET - List backups for a project
         if (req.method === 'GET') {
             const { projectId } = req.query;
@@ -57,7 +67,10 @@ export default async function handler(req, res) {
                 .order('created_at', { ascending: false })
                 .limit(20);
 
-            if (error) throw error;
+            if (error) {
+                console.error('Get backups error:', error);
+                throw error;
+            }
 
             return res.status(200).json({ backups: backups || [] });
         }
@@ -79,6 +92,7 @@ export default async function handler(req, res) {
                 .single();
 
             if (projectError || !project) {
+                console.error('Project error:', projectError);
                 return res.status(404).json({ error: 'Project not found' });
             }
 
@@ -144,7 +158,7 @@ export default async function handler(req, res) {
                 .insert({
                     project_id: projectId,
                     user_id: user.id,
-                    name: name || `Backup ${new Date().toLocaleString()}`,
+                    name: name || `Backup ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
                     backup_data: backupData,
                     size_bytes: sizeBytes,
                     is_auto: isAuto
@@ -152,7 +166,10 @@ export default async function handler(req, res) {
                 .select()
                 .single();
 
-            if (backupError) throw backupError;
+            if (backupError) {
+                console.error('Backup insert error:', backupError);
+                throw backupError;
+            }
 
             return res.status(200).json({
                 success: true,

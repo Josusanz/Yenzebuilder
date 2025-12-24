@@ -668,147 +668,306 @@
             border-color: #d4d4d4;
         }
 
-        /* Layers */
+        /* Layers - Modern Visual Design */
         .layers-tree {
             list-style: none;
             position: relative;
-            padding: 0;
+            padding: 0.5rem 0;
             margin: 0;
+        }
+
+        /* Vertical guide line */
+        .layers-tree::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 32px;
+            width: 1px;
+            border-left: 1px dashed rgba(0, 0, 0, 0.08);
+            z-index: 0;
         }
 
         .layer-item {
-            padding: 0.25rem 0.5rem;
-            margin: 0;
-            border-radius: 4px;
-            cursor: pointer;
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 0.375rem;
-            font-size: 0.75rem;
-            transition: background 0.1s ease;
-            font-weight: 400;
-            color: #1a1a1a;
-            position: relative;
-            user-select: none;
-            min-height: 26px;
+            min-height: 44px;
+            padding: 0.25rem 0.75rem 0.25rem 0;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            z-index: 1;
         }
 
         .layer-item:hover {
-            background: #f5f5f5;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        /* Selection indicator bar */
+        .layer-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: transparent;
+            border-radius: 0 2px 2px 0;
+            transition: background 0.15s ease;
         }
 
         .layer-item.selected {
-            background: #e3e8ff;
-            color: #0066FF;
-            font-weight: 500;
+            background: rgba(0, 102, 255, 0.04);
         }
 
-        .layer-item.selected .layer-icon {
-            color: #0066FF;
+        .layer-item.selected::before {
+            background: rgba(0, 102, 255, 0.5);
+            box-shadow: 0 0 8px rgba(0, 102, 255, 0.3);
+        }
+
+        .layer-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+            gap: 0.25rem;
         }
 
         .layer-toggle {
-            width: 18px;
-            height: 18px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2px;
-            transition: transform 0.15s ease;
+            border-radius: 6px;
+            transition: all 0.15s ease;
             flex-shrink: 0;
-            opacity: 0.5;
-            font-size: 14px;
+            color: rgba(0, 0, 0, 0.4);
             cursor: pointer;
-            margin-right: 4px;
+            background: transparent;
+            border: none;
+            padding: 0;
         }
 
         .layer-toggle:hover {
-            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .layer-toggle .material-symbols-outlined {
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .layer-toggle.collapsed .material-symbols-outlined {
+            transform: rotate(-90deg);
         }
 
         .layer-toggle-spacer {
-            width: 18px;
-            height: 18px;
+            width: 28px;
+            height: 28px;
             flex-shrink: 0;
-            margin-right: 4px;
-        }
-
-        .layer-item.selected .layer-toggle {
-            opacity: 0.7;
         }
 
         .layer-icon {
-            width: 14px;
-            height: 14px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0.6;
-            font-size: 11px;
             flex-shrink: 0;
-            color: #666;
+            margin-right: 0.25rem;
+        }
+
+        .layer-icon .material-symbols-outlined {
+            font-size: 18px;
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Color coding for different element types */
+        .layer-icon.icon-body { color: #a78bfa; }
+        .layer-icon.icon-section { color: #60a5fa; }
+        .layer-icon.icon-container { color: #fb923c; }
+        .layer-icon.icon-text { color: #4ade80; }
+        .layer-icon.icon-button { color: #facc15; }
+        .layer-icon.icon-image { color: #f472b6; }
+        .layer-icon.icon-link { color: #2dd4bf; }
+        .layer-icon.icon-form { color: #c084fc; }
+        .layer-icon.icon-list { color: #94a3b8; }
+        .layer-icon.icon-nav { color: #38bdf8; }
+        .layer-icon.icon-header { color: #818cf8; }
+        .layer-icon.icon-footer { color: #a3a3a3; }
+        .layer-icon.icon-default { color: #9ca3af; }
+
+        .layer-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
         }
 
         .layer-name {
-            flex: 1;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #1f2937;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 0.75rem;
-            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .layer-item.selected .layer-name {
+            color: #0066FF;
+            font-weight: 600;
+        }
+
+        .layer-meta {
+            font-size: 0.625rem;
+            color: rgba(0, 0, 0, 0.4);
+            font-weight: 400;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .layer-item.selected .layer-meta {
+            color: rgba(0, 102, 255, 0.7);
         }
 
         .layer-actions {
-            display: none;
+            display: flex;
             gap: 0.125rem;
             opacity: 0;
-            transition: opacity 0.1s ease;
+            transition: opacity 0.15s ease;
         }
 
         .layer-item:hover .layer-actions {
-            display: flex;
             opacity: 1;
         }
 
         .layer-item.selected .layer-actions {
-            display: flex;
             opacity: 1;
         }
 
         .layer-action-btn {
-            width: 18px;
-            height: 18px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
+            border-radius: 6px;
             background: transparent;
             border: none;
             cursor: pointer;
-            opacity: 0.5;
-            transition: all 0.1s ease;
+            color: rgba(0, 0, 0, 0.4);
+            transition: all 0.15s ease;
             padding: 0;
-            color: currentColor;
-            font-size: 10px;
+        }
+
+        .layer-action-btn .material-symbols-outlined {
+            font-size: 16px;
         }
 
         .layer-action-btn:hover {
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.06);
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .layer-item.selected .layer-action-btn {
+            color: rgba(0, 102, 255, 0.6);
         }
 
         .layer-item.selected .layer-action-btn:hover {
-            background: rgba(0, 102, 255, 0.15);
+            background: rgba(0, 102, 255, 0.1);
+            color: #0066FF;
         }
 
         .layer-children {
-            margin-left: 0.875rem;
+            margin-left: 0;
             padding-left: 0;
-            border-left: 1px solid #e5e5e5;
         }
 
         .layer-item.nested {
             margin-left: 0;
+        }
+
+        /* Layers search bar */
+        .layers-search {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .layers-search-input {
+            width: 100%;
+            height: 36px;
+            padding: 0 0.75rem 0 2.25rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            font-size: 0.8125rem;
+            color: var(--text-primary);
+            transition: all 0.15s ease;
+        }
+
+        .layers-search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.1);
+        }
+
+        .layers-search-wrapper {
+            position: relative;
+        }
+
+        .layers-search-icon {
+            position: absolute;
+            left: 0.625rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(0, 0, 0, 0.35);
+            pointer-events: none;
+        }
+
+        .layers-search-icon .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* Breadcrumb path */
+        .layers-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.6875rem;
+            color: rgba(0, 0, 0, 0.5);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .layers-breadcrumb::-webkit-scrollbar {
+            display: none;
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--accent);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .breadcrumb-separator {
+            color: rgba(0, 0, 0, 0.25);
         }
 
         /* Elements Grid */
@@ -3376,11 +3535,19 @@
 
                 <!-- Layers Tab -->
                 <div class="tab-panel" id="layersPanel">
-                    <div class="section-title">Structure</div>
+                    <!-- Layers Search -->
+                    <div class="layers-search">
+                        <div class="layers-search-wrapper">
+                            <div class="layers-search-icon">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                            <input type="text" class="layers-search-input" id="layersSearchInput" placeholder="Filter layers...">
+                        </div>
+                    </div>
 
-                    <!-- Add Element Buttons - Always Visible -->
+                    <!-- Quick Add Buttons -->
                     <div id="layersActions"
-                        style="padding: 0.5rem 0; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); display: flex; gap: 0.25rem; flex-wrap: wrap;">
+                        style="padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); display: flex; gap: 0.25rem; flex-wrap: wrap;">
                         <button class="btn btn-secondary" id="addSectionBtn"
                             style="flex: 1; padding: 0.4rem 0.5rem; font-size: 0.75rem;">+ Section</button>
                         <button class="btn btn-secondary" id="addDivBtn"
@@ -3389,12 +3556,26 @@
                             style="flex: 1; padding: 0.4rem 0.5rem; font-size: 0.75rem;">+ 2 Cols</button>
                     </div>
 
+                    <!-- Layers Tree -->
                     <ul class="layers-tree" id="layersTree">
-                        <li class="layer-item">
-                            <span class="layer-icon">📄</span>
-                            <span>No document</span>
+                        <li class="layer-item" style="padding-left: 4px;">
+                            <div class="layer-content">
+                                <span class="layer-toggle-spacer"></span>
+                                <div class="layer-icon icon-default">
+                                    <span class="material-symbols-outlined">description</span>
+                                </div>
+                                <div class="layer-info">
+                                    <span class="layer-name">No document</span>
+                                    <span class="layer-meta">Import HTML to see layers</span>
+                                </div>
+                            </div>
                         </li>
                     </ul>
+
+                    <!-- Breadcrumb Path -->
+                    <div class="layers-breadcrumb" id="layersBreadcrumb" style="display: none;">
+                        <span class="breadcrumb-item">body</span>
+                    </div>
                 </div>
 
                 <!-- Elements Tab -->

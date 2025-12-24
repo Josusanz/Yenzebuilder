@@ -4924,8 +4924,8 @@ body{transform-origin:0 0;}
             const contentType = response.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
                 const text = await response.text();
-                console.error('Non-JSON response:', text);
-                throw new Error('Server error - please check if database tables exist');
+                console.error('Non-JSON response:', text.substring(0, 500));
+                throw new Error(`Server error (${response.status}): ${text.substring(0, 100)}`);
             }
 
             const data = await response.json();
