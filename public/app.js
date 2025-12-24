@@ -771,8 +771,7 @@ class YenzeBuilder {
                                 width: 100% !important;
                                 min-width: 100% !important;
                                 max-width: 100% !important;
-                                overflow-x: hidden !important;
-                                overflow-y: auto !important;
+                                overflow: hidden !important;
                                 margin: 0 !important;
                                 padding: 0 !important;
                                 box-sizing: border-box !important;
@@ -939,8 +938,7 @@ class YenzeBuilder {
                 width: 100% !important;
                 min-width: 100% !important;
                 max-width: 100% !important;
-                overflow-x: hidden !important;
-                overflow-y: auto !important;
+                overflow: hidden !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 box-sizing: border-box !important;
@@ -1912,7 +1910,7 @@ class YenzeBuilder {
         // 1. Ensure the element ITSELF is visible
         this.ensureElementPageVisible(element);
 
-        // 2. If element is a navigation link, show its TARGET
+        // 2. If element is a navigation link, show its TARGET (but don't scroll in edit mode)
         if (element.tagName === 'A') {
             const href = element.getAttribute('href');
             if (href && href.startsWith('#') && href.length > 1) {
@@ -1921,17 +1919,9 @@ class YenzeBuilder {
                 const targetEl = iframeDoc.getElementById(targetId);
 
                 if (targetEl) {
-                    // Show the target page/section
+                    // Show the target page/section (for multi-page sites)
                     this.ensureElementPageVisible(targetEl);
-
-                    // Scroll target into view after a short delay to allow partial visibility updates
-                    setTimeout(() => {
-                        targetEl.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start',
-                            inline: 'center'
-                        });
-                    }, 100);
+                    // Don't scroll - canvas should stay fixed in edit mode
                 }
             }
         }
