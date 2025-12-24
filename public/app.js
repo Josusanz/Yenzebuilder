@@ -694,19 +694,7 @@ class YenzeBuilder {
 
     autoScaleCanvas() {
         const canvasScaler = document.getElementById('canvasScaler');
-
-        // Only auto-scale for DESKTOP - tablet and mobile stay at 100%
-        if (this.currentDevice !== 'desktop') {
-            if (canvasScaler) {
-                canvasScaler.style.transform = 'scale(1)';
-            }
-            this.currentScale = 1;
-            return;
-        }
-
-        // DESKTOP ONLY: Auto-scale to fill available space
         const wrapper = document.getElementById('canvasWrapper');
-        const leftSidebar = document.querySelector('.left-sidebar');
 
         if (!canvasScaler || !wrapper) return;
 
@@ -725,25 +713,25 @@ class YenzeBuilder {
             return;
         }
 
-        // Get wrapper height
-        const wrapperHeight = wrapper.offsetHeight || 900;
+        // Get the current breakpoint width
+        const breakpointWidth = this.deviceWidths[this.currentDevice] || 1680;
 
-        // FORCE HEIGHT: Scale based on available height to fill vertical space
-        let scale = availableHeight / wrapperHeight;
+        // Set wrapper to breakpoint width
+        wrapper.style.width = breakpointWidth + 'px';
 
-        // Calculate what width the wrapper needs to be at this scale to fit
-        const scaledAvailableWidth = availableWidth / scale;
-
-        // Set wrapper width to fit the available width at this scale
-        // But minimum 1024px to stay in desktop mode
-        const newWidth = Math.max(scaledAvailableWidth, 1024);
-        wrapper.style.width = newWidth + 'px';
-
-        this.currentScale = scale;
-
-        // Apply zoom/scale transform - center it
-        canvasScaler.style.transform = `scale(${scale})`;
-        canvasScaler.style.transformOrigin = 'center center';
+        // Only scale down if breakpoint is LARGER than available space
+        // If breakpoint fits, show at 100% (no scaling)
+        if (breakpointWidth <= availableWidth) {
+            // Canvas fits - no scaling needed
+            canvasScaler.style.transform = 'scale(1)';
+            this.currentScale = 1;
+        } else {
+            // Canvas is too wide - scale to fit
+            const scale = availableWidth / breakpointWidth;
+            canvasScaler.style.transform = `scale(${scale})`;
+            canvasScaler.style.transformOrigin = 'top center';
+            this.currentScale = scale;
+        }
     }
 
     updateCanvasWidth(width) {
