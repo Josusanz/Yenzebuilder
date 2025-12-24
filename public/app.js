@@ -2873,8 +2873,6 @@ class YenzeBuilder {
                     if (e.target.closest('.layer-toggle')) return;
                     e.stopPropagation();
                     this.selectElement(element);
-                    // Scroll to element in canvas
-                    this.scrollToElementInCanvas(element);
                 });
             }
 
@@ -4039,34 +4037,6 @@ if (validationForm) {
         }
     }
 
-    // Scroll to element in canvas when clicking on layer
-    scrollToElementInCanvas(element) {
-        if (!element || !this.canvas) return;
-
-        try {
-            const iframe = this.canvas;
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-            // Get element's position relative to iframe document
-            const rect = element.getBoundingClientRect();
-            const iframeRect = iframe.getBoundingClientRect();
-
-            // Calculate scroll position to center the element
-            const scrollContainer = iframe.contentWindow;
-            const elementTop = rect.top + scrollContainer.scrollY;
-            const elementLeft = rect.left + scrollContainer.scrollX;
-
-            // Scroll the iframe content to show the element
-            scrollContainer.scrollTo({
-                top: Math.max(0, elementTop - iframe.clientHeight / 3),
-                left: Math.max(0, elementLeft - iframe.clientWidth / 3),
-                behavior: 'smooth'
-            });
-        } catch (e) {
-            console.warn('Could not scroll to element:', e);
-        }
-    }
-
     // Filter layers by search term
     filterLayers(searchTerm) {
         const tree = document.getElementById('layersTree');
@@ -4209,8 +4179,22 @@ if (validationForm) {
         const canvas = document.getElementById('canvas');
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
 
-        // Use outerHTML of documentElement to get the full HTML including <html> tag
-        const cleanHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+        // Clone the document to clean it without affecting the editor
+        const clonedDoc = iframeDoc.documentElement.cloneNode(true);
+
+        // Remove any remaining selection styles from all elements in the clone
+        clonedDoc.querySelectorAll('*').forEach(el => {
+            el.style.removeProperty('outline');
+            el.style.removeProperty('outline-offset');
+            el.style.removeProperty('box-shadow');
+            // Clean up empty style attributes
+            if (el.getAttribute('style') === '') {
+                el.removeAttribute('style');
+            }
+        });
+
+        // Use outerHTML of the cleaned clone
+        const cleanHTML = "<!DOCTYPE html>\n" + clonedDoc.outerHTML;
 
         // Open in new window
         const previewWindow = window.open('', 'Preview', 'width=1200,height=800');
