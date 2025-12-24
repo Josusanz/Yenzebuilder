@@ -4766,9 +4766,14 @@ ${result.robotsTxt}
 
             // Get the blob and trigger download
             const blob = await response.blob();
+            // Sanitize filename - remove special characters
+            const safeName = (this.exportProjectName || 'website')
+                .replace(/[^a-zA-Z0-9-_\s]/g, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 50) || 'website';
             const filename = format === 'zip'
-                ? `${this.exportProjectName || 'website'}.zip`
-                : `${this.exportProjectName || 'website'}.html`;
+                ? `${safeName}.zip`
+                : `${safeName}.html`;
 
             // Create download link
             const url = window.URL.createObjectURL(blob);

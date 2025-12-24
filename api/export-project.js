@@ -106,12 +106,18 @@ ${htmlContent || ''}
                 .trim();
         };
 
+        // Sanitize filename for Content-Disposition header
+        const safeFilename = (project.name || 'website')
+            .replace(/[^a-zA-Z0-9-_\s]/g, '')
+            .replace(/\s+/g, '-')
+            .substring(0, 50) || 'website';
+
         if (format === 'html') {
             // Single HTML file export
             const html = generateCleanHTML(project.html_content, project.name);
 
             res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Content-Disposition', `attachment; filename="${project.name || 'website'}.html"`);
+            res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.html"`);
             return res.status(200).send(html);
         }
 
@@ -164,7 +170,7 @@ Need help? Contact support@yenze.io
             });
 
             res.setHeader('Content-Type', 'application/zip');
-            res.setHeader('Content-Disposition', `attachment; filename="${project.name || 'website'}.zip"`);
+            res.setHeader('Content-Disposition', `attachment; filename="${safeFilename}.zip"`);
             return res.status(200).send(zipBuffer);
         }
 
