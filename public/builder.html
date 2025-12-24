@@ -754,12 +754,13 @@
             color: rgba(0, 0, 0, 0.6);
         }
 
-        .layer-toggle .material-symbols-outlined {
-            font-size: 16px;
+        .layer-toggle svg {
+            width: 16px;
+            height: 16px;
             transition: transform 0.2s ease;
         }
 
-        .layer-toggle.collapsed .material-symbols-outlined {
+        .layer-toggle.collapsed svg {
             transform: rotate(-90deg);
         }
 
@@ -779,9 +780,9 @@
             margin-right: 0.25rem;
         }
 
-        .layer-icon .material-symbols-outlined {
-            font-size: 18px;
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        .layer-icon svg {
+            width: 18px;
+            height: 18px;
         }
 
         /* Color coding for different element types */
@@ -865,8 +866,9 @@
             padding: 0;
         }
 
-        .layer-action-btn .material-symbols-outlined {
-            font-size: 16px;
+        .layer-action-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         .layer-action-btn:hover {
@@ -930,8 +932,9 @@
             pointer-events: none;
         }
 
-        .layers-search-icon .material-symbols-outlined {
-            font-size: 18px;
+        .layers-search-icon svg {
+            width: 18px;
+            height: 18px;
         }
 
         /* Breadcrumb path */
@@ -3539,7 +3542,7 @@
                     <div class="layers-search">
                         <div class="layers-search-wrapper">
                             <div class="layers-search-icon">
-                                <span class="material-symbols-outlined">search</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             </div>
                             <input type="text" class="layers-search-input" id="layersSearchInput" placeholder="Filter layers...">
                         </div>
@@ -3562,7 +3565,7 @@
                             <div class="layer-content">
                                 <span class="layer-toggle-spacer"></span>
                                 <div class="layer-icon icon-default">
-                                    <span class="material-symbols-outlined">description</span>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
                                 </div>
                                 <div class="layer-info">
                                     <span class="layer-name">No document</span>

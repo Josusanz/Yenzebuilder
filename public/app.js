@@ -2837,10 +2837,14 @@ class YenzeBuilder {
             const elementId = this.generateElementId(element);
             const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
 
+            // SVG icons for toggle and visibility
+            const chevronSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+            const visibilitySvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
             // Add collapse/expand toggle if element has children
             const collapseToggle = hasChildren ?
                 `<button class="layer-toggle ${isCollapsed ? 'collapsed' : ''}" data-element-id="${elementId}">
-                    <span class="material-symbols-outlined">expand_more</span>
+                    ${chevronSvg}
                 </button>` :
                 '<span class="layer-toggle-spacer"></span>';
 
@@ -2848,7 +2852,7 @@ class YenzeBuilder {
                 <div class="layer-content">
                     ${collapseToggle}
                     <div class="layer-icon ${colorClass}">
-                        <span class="material-symbols-outlined">${icon}</span>
+                        ${icon}
                     </div>
                     <div class="layer-info">
                         <span class="layer-name">${displayName}</span>
@@ -2857,7 +2861,7 @@ class YenzeBuilder {
                 </div>
                 <div class="layer-actions">
                     <button class="layer-action-btn" data-action="visibility" title="Toggle visibility">
-                        <span class="material-symbols-outlined">visibility</span>
+                        ${visibilitySvg}
                     </button>
                 </div>
             `;
@@ -3914,65 +3918,86 @@ if (validationForm) {
         return false;
     }
 
-    // Get Material Symbol icon info for layer tree
+    // Get icon info for layer tree using SVG icons
     getLayerIconInfo(tagName, element) {
         const hasBgImage = this.hasBackgroundImage(element);
+
+        // SVG icons for each element type
+        const svgIcons = {
+            body: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
+            section: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="3" y="14" width="18" height="7" rx="1"/></svg>',
+            nav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>',
+            header: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="6" rx="1"/><rect x="3" y="12" width="18" height="9" rx="1" opacity="0.3"/></svg>',
+            footer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="9" rx="1" opacity="0.3"/><rect x="3" y="15" width="18" height="6" rx="1"/></svg>',
+            div: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
+            container: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
+            text: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V4h16v3"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/></svg>',
+            heading: '<svg viewBox="0 0 24 24" fill="currentColor"><text x="4" y="17" font-size="14" font-weight="bold">H</text></svg>',
+            paragraph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="16" y2="14"/></svg>',
+            link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+            button: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="10" rx="3"/><line x1="7" y1="12" x2="17" y2="12"/></svg>',
+            image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+            list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>',
+            form: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><rect x="7" y="15" width="6" height="3" rx="1"/></svg>',
+            input: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="10" rx="2"/><line x1="7" y1="12" x2="7" y2="12.01"/></svg>',
+            default: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>'
+        };
 
         // If has background image, show as image
         if (hasBgImage) {
             return {
-                icon: 'image',
+                icon: svgIcons.image,
                 colorClass: 'icon-image',
                 displayName: 'Background Image'
             };
         }
 
-        // Map tag names to Material Symbols and colors
+        // Map tag names to icons and colors
         const iconMap = {
-            'body': { icon: 'web', colorClass: 'icon-body', displayName: 'Body' },
-            'html': { icon: 'code', colorClass: 'icon-body', displayName: 'HTML' },
-            'head': { icon: 'settings', colorClass: 'icon-default', displayName: 'Head' },
-            'header': { icon: 'dock_to_top', colorClass: 'icon-header', displayName: 'Header' },
-            'nav': { icon: 'menu', colorClass: 'icon-nav', displayName: 'Navigation' },
-            'main': { icon: 'dashboard', colorClass: 'icon-section', displayName: 'Main' },
-            'section': { icon: 'splitscreen', colorClass: 'icon-section', displayName: 'Section' },
-            'article': { icon: 'article', colorClass: 'icon-section', displayName: 'Article' },
-            'aside': { icon: 'side_navigation', colorClass: 'icon-section', displayName: 'Aside' },
-            'footer': { icon: 'call_to_action', colorClass: 'icon-footer', displayName: 'Footer' },
-            'div': { icon: 'check_box_outline_blank', colorClass: 'icon-container', displayName: 'Container' },
-            'span': { icon: 'text_fields', colorClass: 'icon-text', displayName: 'Span' },
-            'p': { icon: 'format_align_left', colorClass: 'icon-text', displayName: 'Paragraph' },
-            'h1': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 1' },
-            'h2': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 2' },
-            'h3': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 3' },
-            'h4': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 4' },
-            'h5': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 5' },
-            'h6': { icon: 'title', colorClass: 'icon-text', displayName: 'Heading 6' },
-            'a': { icon: 'link', colorClass: 'icon-link', displayName: 'Link' },
-            'button': { icon: 'smart_button', colorClass: 'icon-button', displayName: 'Button' },
-            'img': { icon: 'image', colorClass: 'icon-image', displayName: 'Image' },
-            'video': { icon: 'videocam', colorClass: 'icon-image', displayName: 'Video' },
-            'audio': { icon: 'volume_up', colorClass: 'icon-image', displayName: 'Audio' },
-            'svg': { icon: 'draw', colorClass: 'icon-image', displayName: 'SVG' },
-            'ul': { icon: 'format_list_bulleted', colorClass: 'icon-list', displayName: 'Unordered List' },
-            'ol': { icon: 'format_list_numbered', colorClass: 'icon-list', displayName: 'Ordered List' },
-            'li': { icon: 'remove', colorClass: 'icon-list', displayName: 'List Item' },
-            'form': { icon: 'description', colorClass: 'icon-form', displayName: 'Form' },
-            'input': { icon: 'input', colorClass: 'icon-form', displayName: 'Input' },
-            'textarea': { icon: 'notes', colorClass: 'icon-form', displayName: 'Textarea' },
-            'select': { icon: 'arrow_drop_down_circle', colorClass: 'icon-form', displayName: 'Select' },
-            'label': { icon: 'label', colorClass: 'icon-form', displayName: 'Label' },
-            'table': { icon: 'table_chart', colorClass: 'icon-default', displayName: 'Table' },
-            'tr': { icon: 'table_rows', colorClass: 'icon-default', displayName: 'Table Row' },
-            'td': { icon: 'grid_on', colorClass: 'icon-default', displayName: 'Table Cell' },
-            'th': { icon: 'grid_on', colorClass: 'icon-default', displayName: 'Table Header' },
-            'iframe': { icon: 'web_asset', colorClass: 'icon-default', displayName: 'iFrame' },
-            'br': { icon: 'keyboard_return', colorClass: 'icon-default', displayName: 'Line Break' },
-            'hr': { icon: 'horizontal_rule', colorClass: 'icon-default', displayName: 'Divider' },
+            'body': { icon: svgIcons.body, colorClass: 'icon-body', displayName: 'Body' },
+            'html': { icon: svgIcons.body, colorClass: 'icon-body', displayName: 'HTML' },
+            'head': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Head' },
+            'header': { icon: svgIcons.header, colorClass: 'icon-header', displayName: 'Header' },
+            'nav': { icon: svgIcons.nav, colorClass: 'icon-nav', displayName: 'Navigation' },
+            'main': { icon: svgIcons.section, colorClass: 'icon-section', displayName: 'Main' },
+            'section': { icon: svgIcons.section, colorClass: 'icon-section', displayName: 'Section' },
+            'article': { icon: svgIcons.section, colorClass: 'icon-section', displayName: 'Article' },
+            'aside': { icon: svgIcons.section, colorClass: 'icon-section', displayName: 'Aside' },
+            'footer': { icon: svgIcons.footer, colorClass: 'icon-footer', displayName: 'Footer' },
+            'div': { icon: svgIcons.div, colorClass: 'icon-container', displayName: 'Container' },
+            'span': { icon: svgIcons.text, colorClass: 'icon-text', displayName: 'Span' },
+            'p': { icon: svgIcons.paragraph, colorClass: 'icon-text', displayName: 'Paragraph' },
+            'h1': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 1' },
+            'h2': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 2' },
+            'h3': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 3' },
+            'h4': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 4' },
+            'h5': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 5' },
+            'h6': { icon: svgIcons.heading, colorClass: 'icon-text', displayName: 'Heading 6' },
+            'a': { icon: svgIcons.link, colorClass: 'icon-link', displayName: 'Link' },
+            'button': { icon: svgIcons.button, colorClass: 'icon-button', displayName: 'Button' },
+            'img': { icon: svgIcons.image, colorClass: 'icon-image', displayName: 'Image' },
+            'video': { icon: svgIcons.image, colorClass: 'icon-image', displayName: 'Video' },
+            'audio': { icon: svgIcons.image, colorClass: 'icon-image', displayName: 'Audio' },
+            'svg': { icon: svgIcons.image, colorClass: 'icon-image', displayName: 'SVG' },
+            'ul': { icon: svgIcons.list, colorClass: 'icon-list', displayName: 'List' },
+            'ol': { icon: svgIcons.list, colorClass: 'icon-list', displayName: 'List' },
+            'li': { icon: svgIcons.list, colorClass: 'icon-list', displayName: 'List Item' },
+            'form': { icon: svgIcons.form, colorClass: 'icon-form', displayName: 'Form' },
+            'input': { icon: svgIcons.input, colorClass: 'icon-form', displayName: 'Input' },
+            'textarea': { icon: svgIcons.input, colorClass: 'icon-form', displayName: 'Textarea' },
+            'select': { icon: svgIcons.input, colorClass: 'icon-form', displayName: 'Select' },
+            'label': { icon: svgIcons.text, colorClass: 'icon-form', displayName: 'Label' },
+            'table': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Table' },
+            'tr': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Row' },
+            'td': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Cell' },
+            'th': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Header Cell' },
+            'iframe': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'iFrame' },
+            'br': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Break' },
+            'hr': { icon: svgIcons.default, colorClass: 'icon-default', displayName: 'Divider' },
         };
 
         return iconMap[tagName] || {
-            icon: 'code',
+            icon: svgIcons.default,
             colorClass: 'icon-default',
             displayName: tagName.toUpperCase()
         };
@@ -4007,18 +4032,20 @@ if (validationForm) {
     // Toggle element visibility in canvas
     toggleElementVisibility(element, btn) {
         const isHidden = element.style.visibility === 'hidden' || element.dataset.yenzeHidden === 'true';
+        const visibleSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        const hiddenSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
         if (isHidden) {
             element.style.visibility = '';
             element.style.opacity = '';
             element.dataset.yenzeHidden = 'false';
-            btn.querySelector('.material-symbols-outlined').textContent = 'visibility';
+            btn.innerHTML = visibleSvg;
             btn.style.color = '';
         } else {
             element.style.visibility = 'hidden';
             element.style.opacity = '0.3';
             element.dataset.yenzeHidden = 'true';
-            btn.querySelector('.material-symbols-outlined').textContent = 'visibility_off';
+            btn.innerHTML = hiddenSvg;
             btn.style.color = '#ef4444';
         }
     }
@@ -4082,11 +4109,12 @@ if (validationForm) {
 
         if (path.length > 0) {
             breadcrumb.style.display = 'flex';
+            const chevronSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 10px; height: 10px;"><polyline points="9 6 15 12 9 18"/></svg>';
             breadcrumb.innerHTML = path.map((item, i) => {
                 const isLast = i === path.length - 1;
                 return `
                     <span class="breadcrumb-item ${isLast ? 'active' : ''}" data-element-index="${i}">${item.label}</span>
-                    ${!isLast ? '<span class="breadcrumb-separator material-symbols-outlined" style="font-size: 10px;">chevron_right</span>' : ''}
+                    ${!isLast ? `<span class="breadcrumb-separator">${chevronSvg}</span>` : ''}
                 `;
             }).join('');
 
