@@ -693,7 +693,6 @@ class YenzeBuilder {
     }
 
     autoScaleCanvas() {
-        const zoomIndicator = document.getElementById('zoomIndicator');
         const canvasScaler = document.getElementById('canvasScaler');
 
         // Only auto-scale for DESKTOP - tablet and mobile stay at 100%
@@ -702,9 +701,6 @@ class YenzeBuilder {
                 canvasScaler.style.transform = 'scale(1)';
             }
             this.currentScale = 1;
-            if (zoomIndicator) {
-                zoomIndicator.style.display = 'none';
-            }
             return;
         }
 
@@ -713,11 +709,6 @@ class YenzeBuilder {
         const leftSidebar = document.querySelector('.left-sidebar');
 
         if (!canvasScaler || !wrapper) return;
-
-        // Show zoom indicator for desktop
-        if (zoomIndicator) {
-            zoomIndicator.style.display = 'block';
-        }
 
         // Calculate available space using canvas-area directly
         const canvasArea = document.querySelector('.canvas-area');
@@ -753,10 +744,6 @@ class YenzeBuilder {
         // Apply zoom/scale transform - center it
         canvasScaler.style.transform = `scale(${scale})`;
         canvasScaler.style.transformOrigin = 'center center';
-
-        if (zoomIndicator) {
-            zoomIndicator.textContent = `${Math.round(scale * 100)}%`;
-        }
     }
 
     updateCanvasWidth(width) {
@@ -2819,7 +2806,7 @@ class YenzeBuilder {
 
             const li = document.createElement('li');
             li.className = 'layer-item';
-            li.style.paddingLeft = `${4 + level * 20}px`;
+            li.style.paddingLeft = `${2 + level * 12}px`;
             li.draggable = true;
             li.dataset.elementId = this.generateElementId(element);
 
@@ -2886,6 +2873,8 @@ class YenzeBuilder {
                     if (e.target.closest('.layer-toggle')) return;
                     e.stopPropagation();
                     this.selectElement(element);
+                    // Scroll to element in canvas
+                    this.scrollToElementInCanvas(element);
                 });
             }
 
@@ -4047,6 +4036,34 @@ if (validationForm) {
             element.dataset.yenzeHidden = 'true';
             btn.innerHTML = hiddenSvg;
             btn.style.color = '#ef4444';
+        }
+    }
+
+    // Scroll to element in canvas when clicking on layer
+    scrollToElementInCanvas(element) {
+        if (!element || !this.canvas) return;
+
+        try {
+            const iframe = this.canvas;
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            // Get element's position relative to iframe document
+            const rect = element.getBoundingClientRect();
+            const iframeRect = iframe.getBoundingClientRect();
+
+            // Calculate scroll position to center the element
+            const scrollContainer = iframe.contentWindow;
+            const elementTop = rect.top + scrollContainer.scrollY;
+            const elementLeft = rect.left + scrollContainer.scrollX;
+
+            // Scroll the iframe content to show the element
+            scrollContainer.scrollTo({
+                top: Math.max(0, elementTop - iframe.clientHeight / 3),
+                left: Math.max(0, elementLeft - iframe.clientWidth / 3),
+                behavior: 'smooth'
+            });
+        } catch (e) {
+            console.warn('Could not scroll to element:', e);
         }
     }
 
