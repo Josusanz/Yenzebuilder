@@ -2581,6 +2581,30 @@ ${result.robotsTxt}
                                     </svg>
                                     Export
                                 </button>
+                                <button class="action-btn" onclick="dashboardApp.showBackupsModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2v4"></path>
+                                        <path d="M12 18v4"></path>
+                                        <path d="M4.93 4.93l2.83 2.83"></path>
+                                        <path d="M16.24 16.24l2.83 2.83"></path>
+                                        <path d="M2 12h4"></path>
+                                        <path d="M18 12h4"></path>
+                                        <path d="M4.93 19.07l2.83-2.83"></path>
+                                        <path d="M16.24 7.76l2.83-2.83"></path>
+                                    </svg>
+                                    Backups
+                                </button>
+                                <button class="action-btn" onclick="dashboardApp.showABTestModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 3h5v5"></path>
+                                        <path d="M8 3H3v5"></path>
+                                        <path d="M21 3l-7 7"></path>
+                                        <path d="M3 3l7 7"></path>
+                                        <path d="M21 14v7h-5"></path>
+                                        <path d="M3 14v7h5"></path>
+                                    </svg>
+                                    A/B Test
+                                </button>
                                 <button class="action-btn danger" onclick="dashboardApp.deleteProject('${project.id}', '${project.name}')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -4757,6 +4781,559 @@ ${result.robotsTxt}
             statusEl.style.background = '#fef2f2';
             statusEl.style.color = '#dc2626';
             statusEl.innerHTML = `✗ ${error.message}`;
+        }
+    }
+
+    // ==========================================
+    // BACKUPS FUNCTIONALITY
+    // ==========================================
+
+    async showBackupsModal(projectId, projectName) {
+        let modal = document.getElementById('backupsModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'backupsModal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <span class="close" onclick="dashboardApp.closeBackupsModal()">&times;</span>
+                    <h2 style="margin-bottom: 8px;">Project Backups</h2>
+                    <p style="color: #64748b; margin-bottom: 20px;" id="backupsProjectName"></p>
+
+                    <button onclick="dashboardApp.createBackup()" class="btn-primary" style="margin-bottom: 20px; width: 100%;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create Backup Now
+                    </button>
+
+                    <div id="backupsList" style="max-height: 400px; overflow-y: auto;">
+                        <div class="loading-container"><div class="loading-spinner"></div></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        this.backupsProjectId = projectId;
+        this.backupsProjectName = projectName;
+        document.getElementById('backupsProjectName').textContent = `Backups for "${projectName}"`;
+        modal.style.display = 'flex';
+
+        await this.loadBackups();
+    }
+
+    closeBackupsModal() {
+        document.getElementById('backupsModal').style.display = 'none';
+    }
+
+    async loadBackups() {
+        const container = document.getElementById('backupsList');
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch(`/api/backups?projectId=${this.backupsProjectId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+
+            if (!data.backups || data.backups.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 16px; display: block; opacity: 0.5;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p style="margin: 0;">No backups yet</p>
+                        <p style="margin: 8px 0 0; font-size: 13px;">Create your first backup to protect your work</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.backups.map(backup => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: #f8fafc; border-radius: 10px; margin-bottom: 8px;">
+                    <div>
+                        <div style="font-weight: 600; color: #0f172a; font-size: 14px;">${backup.name}</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
+                            ${new Date(backup.created_at).toLocaleString()}
+                            ${backup.is_auto ? '<span style="background: #dbeafe; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px;">AUTO</span>' : ''}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="dashboardApp.restoreBackup('${backup.id}')" class="btn-secondary" style="padding: 6px 12px; font-size: 13px;">
+                            Restore
+                        </button>
+                        <button onclick="dashboardApp.deleteBackup('${backup.id}')" class="btn-secondary" style="padding: 6px 12px; font-size: 13px; color: #dc2626;">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            container.innerHTML = '<p style="color: #dc2626; text-align: center;">Error loading backups</p>';
+        }
+    }
+
+    async createBackup() {
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch('/api/backups', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    projectId: this.backupsProjectId,
+                    name: `Manual backup - ${new Date().toLocaleString()}`
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to create backup');
+
+            alert('Backup created successfully!');
+            await this.loadBackups();
+        } catch (error) {
+            alert('Error creating backup: ' + error.message);
+        }
+    }
+
+    async restoreBackup(backupId) {
+        if (!confirm('Are you sure you want to restore this backup? Current content will be replaced (a safety backup will be created first).')) {
+            return;
+        }
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch('/api/restore-backup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    backupId,
+                    projectId: this.backupsProjectId
+                })
+            });
+
+            if (!response.ok) throw new Error('Failed to restore backup');
+
+            alert('Backup restored successfully!');
+            this.closeBackupsModal();
+        } catch (error) {
+            alert('Error restoring backup: ' + error.message);
+        }
+    }
+
+    async deleteBackup(backupId) {
+        if (!confirm('Delete this backup?')) return;
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            await fetch('/api/backups', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ backupId })
+            });
+            await this.loadBackups();
+        } catch (error) {
+            alert('Error deleting backup');
+        }
+    }
+
+    // ==========================================
+    // WEBHOOKS FUNCTIONALITY
+    // ==========================================
+
+    async showWebhooksModal() {
+        let modal = document.getElementById('webhooksModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'webhooksModal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 650px;">
+                    <span class="close" onclick="dashboardApp.closeWebhooksModal()">&times;</span>
+                    <h2 style="margin-bottom: 8px;">Webhooks</h2>
+                    <p style="color: #64748b; margin-bottom: 20px;">Send form submissions to external services</p>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 500;">Select Project</label>
+                        <select id="webhookProjectSelect" onchange="dashboardApp.loadWebhooks()" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <option value="">Select a project...</option>
+                        </select>
+                    </div>
+
+                    <div id="webhookForm" style="display: none; background: #f8fafc; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 12px; font-size: 14px;">Add New Webhook</h4>
+                        <input type="text" id="webhookName" placeholder="Webhook name (e.g., Zapier)" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box;">
+                        <input type="url" id="webhookUrl" placeholder="https://hooks.zapier.com/..." style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box;">
+                        <button onclick="dashboardApp.createWebhook()" class="btn-primary" style="width: 100%;">Add Webhook</button>
+                    </div>
+
+                    <div id="webhooksList">
+                        <p style="color: #94a3b8; text-align: center;">Select a project to view webhooks</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Populate project select
+        const select = document.getElementById('webhookProjectSelect');
+        select.innerHTML = '<option value="">Select a project...</option>' +
+            this.projects.map(p => `<option value="${p.id}">${p.name || 'Untitled'}</option>`).join('');
+
+        modal.style.display = 'flex';
+    }
+
+    closeWebhooksModal() {
+        document.getElementById('webhooksModal').style.display = 'none';
+    }
+
+    async loadWebhooks() {
+        const projectId = document.getElementById('webhookProjectSelect').value;
+        const container = document.getElementById('webhooksList');
+        const form = document.getElementById('webhookForm');
+
+        if (!projectId) {
+            container.innerHTML = '<p style="color: #94a3b8; text-align: center;">Select a project to view webhooks</p>';
+            form.style.display = 'none';
+            return;
+        }
+
+        form.style.display = 'block';
+        this.webhooksProjectId = projectId;
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch(`/api/webhooks?projectId=${projectId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+
+            if (!data.webhooks || data.webhooks.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #94a3b8;">
+                        <p>No webhooks configured</p>
+                        <p style="font-size: 13px;">Add a webhook to send form data to external services</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.webhooks.map(wh => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px; background: #f8fafc; border-radius: 10px; margin-bottom: 8px;">
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600; color: #0f172a; font-size: 14px;">${wh.name}</div>
+                        <div style="font-size: 12px; color: #64748b; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${wh.url}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="padding: 4px 8px; border-radius: 4px; font-size: 11px; ${wh.is_active ? 'background: #dcfce7; color: #166534;' : 'background: #fef2f2; color: #dc2626;'}">${wh.is_active ? 'Active' : 'Inactive'}</span>
+                        <button onclick="dashboardApp.toggleWebhook('${wh.id}', ${!wh.is_active})" class="btn-secondary" style="padding: 6px 10px; font-size: 12px;">
+                            ${wh.is_active ? 'Disable' : 'Enable'}
+                        </button>
+                        <button onclick="dashboardApp.deleteWebhook('${wh.id}')" class="btn-secondary" style="padding: 6px 10px; font-size: 12px; color: #dc2626;">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Update webhooks count on integration card
+            this.updateWebhooksCount(data.webhooks.length);
+        } catch (error) {
+            container.innerHTML = '<p style="color: #dc2626; text-align: center;">Error loading webhooks</p>';
+        }
+    }
+
+    async createWebhook() {
+        const name = document.getElementById('webhookName').value.trim();
+        const url = document.getElementById('webhookUrl').value.trim();
+
+        if (!name || !url) {
+            alert('Please enter webhook name and URL');
+            return;
+        }
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch('/api/webhooks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    projectId: this.webhooksProjectId,
+                    name,
+                    url
+                })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to create webhook');
+            }
+
+            document.getElementById('webhookName').value = '';
+            document.getElementById('webhookUrl').value = '';
+            await this.loadWebhooks();
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    async toggleWebhook(webhookId, isActive) {
+        try {
+            const token = await supabaseClient.getAccessToken();
+            await fetch('/api/webhooks', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ webhookId, is_active: isActive })
+            });
+            await this.loadWebhooks();
+        } catch (error) {
+            alert('Error updating webhook');
+        }
+    }
+
+    async deleteWebhook(webhookId) {
+        if (!confirm('Delete this webhook?')) return;
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            await fetch('/api/webhooks', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ webhookId })
+            });
+            await this.loadWebhooks();
+        } catch (error) {
+            alert('Error deleting webhook');
+        }
+    }
+
+    updateWebhooksCount(count) {
+        const el = document.getElementById('webhooksCount');
+        if (el) {
+            el.innerHTML = count > 0
+                ? `<span style="color: #166534;">${count} webhook${count > 1 ? 's' : ''} configured</span>`
+                : 'No webhooks configured';
+        }
+    }
+
+    // ==========================================
+    // A/B TESTING FUNCTIONALITY
+    // ==========================================
+
+    async showABTestModal(projectId, projectName) {
+        let modal = document.getElementById('abTestModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'abTestModal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <span class="close" onclick="dashboardApp.closeABTestModal()">&times;</span>
+                    <h2 style="margin-bottom: 8px;">A/B Testing</h2>
+                    <p style="color: #64748b; margin-bottom: 20px;" id="abTestProjectName"></p>
+
+                    <div id="abTestToggle" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #f8fafc; border-radius: 10px; margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="abTestEnabled" onchange="dashboardApp.toggleABTest()" style="width: 18px; height: 18px;">
+                            <span style="font-weight: 500;">Enable A/B Testing</span>
+                        </label>
+                        <span style="font-size: 13px; color: #64748b;">Show different versions to visitors</span>
+                    </div>
+
+                    <div id="abTestContent" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h4 style="margin: 0;">Variants</h4>
+                            <button onclick="dashboardApp.createVariant()" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                                + Add Variant
+                            </button>
+                        </div>
+
+                        <div id="variantsList"></div>
+
+                        <div style="margin-top: 20px; padding: 16px; background: #eff6ff; border-radius: 10px;">
+                            <h4 style="margin: 0 0 8px; font-size: 14px; color: #1e40af;">How it works</h4>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #1e40af;">
+                                <li>Each visitor is randomly assigned to a variant based on weights</li>
+                                <li>The same visitor always sees the same variant</li>
+                                <li>Track conversions by adding <code>data-ab-convert</code> to any button</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        this.abTestProjectId = projectId;
+        document.getElementById('abTestProjectName').textContent = `A/B Testing for "${projectName}"`;
+        modal.style.display = 'flex';
+
+        await this.loadABTest();
+    }
+
+    closeABTestModal() {
+        document.getElementById('abTestModal').style.display = 'none';
+    }
+
+    async loadABTest() {
+        try {
+            const token = await supabaseClient.getAccessToken();
+            const response = await fetch(`/api/ab-tests?projectId=${this.abTestProjectId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+
+            document.getElementById('abTestEnabled').checked = data.ab_testing_enabled;
+            document.getElementById('abTestContent').style.display = data.ab_testing_enabled ? 'block' : 'none';
+
+            const container = document.getElementById('variantsList');
+
+            if (!data.variants || data.variants.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #94a3b8;">
+                        <p>No variants yet</p>
+                        <p style="font-size: 13px;">Create a variant to start testing</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.variants.map(v => {
+                const conversionRate = v.views > 0 ? ((v.conversions / v.views) * 100).toFixed(1) : 0;
+                return `
+                    <div style="padding: 16px; background: #f8fafc; border-radius: 10px; margin-bottom: 10px; ${v.is_control ? 'border: 2px solid #3b82f6;' : ''}">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">
+                                    ${v.name}
+                                    ${v.is_control ? '<span style="background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">CONTROL</span>' : ''}
+                                </div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Weight: ${v.weight}%</div>
+                            </div>
+                            ${!v.is_control ? `
+                                <button onclick="dashboardApp.deleteVariant('${v.id}')" style="background: none; border: none; color: #dc2626; cursor: pointer; font-size: 13px;">Delete</button>
+                            ` : ''}
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                            <div style="background: white; padding: 10px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: #3b82f6;">${v.views}</div>
+                                <div style="font-size: 11px; color: #64748b;">Views</div>
+                            </div>
+                            <div style="background: white; padding: 10px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: #10b981;">${v.conversions}</div>
+                                <div style="font-size: 11px; color: #64748b;">Conversions</div>
+                            </div>
+                            <div style="background: white; padding: 10px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 700; color: #f59e0b;">${conversionRate}%</div>
+                                <div style="font-size: 11px; color: #64748b;">Conv. Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading A/B test:', error);
+        }
+    }
+
+    async toggleABTest() {
+        const enabled = document.getElementById('abTestEnabled').checked;
+        document.getElementById('abTestContent').style.display = enabled ? 'block' : 'none';
+
+        try {
+            // Update project setting
+            await supabaseClient.client
+                .from('projects')
+                .update({ ab_testing_enabled: enabled })
+                .eq('id', this.abTestProjectId);
+
+            // If enabling and no variants exist, create control variant
+            if (enabled) {
+                const token = await supabaseClient.getAccessToken();
+                const response = await fetch(`/api/ab-tests?projectId=${this.abTestProjectId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (!data.variants || data.variants.length === 0) {
+                    await fetch('/api/ab-tests', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            projectId: this.abTestProjectId,
+                            name: 'Control (Original)'
+                        })
+                    });
+                }
+                await this.loadABTest();
+            }
+        } catch (error) {
+            console.error('Error toggling A/B test:', error);
+        }
+    }
+
+    async createVariant() {
+        const name = prompt('Enter variant name (e.g., "Variant B - New headline"):');
+        if (!name) return;
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            await fetch('/api/ab-tests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    projectId: this.abTestProjectId,
+                    name,
+                    weight: 50
+                })
+            });
+            await this.loadABTest();
+        } catch (error) {
+            alert('Error creating variant');
+        }
+    }
+
+    async deleteVariant(variantId) {
+        if (!confirm('Delete this variant?')) return;
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+            await fetch('/api/ab-tests', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ variantId })
+            });
+            await this.loadABTest();
+        } catch (error) {
+            alert('Error deleting variant');
         }
     }
 }
