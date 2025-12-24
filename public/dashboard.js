@@ -4903,6 +4903,11 @@ body{transform-origin:0 0;}
     async createBackup() {
         try {
             const token = await supabaseClient.getAccessToken();
+
+            // Create a safe backup name without special characters
+            const now = new Date();
+            const backupName = `Manual backup ${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}`;
+
             const response = await fetch('/api/backups', {
                 method: 'POST',
                 headers: {
@@ -4911,9 +4916,17 @@ body{transform-origin:0 0;}
                 },
                 body: JSON.stringify({
                     projectId: this.backupsProjectId,
-                    name: `Manual backup - ${new Date().toLocaleString()}`
+                    name: backupName
                 })
             });
+
+            // Check content type before parsing
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Non-JSON response:', text);
+                throw new Error('Server error - please check if database tables exist');
+            }
 
             const data = await response.json();
 
