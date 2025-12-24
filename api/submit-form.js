@@ -325,6 +325,25 @@ module.exports = async function handler(req, res) {
       console.log('[Submit Form] No owner email or Resend API key - skipping email notification');
     }
 
+    // Trigger webhooks if project has any configured
+    if (projectData?.id) {
+      try {
+        await triggerFormWebhooks(supabase, projectData.id, {
+          name: fullName,
+          email,
+          phone,
+          message,
+          subject,
+          custom_fields: customFields,
+          submitted_at: new Date().toISOString(),
+          site_url
+        });
+      } catch (webhookError) {
+        console.error('[Submit Form] Webhook error:', webhookError);
+        // Don't fail the request if webhook fails
+      }
+    }
+
     // Success response
     return res.status(200).json({
       success: true,
@@ -345,3 +364,81 @@ module.exports = async function handler(req, res) {
     });
   }
 };
+
+// Helper function to trigger webhooks for form submissions
+async function triggerFormWebhooks(supabase, projectId, payload) {
+  const crypto = require('crypto');
+
+  // Get active webhooks for this project
+  const { data: webhooks } = await supabase
+    .from('form_webhooks')
+    .select('*')
+    .eq('project_id', projectId)
+    .eq('is_active', true)
+    .contains('events', ['form_submission']);
+
+  if (!webhooks || webhooks.length === 0) {
+    return;
+  }
+
+  console.log(`[Webhooks] Triggering ${webhooks.length} webhook(s) for project ${projectId}`);
+
+  // Send to each webhook
+  const results = await Promise.allSettled(
+    webhooks.map(async (webhook) => {
+      const timestamp = Date.now();
+      const signature = crypto
+        .createHmac('sha256', webhook.secret || '')
+        .update(`${timestamp}.${JSON.stringify(payload)}`)
+        .digest('hex');
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Webhook-Signature': signature,
+        'X-Webhook-Timestamp': timestamp.toString(),
+        'X-Webhook-Event': 'form_submission',
+        ...(webhook.headers || {})
+      };
+
+      try {
+        const response = await fetch(webhook.url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            event: 'form_submission',
+            timestamp: new Date().toISOString(),
+            data: payload
+          })
+        });
+
+        // Log the webhook call
+        await supabase.from('webhook_logs').insert({
+          webhook_id: webhook.id,
+          project_id: projectId,
+          status_code: response.status,
+          payload: payload,
+          response_body: response.status >= 400 ? await response.text().catch(() => '') : null,
+          error_message: response.ok ? null : `HTTP ${response.status}`
+        });
+
+        console.log(`[Webhooks] Sent to ${webhook.url} - Status: ${response.status}`);
+        return { webhookId: webhook.id, status: response.status };
+      } catch (error) {
+        console.error(`[Webhooks] Error sending to ${webhook.url}:`, error.message);
+
+        // Log the error
+        await supabase.from('webhook_logs').insert({
+          webhook_id: webhook.id,
+          project_id: projectId,
+          status_code: 0,
+          payload: payload,
+          error_message: error.message
+        });
+
+        throw error;
+      }
+    })
+  );
+
+  return results;
+}

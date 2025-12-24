@@ -1230,6 +1230,33 @@
                         </div>
                     </div>
 
+                    <!-- Webhooks Integration -->
+                    <div class="integration-card"
+                        style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px solid #E2E8F0;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <div
+                                style="width: 40px; height: 40px; background: #F3E8FF; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 15px; color: #0F172A; font-weight: 600;">Webhooks</h3>
+                                <p style="margin: 0; color: #64748B; font-size: 12px;">Connect to any service</p>
+                            </div>
+                        </div>
+                        <p style="color: #475569; margin-bottom: 16px; line-height: 1.5; font-size: 13px;">Send form submissions to Zapier, Make, Slack, Notion, or any custom endpoint.</p>
+                        <div>
+                            <div id="webhooksCount" style="padding: 12px; background: #F8FAFC; border-radius: 8px; margin-bottom: 12px; text-align: center; font-size: 13px; color: #64748B;">
+                                Loading webhooks...
+                            </div>
+                            <button onclick="dashboardApp.showWebhooksModal()" class="btn-primary" style="width: 100%;">
+                                Manage Webhooks
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- More integrations coming soon -->
                     <div class="integration-card"
                         style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); border: 1px dashed #CBD5E1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 230px; text-align: center;">

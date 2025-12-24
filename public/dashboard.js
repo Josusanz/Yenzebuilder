@@ -2573,6 +2573,14 @@ ${result.robotsTxt}
                                     </svg>
                                     Edit
                                 </button>
+                                <button class="action-btn" onclick="dashboardApp.showExportModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    Export
+                                </button>
                                 <button class="action-btn danger" onclick="dashboardApp.deleteProject('${project.id}', '${project.name}')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polyline points="3 6 5 6 21 6"></polyline>
@@ -4610,6 +4618,145 @@ ${result.robotsTxt}
             }
         } catch (error) {
             console.error('Error loading unread count:', error);
+        }
+    }
+
+    // ==========================================
+    // EXPORT FUNCTIONALITY
+    // ==========================================
+
+    showExportModal(projectId, projectName) {
+        // Create modal if it doesn't exist
+        let modal = document.getElementById('exportModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'exportModal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 450px;">
+                    <span class="close" onclick="dashboardApp.closeExportModal()">&times;</span>
+                    <h2 style="margin-bottom: 8px;">Export Project</h2>
+                    <p style="color: #64748b; margin-bottom: 24px;" id="exportProjectName">Download your project files</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <button class="export-option" onclick="dashboardApp.exportProject('html')" style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: left;">
+                            <div style="width: 48px; height: 48px; background: #dbeafe; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+                                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                    <polyline points="13 2 13 9 20 9"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a; font-size: 15px;">Download HTML</div>
+                                <div style="color: #64748b; font-size: 13px;">Single HTML file with all content</div>
+                            </div>
+                        </button>
+
+                        <button class="export-option" onclick="dashboardApp.exportProject('zip')" style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: left;">
+                            <div style="width: 48px; height: 48px; background: #dcfce7; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a; font-size: 15px;">Download ZIP</div>
+                                <div style="color: #64748b; font-size: 13px;">All pages, CSS, and assets in a ZIP file</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div id="exportStatus" style="margin-top: 16px; display: none; padding: 12px; border-radius: 8px; font-size: 14px;"></div>
+
+                    <style>
+                        .export-option:hover {
+                            border-color: #3b82f6 !important;
+                            background: #eff6ff !important;
+                        }
+                    </style>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Store current export project
+        this.exportProjectId = projectId;
+        this.exportProjectName = projectName;
+
+        // Update modal content
+        document.getElementById('exportProjectName').textContent = `Export "${projectName}"`;
+
+        // Show modal
+        modal.style.display = 'flex';
+    }
+
+    closeExportModal() {
+        const modal = document.getElementById('exportModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    async exportProject(format) {
+        const statusEl = document.getElementById('exportStatus');
+        statusEl.style.display = 'block';
+        statusEl.style.background = '#eff6ff';
+        statusEl.style.color = '#1e40af';
+        statusEl.innerHTML = '<div style="display: flex; align-items: center; gap: 8px;"><div class="loading-spinner" style="width: 16px; height: 16px;"></div> Preparing download...</div>';
+
+        try {
+            const token = await supabaseClient.getAccessToken();
+
+            const response = await fetch('/api/export-project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    projectId: this.exportProjectId,
+                    format: format
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Export failed');
+            }
+
+            // Get the blob and trigger download
+            const blob = await response.blob();
+            const filename = format === 'zip'
+                ? `${this.exportProjectName || 'website'}.zip`
+                : `${this.exportProjectName || 'website'}.html`;
+
+            // Create download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+
+            // Success message
+            statusEl.style.background = '#dcfce7';
+            statusEl.style.color = '#166534';
+            statusEl.innerHTML = '✓ Download started!';
+
+            // Close modal after delay
+            setTimeout(() => {
+                this.closeExportModal();
+                statusEl.style.display = 'none';
+            }, 1500);
+
+        } catch (error) {
+            console.error('Export error:', error);
+            statusEl.style.background = '#fef2f2';
+            statusEl.style.color = '#dc2626';
+            statusEl.innerHTML = `✗ ${error.message}`;
         }
     }
 }
