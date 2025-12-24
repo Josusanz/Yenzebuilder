@@ -5175,9 +5175,31 @@ ${result.robotsTxt}
                     <div id="abTestContent" style="display: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                             <h4 style="margin: 0;">Variants</h4>
-                            <button onclick="dashboardApp.createVariant()" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
+                            <button onclick="dashboardApp.showAddVariantForm()" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">
                                 + Add Variant
                             </button>
+                        </div>
+
+                        <div id="addVariantForm" style="display: none; padding: 16px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; margin-bottom: 16px;">
+                            <h5 style="margin: 0 0 12px; font-size: 14px; color: #166534;">Create New Variant</h5>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 12px; color: #64748b; margin-bottom: 4px;">Variant Name</label>
+                                <input type="text" id="variantName" placeholder="e.g., Variant B - New headline" style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 12px; color: #64748b; margin-bottom: 4px;">Copy content from (optional)</label>
+                                <select id="variantSourceProject" style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; box-sizing: border-box;">
+                                    <option value="">Use current project content</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="display: block; font-size: 12px; color: #64748b; margin-bottom: 4px;">Traffic Weight (%)</label>
+                                <input type="number" id="variantWeight" value="50" min="1" max="100" style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                <button onclick="dashboardApp.hideAddVariantForm()" class="btn-secondary" style="padding: 8px 16px; font-size: 13px;">Cancel</button>
+                                <button onclick="dashboardApp.createVariant()" class="btn-primary" style="padding: 8px 16px; font-size: 13px;">Create Variant</button>
+                            </div>
                         </div>
 
                         <div id="variantsList"></div>
@@ -5307,11 +5329,51 @@ ${result.robotsTxt}
         }
     }
 
+    showAddVariantForm() {
+        const form = document.getElementById('addVariantForm');
+        form.style.display = 'block';
+
+        // Populate project dropdown
+        const select = document.getElementById('variantSourceProject');
+        select.innerHTML = '<option value="">Use current project content</option>';
+
+        // Add other projects as options (exclude current one)
+        this.projects.forEach(project => {
+            if (project.id !== this.abTestProjectId) {
+                select.innerHTML += `<option value="${project.id}">${project.name || 'Untitled'}</option>`;
+            }
+        });
+
+        // Reset form
+        document.getElementById('variantName').value = '';
+        document.getElementById('variantWeight').value = '50';
+        document.getElementById('variantName').focus();
+    }
+
+    hideAddVariantForm() {
+        document.getElementById('addVariantForm').style.display = 'none';
+    }
+
     async createVariant() {
-        const name = prompt('Enter variant name (e.g., "Variant B - New headline"):');
-        if (!name) return;
+        const name = document.getElementById('variantName').value.trim();
+        const sourceProjectId = document.getElementById('variantSourceProject').value;
+        const weight = parseInt(document.getElementById('variantWeight').value) || 50;
+
+        if (!name) {
+            alert('Please enter a variant name');
+            return;
+        }
 
         try {
+            // Get HTML content from source project if selected
+            let htmlContent = null;
+            if (sourceProjectId) {
+                const sourceProject = this.projects.find(p => p.id === sourceProjectId);
+                if (sourceProject) {
+                    htmlContent = sourceProject.html_content;
+                }
+            }
+
             const token = await supabaseClient.getAccessToken();
             await fetch('/api/ab-tests', {
                 method: 'POST',
@@ -5322,9 +5384,12 @@ ${result.robotsTxt}
                 body: JSON.stringify({
                     projectId: this.abTestProjectId,
                     name,
-                    weight: 50
+                    weight: Math.min(100, Math.max(1, weight)),
+                    html_content: htmlContent
                 })
             });
+
+            this.hideAddVariantForm();
             await this.loadABTest();
         } catch (error) {
             alert('Error creating variant');

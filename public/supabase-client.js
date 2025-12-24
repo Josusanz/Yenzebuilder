@@ -104,6 +104,12 @@ class SupabaseClient {
         }
     }
 
+    // Get access token for API calls
+    async getAccessToken() {
+        const { data: { session } } = await this.client.auth.getSession();
+        return session?.access_token || null;
+    }
+
     // Auth methods
     async signUp(email, password, metadata = {}) {
         try {
