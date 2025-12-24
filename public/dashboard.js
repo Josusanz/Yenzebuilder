@@ -89,6 +89,11 @@ class DashboardApp {
             if (e.target.textContent.includes('Broken Link')) {
                 this.checkBrokenLinks();
             }
+
+            // Close project dropdown menus when clicking outside
+            if (!e.target.closest('.project-menu-container')) {
+                this.closeAllMenus();
+            }
         });
     }
 
@@ -2558,60 +2563,49 @@ ${result.robotsTxt}
                                 ` : ''}
                             </div>
 
-                            <div class="project-actions">
-                                <button class="action-btn" onclick="dashboardApp.viewProject('${project.id}')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
-                                    View
-                                </button>
-                                <button class="action-btn" onclick="dashboardApp.editProject('${project.id}')">
+                            <div class="project-actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="action-btn" onclick="dashboardApp.editProject('${project.id}')" style="flex: 1; min-width: 80px;">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                     </svg>
                                     Edit
                                 </button>
-                                <button class="action-btn" onclick="dashboardApp.showExportModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
+                                <button class="action-btn" onclick="dashboardApp.viewProject('${project.id}')" style="flex: 1; min-width: 80px;">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                        <polyline points="7 10 12 15 17 10"></polyline>
-                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
-                                    Export
+                                    View
                                 </button>
-                                <button class="action-btn" onclick="dashboardApp.showBackupsModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 2v4"></path>
-                                        <path d="M12 18v4"></path>
-                                        <path d="M4.93 4.93l2.83 2.83"></path>
-                                        <path d="M16.24 16.24l2.83 2.83"></path>
-                                        <path d="M2 12h4"></path>
-                                        <path d="M18 12h4"></path>
-                                        <path d="M4.93 19.07l2.83-2.83"></path>
-                                        <path d="M16.24 7.76l2.83-2.83"></path>
-                                    </svg>
-                                    Backups
-                                </button>
-                                <button class="action-btn" onclick="dashboardApp.showABTestModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M16 3h5v5"></path>
-                                        <path d="M8 3H3v5"></path>
-                                        <path d="M21 3l-7 7"></path>
-                                        <path d="M3 3l7 7"></path>
-                                        <path d="M21 14v7h-5"></path>
-                                        <path d="M3 14v7h5"></path>
-                                    </svg>
-                                    A/B Test
-                                </button>
-                                <button class="action-btn danger" onclick="dashboardApp.deleteProject('${project.id}', '${project.name}')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                    </svg>
-                                    Delete
-                                </button>
+                                <div class="project-menu-container" style="position: relative;">
+                                    <button class="action-btn" onclick="dashboardApp.toggleProjectMenu('${project.id}')" style="padding: 8px 12px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="1"></circle>
+                                            <circle cx="12" cy="5" r="1"></circle>
+                                            <circle cx="12" cy="19" r="1"></circle>
+                                        </svg>
+                                    </button>
+                                    <div id="project-menu-${project.id}" class="project-dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 4px; background: white; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 160px; z-index: 100; overflow: hidden;">
+                                        <button onclick="dashboardApp.showExportModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}'); dashboardApp.closeAllMenus();" style="width: 100%; padding: 10px 14px; border: none; background: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151; transition: background 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                            Export
+                                        </button>
+                                        <button onclick="dashboardApp.showBackupsModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}'); dashboardApp.closeAllMenus();" style="width: 100%; padding: 10px 14px; border: none; background: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151; transition: background 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                            Backups
+                                        </button>
+                                        <button onclick="dashboardApp.showABTestModal('${project.id}', '${(project.name || 'website').replace(/'/g, "\\'")}'); dashboardApp.closeAllMenus();" style="width: 100%; padding: 10px 14px; border: none; background: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151; transition: background 0.15s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='none'">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>
+                                            A/B Testing
+                                        </button>
+                                        <div style="height: 1px; background: #e5e7eb; margin: 4px 0;"></div>
+                                        <button onclick="dashboardApp.deleteProject('${project.id}', '${project.name}'); dashboardApp.closeAllMenus();" style="width: 100%; padding: 10px 14px; border: none; background: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #dc2626; transition: background 0.15s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2702,6 +2696,25 @@ ${result.robotsTxt}
 
     editProject(projectId) {
         window.location.href = `/builder.html?project=${projectId}`;
+    }
+
+    toggleProjectMenu(projectId) {
+        const menu = document.getElementById(`project-menu-${projectId}`);
+        const isVisible = menu.style.display === 'block';
+
+        // Close all other menus first
+        this.closeAllMenus();
+
+        // Toggle this menu
+        if (!isVisible) {
+            menu.style.display = 'block';
+        }
+    }
+
+    closeAllMenus() {
+        document.querySelectorAll('.project-dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
     }
 
     handleCreateProject() {
