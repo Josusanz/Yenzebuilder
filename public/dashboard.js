@@ -2504,7 +2504,7 @@ ${result.robotsTxt}
                         <div class="project-thumbnail" onclick="dashboardApp.viewProject('${project.id}')" style="cursor: pointer;">
                             <iframe
                                 src="${previewDataUrl}"
-                                sandbox="allow-same-origin"
+                                sandbox="allow-same-origin allow-scripts"
                                 scrolling="no"
                                 loading="lazy">
                             </iframe>
