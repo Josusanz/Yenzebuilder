@@ -112,7 +112,7 @@ export default async function handler(req, res) {
             };
 
             const backupJson = JSON.stringify(backupData);
-            const sizeBytes = new Blob([backupJson]).size;
+            const sizeBytes = Buffer.byteLength(backupJson, 'utf8');
 
             // Check backup limit (keep max 10 per project)
             const { count } = await supabase
@@ -199,6 +199,9 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Backup error:', error);
-        return res.status(500).json({ error: 'Backup operation failed' });
+        return res.status(500).json({
+            error: 'Backup operation failed',
+            details: error.message || 'Unknown error'
+        });
     }
 }

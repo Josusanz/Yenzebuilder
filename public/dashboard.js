@@ -4906,7 +4906,11 @@ ${result.robotsTxt}
                 })
             });
 
-            if (!response.ok) throw new Error('Failed to create backup');
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.details || data.error || 'Failed to create backup');
+            }
 
             alert('Backup created successfully!');
             await this.loadBackups();
