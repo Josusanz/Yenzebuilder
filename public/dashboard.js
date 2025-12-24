@@ -2502,12 +2502,11 @@ ${result.robotsTxt}
                 return `
                     <div class="project-card">
                         <div class="project-thumbnail" onclick="dashboardApp.viewProject('${project.id}')" style="cursor: pointer;">
-                            <iframe 
-                                src="${previewDataUrl}" 
-                                sandbox="allow-same-origin" 
+                            <iframe
+                                src="${previewDataUrl}"
+                                sandbox="allow-same-origin"
                                 scrolling="no"
-                                loading="lazy"
-                                style="width: 100%; height: 100%; border: none; pointer-events: none; transform: scale(0.3); transform-origin: 0 0; width: 333.33%; height: 333.33%;">
+                                loading="lazy">
                             </iframe>
                         </div>
                         <div class="project-info">
@@ -2700,16 +2699,21 @@ ${result.robotsTxt}
             // Remove draggable attributes from editor
             .replace(/\s*draggable="true"/gi, '');
 
-        // Add CSS to ensure no outlines show in preview
-        const noOutlineStyle = `<style>*{outline:none!important;box-shadow:none!important;}</style>`;
+        // Add CSS to ensure clean preview display
+        const previewStyles = `<style>
+*{outline:none!important;}
+html,body{margin:0;padding:0;overflow:hidden;}
+body{transform-origin:0 0;}
+[data-yenze-selected],[data-selected]{outline:none!important;box-shadow:none!important;}
+</style>`;
 
         // Insert style before closing </head> or at the beginning
         if (cleaned.includes('</head>')) {
-            cleaned = cleaned.replace('</head>', noOutlineStyle + '</head>');
+            cleaned = cleaned.replace('</head>', previewStyles + '</head>');
         } else if (cleaned.includes('<body')) {
-            cleaned = cleaned.replace('<body', noOutlineStyle + '<body');
+            cleaned = cleaned.replace('<body', previewStyles + '<body');
         } else {
-            cleaned = noOutlineStyle + cleaned;
+            cleaned = previewStyles + cleaned;
         }
 
         return cleaned;
