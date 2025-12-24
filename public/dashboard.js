@@ -10,6 +10,8 @@ class DashboardApp {
         this.analytics = {};
         this.currentSection = 'projects';
         this.pendingAvatarUpdate = null;
+        this.analyticsDateRange = 7; // Default to 7 days
+        this.analyticsChart = null; // Chart.js instance
         this.init();
     }
 
@@ -2720,30 +2722,429 @@ ${result.robotsTxt}
             return;
         }
 
-        const selectedProject = document.getElementById('analyticsFilter').value;
+        const selectedProject = document.getElementById('analyticsFilter')?.value || 'all';
+        const days = this.analyticsDateRange || 7;
 
         // Update total stats
-        const totalStats = await analyticsTracker.getTotalStats(this.currentUser.id, selectedProject === 'all' ? null : selectedProject);
+        const totalStats = await this.getAnalyticsStats(selectedProject === 'all' ? null : selectedProject, days);
 
-        document.getElementById('totalViews').textContent = totalStats.totalViews || 0;
-        document.getElementById('uniqueVisitors').textContent = totalStats.uniqueVisitors || 0;
-        document.getElementById('avgDuration').textContent = totalStats.avgDuration ? `${totalStats.avgDuration}s` : '-';
+        document.getElementById('totalViews').textContent = this.formatNumber(totalStats.totalViews || 0);
+        document.getElementById('uniqueVisitors').textContent = this.formatNumber(totalStats.uniqueVisitors || 0);
+        document.getElementById('bounceRate').textContent = totalStats.bounceRate ? `${totalStats.bounceRate}%` : '-';
         document.getElementById('totalProjects').textContent = this.projects.length;
+
+        // Load chart data
+        await this.loadAnalyticsChart(selectedProject === 'all' ? null : selectedProject, days);
+
+        // Load device breakdown
+        await this.loadDeviceBreakdown(selectedProject === 'all' ? null : selectedProject);
+
+        // Load top referrers
+        await this.loadTopReferrers(selectedProject === 'all' ? null : selectedProject);
 
         // Load per-project analytics
         await this.loadProjectAnalytics();
 
         // Populate filter dropdown
         const filterSelect = document.getElementById('analyticsFilter');
-        const currentValue = filterSelect.value;
-        filterSelect.innerHTML = '<option value="all">All Projects</option>';
-        this.projects.forEach(project => {
-            const option = document.createElement('option');
-            option.value = project.id;
-            option.textContent = project.name || 'Untitled Project';
-            filterSelect.appendChild(option);
+        if (filterSelect) {
+            const currentValue = filterSelect.value;
+            filterSelect.innerHTML = '<option value="all">All Projects</option>';
+            this.projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.id;
+                option.textContent = project.name || 'Untitled Project';
+                filterSelect.appendChild(option);
+            });
+            filterSelect.value = currentValue;
+        }
+    }
+
+    // Set date range for analytics
+    setAnalyticsDateRange(days) {
+        this.analyticsDateRange = days;
+
+        // Update active button
+        document.querySelectorAll('.date-filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (parseInt(btn.dataset.days) === days) {
+                btn.classList.add('active');
+            }
         });
-        filterSelect.value = currentValue;
+
+        // Reload analytics
+        this.loadAnalytics();
+    }
+
+    // Get analytics stats with date filtering
+    async getAnalyticsStats(projectId, days) {
+        try {
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            // Get project IDs to query
+            let projectIds = [];
+            if (projectId) {
+                projectIds = [projectId];
+            } else {
+                projectIds = this.projects.map(p => p.id);
+            }
+
+            if (projectIds.length === 0) {
+                return { totalViews: 0, uniqueVisitors: 0, bounceRate: 0 };
+            }
+
+            const { data: events, error } = await supabaseClient.client
+                .from('analytics_events')
+                .select('visitor_id, session_id, created_at')
+                .in('project_id', projectIds)
+                .eq('event_type', 'page_view')
+                .gte('created_at', startDate.toISOString());
+
+            if (error) throw error;
+
+            const totalViews = events.length;
+            const uniqueVisitors = new Set(events.map(e => e.visitor_id)).size;
+
+            // Calculate bounce rate (sessions with only 1 page view)
+            const sessionCounts = {};
+            events.forEach(e => {
+                sessionCounts[e.session_id] = (sessionCounts[e.session_id] || 0) + 1;
+            });
+            const totalSessions = Object.keys(sessionCounts).length;
+            const bouncedSessions = Object.values(sessionCounts).filter(c => c === 1).length;
+            const bounceRate = totalSessions > 0 ? Math.round((bouncedSessions / totalSessions) * 100) : 0;
+
+            return { totalViews, uniqueVisitors, bounceRate };
+        } catch (error) {
+            console.error('Error getting analytics stats:', error);
+            return { totalViews: 0, uniqueVisitors: 0, bounceRate: 0 };
+        }
+    }
+
+    // Load and render chart
+    async loadAnalyticsChart(projectId, days) {
+        const canvas = document.getElementById('analyticsChart');
+        if (!canvas) return;
+
+        try {
+            // Get project IDs
+            let projectIds = [];
+            if (projectId) {
+                projectIds = [projectId];
+            } else {
+                projectIds = this.projects.map(p => p.id);
+            }
+
+            if (projectIds.length === 0) {
+                this.renderEmptyChart(canvas);
+                return;
+            }
+
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - days);
+
+            const { data: events, error } = await supabaseClient.client
+                .from('analytics_events')
+                .select('visitor_id, created_at')
+                .in('project_id', projectIds)
+                .eq('event_type', 'page_view')
+                .gte('created_at', startDate.toISOString())
+                .order('created_at', { ascending: true });
+
+            if (error) throw error;
+
+            // Group by date
+            const viewsByDate = {};
+            const visitorsByDate = {};
+
+            // Initialize all dates in range
+            for (let i = 0; i < days; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - (days - 1 - i));
+                const dateKey = date.toISOString().split('T')[0];
+                viewsByDate[dateKey] = 0;
+                visitorsByDate[dateKey] = new Set();
+            }
+
+            // Fill in actual data
+            events.forEach(event => {
+                const dateKey = new Date(event.created_at).toISOString().split('T')[0];
+                if (viewsByDate.hasOwnProperty(dateKey)) {
+                    viewsByDate[dateKey]++;
+                    visitorsByDate[dateKey].add(event.visitor_id);
+                }
+            });
+
+            const labels = Object.keys(viewsByDate).map(date => {
+                const d = new Date(date);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            const viewsData = Object.values(viewsByDate);
+            const visitorsData = Object.keys(visitorsByDate).map(k => visitorsByDate[k].size);
+
+            this.renderChart(canvas, labels, viewsData, visitorsData);
+        } catch (error) {
+            console.error('Error loading chart data:', error);
+            this.renderEmptyChart(canvas);
+        }
+    }
+
+    renderChart(canvas, labels, viewsData, visitorsData) {
+        // Destroy existing chart
+        if (this.analyticsChart) {
+            this.analyticsChart.destroy();
+        }
+
+        const ctx = canvas.getContext('2d');
+        this.analyticsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Views',
+                        data: viewsData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Visitors',
+                        data: visitorsData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 11 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 11 },
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    renderEmptyChart(canvas) {
+        if (this.analyticsChart) {
+            this.analyticsChart.destroy();
+        }
+        const ctx = canvas.getContext('2d');
+        this.analyticsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['No data'],
+                datasets: [{
+                    label: 'Views',
+                    data: [0],
+                    borderColor: '#e2e8f0'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    // Load device breakdown
+    async loadDeviceBreakdown(projectId) {
+        const container = document.getElementById('deviceBreakdown');
+        if (!container) return;
+
+        try {
+            let projectIds = [];
+            if (projectId) {
+                projectIds = [projectId];
+            } else {
+                projectIds = this.projects.map(p => p.id);
+            }
+
+            if (projectIds.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">No data available</p>';
+                return;
+            }
+
+            const { data: events, error } = await supabaseClient.client
+                .from('analytics_events')
+                .select('user_agent')
+                .in('project_id', projectIds)
+                .eq('event_type', 'page_view');
+
+            if (error) throw error;
+
+            // Detect devices from user agent
+            const devices = { desktop: 0, mobile: 0, tablet: 0 };
+            events.forEach(e => {
+                const ua = (e.user_agent || '').toLowerCase();
+                if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
+                    devices.mobile++;
+                } else if (ua.includes('tablet') || ua.includes('ipad')) {
+                    devices.tablet++;
+                } else {
+                    devices.desktop++;
+                }
+            });
+
+            const total = devices.desktop + devices.mobile + devices.tablet;
+            if (total === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">No data available</p>';
+                return;
+            }
+
+            const deviceData = [
+                { name: 'Desktop', count: devices.desktop, color: '#3b82f6', icon: '🖥️' },
+                { name: 'Mobile', count: devices.mobile, color: '#10b981', icon: '📱' },
+                { name: 'Tablet', count: devices.tablet, color: '#f59e0b', icon: '📱' }
+            ];
+
+            container.innerHTML = deviceData.map(d => {
+                const percentage = Math.round((d.count / total) * 100);
+                return `
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 20px;">${d.icon}</span>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 14px; font-weight: 500;">${d.name}</span>
+                                <span style="font-size: 14px; color: #64748b;">${percentage}% (${this.formatNumber(d.count)})</span>
+                            </div>
+                            <div class="device-bar">
+                                <div class="device-bar-fill" style="width: ${percentage}%; background: ${d.color};"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Error loading device breakdown:', error);
+            container.innerHTML = '<p style="color: #ef4444;">Error loading data</p>';
+        }
+    }
+
+    // Load top referrers
+    async loadTopReferrers(projectId) {
+        const container = document.getElementById('topReferrers');
+        if (!container) return;
+
+        try {
+            let projectIds = [];
+            if (projectId) {
+                projectIds = [projectId];
+            } else {
+                projectIds = this.projects.map(p => p.id);
+            }
+
+            if (projectIds.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">No data available</p>';
+                return;
+            }
+
+            const { data: events, error } = await supabaseClient.client
+                .from('analytics_events')
+                .select('referrer')
+                .in('project_id', projectIds)
+                .eq('event_type', 'page_view')
+                .not('referrer', 'is', null)
+                .not('referrer', 'eq', '');
+
+            if (error) throw error;
+
+            // Count referrers
+            const referrerCounts = {};
+            events.forEach(e => {
+                if (e.referrer) {
+                    try {
+                        const url = new URL(e.referrer);
+                        const domain = url.hostname.replace('www.', '');
+                        referrerCounts[domain] = (referrerCounts[domain] || 0) + 1;
+                    } catch {
+                        referrerCounts[e.referrer] = (referrerCounts[e.referrer] || 0) + 1;
+                    }
+                }
+            });
+
+            const sorted = Object.entries(referrerCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            if (sorted.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #94a3b8;">
+                        <p style="margin: 0;">No referrer data yet</p>
+                        <p style="margin: 8px 0 0; font-size: 13px;">Traffic sources will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = sorted.map(([referrer, count], index) => `
+                <div class="referrer-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="width: 20px; height: 20px; background: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #64748b;">${index + 1}</span>
+                        <span style="font-size: 14px; color: #0f172a;">${referrer}</span>
+                    </div>
+                    <span style="font-size: 14px; font-weight: 600; color: #3b82f6;">${this.formatNumber(count)}</span>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading referrers:', error);
+            container.innerHTML = '<p style="color: #ef4444;">Error loading data</p>';
+        }
+    }
+
+    // Format large numbers
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        }
+        return num.toString();
     }
 
     showAnalyticsUpgradeView() {
@@ -2910,34 +3311,73 @@ ${result.robotsTxt}
         const listContainer = document.getElementById('projectAnalyticsList');
 
         if (this.projects.length === 0) {
-            listContainer.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 20px;">No projects to show analytics for</p>';
+            listContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                    <p style="margin: 0;">No projects to show analytics for</p>
+                    <p style="margin: 8px 0 0; font-size: 13px;">Create a project to start tracking</p>
+                </div>
+            `;
             return;
         }
 
+        const days = this.analyticsDateRange || 7;
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
         const analyticsHTML = await Promise.all(this.projects.map(async (project) => {
-            const stats = await this.getProjectStats(project.id);
+            const stats = await this.getProjectStatsForPeriod(project.id, startDate);
+            const projectUrl = project.published_url || project.public_slug
+                ? `https://${project.public_slug}.yenze.app`
+                : null;
 
             return `
-                <div class="analytics-item">
-                    <div>
-                        <div class="analytics-project-name">${project.name || 'Untitled Project'}</div>
-                        <div class="analytics-project-url">${project.published_url || 'Not published'}</div>
-                    </div>
-                    <div class="analytics-numbers">
-                        <div class="analytics-number">
-                            <strong>${stats.views}</strong>
-                            <span>Views</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: 10px; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px;">
+                            ${(project.name || 'U')[0].toUpperCase()}
                         </div>
-                        <div class="analytics-number">
-                            <strong>${stats.visitors}</strong>
-                            <span>Visitors</span>
+                        <div>
+                            <div style="font-weight: 600; color: #0f172a; font-size: 14px;">${project.name || 'Untitled Project'}</div>
+                            <div style="font-size: 12px; color: #64748b;">${projectUrl || 'Not published'}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 24px; text-align: right;">
+                        <div>
+                            <div style="font-size: 18px; font-weight: 700; color: #3b82f6;">${this.formatNumber(stats.views)}</div>
+                            <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Views</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 18px; font-weight: 700; color: #10b981;">${this.formatNumber(stats.visitors)}</div>
+                            <div style="font-size: 11px; color: #64748b; text-transform: uppercase;">Visitors</div>
                         </div>
                     </div>
                 </div>
             `;
         }));
 
-        listContainer.innerHTML = '<h3>Project Performance</h3>' + analyticsHTML.join('');
+        listContainer.innerHTML = analyticsHTML.join('');
+    }
+
+    // Get project stats for a specific period
+    async getProjectStatsForPeriod(projectId, startDate) {
+        try {
+            const { data: events, error } = await supabaseClient.client
+                .from('analytics_events')
+                .select('visitor_id')
+                .eq('project_id', projectId)
+                .eq('event_type', 'page_view')
+                .gte('created_at', startDate.toISOString());
+
+            if (error) throw error;
+
+            return {
+                views: events.length,
+                visitors: new Set(events.map(e => e.visitor_id)).size
+            };
+        } catch (error) {
+            console.error('Error getting project stats:', error);
+            return { views: 0, visitors: 0 };
+        }
     }
 
     async loadDomains() {
