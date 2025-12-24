@@ -1071,11 +1071,12 @@
         .canvas-area {
             background: #F5F5F5;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             overflow: hidden;
             position: relative;
-            padding: 16px;
+            padding: 24px;
+            padding-top: 24px;
             min-height: 0;
             min-width: 0;
             grid-row: 2;
@@ -1087,10 +1088,10 @@
         }
 
         .canvas-scaler {
-            transform-origin: center center;
+            transform-origin: top center;
             transition: transform 0.2s ease;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             width: fit-content;
             height: fit-content;
