@@ -2795,9 +2795,6 @@ class YenzeBuilder {
             // Get Material Symbol icon and color class for this element type
             const { icon, colorClass, displayName } = this.getLayerIconInfo(tagName, element);
 
-            // Get meta info (id, class, or text preview)
-            const metaInfo = this.getLayerMetaInfo(element);
-
             // Check collapsed state
             const elementId = this.generateElementId(element);
             const isCollapsed = this.collapsedLayers && this.collapsedLayers.has(elementId);
@@ -2819,10 +2816,7 @@ class YenzeBuilder {
                     <div class="layer-icon ${colorClass}">
                         ${icon}
                     </div>
-                    <div class="layer-info">
-                        <span class="layer-name">${displayName}</span>
-                        ${metaInfo ? `<span class="layer-meta">${metaInfo}</span>` : ''}
-                    </div>
+                    <span class="layer-name">${displayName}</span>
                 </div>
                 <div class="layer-actions">
                     <button class="layer-action-btn" data-action="visibility" title="Toggle visibility">
