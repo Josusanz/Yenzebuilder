@@ -1016,32 +1016,8 @@ class YenzeBuilder {
 
     // Adjust iframe height to fit content
     adjustIframeHeight(canvas, iframeDoc) {
-        try {
-            const body = iframeDoc.body;
-            const html = iframeDoc.documentElement;
-            const wrapper = document.getElementById('canvasWrapper');
-
-            if (body && html && wrapper) {
-                // Get the full content height
-                const contentHeight = Math.max(
-                    body.scrollHeight,
-                    body.offsetHeight,
-                    html.clientHeight,
-                    html.scrollHeight,
-                    html.offsetHeight
-                );
-
-                // Set minimum height based on screen
-                const minHeight = 600;
-                const finalHeight = Math.max(contentHeight, minHeight);
-
-                // Update both iframe and wrapper height
-                canvas.style.height = finalHeight + 'px';
-                wrapper.style.height = (finalHeight + 32) + 'px'; // +32 for browser chrome
-            }
-        } catch (e) {
-            console.log('[Canvas] Could not adjust iframe height:', e);
-        }
+        // Keep iframe at 100% to fill the wrapper - scrolling handled by iframe
+        canvas.style.height = '100%';
     }
 
     setupIframeKeyboardShortcuts(doc) {

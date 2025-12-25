@@ -1071,12 +1071,11 @@
         .canvas-area {
             background: #F5F5F5;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             overflow: auto;
             position: relative;
-            padding: 24px;
-            padding-top: 24px;
+            padding: 16px;
             min-height: 0;
             min-width: 0;
             grid-row: 2;
@@ -1088,10 +1087,10 @@
         }
 
         .canvas-scaler {
-            transform-origin: top center;
+            transform-origin: center center;
             transition: transform 0.2s ease;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             width: fit-content;
             height: fit-content;
@@ -1111,17 +1110,17 @@
 
         .canvas-wrapper.desktop {
             width: 1440px;
-            min-height: 600px;
+            height: 900px;
         }
 
         .canvas-wrapper.tablet {
             width: 768px;
-            min-height: 600px;
+            height: 1024px;
         }
 
         .canvas-wrapper.mobile {
             width: 375px;
-            min-height: 667px;
+            height: 812px;
         }
 
         /* Browser Chrome Decoration */
@@ -1147,7 +1146,7 @@
 
         #canvas {
             width: 100%;
-            min-height: 600px;
+            height: calc(100% - 32px);
             border: none;
             display: block;
             background: white;
