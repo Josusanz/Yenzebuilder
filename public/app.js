@@ -760,7 +760,7 @@ class YenzeBuilder {
                                 min-width: 100% !important;
                                 max-width: 100% !important;
                                 overflow-x: hidden !important;
-                                overflow-y: visible !important;
+                                overflow-y: auto !important;
                                 margin: 0 !important;
                                 padding: 0 !important;
                                 box-sizing: border-box !important;
@@ -928,7 +928,7 @@ class YenzeBuilder {
                 min-width: 100% !important;
                 max-width: 100% !important;
                 overflow-x: hidden !important;
-                overflow-y: visible !important;
+                overflow-y: auto !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 box-sizing: border-box !important;
@@ -960,10 +960,6 @@ class YenzeBuilder {
                 this.buildLayersTree(iframeDoc);
                 this.setupIframeKeyboardShortcuts(iframeDoc);
                 this.adjustIframeHeight(canvas, iframeDoc);
-
-                // Prevent scroll inside iframe in edit mode
-                iframeDoc.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
-                iframeDoc.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
                 // Auto-scale canvas after content loads
                 setTimeout(() => this.autoScaleCanvas(), 100);
