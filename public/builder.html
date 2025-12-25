@@ -1111,17 +1111,17 @@
 
         .canvas-wrapper.desktop {
             width: 1440px;
-            height: 900px;
+            min-height: 600px;
         }
 
         .canvas-wrapper.tablet {
             width: 768px;
-            height: 600px;
+            min-height: 600px;
         }
 
         .canvas-wrapper.mobile {
             width: 375px;
-            height: 667px;
+            min-height: 667px;
         }
 
         /* Browser Chrome Decoration */
@@ -1147,8 +1147,7 @@
 
         #canvas {
             width: 100%;
-            height: calc(100% - 32px);
-            min-height: inherit;
+            min-height: 600px;
             border: none;
             display: block;
             background: white;

@@ -1014,19 +1014,14 @@ class YenzeBuilder {
         this.saveProject();
     }
 
-    // Adjust iframe height to fit content (especially for mobile)
-    // Adjust iframe height to fit content (especially for mobile)
+    // Adjust iframe height to fit content
     adjustIframeHeight(canvas, iframeDoc) {
-        // Disabled to allow proper 100vh rendering and internal scrolling
-        /*
         try {
             const body = iframeDoc.body;
             const html = iframeDoc.documentElement;
+            const wrapper = document.getElementById('canvasWrapper');
 
-            if (body && html) {
-                // Reset height first to allow shrinking
-                canvas.style.height = 'auto';
-
+            if (body && html && wrapper) {
                 // Get the full content height
                 const contentHeight = Math.max(
                     body.scrollHeight,
@@ -1036,18 +1031,17 @@ class YenzeBuilder {
                     html.offsetHeight
                 );
 
-                // Set iframe height to content height (with a minimum)
-                const minHeight = window.innerWidth <= 768 ? 500 : 600;
-                canvas.style.height = Math.max(contentHeight + 50, minHeight) + 'px';
+                // Set minimum height based on screen
+                const minHeight = 600;
+                const finalHeight = Math.max(contentHeight, minHeight);
 
-                console.log('[Canvas] Adjusted iframe height to:', canvas.style.height);
+                // Update both iframe and wrapper height
+                canvas.style.height = finalHeight + 'px';
+                wrapper.style.height = (finalHeight + 32) + 'px'; // +32 for browser chrome
             }
         } catch (e) {
             console.log('[Canvas] Could not adjust iframe height:', e);
         }
-        */
-        // Ensure height is 100% to fill the wrapper
-        canvas.style.height = '100%';
     }
 
     setupIframeKeyboardShortcuts(doc) {
