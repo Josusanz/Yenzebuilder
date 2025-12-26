@@ -993,6 +993,9 @@ class YenzeBuilder {
                     this.showToast('✅ HTML loaded successfully!', 'success');
                 }
 
+                // Switch to Layers tab after import
+                this.switchTab('layers', 'left');
+
                 // Add resize observer to body to auto-adjust height
                 if (iframeDoc.body) {
                     const resizeObserver = new ResizeObserver(() => {
