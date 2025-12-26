@@ -1946,6 +1946,21 @@ class YenzeBuilder {
         this.switchTab('properties', 'right');
     }
 
+    scrollToElementInCanvas(element) {
+        if (!element) return;
+
+        try {
+            // Get the iframe document
+            const canvas = document.getElementById('canvas');
+            if (!canvas || !canvas.contentDocument) return;
+
+            // Scroll the element into view within the iframe
+            element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        } catch (e) {
+            console.log('[Canvas] Could not scroll to element:', e);
+        }
+    }
+
     ensureElementPageVisible(element) {
         // Check if element is inside a hidden page/section
         let parent = element;
@@ -2846,6 +2861,8 @@ class YenzeBuilder {
                     if (e.target.closest('.layer-toggle')) return;
                     e.stopPropagation();
                     this.selectElement(element);
+                    // Scroll element into view in canvas
+                    this.scrollToElementInCanvas(element);
                 });
             }
 
