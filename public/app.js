@@ -2177,6 +2177,10 @@ class YenzeBuilder {
         const isText = this.isTextElement(element);
         const isImage = tagName === 'img';
 
+        // Check if element has background-image
+        const bgImage = getStyle('backgroundImage');
+        const hasBackgroundImage = bgImage && bgImage !== 'none' && bgImage.includes('url(');
+
         let html = '';
 
         // 1. Text Content (if applicable)
@@ -2232,8 +2236,44 @@ class YenzeBuilder {
             `;
         }
 
-        // 2. Colors (not for images)
-        if (!isImage) {
+        // 2. Background Image (if element has one)
+        if (hasBackgroundImage) {
+            // Extract URL from background-image
+            const urlMatch = bgImage.match(/url\(['"]?([^'")\s]+)['"]?\)/);
+            const imageUrl = urlMatch ? urlMatch[1] : '';
+
+            html += `
+                <div class="prop-section">
+                    <div class="prop-header">Background Image</div>
+                    <div class="prop-col">
+                        <label class="prop-label">Image URL</label>
+                        <input type="text" id="propBgImageUrl" class="prop-input" value="${imageUrl}" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div class="prop-col" style="margin-top: 8px;">
+                        <label class="prop-label">Size</label>
+                        <select id="propBgSize" class="prop-select">
+                            <option value="cover" ${getStyle('backgroundSize') === 'cover' ? 'selected' : ''}>Cover</option>
+                            <option value="contain" ${getStyle('backgroundSize') === 'contain' ? 'selected' : ''}>Contain</option>
+                            <option value="auto" ${getStyle('backgroundSize') === 'auto' ? 'selected' : ''}>Auto</option>
+                            <option value="100% 100%" ${getStyle('backgroundSize') === '100% 100%' ? 'selected' : ''}>Stretch</option>
+                        </select>
+                    </div>
+                    <div class="prop-col" style="margin-top: 8px;">
+                        <label class="prop-label">Position</label>
+                        <select id="propBgPosition" class="prop-select">
+                            <option value="center center" ${getStyle('backgroundPosition').includes('center') ? 'selected' : ''}>Center</option>
+                            <option value="top center" ${getStyle('backgroundPosition').includes('top') ? 'selected' : ''}>Top</option>
+                            <option value="bottom center" ${getStyle('backgroundPosition').includes('bottom') ? 'selected' : ''}>Bottom</option>
+                            <option value="left center" ${getStyle('backgroundPosition') === 'left center' ? 'selected' : ''}>Left</option>
+                            <option value="right center" ${getStyle('backgroundPosition') === 'right center' ? 'selected' : ''}>Right</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2.5 Colors (not for images or background-image elements)
+        if (!isImage && !hasBackgroundImage) {
             html += `
                 <div class="prop-section">
                     <div class="prop-header">Colors</div>
@@ -2312,8 +2352,8 @@ class YenzeBuilder {
             </div>
         `;
 
-        // 4. Typography (not for images)
-        if (!isImage) {
+        // 4. Typography (not for images or background-image elements)
+        if (!isImage && !hasBackgroundImage) {
             html += `
                 <div class="prop-section">
                     <div class="prop-header">Typography</div>
@@ -2545,6 +2585,31 @@ class YenzeBuilder {
                 input.addEventListener('change', () => this.updateHTML('Update color'));
             }
         });
+
+        // Background Image
+        const bgImageUrlInput = document.getElementById('propBgImageUrl');
+        if (bgImageUrlInput) {
+            bgImageUrlInput.addEventListener('change', (e) => {
+                element.style.backgroundImage = `url('${e.target.value}')`;
+                this.updateHTML('Update background image');
+            });
+        }
+
+        const bgSizeInput = document.getElementById('propBgSize');
+        if (bgSizeInput) {
+            bgSizeInput.addEventListener('change', (e) => {
+                element.style.backgroundSize = e.target.value;
+                this.updateHTML('Update background size');
+            });
+        }
+
+        const bgPositionInput = document.getElementById('propBgPosition');
+        if (bgPositionInput) {
+            bgPositionInput.addEventListener('change', (e) => {
+                element.style.backgroundPosition = e.target.value;
+                this.updateHTML('Update background position');
+            });
+        }
 
         // Spacing
         const spacingInputs = [
