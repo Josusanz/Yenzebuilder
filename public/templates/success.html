@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Successful - YENZE Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 12px;
+        }
+        p {
+            color: #64748B;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .template-name {
+            font-weight: 700;
+            color: #0F172A;
+        }
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #0F172A;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #0F172A;
+            border: 2px solid #E2E8F0;
+            margin-left: 12px;
+        }
+        .btn-secondary:hover {
+            border-color: #0F172A;
+        }
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .note {
+            margin-top: 24px;
+            padding: 16px;
+            background: #F0FDF4;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+        </div>
+
+        <h1>Purchase Successful!</h1>
+
+        <p>
+            Thank you for purchasing <span class="template-name" id="templateName">the template</span>.
+            Check your email for the download link and instructions.
+        </p>
+
+        <div class="buttons">
+            <a href="/builder.html" class="btn">Open Builder</a>
+            <a href="/templates" class="btn btn-secondary">Browse More</a>
+        </div>
+
+        <div class="note">
+            You'll receive an email with your template files and access instructions within 5 minutes.
+        </div>
+    </div>
+
+    <script>
+        // Get template name from URL
+        const params = new URLSearchParams(window.location.search);
+        const templateId = params.get('template');
+
+        const templateNames = {
+            'saas-dashboard-pro': 'SaaS Dashboard Pro',
+            'startup-landing-pro': 'Startup Landing Pro',
+            'portfolio-developer': 'Developer Portfolio',
+            'agency-starter': 'Agency Starter Kit',
+            'ecommerce-starter': 'E-commerce Starter'
+        };
+
+        if (templateId && templateNames[templateId]) {
+            document.getElementById('templateName').textContent = templateNames[templateId];
+        }
+    </script>
+</body>
+</html>

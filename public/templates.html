@@ -949,14 +949,38 @@
             if (modal) modal.style.display = 'none';
         }
 
-        function purchaseTemplate(templateId) {
+        async function purchaseTemplate(templateId) {
             const template = templates.find(t => t.id === templateId);
-            if (template && template.buyUrl) {
-                window.open(template.buyUrl, '_blank');
-            } else {
-                // TODO: Create Stripe checkout session
-                alert('Payment integration coming soon! Contact us at hello@yenze.io for early access.');
+            const emailInput = prompt('Enter your email to continue:');
+
+            if (!emailInput || !emailInput.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
             }
+
+            try {
+                const response = await fetch('/api/buy-template', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        templateId: templateId,
+                        email: emailInput
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = data.url;
+                } else if (data.error) {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                alert('Something went wrong. Please try again.');
+            }
+
             closePurchaseModal();
         }
 
