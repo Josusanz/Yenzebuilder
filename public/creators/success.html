@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome, Creator! - YENZE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 12px;
+        }
+        p {
+            color: #64748B;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .status-card {
+            background: #F0FDF4;
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .status-card h3 {
+            color: #166534;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .status-card p {
+            color: #166534;
+            font-size: 14px;
+            margin: 0;
+        }
+        .next-steps {
+            text-align: left;
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .next-steps h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #0F172A;
+        }
+        .next-steps ul {
+            list-style: none;
+        }
+        .next-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #64748B;
+        }
+        .next-steps li svg {
+            width: 20px;
+            height: 20px;
+            color: #F59E0B;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #0F172A;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .contact {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #94A3B8;
+        }
+        .contact a {
+            color: #0F172A;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+        </div>
+
+        <h1>Welcome to YENZE Creators!</h1>
+
+        <p>Your Stripe account is set up and ready to receive payments. You're now part of the creator program!</p>
+
+        <div class="status-card">
+            <h3>Account Status: Active</h3>
+            <p>You can now submit templates and start earning.</p>
+        </div>
+
+        <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ul>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <span>Create your first template using the YENZE builder or your favorite code editor</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>Email us your template files at <strong>hello@yenze.io</strong> for review</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    <span>Once approved, your template goes live and you start earning 70% of each sale</span>
+                </li>
+            </ul>
+        </div>
+
+        <a href="mailto:hello@yenze.io?subject=New Template Submission" class="btn">
+            Submit Your First Template
+        </a>
+
+        <p class="contact">
+            Questions? Email us at <a href="mailto:hello@yenze.io">hello@yenze.io</a>
+        </p>
+    </div>
+</body>
+</html>

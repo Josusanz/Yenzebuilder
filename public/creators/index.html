@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Creator - YENZE Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            color: #0F172A;
+            line-height: 1.6;
+        }
+
+        .nav {
+            background: white;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0F172A;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #0F172A;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1E293B;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0F172A;
+            border: 2px solid #E2E8F0;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            justify-content: center;
+            margin-top: 48px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #F59E0B;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Benefits */
+        .benefits {
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .benefits h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 48px;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .benefit-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .benefit-icon svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .benefit-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .benefit-card p {
+            color: #64748B;
+        }
+
+        /* How it works */
+        .how-it-works {
+            background: white;
+            padding: 80px 24px;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 48px;
+        }
+
+        .steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: #0F172A;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #64748B;
+        }
+
+        /* Apply Form */
+        .apply-section {
+            padding: 80px 24px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .apply-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .apply-card h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .apply-card > p {
+            text-align: center;
+            color: #64748B;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0F172A;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .terms {
+            text-align: center;
+            font-size: 13px;
+            color: #94A3B8;
+            margin-top: 20px;
+        }
+
+        .terms a {
+            color: #0F172A;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0F172A;
+            color: white;
+            padding: 48px 24px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #94A3B8;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .apply-card { padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                YENZE
+            </a>
+            <a href="/templates" class="btn btn-secondary">Browse Templates</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Sell Your Templates</h1>
+        <p>Join the YENZE creator marketplace. Upload your HTML templates and earn money every time someone buys them.</p>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value">70%</div>
+                <div class="stat-label">Revenue Share</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">Instant</div>
+                <div class="stat-label">Payouts via Stripe</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">$0</div>
+                <div class="stat-label">Upfront Cost</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <h2>Why Sell on YENZE?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <h3>Keep 70% of Sales</h3>
+                <p>One of the highest revenue shares in the industry. You keep the majority of every sale.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h3>Instant Payouts</h3>
+                <p>Get paid directly to your bank account via Stripe. No waiting, no invoicing.</p>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3>Built-in Audience</h3>
+                <p>Reach thousands of users looking for quality templates. We handle the marketing.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Apply Below</h3>
+                    <p>Fill out the form with your details. We'll set up your Stripe Connect account for payments.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Create Templates</h3>
+                    <p>Design beautiful HTML templates. Focus on quality - well-designed templates sell better.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Upload & Set Price</h3>
+                    <p>Submit your templates for review. Set your own prices between $10-$99.</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Get Paid</h3>
+                    <p>When someone buys your template, 70% goes directly to your bank account.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="apply-section" id="apply">
+        <div class="apply-card">
+            <h2>Become a Creator</h2>
+            <p>Start selling your templates today</p>
+
+            <form id="creatorForm">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Website / Portfolio (optional)</label>
+                    <input type="url" id="website" placeholder="https://yoursite.com">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Continue to Stripe Setup
+                </button>
+
+                <p class="terms">
+                    By applying, you agree to our <a href="#">Creator Terms</a> and <a href="#">Revenue Share Policy</a>.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>
+            <a href="/">YENZE</a> ·
+            <a href="/templates">Templates</a> ·
+            <a href="https://github.com/Josusanz/Yenzebuilder">GitHub</a> ·
+            Built by <a href="https://josusanz.com">Josu Sanz</a>
+        </p>
+    </footer>
+
+    <script>
+        document.getElementById('creatorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const website = document.getElementById('website').value.trim();
+
+            if (!name || !email) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Setting up your account...';
+
+            try {
+                const response = await fetch('/api/creator-onboarding', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, website })
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    // Redirect to Stripe onboarding
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Failed to create account');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Continue to Stripe Setup';
+            }
+        });
+    </script>
+</body>
+</html>
