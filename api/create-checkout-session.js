@@ -1,8 +1,8 @@
 // API Route: /api/create-checkout-session
 // Creates a Stripe checkout session for purchasing plans
 
-import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
+const Stripe = require('stripe');
+const { createClient } = require('@supabase/supabase-js');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
@@ -17,7 +17,7 @@ const PRICE_IDS = {
     business: process.env.STRIPE_PRICE_BUSINESS || 'price_1SWiDFIDLJ66zkJzyNmDga03'
 };
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -45,9 +45,6 @@ export default async function handler(req, res) {
                 requestedPlan: plan
             });
         }
-
-        // Allow upgrades/downgrades - users can change their plan
-        // The webhook will handle updating the existing subscription
 
         // Create or retrieve Stripe customer
         let customerId;
@@ -102,4 +99,4 @@ export default async function handler(req, res) {
         console.error('Stripe checkout error:', error);
         res.status(500).json({ error: error.message });
     }
-}
+};

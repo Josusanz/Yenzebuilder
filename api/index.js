@@ -2,8 +2,8 @@
 // Detects if request is from custom domain or platform domain
 // and routes accordingly
 
-import { createClient } from '@supabase/supabase-js';
-import { serveProject, sendError } from './_utils/response-helper.js';
+const { createClient } = require('@supabase/supabase-js');
+const { serveProject, sendError } = require('./_utils/response-helper.js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -19,7 +19,7 @@ const PLATFORM_DOMAINS = [
   'vercel.app'
 ];
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const host = req.headers.host || '';
 
   // Check if this is a platform domain
@@ -89,4 +89,4 @@ export default async function handler(req, res) {
     console.error('[Index] Error:', error);
     return sendError(res, 500, 'Server Error', 'An error occurred while loading this page.', error.message);
   }
-}
+};

@@ -1,8 +1,7 @@
-
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 // Helper to send consistent error pages
-export function sendError(res, statusCode, title, message, details = null) {
+function sendError(res, statusCode, title, message, details = null) {
   const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -74,7 +73,7 @@ export function sendError(res, statusCode, title, message, details = null) {
     </body>
     </html>
   `;
-  
+
   return res.status(statusCode).send(html);
 }
 
@@ -116,11 +115,11 @@ function cleanEditorMarkup(html) {
         const trimmed = style.trim().toLowerCase();
         // Remove editor-specific styles
         return !trimmed.startsWith('outline') &&
-               !trimmed.startsWith('cursor') &&
-               !trimmed.startsWith('user-select') &&
-               !trimmed.startsWith('transition: outline') &&
-               !trimmed.startsWith('box-shadow') &&
-               !trimmed.includes('outline-offset');
+          !trimmed.startsWith('cursor') &&
+          !trimmed.startsWith('user-select') &&
+          !trimmed.startsWith('transition: outline') &&
+          !trimmed.startsWith('box-shadow') &&
+          !trimmed.includes('outline-offset');
       })
       .filter(style => style.trim().length > 0) // Remove empty styles
       .join(';')
@@ -136,7 +135,7 @@ function cleanEditorMarkup(html) {
 }
 
 // Helper to serve project content with analytics and badge
-export async function serveProject(res, project, options = {}) {
+async function serveProject(res, project, options = {}) {
   try {
     const {
       supabaseUrl = process.env.SUPABASE_URL,
@@ -244,3 +243,8 @@ export async function serveProject(res, project, options = {}) {
     return sendError(res, 500, 'Server Error', 'An error occurred while processing the page.', error.message);
   }
 }
+
+module.exports = {
+  sendError,
+  serveProject
+};

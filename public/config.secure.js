@@ -202,7 +202,10 @@ class SecureConfig {
         try {
             const response = await fetch(API_ENDPOINTS.config);
             if (!response.ok) {
-                throw new Error('Failed to load configuration');
+                // If API fails, try to use what we have or throw
+                console.warn('Config API returned error:', response.status);
+                // We keep going to the catch block which handles fallback
+                throw new Error('Failed to load configuration from API');
             }
             const serverConfig = await response.json();
 
@@ -222,21 +225,22 @@ class SecureConfig {
                 }
             };
         } catch (error) {
-            console.error('Failed to load secure config from API, using fallback:', error);
+            console.error('Failed to load secure config from API:', error);
 
-            // Fallback to hardcoded credentials (for development/backup)
+            // Fallback to empty/safe values
+            // IMPORTANT: Never hardcode production secrets here
             return {
                 ...PUBLIC_CONFIG,
                 supabase: {
-                    url: 'https://xssdcphepracobbsvqmg.supabase.co',
-                    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhzc2RjcGhlcHJhY29iYnN2cW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM2MTA3MDYsImV4cCI6MjA3OTE4NjcwNn0.Z3w9P2dMeNu2J-2AcnxhLVSF_p794JZgIcAKMqkT3-A'
+                    url: '',
+                    anonKey: ''
                 },
                 stripe: {
-                    publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK',
+                    publicKey: '', // Must come from API
                     paymentLinks: {
-                        starter: 'https://buy.stripe.com/eVq7sM3er132eJZeD3aIM04',
-                        pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
-                        business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
+                        starter: '',
+                        pro: '',
+                        business: ''
                     },
                     priceIds: {}
                 },
@@ -279,7 +283,9 @@ class SecureConfig {
         }
 
         if (!window.STRIPE_CONFIG) {
-            throw new Error('STRIPE_CONFIG not initialized after timeout');
+            console.error('STRIPE_CONFIG not initialized after timeout');
+            // Return empty config to prevent crash, but functionality will fail
+            return { publicKey: '' };
         }
 
         return window.STRIPE_CONFIG;
@@ -302,18 +308,15 @@ window.STRIPE_CONFIG = null;
     try {
         const config = await secureConfig.load();
         window.STRIPE_CONFIG = config.stripe;
-        console.log('[Config] STRIPE_CONFIG initialized:', window.STRIPE_CONFIG);
+
+        if (window.STRIPE_CONFIG && window.STRIPE_CONFIG.publicKey) {
+            console.log('[Config] STRIPE_CONFIG initialized successfully');
+        } else {
+            console.warn('[Config] STRIPE_CONFIG loaded but missing keys (API failure?)');
+        }
     } catch (error) {
         console.error('[Config] Failed to initialize STRIPE_CONFIG:', error);
-        // Fallback to hardcoded values
-        window.STRIPE_CONFIG = {
-            publicKey: 'pk_live_51MC0CNIDLJ66zkJzWkTaTmIrxYYaIUYwIhXWoAibHOqOQykhnbaZm57Cf7mFWUcuVruqq8iQCboJB1bgFwluGJCq00RzMk6vtK',
-            paymentLinks: {
-                starter: 'https://buy.stripe.com/eVq7sM3er132eJZeD3aIM04',
-                pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
-                business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
-            },
-            priceIds: {}
-        };
+        // Fallback to empty object
+        window.STRIPE_CONFIG = { publicKey: '' };
     }
 })();

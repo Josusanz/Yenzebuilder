@@ -1,9 +1,9 @@
 // API Route: /api/stripe-webhook
 // Handles Stripe webhook events (payments, subscriptions)
 
-import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
-import { buffer } from 'micro';
+const Stripe = require('stripe');
+const { createClient } = require('@supabase/supabase-js');
+const { buffer } = require('micro');
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const supabase = createClient(
@@ -11,14 +11,116 @@ const supabase = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Disable body parsing, need raw body for signature verification
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+// Helper functions for handling events
+async function handleCheckoutCompleted(session) {
+    const userId = session.metadata.user_id;
+    const plan = session.metadata.plan;
+    const customerId = session.customer;
 
-export default async function handler(req, res) {
+    console.log('Checkout completed:', { userId, plan, customerId });
+
+    // For one-time payments
+    if (session.mode === 'payment') {
+        await supabase
+            .from('subscriptions')
+            .upsert({
+                user_id: userId,
+                stripe_customer_id: customerId,
+                plan: plan,
+                status: 'active',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+    }
+    // For subscriptions
+    else if (session.mode === 'subscription') {
+        const subscription = await stripe.subscriptions.retrieve(session.subscription);
+
+        await supabase
+            .from('subscriptions')
+            .upsert({
+                user_id: userId,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: subscription.id,
+                plan: plan,
+                status: subscription.status,
+                current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+                current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+                cancel_at_period_end: subscription.cancel_at_period_end,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            });
+    }
+}
+
+async function handleSubscriptionUpdated(subscription) {
+    const customerId = subscription.customer;
+
+    // Find user by customer ID
+    // Note: We might need to handle cases where multiple users might map to same customer (rare/error case)
+    const { data: existingSub } = await supabase
+        .from('subscriptions')
+        .select('user_id')
+        .eq('stripe_customer_id', customerId)
+        .single();
+
+    if (!existingSub) {
+        console.error('Subscription not found for customer:', customerId);
+        return;
+    }
+
+    await supabase
+        .from('subscriptions')
+        .update({
+            status: subscription.status,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            updated_at: new Date().toISOString()
+        })
+        .eq('stripe_subscription_id', subscription.id);
+}
+
+async function handleSubscriptionDeleted(subscription) {
+    // Soft-delete: Update status to canceled instead of deleting the record
+    await supabase
+        .from('subscriptions')
+        .update({
+            status: 'canceled',
+            updated_at: new Date().toISOString()
+        })
+        .eq('stripe_subscription_id', subscription.id);
+
+    console.log('Subscription marked as canceled:', subscription.id);
+}
+
+async function handlePaymentSucceeded(invoice) {
+    // Payment succeeded for subscription renewal
+    console.log('Payment succeeded for invoice:', invoice.id);
+
+    if (invoice.subscription) {
+        const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+        await handleSubscriptionUpdated(subscription);
+    }
+}
+
+async function handlePaymentFailed(invoice) {
+    // Payment failed for subscription
+    console.error('Payment failed for invoice:', invoice.id);
+
+    if (invoice.subscription) {
+        await supabase
+            .from('subscriptions')
+            .update({
+                status: 'past_due',
+                updated_at: new Date().toISOString()
+            })
+            .eq('stripe_subscription_id', invoice.subscription);
+    }
+}
+
+// Main handler
+const handler = async function (req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -72,111 +174,13 @@ export default async function handler(req, res) {
         console.error('Webhook handler error:', error);
         res.status(500).json({ error: error.message });
     }
-}
+};
 
-async function handleCheckoutCompleted(session) {
-    const userId = session.metadata.user_id;
-    const plan = session.metadata.plan;
-    const customerId = session.customer;
+module.exports = handler;
 
-    console.log('Checkout completed:', { userId, plan, customerId });
-
-    // For one-time payments
-    if (session.mode === 'payment') {
-        await supabase
-            .from('subscriptions')
-            .upsert({
-                user_id: userId,
-                stripe_customer_id: customerId,
-                plan: plan,
-                status: 'active',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            });
-    }
-    // For subscriptions
-    else if (session.mode === 'subscription') {
-        const subscription = await stripe.subscriptions.retrieve(session.subscription);
-
-        await supabase
-            .from('subscriptions')
-            .upsert({
-                user_id: userId,
-                stripe_customer_id: customerId,
-                stripe_subscription_id: subscription.id,
-                plan: plan,
-                status: subscription.status,
-                current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-                current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                cancel_at_period_end: subscription.cancel_at_period_end,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            });
-    }
-}
-
-async function handleSubscriptionUpdated(subscription) {
-    const customerId = subscription.customer;
-
-    // Find user by customer ID
-    const { data: existingSub } = await supabase
-        .from('subscriptions')
-        .select('user_id')
-        .eq('stripe_customer_id', customerId)
-        .single();
-
-    if (!existingSub) {
-        console.error('Subscription not found for customer:', customerId);
-        return;
-    }
-
-    await supabase
-        .from('subscriptions')
-        .update({
-            status: subscription.status,
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-            cancel_at_period_end: subscription.cancel_at_period_end,
-            updated_at: new Date().toISOString()
-        })
-        .eq('stripe_subscription_id', subscription.id);
-}
-
-async function handleSubscriptionDeleted(subscription) {
-    // Soft-delete: Update status to canceled instead of deleting the record
-    // This preserves the subscription history
-    await supabase
-        .from('subscriptions')
-        .update({
-            status: 'canceled',
-            updated_at: new Date().toISOString()
-        })
-        .eq('stripe_subscription_id', subscription.id);
-
-    console.log('Subscription marked as canceled:', subscription.id);
-}
-
-async function handlePaymentSucceeded(invoice) {
-    // Payment succeeded for subscription renewal
-    console.log('Payment succeeded for invoice:', invoice.id);
-
-    if (invoice.subscription) {
-        const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-        await handleSubscriptionUpdated(subscription);
-    }
-}
-
-async function handlePaymentFailed(invoice) {
-    // Payment failed for subscription
-    console.error('Payment failed for invoice:', invoice.id);
-
-    if (invoice.subscription) {
-        await supabase
-            .from('subscriptions')
-            .update({
-                status: 'past_due',
-                updated_at: new Date().toISOString()
-            })
-            .eq('stripe_subscription_id', invoice.subscription);
-    }
-}
+// Expo config for Next.js/Vercel raw body
+module.exports.config = {
+    api: {
+        bodyParser: false,
+    },
+};
