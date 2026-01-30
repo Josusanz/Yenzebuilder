@@ -3401,6 +3401,14 @@
                     </svg>
                     Preview
                 </button>
+                <button class="btn btn-secondary" id="downloadBtn" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download
+                </button>
                 <button class="btn btn-primary" id="publishBtn" style="font-size: 13px; padding: 8px 18px; font-weight: 600;">Publish</button>
 
                 <!-- User Profile (shown when logged in) -->
@@ -3878,13 +3886,11 @@
     <!-- Supabase Client Initialization -->
     <script src="/supabase-client.js?v=1.9.1"></script>
 
-    <!-- Stripe Integration -->
-    <script src="/stripe-integration.js?v=1.5.0"></script>
+    <!-- Email Gate (simple email capture for publish/download) -->
+    <script src="/email-gate.js?v=1.0.0"></script>
 
-    <!-- Pricing Plans & Usage Tracking -->
-    <script src="/pricing-plans.js?v=1.5.0"></script>
-    <script src="/usage-tracker.js?v=1.5.0"></script>
-    <script src="/pricing-modal.js?v=1.5.0"></script>
+    <!-- Plan Limits (all features free) -->
+    <script src="/plan-limits.js?v=2.0.0"></script>
 
     <!-- Subdomain Utilities -->
     <script src="/subdomain-utils.js?v=1.5.0"></script>

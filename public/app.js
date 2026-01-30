@@ -538,6 +538,11 @@ class YenzeBuilder {
             this.publish();
         });
 
+        // Download HTML
+        document.getElementById('downloadBtn')?.addEventListener('click', () => {
+            this.downloadHTML();
+        });
+
         // Project name
         document.getElementById('projectName').addEventListener('blur', (e) => {
             this.projectData.name = e.target.value;
@@ -1295,6 +1300,12 @@ class YenzeBuilder {
                 return;
             }
 
+            // Check if element has background-image (for Stitch/Gemini style images)
+            if (this.hasBackgroundImage(e.target)) {
+                this.openImageUploadForBackground(e.target);
+                return;
+            }
+
             // If not editable, show message
             this.showToast('This element is not editable inline. Use the properties panel.', 'warning');
         });
@@ -1763,6 +1774,37 @@ class YenzeBuilder {
         input.click();
     }
 
+    // Upload image for background-image elements (divs with bg image)
+    openImageUploadForBackground(element) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.style.display = 'none';
+
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Set the background-image style
+                    element.style.backgroundImage = `url('${event.target.result}')`;
+
+                    // Update the propBgImageUrl field if it exists
+                    const propBgImageUrl = document.getElementById('propBgImageUrl');
+                    if (propBgImageUrl) {
+                        propBgImageUrl.value = event.target.result;
+                    }
+
+                    this.updateHTML('Update image');
+                    this.showToast('Image updated', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        input.click();
+    }
+
     updateHTML(action = 'Change') {
         const canvas = document.getElementById('canvas');
         const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
@@ -2177,9 +2219,40 @@ class YenzeBuilder {
         const isText = this.isTextElement(element);
         const isImage = tagName === 'img';
 
-        // Check if element has background-image
-        const bgImage = getStyle('backgroundImage');
-        const hasBackgroundImage = bgImage && bgImage !== 'none' && bgImage.includes('url(');
+        // Check if element has background-image (check both computed and inline style)
+        let bgImage = getStyle('backgroundImage');
+        let hasBackgroundImage = bgImage && bgImage !== 'none' && bgImage.includes('url(');
+
+        // Also check inline style as fallback (for Tailwind CSS backgrounds)
+        if (!hasBackgroundImage) {
+            const inlineStyle = element.getAttribute('style') || '';
+            if (inlineStyle.includes('background-image') && inlineStyle.includes('url(')) {
+                // Extract the background-image from inline style
+                const match = inlineStyle.match(/background-image:\s*url\(['"]?([^'")\s]+)['"]?\)/i);
+                if (match) {
+                    bgImage = `url("${match[1]}")`;
+                    hasBackgroundImage = true;
+                }
+            }
+        }
+
+        // Final check using the same method as hasBackgroundImage()
+        if (!hasBackgroundImage) {
+            hasBackgroundImage = this.hasBackgroundImage(element);
+            if (hasBackgroundImage) {
+                // Get the URL from computed style
+                try {
+                    const canvas = document.getElementById('canvas');
+                    const iframeDoc = canvas?.contentDocument || canvas?.contentWindow?.document;
+                    if (iframeDoc && iframeDoc.defaultView) {
+                        const computedStyle = iframeDoc.defaultView.getComputedStyle(element);
+                        bgImage = computedStyle.backgroundImage;
+                    }
+                } catch (e) {
+                    // Fallback
+                }
+            }
+        }
 
         let html = '';
 
@@ -2236,19 +2309,44 @@ class YenzeBuilder {
             `;
         }
 
-        // 2. Background Image (if element has one)
+        // 2. Image/Background Image properties
+        // Check if it's an "image as div" (Stitch/Gemini pattern) vs decorative background
+        const isImageAsDiv = this.isImageAsDiv(element);
+
         if (hasBackgroundImage) {
             // Extract URL from background-image
             const urlMatch = bgImage.match(/url\(['"]?([^'")\s]+)['"]?\)/);
             const imageUrl = urlMatch ? urlMatch[1] : '';
 
+            // Get alt text from data-alt attribute (for image-as-div pattern)
+            const altText = element.getAttribute('data-alt') || '';
+
+            // Different header based on type
+            const sectionTitle = isImageAsDiv ? 'Image' : 'Background';
+
             html += `
                 <div class="prop-section">
-                    <div class="prop-header">Background Image</div>
+                    <div class="prop-header">${sectionTitle}</div>
                     <div class="prop-col">
                         <label class="prop-label">Image URL</label>
-                        <input type="text" id="propBgImageUrl" class="prop-input" value="${imageUrl}" placeholder="https://example.com/image.jpg">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="text" id="propBgImageUrl" class="prop-input" value="${imageUrl}" placeholder="https://example.com/image.jpg" style="flex: 1;">
+                            <button id="propBgImageUpload" class="prop-btn-upload" title="Upload image" style="padding: 8px 12px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; min-width: 40px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div style="margin-top: 6px; font-size: 11px; color: #888;">Double-click image to upload</div>
                     </div>
+                    ${isImageAsDiv ? `
+                    <div class="prop-col" style="margin-top: 8px;">
+                        <label class="prop-label">Alt Text (SEO)</label>
+                        <input type="text" id="propBgImageAlt" class="prop-input" value="${altText}" placeholder="Describe the image...">
+                    </div>
+                    ` : ''}
                     <div class="prop-col" style="margin-top: 8px;">
                         <label class="prop-label">Size</label>
                         <select id="propBgSize" class="prop-select">
@@ -2586,12 +2684,29 @@ class YenzeBuilder {
             }
         });
 
-        // Background Image
+        // Background/Image URL
         const bgImageUrlInput = document.getElementById('propBgImageUrl');
         if (bgImageUrlInput) {
             bgImageUrlInput.addEventListener('change', (e) => {
                 element.style.backgroundImage = `url('${e.target.value}')`;
-                this.updateHTML('Update background image');
+                this.updateHTML('Update image');
+            });
+        }
+
+        // Upload button for background/image
+        const bgImageUploadBtn = document.getElementById('propBgImageUpload');
+        if (bgImageUploadBtn) {
+            bgImageUploadBtn.addEventListener('click', () => {
+                this.openImageUploadForBackground(element);
+            });
+        }
+
+        // Alt text for image-as-div
+        const bgImageAltInput = document.getElementById('propBgImageAlt');
+        if (bgImageAltInput) {
+            bgImageAltInput.addEventListener('change', (e) => {
+                element.setAttribute('data-alt', e.target.value);
+                this.updateHTML('Update image alt text');
             });
         }
 
@@ -2599,7 +2714,7 @@ class YenzeBuilder {
         if (bgSizeInput) {
             bgSizeInput.addEventListener('change', (e) => {
                 element.style.backgroundSize = e.target.value;
-                this.updateHTML('Update background size');
+                this.updateHTML('Update image size');
             });
         }
 
@@ -2607,7 +2722,7 @@ class YenzeBuilder {
         if (bgPositionInput) {
             bgPositionInput.addEventListener('change', (e) => {
                 element.style.backgroundPosition = e.target.value;
-                this.updateHTML('Update background position');
+                this.updateHTML('Update image position');
             });
         }
 
@@ -3935,7 +4050,62 @@ if (validationForm) {
         });
     }
 
-    // Check if element has a background image
+    // Check if element is an "image as div" pattern (Stitch/Gemini style)
+    // These use div with background-image + data-alt attribute to represent images
+    isImageAsDiv(element) {
+        if (!element) return false;
+
+        // First check if has background-image at all
+        const hasBackground = this.hasBackgroundImage(element);
+        if (!hasBackground) return false;
+
+        // Check for data-alt attribute (indicates it's meant to be an image)
+        if (element.hasAttribute('data-alt')) return true;
+
+        // Get class string safely
+        let classStr = '';
+        try {
+            classStr = element.getAttribute('class') || '';
+        } catch (e) {
+            classStr = '';
+        }
+
+        // Check for bg-cover/bg-center classes (Tailwind pattern for images)
+        if (classStr.includes('bg-cover') || classStr.includes('bg-center')) {
+            return true;
+        }
+
+        // Check for aspect ratio patterns (common for image containers)
+        if (classStr.includes('aspect-')) {
+            return true;
+        }
+
+        // Check for common image size patterns (w-full h-full with background)
+        if ((classStr.includes('w-full') && classStr.includes('h-full')) ||
+            (classStr.includes('size-') && classStr.includes('rounded'))) {
+            return true;
+        }
+
+        // If it's a div with NO direct text content (only has child elements or is empty)
+        const tagName = element.tagName?.toLowerCase();
+        if (tagName === 'div') {
+            // Check if element has no direct text nodes
+            let hasDirectText = false;
+            for (const node of element.childNodes) {
+                if (node.nodeType === 3 && node.textContent.trim() !== '') {
+                    hasDirectText = true;
+                    break;
+                }
+            }
+            if (!hasDirectText && element.children.length === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Check if element has a background image (decorative background, not image-as-div)
     hasBackgroundImage(element) {
         if (!element) return false;
 
@@ -3963,6 +4133,11 @@ if (validationForm) {
         return false;
     }
 
+    // Check if element is a true decorative background (not an image-as-div)
+    isDecorativeBackground(element) {
+        return this.hasBackgroundImage(element) && !this.isImageAsDiv(element);
+    }
+
     // Get icon info for layer tree using SVG icons
     getLayerIconInfo(tagName, element) {
         const hasBgImage = this.hasBackgroundImage(element);
@@ -3988,12 +4163,24 @@ if (validationForm) {
             default: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>'
         };
 
-        // If has background image, show as image
+        // Check if it's an "image as div" (Stitch/Gemini pattern)
+        const isImageDiv = this.isImageAsDiv(element);
+
+        // If it's an image-as-div, show as "Image" not "Background Image"
+        if (isImageDiv) {
+            return {
+                icon: svgIcons.image,
+                colorClass: 'icon-image',
+                displayName: 'Image'
+            };
+        }
+
+        // If has true decorative background image
         if (hasBgImage) {
             return {
                 icon: svgIcons.image,
                 colorClass: 'icon-image',
-                displayName: 'Background Image'
+                displayName: 'Background'
             };
         }
 
@@ -4268,67 +4455,66 @@ if (validationForm) {
             return;
         }
 
+        // Use email gate - if user hasn't provided email, show modal first
+        if (window.emailGate) {
+            window.emailGate.gate('publish', () => this.doPublish());
+        } else {
+            // Fallback if email gate not loaded
+            this.doPublish();
+        }
+    }
+
+    async doPublish() {
         try {
-            // Ensure authUI is ready
-            if (!window.authUI && typeof AuthUI !== 'undefined') {
-                console.log('[Publish] Initializing AuthUI fallback');
-                window.authUI = new AuthUI();
-            }
-
-            // Check if user is authenticated (with session refresh)
-            const isAuth = await this.checkAuthentication();
-            if (!isAuth) {
-                console.log('[Publish] User not authenticated, showing auth modal');
-                // Set flag so we know to show pricing modal after login
-                this.pendingPublish = true;
-                // Show auth modal first
-                if (window.authUI) {
-                    window.authUI.showAuthModal('login');
-                } else {
-                    console.error('AuthUI not found even after fallback check!');
-                    alert('Authentication system not loaded. Please refresh the page.');
-                }
-                return;
-            }
-
             // If project already has an ID, it's been published before - just update it
             if (this.projectData.id) {
                 await this.updateExistingProject();
             } else {
-                // New project - check user's plan and show appropriate modal
-                const { data: subscription, error: subError } = await window.supabaseClient.client
-                    .from('subscriptions')
-                    .select('plan, status')
-                    .eq('user_id', window.supabaseClient.currentUser.id)
-                    .eq('status', 'active')
-                    .maybeSingle();
-
-                if (subError) {
-                    console.error('Error checking subscription:', subError);
-                    // Default to free plan behavior on error
-                    this.showSlugModal();
-                    return;
-                }
-
-                // Determine plan
-                const currentPlan = subscription ? subscription.plan.toLowerCase() : 'free';
-                console.log('[Publish] User plan:', currentPlan);
-
-                if (currentPlan === 'free') {
-                    // FREE: Show path-based slug modal
-                    this.showSlugModal();
-                } else if (currentPlan === 'starter' || currentPlan === 'pro' || currentPlan === 'business') {
-                    // PAID: Show subdomain modal
-                    this.showSubdomainModal();
-                } else {
-                    // Unknown plan or no subscription - show pricing options
-                    console.warn('[Publish] Unknown plan, showing pricing options');
-                    this.showPublishOptionsModal();
-                }
+                // New project - show subdomain modal (all users get subdomains now)
+                this.showSubdomainModal();
             }
         } catch (err) {
-            console.error('[Publish] Critical error:', err);
-            alert('Publish failed: ' + err.message);
+            console.error('[Publish] Error:', err);
+            this.showToast('❌ Publish failed: ' + err.message, 'error');
+        }
+    }
+
+    // Download HTML with email gate
+    downloadHTML() {
+        if (!this.currentHTML) {
+            this.showToast('⚠️ No content to download', 'error');
+            return;
+        }
+
+        // Use email gate
+        if (window.emailGate) {
+            window.emailGate.gate('download', () => this.doDownloadHTML());
+        } else {
+            this.doDownloadHTML();
+        }
+    }
+
+    doDownloadHTML() {
+        try {
+            const cleanHTML = this.getCleanHTML();
+            const projectName = this.projectData.name || 'yenze-project';
+            const fileName = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html';
+
+            // Create blob and download
+            const blob = new Blob([cleanHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            this.showToast('📥 HTML downloaded!', 'success');
+        } catch (err) {
+            console.error('[Download] Error:', err);
+            this.showToast('❌ Download failed', 'error');
         }
     }
 
