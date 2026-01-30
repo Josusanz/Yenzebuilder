@@ -259,7 +259,14 @@
                 </svg>
                 <span>YENZE</span>
             </a>
-            <a href="https://builder.yenze.io" class="btn btn-primary">Back to Builder</a>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a href="https://github.com/Josusanz/Yenzebuilder" target="_blank" rel="noopener" style="color: #0F172A; display: flex; align-items: center;" title="View on GitHub">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href="/builder.html" class="btn btn-primary">Open Builder</a>
+            </div>
         </div>
     </nav>
 
@@ -291,12 +298,16 @@
         </div>
 
         <!-- Category Tabs - Always Visible -->
-        <div style="display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
             <button class="mini-tab active" data-filter-type="category" data-filter="all">All</button>
             <button class="mini-tab" data-filter-type="category" data-filter="business">Business</button>
             <button class="mini-tab" data-filter-type="category" data-filter="portfolio">Portfolio</button>
             <button class="mini-tab" data-filter-type="category" data-filter="landing">Landing</button>
             <button class="mini-tab" data-filter-type="category" data-filter="linktree">Linktree</button>
+            <span style="width: 1px; height: 20px; background: #E2E8F0; margin: 0 8px;"></span>
+            <button class="mini-tab active" data-filter-type="pricing" data-filter="all">All Prices</button>
+            <button class="mini-tab" data-filter-type="pricing" data-filter="free" style="color: #10B981;">Free</button>
+            <button class="mini-tab" data-filter-type="pricing" data-filter="premium" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; border-color: #F59E0B;">Premium</button>
         </div>
 
         <!-- Advanced Filters - Collapsible -->
@@ -346,6 +357,22 @@
 
         <div class="templates-grid" id="templatesGrid">
             <!-- Templates will be loaded here -->
+        </div>
+
+        <!-- Creator CTA -->
+        <div style="margin-top: 64px; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 16px; padding: 48px; text-align: center; color: white;">
+            <h2 style="font-size: 32px; font-weight: 800; margin: 0 0 12px;">Sell Your Templates</h2>
+            <p style="font-size: 18px; opacity: 0.8; margin: 0 0 24px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Join our creator marketplace. Earn 70% commission on every sale.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <a href="mailto:hello@yenze.io?subject=I want to sell templates on YENZE" class="btn" style="background: white; color: #0F172A; padding: 14px 28px; font-size: 16px; text-decoration: none;">
+                    Apply as Creator
+                </a>
+                <a href="https://github.com/Josusanz/Yenzebuilder" target="_blank" class="btn" style="background: transparent; color: white; border: 2px solid rgba(255,255,255,0.3); padding: 14px 28px; font-size: 16px; text-decoration: none;">
+                    View on GitHub
+                </a>
+            </div>
         </div>
     </div>
 
@@ -468,6 +495,77 @@
                 colors: ['dark', 'gold'],
                 style: 'bold',
                 features: ['video-preview', 'newsletter', 'social-links', 'dark-mode']
+            },
+            // Premium Templates
+            {
+                id: 'saas-dashboard-pro',
+                name: 'SaaS Dashboard Pro',
+                description: 'Complete admin dashboard with charts, tables, and dark mode. Perfect for SaaS products.',
+                category: 'business',
+                price: '$29',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&q=80',
+                html: null,
+                colors: ['dark', 'blue', 'purple'],
+                style: 'modern',
+                features: ['dashboard', 'charts', 'dark-mode', 'responsive', 'animations'],
+                buyUrl: 'https://buy.stripe.com/test_xxx'
+            },
+            {
+                id: 'startup-landing-pro',
+                name: 'Startup Landing Pro',
+                description: 'High-converting landing page with pricing tables, testimonials, and CTA sections.',
+                category: 'landing',
+                price: '$19',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&q=80',
+                html: null,
+                colors: ['light', 'blue', 'gradient'],
+                style: 'professional',
+                features: ['pricing-table', 'testimonials', 'contact-form', 'responsive', 'animations'],
+                buyUrl: 'https://buy.stripe.com/test_xxx'
+            },
+            {
+                id: 'portfolio-developer',
+                name: 'Developer Portfolio',
+                description: 'Terminal-style portfolio for developers with project showcase and GitHub integration.',
+                category: 'portfolio',
+                price: '$15',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop&q=80',
+                html: null,
+                colors: ['dark', 'green'],
+                style: 'minimal',
+                features: ['terminal-style', 'github-integration', 'dark-mode', 'animations'],
+                buyUrl: 'https://buy.stripe.com/test_xxx'
+            },
+            {
+                id: 'agency-starter',
+                name: 'Agency Starter Kit',
+                description: 'Complete agency website with services, portfolio, team, and contact sections.',
+                category: 'business',
+                price: '$39',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&q=80',
+                html: null,
+                colors: ['light', 'dark', 'multicolor'],
+                style: 'professional',
+                features: ['multipage', 'portfolio', 'team', 'contact-form', 'responsive'],
+                buyUrl: 'https://buy.stripe.com/test_xxx'
+            },
+            {
+                id: 'ecommerce-starter',
+                name: 'E-commerce Starter',
+                description: 'Product showcase template with cart UI, product cards, and checkout flow mockup.',
+                category: 'business',
+                price: '$49',
+                isPremium: true,
+                preview: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop&q=80',
+                html: null,
+                colors: ['light', 'minimal'],
+                style: 'modern',
+                features: ['product-cards', 'cart-ui', 'responsive', 'animations'],
+                buyUrl: 'https://buy.stripe.com/test_xxx'
             }
         ];
 
@@ -476,6 +574,7 @@
             category: 'all',
             color: 'all',
             style: 'all',
+            pricing: 'all',
             features: [],
             search: ''
         };
@@ -509,6 +608,12 @@
                 // Style filter
                 if (activeFilters.style !== 'all' && template.style !== activeFilters.style) {
                     return false;
+                }
+
+                // Pricing filter
+                if (activeFilters.pricing !== 'all') {
+                    if (activeFilters.pricing === 'free' && template.isPremium) return false;
+                    if (activeFilters.pricing === 'premium' && !template.isPremium) return false;
                 }
 
                 // Features filter (must have ALL selected features)
@@ -684,8 +789,8 @@
             panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         });
 
-        // Filter tabs - single select for category, color, style
-        document.querySelectorAll('[data-filter-type="category"], [data-filter-type="color"], [data-filter-type="style"]').forEach(tab => {
+        // Filter tabs - single select for category, color, style, pricing
+        document.querySelectorAll('[data-filter-type="category"], [data-filter-type="color"], [data-filter-type="style"], [data-filter-type="pricing"]').forEach(tab => {
             tab.addEventListener('click', () => {
                 const filterType = tab.dataset.filterType;
                 const filterValue = tab.dataset.filter;
@@ -746,7 +851,8 @@
             const template = templates.find(t => t.id === templateId);
 
             if (isPremium) {
-                alert('Premium templates require a paid plan. Redirect to checkout coming soon!');
+                // Show purchase modal
+                showPurchaseModal(template);
                 return;
             }
 
@@ -768,8 +874,108 @@
             }
         }
 
+        // Purchase modal
+        function showPurchaseModal(template) {
+            // Create modal if doesn't exist
+            let modal = document.getElementById('purchaseModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'purchaseModal';
+                modal.innerHTML = `
+                    <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                        <div style="background: white; border-radius: 16px; max-width: 480px; width: 100%; padding: 32px; position: relative; animation: slideUp 0.3s ease;">
+                            <button onclick="closePurchaseModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: #94A3B8;">&times;</button>
+
+                            <div id="modalContent"></div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            // Populate content
+            document.getElementById('modalContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #F59E0B, #D97706); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 8px;">${template.name}</h2>
+                    <p style="color: #64748B; margin: 0;">${template.description}</p>
+                </div>
+
+                <div style="background: #F8FAFC; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-weight: 600;">Template License</span>
+                        <span style="font-size: 28px; font-weight: 800;">${template.price}</span>
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; color: #64748B;">
+                        <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                            Lifetime access
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                            Use on unlimited projects
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                            Download source code
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>
+                            Free updates
+                        </li>
+                    </ul>
+                </div>
+
+                <button onclick="purchaseTemplate('${template.id}')" style="width: 100%; padding: 16px; background: linear-gradient(135deg, #F59E0B, #D97706); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    Purchase for ${template.price}
+                </button>
+
+                <p style="text-align: center; font-size: 12px; color: #94A3B8; margin-top: 16px;">
+                    Secure payment via Stripe. 30-day money back guarantee.
+                </p>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        function closePurchaseModal() {
+            const modal = document.getElementById('purchaseModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function purchaseTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (template && template.buyUrl) {
+                window.open(template.buyUrl, '_blank');
+            } else {
+                // TODO: Create Stripe checkout session
+                alert('Payment integration coming soon! Contact us at hello@yenze.io for early access.');
+            }
+            closePurchaseModal();
+        }
+
+        // Close modal on background click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'purchaseModal' || e.target.closest('#purchaseModal > div:first-child') === e.target) {
+                closePurchaseModal();
+            }
+        });
+
         // Initial render
         renderTemplates();
     </script>
+
+    <style>
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </body>
 </html>
