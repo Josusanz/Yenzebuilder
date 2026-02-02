@@ -102,7 +102,7 @@ class EmailGate {
                     <p class="email-gate-privacy">
                         We respect your privacy. No spam, ever.
                         <br>
-                        <a href="https://github.com/yourusername/yenze" target="_blank">View source on GitHub</a>
+                        <a href="https://github.com/Josusanz/Yenzebuilder" target="_blank">View source on GitHub</a>
                     </p>
                 </div>
             </div>
@@ -363,17 +363,21 @@ class EmailGate {
             // Save email
             await this.saveEmail(email);
 
+            // Store callback before closing modal (closeModal clears it)
+            const callback = this.pendingCallback;
+
             // Close modal
             this.closeModal();
 
-            // Execute pending callback
-            if (this.pendingCallback) {
-                this.pendingCallback();
+            // Execute pending callback AFTER getting reference
+            if (callback) {
+                console.log('[EmailGate] Executing callback');
+                callback();
             }
 
             // Show success toast if available
-            if (window.editor && window.editor.showToast) {
-                window.editor.showToast('Email saved! You now have full access.', 'success');
+            if (window.app && window.app.showToast) {
+                window.app.showToast('Email saved! You now have full access.', 'success');
             }
 
         } catch (error) {
