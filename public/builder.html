@@ -3966,41 +3966,79 @@
                 await app.init();
             }
 
-            // Check if template should be loaded from localStorage
+            // Check if template should be loaded from URL or localStorage
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('template') === 'true') {
-                const templateHTML = localStorage.getItem('templateHTML');
-                const templateName = localStorage.getItem('templateName');
-                const templateId = localStorage.getItem('templateId');
+            const templateParam = urlParams.get('template');
+            const templateNameParam = urlParams.get('templateName');
 
-                if (templateHTML) {
-                    console.log('[Template Load] Loading template:', templateName || templateId);
-                    console.log('[Template Load] Template HTML length:', templateHTML.length);
+            if (templateParam) {
+                console.log('[Template Load] Template parameter found:', templateParam);
 
-                    // Use app.loadHTML() method to properly load the template
-                    if (typeof app !== 'undefined' && app.loadHTML) {
-                        app.loadHTML(templateHTML);
-                        console.log('[Template Load] ✓ Template loaded using app.loadHTML()');
+                // If template is an ID (like 'finwise'), fetch from server
+                if (templateParam !== 'true') {
+                    try {
+                        console.log('[Template Load] Fetching template:', templateParam);
+                        // Use full URL to ensure templates load from main domain
+                        const templateUrl = `https://yenze.io/templates/${templateParam}.html`;
+                        console.log('[Template Load] Fetching from:', templateUrl);
+                        const response = await fetch(templateUrl);
 
-                        // Show success message
-                        if (typeof showNotification === 'function') {
-                            showNotification(`Template "${templateName || 'Loaded'}" loaded successfully!`, 'success');
+                        if (response.ok) {
+                            const templateHTML = await response.text();
+                            console.log('[Template Load] Template fetched, length:', templateHTML.length);
+
+                            if (typeof app !== 'undefined' && app.loadHTML) {
+                                app.loadHTML(templateHTML);
+                                console.log('[Template Load] ✓ Template loaded from server');
+
+                                // Update project name
+                                if (templateNameParam) {
+                                    document.getElementById('projectName').value = templateNameParam;
+                                    app.projectData.name = templateNameParam;
+                                }
+
+                                if (typeof showNotification === 'function') {
+                                    showNotification(`Template "${templateNameParam || templateParam}" loaded!`, 'success');
+                                }
+                            }
+                        } else {
+                            console.error('[Template Load] Failed to fetch template:', response.status);
+                            if (typeof showNotification === 'function') {
+                                showNotification('Failed to load template', 'error');
+                            }
                         }
-
-                        // Clear template from localStorage after successful load
-                        setTimeout(() => {
-                            localStorage.removeItem('templateHTML');
-                            localStorage.removeItem('templateName');
-                            localStorage.removeItem('templateId');
-                            console.log('[Template Load] ✓ LocalStorage cleared');
-                        }, 1000);
-
-                        // Remove ?template=true from URL
-                        const newUrl = window.location.pathname;
-                        window.history.replaceState({}, '', newUrl);
-                    } else {
-                        console.error('[Template Load] ✗ app.loadHTML not available');
+                    } catch (error) {
+                        console.error('[Template Load] Error fetching template:', error);
                     }
+
+                    // Clean URL
+                    window.history.replaceState({}, '', window.location.pathname);
+                } else {
+                    // Legacy: template=true means load from localStorage
+                    const templateHTML = localStorage.getItem('templateHTML');
+                    const templateName = localStorage.getItem('templateName');
+                    const templateId = localStorage.getItem('templateId');
+
+                    if (templateHTML) {
+                        console.log('[Template Load] Loading template from localStorage:', templateName || templateId);
+
+                        if (typeof app !== 'undefined' && app.loadHTML) {
+                            app.loadHTML(templateHTML);
+                            console.log('[Template Load] ✓ Template loaded from localStorage');
+
+                            if (typeof showNotification === 'function') {
+                                showNotification(`Template "${templateName || 'Loaded'}" loaded successfully!`, 'success');
+                            }
+
+                            setTimeout(() => {
+                                localStorage.removeItem('templateHTML');
+                                localStorage.removeItem('templateName');
+                                localStorage.removeItem('templateId');
+                            }, 1000);
+                        }
+                    }
+
+                    window.history.replaceState({}, '', window.location.pathname);
                 }
             }
 
