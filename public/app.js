@@ -4998,6 +4998,15 @@ if (validationForm) {
         try {
             this.showToast('Publishing your website...', 'info');
 
+            // Check if we should use anonymous publish (no auth or Supabase not configured)
+            const isAuthenticated = window.supabaseClient && window.supabaseClient.client && window.supabaseClient.isAuthenticated();
+
+            if (!isAuthenticated) {
+                // Use anonymous publish API
+                await this.publishAnonymous(slug);
+                return;
+            }
+
             const plan = this.currentUserPlan || 'free';
 
             // Validate subdomain for paid plans
@@ -5077,6 +5086,56 @@ if (validationForm) {
 
         } catch (error) {
             console.error('Publish error:', error);
+            this.showToast('❌ Failed to publish: ' + error.message, 'error');
+        }
+    }
+
+    // Anonymous publish - no authentication required, just email
+    async publishAnonymous(slug) {
+        try {
+            // Get email from email gate
+            const email = window.emailGate ? window.emailGate.getEmail() : null;
+
+            if (!email) {
+                this.showToast('❌ Please enter your email first', 'error');
+                return;
+            }
+
+            console.log('[PublishAnonymous] Publishing with email:', email, 'slug:', slug);
+
+            const response = await fetch('/api/publish-anonymous', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    html: this.currentHTML,
+                    slug: slug,
+                    email: email,
+                    projectName: this.projectData.name
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to publish');
+            }
+
+            console.log('[PublishAnonymous] Published:', data);
+
+            // Update local project data
+            this.projectData.publishedUrl = data.url;
+            this.projectData.publicSlug = data.slug;
+            this.projectData.id = data.projectId;
+            this.saveProject();
+
+            // Show success popup
+            if (typeof showPublishPopup === 'function') {
+                showPublishPopup(data.url, 'free');
+            }
+            this.showToast('🚀 Website published!', 'success');
+
+        } catch (error) {
+            console.error('[PublishAnonymous] Error:', error);
             this.showToast('❌ Failed to publish: ' + error.message, 'error');
         }
     }
