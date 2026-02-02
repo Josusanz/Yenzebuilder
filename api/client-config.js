@@ -33,15 +33,13 @@ module.exports = async function handler(req, res) {
             }
         };
 
-        // Validate required fields
+        // Log missing fields but don't fail - allow partial functionality
         if (!clientConfig.supabaseUrl || !clientConfig.supabaseAnonKey) {
-            console.error('Missing required Supabase configuration');
-            return res.status(500).json({ error: 'Server configuration error' });
+            console.warn('[ClientConfig] Missing Supabase configuration - auth features disabled');
         }
 
         if (!clientConfig.stripePublicKey) {
-            console.error('Missing required Stripe configuration');
-            return res.status(500).json({ error: 'Server configuration error' });
+            console.warn('[ClientConfig] Missing Stripe configuration - payment features disabled');
         }
 
         // Set cache headers (5 minutes)
