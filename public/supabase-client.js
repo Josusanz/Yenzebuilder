@@ -26,6 +26,14 @@ class SupabaseClient {
                 // Load secure configuration from API
                 const config = await window.secureConfig.getSupabaseConfig();
 
+                // Check if Supabase config is available
+                if (!config.url || !config.anonKey) {
+                    console.warn('[Supabase] Missing configuration - auth features disabled');
+                    this.initialized = true;
+                    this.client = null;
+                    return;
+                }
+
                 // Initialize Supabase client using CDN
                 this.client = supabase.createClient(
                     config.url,
@@ -72,7 +80,9 @@ class SupabaseClient {
                 this.initialized = true;
             } catch (error) {
                 console.error('Failed to initialize Supabase:', error);
-                throw error;
+                // Don't throw - allow app to continue without auth
+                this.initialized = true;
+                this.client = null;
             }
         })();
 
@@ -106,6 +116,7 @@ class SupabaseClient {
 
     // Get access token for API calls
     async getAccessToken() {
+        if (!this.client) return null;
         const { data: { session } } = await this.client.auth.getSession();
         return session?.access_token || null;
     }
@@ -135,6 +146,11 @@ class SupabaseClient {
             // Ensure client is initialized
             if (!this.client) {
                 await this.init();
+            }
+
+            // If still no client, auth is disabled
+            if (!this.client) {
+                return { data: null, error: { message: 'Authentication is not configured' } };
             }
 
             const { data, error } = await this.client.auth.signInWithPassword({
