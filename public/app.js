@@ -4455,28 +4455,161 @@ if (validationForm) {
             return;
         }
 
-        // Use email gate - if user hasn't provided email, show modal first
-        if (window.emailGate) {
-            window.emailGate.gate('publish', () => this.doPublish());
+        // Use email gate first
+        if (window.emailGate && !window.emailGate.hasEmail()) {
+            window.emailGate.gate('publish', () => this.showPublishModal());
         } else {
-            // Fallback if email gate not loaded
-            this.doPublish();
+            this.showPublishModal();
         }
     }
 
-    async doPublish() {
-        try {
-            // If project already has an ID, it's been published before - just update it
-            if (this.projectData.id) {
-                await this.updateExistingProject();
-            } else {
-                // New project - show subdomain modal (all users get subdomains now)
-                this.showSubdomainModal();
-            }
-        } catch (err) {
-            console.error('[Publish] Error:', err);
-            this.showToast('❌ Publish failed: ' + err.message, 'error');
+    // Show publish options modal
+    showPublishModal() {
+        // Remove existing modal if any
+        const existing = document.getElementById('yenzePublishModal');
+        if (existing) existing.remove();
+
+        const email = window.emailGate ? window.emailGate.getEmail() : '';
+        const projectName = this.projectData.name || 'my-site';
+        const suggestedSlug = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+
+        const modalHTML = `
+            <div id="yenzePublishModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                <div style="background: white; border-radius: 20px; max-width: 500px; width: 100%; padding: 32px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+                    <button onclick="document.getElementById('yenzePublishModal').remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af;">&times;</button>
+
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 8px; color: #1f2937;">Publish Your Website</h2>
+                        <p style="color: #6b7280; margin: 0;">Choose how you want to publish</p>
+                    </div>
+
+                    <!-- Option 1: Publish to YENZE -->
+                    <div id="publishOptionYenze" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e2e8f0'">
+                        <div style="display: flex; align-items: start; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10B981, #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 4px; color: #1f2937;">Publish to YENZE</h3>
+                                <p style="font-size: 14px; color: #6b7280; margin: 0 0 12px;">Get a free URL and access to dashboard</p>
+
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <input type="text" id="publishSlugInput" value="${suggestedSlug}" placeholder="your-site-name"
+                                        style="flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                                        onclick="event.stopPropagation()">
+                                    <span style="color: #6b7280; font-size: 14px;">.yenze.io/s/</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="window.app.confirmPublishToYenze()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, #10B981, #059669); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                            Publish Now →
+                        </button>
+                    </div>
+
+                    <!-- Option 2: Download -->
+                    <div id="publishOptionDownload" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#667eea'" onmouseout="this.style.borderColor='#e2e8f0'">
+                        <div style="display: flex; align-items: start; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3B82F6, #1D4ED8); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </div>
+                            <div style="flex: 1;">
+                                <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 4px; color: #1f2937;">Download & Deploy Yourself</h3>
+                                <p style="font-size: 14px; color: #6b7280; margin: 0;">Get the HTML file and host it anywhere</p>
+                            </div>
+                        </div>
+                        <button onclick="window.app.downloadAndClose()" style="width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                            Download HTML
+                        </button>
+                    </div>
+
+                    <p style="text-align: center; font-size: 12px; color: #9ca3af; margin: 16px 0 0;">
+                        <a href="https://github.com/Josusanz/Yenzebuilder" target="_blank" style="color: #667eea;">View deployment guide</a>
+                    </p>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    // Confirm publish to YENZE
+    async confirmPublishToYenze() {
+        const slugInput = document.getElementById('publishSlugInput');
+        const slug = slugInput ? slugInput.value.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') : '';
+
+        if (!slug) {
+            this.showToast('Please enter a site name', 'error');
+            return;
         }
+
+        // Close modal
+        const modal = document.getElementById('yenzePublishModal');
+        if (modal) modal.remove();
+
+        // Publish
+        await this.publishWithSlug(slug);
+    }
+
+    // Download and close modal
+    downloadAndClose() {
+        const modal = document.getElementById('yenzePublishModal');
+        if (modal) modal.remove();
+        this.doDownloadHTML();
+    }
+
+    async doPublish() {
+        // Legacy - redirect to new modal
+        this.showPublishModal();
+    }
+
+    // Get clean HTML from the canvas (removes editor artifacts)
+    getCleanHTML() {
+        // Clear selection to remove editor artifacts
+        this.selectElement(null);
+
+        // Get fresh HTML from iframe
+        const canvas = document.getElementById('canvas');
+        if (!canvas) {
+            return this.currentHTML || '';
+        }
+
+        const iframeDoc = canvas.contentDocument || canvas.contentWindow.document;
+        if (!iframeDoc || !iframeDoc.documentElement) {
+            return this.currentHTML || '';
+        }
+
+        // Clone the document to clean it without affecting the editor
+        const clonedDoc = iframeDoc.documentElement.cloneNode(true);
+
+        // Remove editor styles and artifacts
+        clonedDoc.querySelectorAll('*').forEach(el => {
+            el.style.removeProperty('outline');
+            el.style.removeProperty('outline-offset');
+            el.style.removeProperty('box-shadow');
+            el.removeAttribute('data-yenze-id');
+            if (el.getAttribute('style') === '') {
+                el.removeAttribute('style');
+            }
+        });
+
+        // Remove yenze editor styles
+        const yenzeStyles = clonedDoc.querySelectorAll('#yenze-viewport-override, #yenze-editor-styles');
+        yenzeStyles.forEach(el => el.remove());
+
+        return "<!DOCTYPE html>\n" + clonedDoc.outerHTML;
     }
 
     // Download HTML with email gate
