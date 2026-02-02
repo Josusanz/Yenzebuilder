@@ -55,6 +55,14 @@
       "destination": "/templates.html"
     },
     {
+      "source": "/my-sites",
+      "destination": "/my-sites.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/my-sites.html"
+    },
+    {
       "source": "/s/:slug",
       "destination": "/api/view-project.js?slug=:slug"
     },
