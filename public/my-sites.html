@@ -416,12 +416,138 @@
             outline: none;
             border-color: #0F172A;
         }
+
+        /* Plan Cards */
+        .plans-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .plan-card {
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .plan-card:hover {
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .plan-card.featured {
+            border-color: #F59E0B;
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .plan-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .plan-price {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .plan-price span {
+            font-size: 12px;
+            font-weight: 400;
+            color: #64748B;
+        }
+
+        .popular-badge {
+            display: inline-block;
+            background: #3B82F6;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .value-badge {
+            display: inline-block;
+            background: #10B981;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .plan-features li svg {
+            width: 14px;
+            height: 14px;
+            color: #10B981;
+            flex-shrink: 0;
+        }
+
+        .btn-plan {
+            width: 100%;
+            background: #F1F5F9;
+            color: #0F172A;
+            justify-content: center;
+        }
+
+        .btn-plan:hover {
+            background: #E2E8F0;
+        }
+
+        .plan-card .btn-upgrade {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Lock badge colors by tier */
+        .lock-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        .lock-badge:contains("STARTER") { background: #3B82F6; color: white; }
+        .lock-badge:contains("PRO") { background: #F59E0B; color: white; }
+        .lock-badge:contains("BUSINESS") { background: #10B981; color: white; }
+
+        .feature-item .lock-badge[data-tier="starter"] { background: #3B82F6; }
+        .feature-item .lock-badge[data-tier="pro"] { background: #F59E0B; }
+        .feature-item .lock-badge[data-tier="business"] { background: #10B981; }
     </style>
 </head>
 <body>
     <nav class="nav">
         <div class="nav-content">
-            <a href="/" class="logo">
+            <a href="/yenzebuilder" class="logo">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
                     <polyline points="2 17 12 22 22 17"></polyline>
@@ -429,9 +555,10 @@
                 </svg>
                 YENZE
             </a>
-            <div class="nav-links">
+            <div class="nav-links" id="navLinks">
                 <a href="/templates" class="btn btn-secondary">Templates</a>
                 <a href="/builder.html" class="btn btn-primary">+ New Site</a>
+                <button class="btn btn-secondary" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
             </div>
         </div>
     </nav>
@@ -508,20 +635,75 @@
 
                 <!-- Sidebar -->
                 <div class="sidebar">
-                    <!-- Upgrade Card -->
-                    <div class="upgrade-card" id="upgradeCard">
-                        <h3>Upgrade to Pro</h3>
-                        <p>Get your own subdomain and unlock all features</p>
-                        <div class="price">$5<span>/month</span></div>
-                        <button class="btn btn-upgrade" onclick="upgradeToPro()">
-                            Upgrade Now →
-                        </button>
-                    </div>
-
-                    <!-- Pro Features -->
+                    <!-- Plans Comparison -->
                     <div class="card">
                         <div class="card-header">
-                            <h2>Pro Features</h2>
+                            <h2>Upgrade Your Plan</h2>
+                        </div>
+                        <div class="card-body" style="padding: 16px;">
+                            <!-- Plan Cards -->
+                            <div class="plans-list">
+                                <!-- Starter Plan -->
+                                <div class="plan-card" data-plan="starter">
+                                    <div class="plan-header">
+                                        <div>
+                                            <span class="plan-name">Starter</span>
+                                            <span class="popular-badge">Popular</span>
+                                        </div>
+                                        <div class="plan-price">$2.99<span>/mo</span></div>
+                                    </div>
+                                    <ul class="plan-features">
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 5 websites</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom subdomain</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 custom domain</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Remove branding</li>
+                                    </ul>
+                                    <button class="btn btn-plan" onclick="selectPlan('starter')">Select Starter</button>
+                                </div>
+
+                                <!-- Pro Plan -->
+                                <div class="plan-card featured" data-plan="pro">
+                                    <div class="plan-header">
+                                        <div>
+                                            <span class="plan-name">Pro</span>
+                                        </div>
+                                        <div class="plan-price">$6.99<span>/mo</span></div>
+                                    </div>
+                                    <ul class="plan-features">
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 20 websites</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 3 custom domains</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Analytics dashboard</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> SEO tools</li>
+                                    </ul>
+                                    <button class="btn btn-upgrade" onclick="selectPlan('pro')">Select Pro</button>
+                                </div>
+
+                                <!-- Business Plan -->
+                                <div class="plan-card" data-plan="business">
+                                    <div class="plan-header">
+                                        <div>
+                                            <span class="plan-name">Business</span>
+                                            <span class="value-badge">Best Value</span>
+                                        </div>
+                                        <div class="plan-price">$14.99<span>/mo</span></div>
+                                    </div>
+                                    <ul class="plan-features">
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited websites</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 10 custom domains</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Team collaboration</li>
+                                        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> API access</li>
+                                    </ul>
+                                    <button class="btn btn-plan" onclick="selectPlan('business')">Select Business</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Plan Features (Locked) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Locked Features</h2>
+                            <span style="font-size: 12px; color: #94A3B8;">Upgrade to unlock</span>
                         </div>
                         <div class="card-body" style="display: flex; flex-direction: column; gap: 12px;">
                             <!-- Custom Subdomain -->
@@ -537,7 +719,7 @@
                                     <h4>Custom Subdomain</h4>
                                     <p>yoursite.yenze.io</p>
                                 </div>
-                                <span class="lock-badge">PRO</span>
+                                <span class="lock-badge">STARTER</span>
                             </div>
 
                             <!-- Remove Badge -->
@@ -552,22 +734,7 @@
                                     <h4>Remove Badge</h4>
                                     <p>No "Built with YENZE"</p>
                                 </div>
-                                <span class="lock-badge">PRO</span>
-                            </div>
-
-                            <!-- SEO Tools -->
-                            <div class="feature-item locked" id="featureSEO">
-                                <div class="feature-icon blue">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                </div>
-                                <div class="feature-info">
-                                    <h4>SEO Tools</h4>
-                                    <p>Optimize for search</p>
-                                </div>
-                                <span class="lock-badge">PRO</span>
+                                <span class="lock-badge">STARTER</span>
                             </div>
 
                             <!-- Analytics -->
@@ -581,24 +748,41 @@
                                 </div>
                                 <div class="feature-info">
                                     <h4>Analytics</h4>
-                                    <p>Track visitors</p>
+                                    <p>Track visitors & stats</p>
                                 </div>
                                 <span class="lock-badge">PRO</span>
                             </div>
 
-                            <!-- Custom Domain -->
-                            <div class="feature-item locked" id="featureDomain">
-                                <div class="feature-icon gray">
+                            <!-- SEO Tools -->
+                            <div class="feature-item locked" id="featureSEO">
+                                <div class="feature-icon blue">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                 </div>
                                 <div class="feature-info">
-                                    <h4>Custom Domain</h4>
-                                    <p>yourdomain.com</p>
+                                    <h4>SEO Tools</h4>
+                                    <p>Sitemap & meta tags</p>
                                 </div>
                                 <span class="lock-badge">PRO</span>
+                            </div>
+
+                            <!-- Team -->
+                            <div class="feature-item locked" id="featureTeam">
+                                <div class="feature-icon gray">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </div>
+                                <div class="feature-info">
+                                    <h4>Team Collaboration</h4>
+                                    <p>Invite your team</p>
+                                </div>
+                                <span class="lock-badge">BUSINESS</span>
                             </div>
                         </div>
                     </div>
@@ -607,9 +791,35 @@
         </div>
     </div>
 
+    <script src="https://js.stripe.com/v3/"></script>
     <script>
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
+
+        // Stripe price IDs (from config)
+        const PRICE_IDS = {
+            starter: 'price_1SWi7yIDLJ66zkJzH1MJXNY6',
+            pro: 'price_1SWiCYIDLJ66zkJzlw0IY25L',
+            business: 'price_1SWiDFIDLJ66zkJzyNmDga03'
+        };
+
+        let stripeInstance = null;
+        let currentUserEmail = null;
+
+        // Initialize Stripe
+        async function initStripe() {
+            try {
+                const response = await fetch('/api/client-config');
+                const config = await response.json();
+                if (config.stripePublicKey) {
+                    stripeInstance = Stripe(config.stripePublicKey);
+                    console.log('[Dashboard] Stripe initialized');
+                }
+            } catch (error) {
+                console.error('[Dashboard] Failed to init Stripe:', error);
+            }
+        }
+        initStripe();
 
         // Check for saved email
         const savedEmail = localStorage.getItem('yenze_user_email');
@@ -628,13 +838,132 @@
         });
 
         async function loadDashboard(email) {
+            currentUserEmail = email;
             loginSection.style.display = 'none';
             dashboardSection.style.display = 'block';
 
             document.getElementById('userEmail').textContent = email;
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
 
-            // Load user's projects
-            await loadProjects(email);
+            // Load subscription status and projects in parallel
+            await Promise.all([
+                loadSubscription(email),
+                loadProjects(email)
+            ]);
+        }
+
+        async function loadSubscription(email) {
+            try {
+                const response = await fetch(`/api/check-subscription?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+
+                console.log('[Dashboard] Subscription:', data);
+
+                const planBadge = document.getElementById('planBadge');
+                const plansCard = document.querySelector('.plans-list')?.closest('.card');
+
+                if (data.hasSubscription && data.plan !== 'free') {
+                    // User has a paid plan
+                    const planName = data.plan.charAt(0).toUpperCase() + data.plan.slice(1);
+                    planBadge.textContent = `${planName} Plan`;
+                    planBadge.className = 'plan-badge plan-pro';
+
+                    // Hide the upgrade section or show "Manage Subscription"
+                    if (plansCard) {
+                        plansCard.innerHTML = `
+                            <div class="card-header">
+                                <h2>Your Plan</h2>
+                            </div>
+                            <div class="card-body" style="text-align: center; padding: 24px;">
+                                <div style="font-size: 32px; margin-bottom: 8px;">✨</div>
+                                <h3 style="margin-bottom: 4px;">${planName} Plan</h3>
+                                <p style="color: #64748B; font-size: 14px; margin-bottom: 16px;">
+                                    ${data.cancelAtPeriodEnd ? 'Cancels at period end' : 'Active subscription'}
+                                </p>
+                                <button class="btn btn-secondary" onclick="manageSubscription()" style="width: 100%;">
+                                    Manage Subscription
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    // Unlock features based on plan
+                    unlockFeatures(data.features);
+                } else {
+                    // Free plan
+                    planBadge.textContent = 'Free Plan';
+                    planBadge.className = 'plan-badge plan-free';
+                }
+
+            } catch (error) {
+                console.error('[Dashboard] Error checking subscription:', error);
+            }
+        }
+
+        function unlockFeatures(features) {
+            // Update locked feature items based on plan features
+            const featureItems = document.querySelectorAll('.feature-item.locked');
+
+            featureItems.forEach(item => {
+                const featureId = item.id;
+                let isUnlocked = false;
+
+                switch (featureId) {
+                    case 'featureSubdomain':
+                        isUnlocked = features.customSubdomain;
+                        break;
+                    case 'featureBadge':
+                        isUnlocked = features.removeBranding;
+                        break;
+                    case 'featureAnalytics':
+                        isUnlocked = features.analytics;
+                        break;
+                    case 'featureSEO':
+                        isUnlocked = features.seoTools;
+                        break;
+                    case 'featureTeam':
+                        isUnlocked = features.teamCollaboration;
+                        break;
+                    case 'featureDomain':
+                        isUnlocked = features.customDomain;
+                        break;
+                }
+
+                if (isUnlocked) {
+                    item.classList.remove('locked');
+                    const lockBadge = item.querySelector('.lock-badge');
+                    if (lockBadge) {
+                        lockBadge.textContent = '✓';
+                        lockBadge.style.background = '#10B981';
+                    }
+                }
+            });
+        }
+
+        async function manageSubscription() {
+            if (!currentUserEmail) return;
+
+            try {
+                const response = await fetch('/api/create-portal-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentUserEmail,
+                        returnUrl: window.location.href
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Failed to create portal session');
+                }
+            } catch (error) {
+                console.error('[Dashboard] Portal error:', error);
+                alert('Failed to open subscription portal: ' + error.message);
+            }
         }
 
         async function loadProjects(email) {
@@ -699,15 +1028,75 @@
             return date.toLocaleDateString();
         }
 
-        function upgradeToPro() {
-            // TODO: Integrate with Stripe
-            alert('Pro upgrade coming soon! For now, enjoy free publishing.');
+        async function selectPlan(planId) {
+            if (!currentUserEmail) {
+                alert('Please enter your email first');
+                return;
+            }
+
+            const priceId = PRICE_IDS[planId];
+            if (!priceId) {
+                console.error('Unknown plan:', planId);
+                return;
+            }
+
+            console.log(`[Dashboard] Creating checkout for ${planId} (${priceId})`);
+
+            try {
+                // Create checkout session via API
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        priceId: priceId,
+                        email: currentUserEmail,
+                        successUrl: window.location.origin + '/my-sites?success=true&plan=' + planId,
+                        cancelUrl: window.location.origin + '/my-sites?canceled=true'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Redirect to Stripe Checkout
+                if (data.url) {
+                    window.location.href = data.url;
+                } else if (data.sessionId && stripeInstance) {
+                    const { error } = await stripeInstance.redirectToCheckout({
+                        sessionId: data.sessionId
+                    });
+                    if (error) throw error;
+                } else {
+                    throw new Error('No checkout URL received');
+                }
+
+            } catch (error) {
+                console.error('[Dashboard] Checkout error:', error);
+                alert('Failed to start checkout: ' + error.message);
+            }
         }
 
         function logout() {
             localStorage.removeItem('yenze_user_email');
+            currentUserEmail = null;
             loginSection.style.display = 'block';
             dashboardSection.style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+        }
+
+        // Check for success/cancel from Stripe redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const plan = urlParams.get('plan') || 'Pro';
+            alert(`Welcome to YENZE ${plan.charAt(0).toUpperCase() + plan.slice(1)}! Your subscription is now active.`);
+            // Clean URL
+            window.history.replaceState({}, document.title, '/my-sites');
+        } else if (urlParams.get('canceled') === 'true') {
+            // Checkout was canceled, do nothing special
+            window.history.replaceState({}, document.title, '/my-sites');
         }
     </script>
 </body>

@@ -1,671 +1,686 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>YENZE - Create High-Converting Sales Landing Pages</title>
-<meta name="description" content="Generate stunning, conversion-optimized sales landing pages in minutes with AI. Perfect for product launches, lead generation, and sales campaigns.">
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "#0066FF",
-                        "primary-dark": "#0052cc",
-                        "background-light": "#FFFFFF",
-                        "surface-dark": "rgba(255, 255, 255, 0.7)",
-                        "surface-light": "rgba(240, 240, 240, 0.7)",
-                        "text-dark": "#1A202C",
-                        "text-light": "#4B5563",
-                        "border-light": "rgba(220, 220, 220, 0.7)",
-                        "border-subtle": "rgba(240, 240, 240, 0.7)",
-                    },
-                    fontFamily: {
-                        display: ["Plus Jakarta Sans", "sans-serif"]
-                    },
-                    borderRadius: {
-                        DEFAULT: "1rem",
-                        lg: "2rem",
-                        xl: "3rem",
-                        full: "9999px"
-                    },
-                    backgroundImage: {
-                        "hero-pattern": "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23F5F5F5\" fill-opacity=\"0.8\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 0H0v2h4v4h2V2H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
-                        "abstract-gradient": "linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(245, 245, 245, 1) 100%)",
-                    },
-                    boxShadow: {
-                        "glass-light": "0 4px 20px 0 rgba(0, 0, 0, 0.05)",
-                    },
-                }
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YENZE | Digital Agency - Software, Web & Brand Design</title>
+    <meta name="description"
+        content="YENZE is a digital agency specializing in advanced software, artisan websites, product configurators, and brand design. We build digital experiences that matter.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* -------------------------------------------------------------------------- */
+        /* CSS VARIABLES (MONOCHROMATIC ZINC LUXURY) */
+        /* -------------------------------------------------------------------------- */
+        :root {
+            --bg-main: 240 10% 4%;
+            --bg-secondary: 240 10% 8%;
+            --text-main: 0 0% 100%;
+            --text-muted: 240 5% 65%;
+            --accent: 0 0% 100%;
+            --accent-contrast: 0 0% 0%;
+            --border: 240 5% 15%;
+
+            --font-heading: "Plus Jakarta Sans", sans-serif;
+            --font-body: "Inter", sans-serif;
+
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
+            --space-2xl: 64px;
+            --space-3xl: 96px;
+            --space-4xl: 128px;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 1px 2px 0 hsla(var(--bg-main) / 0.1);
+            --shadow-md: 0 4px 6px -1px hsla(var(--bg-main) / 0.1), 0 2px 4px -2px hsla(var(--bg-main) / 0.1);
+            --shadow-lg: 0 10px 15px -3px hsla(var(--bg-main) / 0.1), 0 4px 6px -2px hsla(var(--bg-main) / 0.05);
+            --shadow-xl: 0 20px 25px -5px hsla(var(--bg-main) / 0.1), 0 10px 10px -5px hsla(var(--bg-main) / 0.04);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: hsl(var(--text-main));
+            background-color: hsl(var(--bg-main));
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            line-height: 1.1;
+            color: hsl(var(--text-main));
+            text-wrap: balance;
+        }
+
+        h1 { font-size: clamp(3rem, 5vw + 1rem, 5rem); }
+        h2 { font-size: clamp(2rem, 4vw + 1rem, 3.5rem); }
+        h3 { font-size: clamp(1.25rem, 2vw + 0.5rem, 1.75rem); }
+
+        p, a, li {
+            font-size: 1rem;
+            color: hsl(var(--text-muted));
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* LAYOUT */
+        /* -------------------------------------------------------------------------- */
+        .container {
+            max-width: 1440px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+
+        @media (max-width: 767px) {
+            .container { padding: 0 var(--space-sm); }
+        }
+
+        .grid-12 {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--space-lg);
+        }
+
+        @media (max-width: 767px) {
+            .grid-12 {
+                grid-template-columns: 1fr;
+                gap: var(--space-xl);
             }
-        };
-    </script>
-<style>
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #f0f0f0;
-}
-::-webkit-scrollbar-thumb {
-    background: #d0d0d0;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #a0a0a0;
-}
-.glass-panel {
-    background-color: var(--tw-colors-surface-dark);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--tw-colors-border-light);
-    box-shadow: var(--tw-shadow-glass-light);
-}
-.parallax-bg {
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-#parallax-layer-1 {
-    background-image: var(--tw-bg-abstract-gradient);
-    background-size: 200% 200%;
-}
-#parallax-layer-2 {
-    background-image: var(--tw-bg-hero-pattern);
-    opacity: 0.8;
-}
-.progress-indicator-container {
-    position: fixed;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-.progress-dot {
-    width: 8px;
-    height: 8px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
-.progress-dot.active {
-    background-color: var(--tw-colors-primary);
-    width: 12px;
-    height: 12px;
-    box-shadow: 0 0 10px rgba(0, 102, 255, 0.4);
-}
-.progress-dot.active::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--tw-colors-primary);
-    border-radius: 50%;
-    opacity: 0.3;
-}
-.h1-immersive {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    line-height: 1.1;
-}
-.h2-immersive {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    line-height: 1.1;
-}
+        }
 
-/* Logo animations - Layers moving top to bottom */
-@keyframes layer-wave-1 {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(-4px);
-        opacity: 0.85;
-    }
-}
+        .col-span-12 { grid-column: span 12; }
+        .col-span-6 { grid-column: span 6; }
+        .col-span-4 { grid-column: span 4; }
+        .col-span-3 { grid-column: span 3; }
 
-@keyframes layer-wave-2 {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(-3px);
-        opacity: 0.9;
-    }
-}
+        @media (min-width: 768px) {
+            .md-col-span-6 { grid-column: span 6; }
+            .md-col-span-4 { grid-column: span 4; }
+            .md-col-span-3 { grid-column: span 3; }
+        }
 
-@keyframes layer-wave-3 {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(-2px);
-        opacity: 0.95;
-    }
-}
+        @media (max-width: 767px) {
+            .col-span-6, .col-span-4, .col-span-3 {
+                grid-column: span 12;
+            }
+        }
 
-@keyframes logo-glow {
-    0%, 100% {
-        filter: drop-shadow(0 0 1px rgba(0, 102, 255, 0.3));
-    }
-    50% {
-        filter: drop-shadow(0 0 8px rgba(0, 102, 255, 0.6));
-    }
-}
+        /* -------------------------------------------------------------------------- */
+        /* COMPONENTS */
+        /* -------------------------------------------------------------------------- */
+        .card-glass {
+            background: hsla(0, 0%, 100%, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid hsla(var(--border), 0.5);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-/* Hover: layers cascade down one by one */
-@keyframes layer-cascade-1 {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    20%, 40% {
-        transform: translateY(3px);
-    }
-}
+        .card-hover:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-xl);
+        }
 
-@keyframes layer-cascade-2 {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    30%, 50% {
-        transform: translateY(3px);
-    }
-}
+        section {
+            padding-top: var(--space-3xl);
+            padding-bottom: var(--space-3xl);
+        }
 
-@keyframes layer-cascade-3 {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    40%, 60% {
-        transform: translateY(3px);
-    }
-}
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: var(--space-4xl);
+            padding-bottom: var(--space-4xl);
+        }
 
-.logo-animated {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-}
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
 
-.logo-layer-1 {
-    animation: layer-wave-1 3s ease-in-out infinite;
-    transform-origin: center;
-    transition: all 0.3s ease;
-}
+        .btn-primary {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-contrast));
+        }
 
-.logo-layer-2 {
-    animation: layer-wave-2 3s ease-in-out infinite 0.15s;
-    transform-origin: center;
-    transition: all 0.3s ease;
-}
+        .btn-secondary {
+            background-color: transparent;
+            color: hsl(var(--text-main));
+            border: 1px solid hsla(var(--border), 0.8);
+        }
 
-.logo-layer-3 {
-    animation: layer-wave-3 3s ease-in-out infinite 0.3s;
-    transform-origin: center;
-    transition: all 0.3s ease;
-}
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
 
-/* Hover effects - Cascade layers down sequentially */
-.group:hover .logo-animated {
-    animation: logo-glow 2s ease-in-out infinite;
-    transform: scale(1.1);
-}
+        /* -------------------------------------------------------------------------- */
+        /* NAVBAR */
+        /* -------------------------------------------------------------------------- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: var(--space-md) 0;
+            background: hsla(var(--bg-main) / 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid hsla(var(--border), 0.5);
+        }
 
-.group:hover .logo-layer-1 {
-    animation: layer-cascade-1 1.2s ease-in-out infinite;
-    stroke-width: 3;
-}
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.group:hover .logo-layer-2 {
-    animation: layer-cascade-2 1.2s ease-in-out infinite;
-    stroke-width: 3;
-}
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: hsl(var(--text-main));
+        }
 
-.group:hover .logo-layer-3 {
-    animation: layer-cascade-3 1.2s ease-in-out infinite;
-    stroke-width: 3;
-}
-</style>
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+        }
+
+        .nav-link {
+            color: hsl(var(--text-muted));
+            font-weight: 600;
+            padding: var(--space-sm) 0;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: hsl(var(--text-main));
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: hsl(var(--text-main));
+            font-size: var(--space-lg);
+            cursor: pointer;
+            padding: var(--space-xs);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 80px);
+            padding: var(--space-lg);
+            background: hsla(var(--bg-main) / 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-xl);
+            z-index: 999;
+            list-style: none;
+        }
+
+        .mobile-menu a {
+            font-size: 1.5rem;
+            padding: var(--space-sm);
+        }
+
+        @media (max-width: 767px) {
+            .nav-links, .nav-cta { display: none; }
+            .menu-toggle { display: block; }
+            .mobile-menu.open { display: flex; }
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* UTILITIES */
+        /* -------------------------------------------------------------------------- */
+        .mb-2 { margin-bottom: var(--space-sm); }
+        .mb-4 { margin-bottom: var(--space-lg); }
+        .mt-4 { margin-top: var(--space-lg); }
+        .mt-6 { margin-top: var(--space-xl); }
+        .text-muted { color: hsl(var(--text-muted)); }
+        .text-center { text-align: center; }
+        .uppercase { text-transform: uppercase; }
+        .tracking-wide { letter-spacing: 0.1em; }
+
+        /* -------------------------------------------------------------------------- */
+        /* SCROLL REVEAL */
+        /* -------------------------------------------------------------------------- */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition-delay: var(--delay, 0s);
+        }
+
+        .reveal-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* PORTFOLIO */
+        /* -------------------------------------------------------------------------- */
+        .portfolio-card {
+            display: block;
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+        }
+
+        .portfolio-card .portfolio-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-md);
+            background: hsl(var(--bg-secondary));
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: hsl(var(--text-muted));
+            letter-spacing: 0.05em;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* CLIENTS LOGO CLOUD */
+        /* -------------------------------------------------------------------------- */
+        .client-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md) var(--space-lg);
+            border: 1px solid hsla(var(--border), 0.5);
+            border-radius: var(--radius-md);
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 0.875rem;
+            color: hsl(var(--text-muted));
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .client-logo:hover {
+            border-color: hsl(var(--text-muted));
+            color: hsl(var(--text-main));
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* BUILDER CTA SECTION */
+        /* -------------------------------------------------------------------------- */
+        .builder-cta {
+            background: hsla(0, 0%, 100%, 0.03);
+            border: 1px solid hsla(var(--border), 0.5);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl) var(--space-xl);
+            text-align: center;
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* SERVICE ICON */
+        /* -------------------------------------------------------------------------- */
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: var(--space-sm);
+            color: hsl(var(--text-main));
+        }
+    </style>
 </head>
-<body class="bg-background-light text-text-dark font-display overflow-x-hidden selection:bg-primary selection:text-white relative min-h-screen">
-<div class="parallax-bg fixed inset-0" id="parallax-layer-1"></div>
-<div class="parallax-bg fixed inset-0" id="parallax-layer-2"></div>
-<div class="relative flex min-h-screen w-full flex-col">
-<div class="fixed top-6 left-0 right-0 z-50 px-4 flex justify-center w-full">
-<nav class="flex items-center justify-between w-full max-w-[1100px] glass-panel rounded-full px-6 py-3 shadow-glass-light">
-<a class="flex items-center gap-2 text-text-dark hover:opacity-80 transition-opacity group" href="/">
-<div class="size-7 text-primary relative">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-animated">
-<polygon points="12 2 2 7 12 12 22 7 12 2" class="logo-layer-1"></polygon>
-<polyline points="2 17 12 22 22 17" class="logo-layer-2"></polyline>
-<polyline points="2 12 12 17 22 12" class="logo-layer-3"></polyline>
-</svg>
-</div>
-<span class="text-lg font-bold tracking-tight">YENZE</span>
-</a>
-<div class="hidden md:flex items-center gap-6">
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="#features">Features</a>
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="/templates">Templates</a>
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="/prompt-generator.html">AI Prompt Generator</a>
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="#pricing">Pricing</a>
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
-<a href="/start.html" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all transform hover:scale-105 shadow-md">
-    Get Started
-</a>
-</div>
-<div class="flex md:hidden items-center gap-3">
-<a class="text-sm font-medium text-text-dark hover:text-primary transition-colors" href="https://builder.yenze.io/login.html">Log In</a>
-<a href="/start.html" class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-4 py-2 rounded-full transition-all shadow-md">
-    Start
-</a>
-</div>
-</nav>
-</div>
-<div class="progress-indicator-container hidden lg:flex">
-<a class="progress-dot active" data-section="hero" href="#hero"></a>
-<a class="progress-dot" data-section="how-to-start" href="#how-to-start"></a>
-<a class="progress-dot" data-section="features" href="#features"></a>
-<a class="progress-dot" data-section="pricing" href="#pricing"></a>
-<a class="progress-dot" data-section="cta" href="#cta"></a>
-</div>
-<div class="flex flex-col flex-1 pt-32 pb-10 px-4 md:px-10 lg:px-20 max-w-7xl mx-auto w-full relative z-10">
-<section class="flex flex-col items-center justify-center py-12 md:py-20 relative" id="hero">
-<div class="relative z-10 flex flex-col items-center text-center max-w-4xl gap-6 mb-12">
-<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-xs font-medium text-primary shadow-glass-light">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-</span>
-                        AI-Powered Landing Page Generator
+
+<body>
+    <div id="app">
+        <!-- NAV -->
+        <header class="header-nav">
+            <div class="container nav-content">
+                <a href="#home" class="logo">YENZE</a>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                        <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                        <li><a href="#clientes" class="nav-link">Clientes</a></li>
+                        <li><a href="/yenzebuilder" class="nav-link">YENZE Builder</a></li>
+                        <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="nav-cta">
+                    <a href="#contacto" class="btn btn-primary">Get in Touch</a>
+                </div>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="menuIcon">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <ul class="mobile-menu" id="mobileMenu">
+            <li><a href="#servicios" class="nav-link">Servicios</a></li>
+            <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+            <li><a href="#clientes" class="nav-link">Clientes</a></li>
+            <li><a href="/yenzebuilder" class="nav-link">YENZE Builder</a></li>
+            <li><a href="#contacto" class="btn btn-primary">Contacto</a></li>
+        </ul>
+
+        <!-- HERO -->
+        <section id="home" class="hero-section">
+            <div class="container" style="max-width: 900px;">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">
+                    &mdash; DIGITAL AGENCY
+                </p>
+                <h1 class="reveal-element" style="--delay: 0.1s;">
+                    We Build Digital Experiences <span style="color: hsl(var(--text-muted))">That Matter.</span>
+                </h1>
+                <p class="mt-4 text-muted reveal-element" style="--delay: 0.2s; max-width: 640px; margin: var(--space-lg) auto;">
+                    Software avanzado, websites artesanales, configuradores de producto y marca digital. Transformamos ideas en productos digitales de alto impacto.
+                </p>
+                <div class="mt-6 reveal-element" style="--delay: 0.3s;">
+                    <a href="#contacto" class="btn btn-primary">Start a Project</a>
+                    <a href="#servicios" class="btn btn-secondary" style="margin-left: var(--space-sm);">Our Services</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICIOS -->
+        <section id="servicios">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">
+                    &mdash; NUESTRO UNIVERSO
+                </p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">What We Do</h2>
+                <p class="mt-4 text-muted reveal-element" style="--delay: 0.1s; max-width: 700px; margin: var(--space-lg) auto var(--space-3xl);">
+                    Cuatro disciplinas que convergen para crear productos digitales completos, desde la estrategia hasta el pixel final.
+                </p>
+            </div>
+            <div class="container grid-12">
+                <div class="col-span-6 md-col-span-3 card-glass card-hover reveal-element" style="--delay: 0.15s;">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    <h3 class="mb-2">Software Avanzado</h3>
+                    <p class="text-muted">Plataformas web, SaaS, dashboards y herramientas internas. Arquitectura escalable con tecnologías modernas.</p>
+                </div>
+                <div class="col-span-6 md-col-span-3 card-glass card-hover reveal-element" style="--delay: 0.25s;">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                    <h3 class="mb-2">Websites Artesanales</h3>
+                    <p class="text-muted">Sitios web corporativos, e-commerce y landing pages. Diseño premium con rendimiento optimizado.</p>
+                </div>
+                <div class="col-span-6 md-col-span-3 card-glass card-hover reveal-element" style="--delay: 0.35s;">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <h3 class="mb-2">Configuradores de Producto</h3>
+                    <p class="text-muted">Configuradores 3D e interactivos para visualizar y personalizar productos en tiempo real.</p>
+                </div>
+                <div class="col-span-6 md-col-span-3 card-glass card-hover reveal-element" style="--delay: 0.45s;">
+                    <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <h3 class="mb-2">Brand Design</h3>
+                    <p class="text-muted">Identidad visual, sistemas de marca y dirección creativa. Del naming al manual de marca completo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLIO -->
+        <section id="portfolio">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">
+                    &mdash; SELECTED WORK
+                </p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Portfolio</h2>
+                <p class="mt-4 text-muted reveal-element" style="--delay: 0.1s; max-width: 700px; margin: var(--space-lg) auto var(--space-3xl);">
+                    Proyectos reales para clientes reales. Cada proyecto refleja nuestra obsesi&oacute;n por la calidad y el detalle.
+                </p>
+            </div>
+            <div class="container grid-12">
+                <div class="col-span-6 reveal-element" style="--delay: 0.15s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">MARTIKO</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">Food Industry &middot; E-commerce</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Plataforma digital para l&iacute;der en conservas gourmet y anchoas del Cant&aacute;brico.</h3>
                     </div>
-<h1 class="h1-immersive font-extrabold tracking-tight text-text-dark drop-shadow-sm">
-                        Create High-Converting<br/>
-<span class="text-primary">Sales Landing Pages.</span>
-</h1>
-<p class="text-lg md:text-xl text-text-light max-w-2xl leading-relaxed">
-                        Generate conversion-optimized landing pages in minutes with AI. Perfect for product launches, lead generation, SaaS signups, and sales campaigns that actually convert.
+                </div>
+                <div class="col-span-6 reveal-element" style="--delay: 0.25s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">ITEVELESA</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">Automotive &middot; SaaS Platform</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Sistema de gesti&oacute;n y cita online para la mayor red de ITV de Espa&ntilde;a.</h3>
+                    </div>
+                </div>
+                <div class="col-span-6 reveal-element" style="--delay: 0.35s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">ECD AUTO DESIGN</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">Automotive &middot; Product Configurator</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Configurador de veh&iacute;culos premium para restauraci&oacute;n de Land Rovers cl&aacute;sicos.</h3>
+                    </div>
+                </div>
+                <div class="col-span-6 reveal-element" style="--delay: 0.45s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">GOBIERNO DE NAVARRA</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">Government &middot; Web Platform</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Portales institucionales y plataformas de servicio al ciudadano.</h3>
+                    </div>
+                </div>
+                <div class="col-span-6 reveal-element" style="--delay: 0.55s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">DAS NANO</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">Deep Tech &middot; Corporate Website</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Web corporativa para empresa de nanotecnolog&iacute;a y verificaci&oacute;n biom&eacute;trica.</h3>
+                    </div>
+                </div>
+                <div class="col-span-6 reveal-element" style="--delay: 0.65s;">
+                    <div class="card-glass card-hover portfolio-card">
+                        <div class="portfolio-img">PREMIUM THEMES</div>
+                        <p class="text-muted uppercase tracking-wide" style="font-size: 0.8rem;">ThemeForest &middot; Product Design</p>
+                        <h3 class="mt-4" style="color: hsl(var(--text-main));">Colecci&oacute;n de temas premium con miles de ventas en Envato Market.</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLIENTES -->
+        <section id="clientes">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">
+                    &mdash; TRUSTED BY
+                </p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Clientes</h2>
+                <p class="mt-4 text-muted reveal-element" style="--delay: 0.1s; max-width: 700px; margin: var(--space-lg) auto var(--space-3xl);">
+                    Empresas que conf&iacute;an en nosotros para construir sus productos digitales.
+                </p>
+            </div>
+            <div class="container" style="display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center;">
+                <div class="client-logo reveal-element" style="--delay: 0.1s;">MARTIKO</div>
+                <div class="client-logo reveal-element" style="--delay: 0.15s;">ITEVELESA</div>
+                <div class="client-logo reveal-element" style="--delay: 0.2s;">Saltoki</div>
+                <div class="client-logo reveal-element" style="--delay: 0.25s;">Gobierno de Navarra</div>
+                <div class="client-logo reveal-element" style="--delay: 0.3s;">DAS Nano</div>
+                <div class="client-logo reveal-element" style="--delay: 0.35s;">ECD Auto Design</div>
+                <div class="client-logo reveal-element" style="--delay: 0.4s;">Bornos Bodegas</div>
+                <div class="client-logo reveal-element" style="--delay: 0.45s;">Nortindal</div>
+            </div>
+        </section>
+
+        <!-- YENZE BUILDER CTA -->
+        <section id="builder">
+            <div class="container">
+                <div class="builder-cta reveal-element" style="--delay: 0s;">
+                    <p class="text-muted mb-2 uppercase tracking-wide">&mdash; OUR PRODUCT</p>
+                    <h2 class="mb-4">YENZE Builder</h2>
+                    <p class="text-muted" style="max-width: 600px; margin: 0 auto var(--space-xl);">
+                        Crea landing pages de alto impacto en minutos con inteligencia artificial. Sin c&oacute;digo, con resultados profesionales.
                     </p>
-</div>
-</section>
+                    <a href="/yenzebuilder" class="btn btn-primary">Try YENZE Builder</a>
+                </div>
+            </div>
+        </section>
 
-<section class="py-8 md:py-12" id="how-to-start">
-<div class="text-center mb-12">
-<h2 class="text-3xl md:text-4xl font-extrabold text-text-dark mb-4">Create Your Landing Page</h2>
-<p class="text-text-light text-base md:text-lg">Start with AI or customize from templates</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center hover:border-primary/50 transition-all hover:shadow-xl group">
-<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-<polyline points="14 2 14 8 20 8"></polyline>
-<line x1="16" y1="13" x2="8" y2="13"></line>
-<line x1="16" y1="17" x2="8" y2="17"></line>
-</svg>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-3">Import & Edit</h3>
-<p class="text-text-light text-sm mb-6 flex-1">Have existing HTML? Import and optimize it for conversions with our visual editor.</p>
-<a href="https://builder.yenze.io" class="w-full py-3 px-6 rounded-full border-2 border-border-light text-text-dark font-bold hover:border-primary hover:text-primary transition-all text-sm">
-                        Start Editing →
-                    </a>
-</div>
+        <!-- CONTACTO -->
+        <section id="contacto">
+            <div class="container text-center">
+                <p class="text-muted mb-2 uppercase tracking-wide reveal-element" style="--delay: 0s;">
+                    &mdash; CONTACT
+                </p>
+                <h2 class="reveal-element" style="--delay: 0.05s;">Let's Build Something<br>Great Together.</h2>
+                <p class="mt-4 text-muted reveal-element" style="--delay: 0.1s; max-width: 500px; margin: var(--space-lg) auto;">
+                    &iquest;Tienes un proyecto en mente? Escr&iacute;benos y hablemos sobre c&oacute;mo podemos ayudarte.
+                </p>
+                <div class="mt-6 reveal-element" style="--delay: 0.2s;">
+                    <a href="mailto:hi@yenze.io" class="btn btn-primary" style="font-size: 1.125rem; padding: 16px 32px;">hi@yenze.io</a>
+                </div>
+            </div>
+        </section>
 
-<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center border-2 border-primary hover:shadow-2xl transition-all group relative">
-<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</div>
-<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-</svg>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-3">AI Landing Page Generator</h3>
-<p class="text-text-light text-sm mb-6 flex-1">Generate high-converting sales landing pages with AI. Choose your goal, strategy, and style.</p>
-<a href="/prompt-generator.html" class="w-full py-3 px-6 rounded-full bg-primary text-white font-bold hover:bg-primary-dark transition-all text-sm shadow-lg">
-                        Generate with AI →
-                    </a>
-</div>
+        <!-- FOOTER -->
+        <footer style="padding-top: var(--space-xl); padding-bottom: var(--space-xl); border-top: 1px solid hsla(var(--border), 0.5);">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+                <div>
+                    <p class="logo" style="font-size: 1.25rem;">YENZE</p>
+                    <p class="text-muted" style="font-size: 0.875rem; margin-top: var(--space-xs);">
+                        &copy; 2025 YENZE. All Rights Reserved.
+                    </p>
+                </div>
+                <div style="display: flex; gap: var(--space-lg);">
+                    <a href="/yenzebuilder" class="text-muted" style="font-size: 0.875rem;">YENZE Builder</a>
+                    <a href="#contacto" class="text-muted" style="font-size: 0.875rem;">Contact</a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-<div class="glass-panel rounded-2xl p-6 md:p-8 flex flex-col items-center text-center hover:border-primary/50 transition-all hover:shadow-xl group">
-<div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
-<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-<rect x="3" y="3" width="7" height="7"></rect>
-<rect x="14" y="3" width="7" height="7"></rect>
-<rect x="14" y="14" width="7" height="7"></rect>
-<rect x="3" y="14" width="7" height="7"></rect>
-</svg>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-3">Landing Page Templates</h3>
-<p class="text-text-light text-sm mb-6 flex-1">Start with conversion-optimized templates for sales, leads, and launches.</p>
-<a href="https://builder.yenze.io/templates.html" class="w-full py-3 px-6 rounded-full border-2 border-border-light text-text-dark font-bold hover:border-primary hover:text-primary transition-all text-sm">
-                        View Templates →
-                    </a>
-</div>
-</div>
-</section>
+    <script>
+        /**
+         * Hamburger Menu
+         */
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuIcon = document.getElementById('menuIcon');
+        let menuOpen = false;
 
-<section class="py-12 border-y border-border-subtle mt-16" id="social-proof">
-<p class="text-text-light text-sm md:text-base font-medium text-center mb-8">Trusted by thousands of creators worldwide</p>
-<div class="flex flex-wrap justify-center gap-6 md:gap-16 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
-<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">storefront</span> E-commerce</div>
-<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">restaurant</span> Restaurants</div>
-<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">person</span> Portfolios</div>
-<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">business</span> Businesses</div>
-<div class="text-text-dark font-bold text-lg md:text-xl flex items-center gap-2"><span class="material-symbols-outlined text-primary text-2xl">article</span> Blogs</div>
-</div>
-</section>
+        function toggleMobileMenu() {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open');
+            if (menuOpen) {
+                menuIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+            } else {
+                menuIcon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line>';
+            }
+        }
 
-<section class="py-20 md:py-32" id="features">
-<div class="flex flex-col gap-6 mb-16 text-center">
-<h2 class="h2-immersive font-extrabold text-text-dark tracking-tight drop-shadow-sm">Powerful Features</h2>
-<p class="text-text-light text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">Everything you need to create, publish, and grow your online presence.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-<div class="md:col-span-2 glass-panel rounded-xl p-6 md:p-10 flex flex-col justify-between group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
-<div class="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-<div class="relative z-10">
-<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-3xl">drag_pan</span>
-</div>
-<h3 class="text-2xl md:text-3xl font-bold text-text-dark mb-3">Visual Drag & Drop Builder</h3>
-<p class="text-text-light text-base md:text-lg">Intuitive interface that lets you design visually. Move elements freely, resize with handles, and see changes instantly in real-time.</p>
-</div>
-<div class="mt-8 relative h-48 rounded-xl bg-white border border-border-subtle overflow-hidden">
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="w-40 h-24 bg-primary/10 border-4 border-primary/40 border-dashed rounded-lg flex items-center justify-center text-primary text-sm font-bold animate-pulse">
-                                    Drag Elements Here
-                                </div>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-xl p-6 md:p-10 flex flex-col group hover:border-primary/50 transition-colors relative overflow-hidden shadow-glass-light">
-<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-3xl">devices</span>
-</div>
-<h3 class="text-2xl md:text-3xl font-bold text-text-dark mb-3">Fully Responsive</h3>
-<p class="text-text-light text-base mb-6">Your site automatically looks perfect on every device - desktop, tablet, and mobile.</p>
-<div class="flex-1 rounded-xl bg-gradient-to-br from-white to-transparent border border-border-subtle p-4 flex flex-col gap-2">
-<div class="h-2 w-1/2 bg-gray-100 rounded"></div>
-<div class="h-2 w-3/4 bg-gray-100 rounded"></div>
-<div class="h-24 w-full bg-gray-50 rounded mt-3"></div>
-<div class="flex gap-2 mt-auto">
-<div class="h-8 w-8 rounded-full bg-primary/10"></div>
-<div class="flex-1 h-8 rounded bg-gray-50"></div>
-</div>
-</div>
-</div>
-<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-2xl">link</span>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-2">Custom Domains</h3>
-<p class="text-text-light text-sm">Connect your own domain or use a free yenze.io subdomain. SSL certificates included automatically.</p>
-</div>
-<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-2xl">mail</span>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-2">Form Builder</h3>
-<p class="text-text-light text-sm">Create contact forms, surveys, and newsletter signups. Submissions delivered straight to your email.</p>
-</div>
-<div class="glass-panel rounded-xl p-6 flex flex-col group hover:border-primary/50 transition-colors shadow-glass-light">
-<div class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6">
-<span class="material-symbols-outlined text-2xl">analytics</span>
-</div>
-<h3 class="text-xl font-bold text-text-dark mb-2">Built-in Analytics</h3>
-<p class="text-text-light text-sm">Track visitors and understand your audience with privacy-first analytics integrated into your dashboard.</p>
-</div>
-</div>
-</section>
+        menuToggle.addEventListener('click', toggleMobileMenu);
 
-<section class="py-20 md:py-32 flex flex-col items-center" id="pricing">
-<div class="text-center mb-16">
-<h2 class="h2-immersive font-extrabold text-text-dark mb-4 drop-shadow-sm">Simple, Transparent Pricing</h2>
-<p class="text-text-light text-lg md:text-xl">Start free. Scale as you grow. No hidden fees.</p>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
-<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
-<h3 class="text-xl font-bold text-text-dark mb-3">Free</h3>
-<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$0<span class="text-base font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-sm mb-8 flex-1">Perfect for hobby projects</p>
-<div class="flex flex-col gap-3 mb-8">
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                3 Websites
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                /s/slug URLs
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                1K visitors/mo
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                10MB storage
-                            </div>
-</div>
-<a href="/start.html" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm text-center">Start Free</a>
-</div>
-<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col relative border-2 border-primary shadow-[0_0_30px_rgba(0,102,255,0.15)] sm:-translate-y-4">
-<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</div>
-<h3 class="text-xl font-bold text-text-dark mb-3 mt-2">Starter</h3>
-<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$3<span class="text-base font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-sm mb-8 flex-1">For personal sites</p>
-<div class="flex flex-col gap-3 mb-8">
-<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                5 Websites
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Free Subdomain
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                1 Custom Domain
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                5K visitors/mo
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-dark font-medium">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Remove Branding
-                            </div>
-</div>
-<button onclick="handlePricingClick('starter')" class="w-full py-3 rounded-full bg-primary text-white font-bold hover:brightness-110 transition-all shadow-lg text-sm cursor-pointer">Get Started</button>
-</div>
-<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
-<h3 class="text-xl font-bold text-text-dark mb-3">Pro</h3>
-<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$7<span class="text-base font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-sm mb-8 flex-1">For professionals</p>
-<div class="flex flex-col gap-3 mb-8">
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                10 Websites
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Unlimited Domains
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                25K visitors/mo
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Advanced Analytics
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Code Export
-                            </div>
-</div>
-<button onclick="handlePricingClick('pro')" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm cursor-pointer">Go Pro</button>
-</div>
-<div class="glass-panel rounded-xl p-6 md:p-8 flex flex-col shadow-glass-light">
-<h3 class="text-xl font-bold text-text-dark mb-3">Business</h3>
-<div class="text-4xl md:text-5xl font-extrabold text-text-dark mb-4">$15<span class="text-base font-normal text-text-light">/mo</span></div>
-<p class="text-text-light text-sm mb-8 flex-1">For agencies</p>
-<div class="flex flex-col gap-3 mb-8">
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Unlimited Sites
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Unlimited Domains
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                100K visitors/mo
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                White-label
-                            </div>
-<div class="flex items-center gap-2 text-sm text-text-light">
-<span class="material-symbols-outlined text-primary text-lg">check_circle</span>
-                                Priority Support
-                            </div>
-</div>
-<button onclick="handlePricingClick('business')" class="w-full py-3 rounded-full border border-border-light text-text-dark font-bold hover:bg-gray-50 transition-colors text-sm cursor-pointer">Scale Up</button>
-</div>
-</div>
-</section>
-
-<footer class="mt-20 border-t border-border-subtle pt-16 pb-10" id="cta">
-<div class="flex flex-col items-center text-center gap-6 mb-16">
-<h2 class="h2-immersive font-extrabold text-text-dark drop-shadow-sm">Ready to launch?</h2>
-<p class="text-lg md:text-xl text-text-light">Join thousands of creators building with YENZE today.</p>
-<a href="/start.html" class="h-14 px-10 rounded-full bg-primary text-white text-lg font-bold hover:bg-primary-dark transition-colors mt-4 shadow-xl shadow-primary/30 flex items-center justify-center">
-                        Get Started for Free
-                    </a>
-</div>
-<div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-text-light">
-<div class="flex items-center gap-2 text-sm">
-<div class="size-5 text-text-light">
-<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path clip-rule="evenodd" d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-<span>© 2025 YENZE. Made with love for creators.</span>
-</div>
-<div class="flex gap-6 text-sm">
-<a class="hover:text-text-dark transition-colors" href="#">Privacy</a>
-<a class="hover:text-text-dark transition-colors" href="#">Terms</a>
-<a class="hover:text-text-dark transition-colors" href="https://twitter.com/yenze">Twitter</a>
-<a class="hover:text-text-dark transition-colors" href="#">Contact</a>
-</div>
-</div>
-</footer>
-</div>
-</div>
-
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Stripe -->
-<script src="https://js.stripe.com/v3/"></script>
-<!-- Configuration -->
-<script src="/config.js"></script>
-<script src="/supabase-client.js"></script>
-<script src="/stripe-integration.js"></script>
-
-<script>
-        // Scroll progress indicator
-        document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section[id]');
-            const navDots = document.querySelectorAll('.progress-dot');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5
-            };
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navDots.forEach(dot => dot.classList.remove('active'));
-                        const activeDot = document.querySelector(`.progress-dot[data-section="${entry.target.id}"]`);
-                        if (activeDot) {
-                            activeDot.classList.add('active');
-                        }
-                    }
-                });
-            }, observerOptions);
-            sections.forEach(section => observer.observe(section));
-            navDots.forEach(dot => {
-                dot.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = dot.getAttribute('data-section');
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuOpen) toggleMobileMenu();
             });
         });
 
-        // Handle pricing button clicks
-        async function handlePricingClick(plan) {
-            try {
-                const paymentLinks = {
-                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
-                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
-                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
-                };
-
-                const paymentLink = paymentLinks[plan.toLowerCase()];
-
-                if (!paymentLink) {
-                    console.error('No payment link for plan:', plan);
-                    window.location.href = `/start.html?plan=${plan}`;
-                    return;
+        /**
+         * Scroll Reveal (IntersectionObserver)
+         */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
                 }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
 
-                if (typeof supabaseClient !== 'undefined') {
-                    const { data: { session } } = await supabaseClient.client.auth.getSession();
+        document.querySelectorAll('.reveal-element').forEach(el => observer.observe(el));
 
-                    if (session && session.user) {
-                        const email = session.user.email;
-                        const userId = session.user.id;
-                        window.location.href = `${paymentLink}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${userId}`;
-                        return;
+        /**
+         * Nav Active State on Scroll
+         */
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    if (id) {
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        document.querySelectorAll(`a[href="#${id}"]`).forEach(link => {
+                            link.classList.add('active');
+                        });
                     }
                 }
+            });
+        }, {
+            rootMargin: '-50% 0px -50% 0px',
+            threshold: 0
+        });
 
-                window.location.href = paymentLink;
-
-            } catch (error) {
-                console.error('Error handling pricing click:', error);
-                const paymentLinks = {
-                    starter: 'https://buy.stripe.com/dRm9AU02ffXWbxN66xaIM01',
-                    pro: 'https://buy.stripe.com/bJe4gAeX98vu6dtbqRaIM02',
-                    business: 'https://buy.stripe.com/14A28seX93ba7hx3YpaIM03'
-                };
-                window.location.href = paymentLinks[plan.toLowerCase()] || '/start.html';
-            }
-        }
+        sections.forEach(section => navObserver.observe(section));
     </script>
 </body>
+
 </html>

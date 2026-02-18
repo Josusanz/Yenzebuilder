@@ -13,6 +13,7 @@ export default defineConfig({
         main: resolve(__dirname, 'public/builder.html'),
         dashboard: resolve(__dirname, 'public/dashboard.html'),
         landing: resolve(__dirname, 'public/landing.html'),
+        yenzebuilder: resolve(__dirname, 'public/yenzebuilder.html'),
         login: resolve(__dirname, 'public/login.html'),
         start: resolve(__dirname, 'public/start.html'),
         'prompt-generator': resolve(__dirname, 'public/prompt-generator.html')

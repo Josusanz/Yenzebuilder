@@ -43,6 +43,10 @@
       ]
     },
     {
+      "source": "/yenzebuilder",
+      "destination": "/yenzebuilder.html"
+    },
+    {
       "source": "/start",
       "destination": "/start.html"
     },
