@@ -286,6 +286,11 @@ class DeployModal {
     // OAuth connection (new, recommended)
     async connectCloudflareOAuth() {
         try {
+            // Ensure Supabase client is initialized
+            if (window.supabaseClient) {
+                await window.supabaseClient.init();
+            }
+
             if (!window.supabaseClient || !window.supabaseClient.currentUser) {
                 alert('Please log in first');
                 return;
@@ -326,6 +331,11 @@ class DeployModal {
     // OAuth connection (new, recommended)
     async connectVercelOAuth() {
         try {
+            // Ensure Supabase client is initialized
+            if (window.supabaseClient) {
+                await window.supabaseClient.init();
+            }
+
             if (!window.supabaseClient || !window.supabaseClient.currentUser) {
                 alert('Please log in first');
                 return;
