@@ -363,26 +363,46 @@ class EmailGate {
             // Save email
             await this.saveEmail(email);
 
-            // Store callback before closing modal (closeModal clears it)
+            // Store callback and action before closing modal (closeModal clears them)
             const callback = this.pendingCallback;
+            const action = this.pendingAction;
+
+            console.log('[EmailGate] Email saved successfully');
+            console.log('[EmailGate] Pending action:', action);
+            console.log('[EmailGate] Has callback:', !!callback);
 
             // Close modal
             this.closeModal();
 
-            // Execute pending callback AFTER getting reference
-            if (callback) {
-                console.log('[EmailGate] Executing callback');
-                callback();
-            }
-
             // Show success toast if available
             if (window.app && window.app.showToast) {
-                window.app.showToast('Email saved! You now have full access.', 'success');
+                window.app.showToast('✅ Email saved! Continuing...', 'success');
+            }
+
+            // Execute pending callback after a small delay to ensure modal is fully closed
+            if (callback) {
+                console.log('[EmailGate] Executing callback for action:', action);
+                setTimeout(() => {
+                    try {
+                        callback();
+                        console.log('[EmailGate] Callback executed successfully');
+                    } catch (callbackError) {
+                        console.error('[EmailGate] Error executing callback:', callbackError);
+                        if (window.app && window.app.showToast) {
+                            window.app.showToast('Error: ' + callbackError.message, 'error');
+                        }
+                    }
+                }, 300);
+            } else {
+                console.warn('[EmailGate] No callback to execute');
             }
 
         } catch (error) {
             console.error('[EmailGate] Error:', error);
             input.style.borderColor = '#ef4444';
+            if (window.app && window.app.showToast) {
+                window.app.showToast('Failed to save email: ' + error.message, 'error');
+            }
         } finally {
             // Reset button state
             submit.disabled = false;

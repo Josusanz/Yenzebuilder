@@ -4682,20 +4682,32 @@ if (validationForm) {
             return;
         }
 
+        console.log('[Publish] Starting publish flow');
+        console.log('[Publish] Has email:', window.emailGate ? window.emailGate.hasEmail() : 'N/A');
+        console.log('[Publish] deployModal available:', !!window.deployModal);
+
         // Use email gate first
         if (window.emailGate && !window.emailGate.hasEmail()) {
+            console.log('[Publish] Showing email gate');
             window.emailGate.gate('publish', () => {
+                console.log('[Publish] Email gate callback triggered');
+                console.log('[Publish] deployModal still available:', !!window.deployModal);
                 if (window.deployModal) {
+                    console.log('[Publish] Opening deploy modal');
                     window.deployModal.show();
                 } else {
+                    console.log('[Publish] Opening legacy publish modal');
                     this.showPublishModal();
                 }
             });
         } else {
+            console.log('[Publish] Skipping email gate, user has email');
             // Show enhanced deploy modal if available
             if (window.deployModal) {
+                console.log('[Publish] Opening deploy modal directly');
                 window.deployModal.show();
             } else {
+                console.log('[Publish] Opening legacy publish modal directly');
                 this.showPublishModal();
             }
         }
