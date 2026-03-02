@@ -9,13 +9,24 @@ Build, edit, and publish websites visually — no coding required. 100% free, un
 [![Twitter Follow](https://img.shields.io/twitter/follow/josusanz?style=social)](https://twitter.com/josusanz)
 
 <p align="center">
-  <a href="https://yenze.io/builder.html">Live Demo</a> •
+  <a href="#-try-it-now">Try It Now</a> •
   <a href="#features">Features</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#self-hosting">Self-Hosting</a> •
   <a href="#templates-marketplace">Templates</a> •
   <a href="#contributing">Contributing</a>
 </p>
+
+---
+
+## 🚀 Try It Now
+
+Experience YENZE before self-hosting:
+
+- **[Builder Demo](https://builder.yenze.io/builder.html)** — Try the visual HTML editor
+- **[Dashboard Demo](https://builder.yenze.io/dashboard.html)** — See the full platform with project management
+
+No signup required to test the builder. Create an account to save projects and access the dashboard.
 
 ---
 
