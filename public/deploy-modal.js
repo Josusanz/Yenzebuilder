@@ -4,9 +4,20 @@ class DeployModal {
         this.deployIntegrations = window.deployIntegrations;
     }
 
-    show() {
+    async show() {
         const existingModal = document.getElementById('enhancedDeployModal');
         if (existingModal) existingModal.remove();
+
+        // Ensure Supabase client is initialized before showing modal
+        if (window.supabaseClient) {
+            console.log('[DeployModal] Initializing supabaseClient...');
+            await window.supabaseClient.init();
+            console.log('[DeployModal] Auth state:', {
+                isAuthenticated: window.supabaseClient.isAuthenticated(),
+                hasUser: !!window.supabaseClient.currentUser,
+                userEmail: window.supabaseClient.currentUser?.email
+            });
+        }
 
         const status = this.deployIntegrations.getConnectionStatus();
 
@@ -286,23 +297,35 @@ class DeployModal {
     // OAuth connection (new, recommended)
     async connectCloudflareOAuth() {
         try {
+            console.log('[OAuth] Cloudflare - Starting connection');
+            console.log('[OAuth] supabaseClient exists:', !!window.supabaseClient);
+
             // Ensure Supabase client is initialized
             if (window.supabaseClient) {
+                console.log('[OAuth] Initializing supabaseClient...');
                 await window.supabaseClient.init();
+                console.log('[OAuth] After init - currentUser:', window.supabaseClient.currentUser);
+                console.log('[OAuth] After init - isAuthenticated:', window.supabaseClient.isAuthenticated());
             }
 
             if (!window.supabaseClient || !window.supabaseClient.currentUser) {
+                console.error('[OAuth] Auth check failed:', {
+                    hasClient: !!window.supabaseClient,
+                    hasCurrentUser: !!window.supabaseClient?.currentUser,
+                    isAuthenticated: window.supabaseClient?.isAuthenticated()
+                });
                 alert('Please log in first');
                 return;
             }
 
             const userId = window.supabaseClient.currentUser.id;
+            console.log('[OAuth] Redirecting with userId:', userId);
 
             // Redirect to OAuth endpoint
             window.location.href = `/api/oauth-cloudflare?userId=${userId}`;
         } catch (error) {
             console.error('OAuth initiation failed:', error);
-            alert('Failed to start OAuth flow');
+            alert('Failed to start OAuth flow: ' + error.message);
         }
     }
 
@@ -331,23 +354,35 @@ class DeployModal {
     // OAuth connection (new, recommended)
     async connectVercelOAuth() {
         try {
+            console.log('[OAuth] Vercel - Starting connection');
+            console.log('[OAuth] supabaseClient exists:', !!window.supabaseClient);
+
             // Ensure Supabase client is initialized
             if (window.supabaseClient) {
+                console.log('[OAuth] Initializing supabaseClient...');
                 await window.supabaseClient.init();
+                console.log('[OAuth] After init - currentUser:', window.supabaseClient.currentUser);
+                console.log('[OAuth] After init - isAuthenticated:', window.supabaseClient.isAuthenticated());
             }
 
             if (!window.supabaseClient || !window.supabaseClient.currentUser) {
+                console.error('[OAuth] Auth check failed:', {
+                    hasClient: !!window.supabaseClient,
+                    hasCurrentUser: !!window.supabaseClient?.currentUser,
+                    isAuthenticated: window.supabaseClient?.isAuthenticated()
+                });
                 alert('Please log in first');
                 return;
             }
 
             const userId = window.supabaseClient.currentUser.id;
+            console.log('[OAuth] Redirecting with userId:', userId);
 
             // Redirect to OAuth endpoint
             window.location.href = `/api/oauth-vercel?userId=${userId}`;
         } catch (error) {
             console.error('OAuth initiation failed:', error);
-            alert('Failed to start OAuth flow');
+            alert('Failed to start OAuth flow: ' + error.message);
         }
     }
 
