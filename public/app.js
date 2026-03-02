@@ -543,41 +543,6 @@ class YenzeBuilder {
             this.downloadHTML();
         });
 
-        // Upload Image
-        document.getElementById('uploadImageBtn')?.addEventListener('click', () => {
-            if (window.imageUploader) {
-                window.imageUploader.showUploadModal((imageUrl) => {
-                    // Copy URL to clipboard
-                    navigator.clipboard.writeText(imageUrl).then(() => {
-                        this.showToast('✅ Image uploaded! URL copied to clipboard', 'success');
-                    });
-                });
-            } else {
-                this.showToast('Image uploader not available', 'error');
-            }
-        });
-
-        // Generate OG Card
-        document.getElementById('ogCardBtn')?.addEventListener('click', () => {
-            if (window.ogCardGenerator) {
-                window.ogCardGenerator.showPreviewModal({
-                    title: this.projectData.name || 'My Website',
-                    description: 'Built with YENZE - The easiest website builder'
-                });
-            } else {
-                this.showToast('OG Card generator not available', 'error');
-            }
-        });
-
-        // View Analytics
-        document.getElementById('analyticsBtn')?.addEventListener('click', () => {
-            if (window.analyticsDashboard && this.projectData.id) {
-                window.analyticsDashboard.showDashboard(this.projectData.id);
-            } else {
-                this.showToast('Analytics not available. Publish your site first.', 'error');
-            }
-        });
-
         // Project name
         document.getElementById('projectName').addEventListener('blur', (e) => {
             this.projectData.name = e.target.value;
