@@ -543,6 +543,41 @@ class YenzeBuilder {
             this.downloadHTML();
         });
 
+        // Upload Image
+        document.getElementById('uploadImageBtn')?.addEventListener('click', () => {
+            if (window.imageUploader) {
+                window.imageUploader.showUploadModal((imageUrl) => {
+                    // Copy URL to clipboard
+                    navigator.clipboard.writeText(imageUrl).then(() => {
+                        this.showToast('✅ Image uploaded! URL copied to clipboard', 'success');
+                    });
+                });
+            } else {
+                this.showToast('Image uploader not available', 'error');
+            }
+        });
+
+        // Generate OG Card
+        document.getElementById('ogCardBtn')?.addEventListener('click', () => {
+            if (window.ogCardGenerator) {
+                window.ogCardGenerator.showPreviewModal({
+                    title: this.projectData.name || 'My Website',
+                    description: 'Built with YENZE - The easiest website builder'
+                });
+            } else {
+                this.showToast('OG Card generator not available', 'error');
+            }
+        });
+
+        // View Analytics
+        document.getElementById('analyticsBtn')?.addEventListener('click', () => {
+            if (window.analyticsDashboard && this.projectData.id) {
+                window.analyticsDashboard.showDashboard(this.projectData.id);
+            } else {
+                this.showToast('Analytics not available. Publish your site first.', 'error');
+            }
+        });
+
         // Project name
         document.getElementById('projectName').addEventListener('blur', (e) => {
             this.projectData.name = e.target.value;
@@ -2596,7 +2631,57 @@ class YenzeBuilder {
             `;
         }
 
-        // 6. Advanced (Classes)
+        // 6. Hover States (for interactive elements)
+        const isInteractive = ['a', 'button', 'input', 'select', 'textarea'].includes(element.tagName.toLowerCase()) ||
+                              element.getAttribute('role') === 'button' ||
+                              element.style.cursor === 'pointer' ||
+                              element.classList.contains('btn');
+
+        // Get existing hover styles from onmouseover/onmouseout or data attribute
+        const existingHoverBg = element.getAttribute('data-hover-bg') || '';
+        const existingHoverColor = element.getAttribute('data-hover-color') || '';
+        const existingHoverTransform = element.getAttribute('data-hover-transform') || '';
+
+        html += `
+            <div class="prop-section">
+                <div class="prop-header" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>Hover Effects</span>
+                    <span style="font-size: 10px; color: var(--text-muted); font-weight: 400;">:hover</span>
+                </div>
+                <div class="prop-row">
+                    <div class="prop-col">
+                        <label class="prop-label">Hover Background</label>
+                        <div style="display: flex; gap: 4px;">
+                            <input type="color" id="propHoverBg" class="prop-color" value="${existingHoverBg || '#000000'}" style="width: 36px;">
+                            <input type="text" id="propHoverBgText" class="prop-input" value="${existingHoverBg}" placeholder="transparent" style="flex: 1;">
+                        </div>
+                    </div>
+                    <div class="prop-col">
+                        <label class="prop-label">Hover Text Color</label>
+                        <div style="display: flex; gap: 4px;">
+                            <input type="color" id="propHoverColor" class="prop-color" value="${existingHoverColor || '#ffffff'}" style="width: 36px;">
+                            <input type="text" id="propHoverColorText" class="prop-input" value="${existingHoverColor}" placeholder="inherit" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+                <div class="prop-col" style="margin-top: 8px;">
+                    <label class="prop-label">Hover Transform</label>
+                    <select id="propHoverTransform" class="prop-select">
+                        <option value="" ${!existingHoverTransform ? 'selected' : ''}>None</option>
+                        <option value="translateY(-2px)" ${existingHoverTransform === 'translateY(-2px)' ? 'selected' : ''}>Move Up (subtle)</option>
+                        <option value="translateY(-4px)" ${existingHoverTransform === 'translateY(-4px)' ? 'selected' : ''}>Move Up (more)</option>
+                        <option value="scale(1.02)" ${existingHoverTransform === 'scale(1.02)' ? 'selected' : ''}>Scale Up (subtle)</option>
+                        <option value="scale(1.05)" ${existingHoverTransform === 'scale(1.05)' ? 'selected' : ''}>Scale Up (more)</option>
+                        <option value="translateY(-2px) scale(1.02)" ${existingHoverTransform === 'translateY(-2px) scale(1.02)' ? 'selected' : ''}>Move + Scale</option>
+                    </select>
+                </div>
+                <button onclick="app.applyHoverStyles()" style="margin-top: 12px; width: 100%; padding: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer;">
+                    <i class="fa-solid fa-magic" style="margin-right: 6px;"></i> Apply Hover Effect
+                </button>
+            </div>
+        `;
+
+        // 7. Advanced (Classes)
         html += `
             <div class="prop-section">
                 <div class="prop-header">Advanced</div>
@@ -2611,9 +2696,14 @@ class YenzeBuilder {
             </div>
 
             <div class="prop-section" style="border-bottom: none;">
-                <button class="btn btn-danger" onclick="app.deleteSelectedElement()" style="width: 100%; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; font-size: 12px; padding: 8px;">
-                    <i class="fa-solid fa-trash" style="margin-right: 6px;"></i> Delete Element
-                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" onclick="app.duplicateSelectedElement()" style="flex: 1; background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; font-size: 12px; padding: 8px;">
+                        <i class="fa-solid fa-copy" style="margin-right: 6px;"></i> Duplicate
+                    </button>
+                    <button class="btn btn-danger" onclick="app.deleteSelectedElement()" style="flex: 1; background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; font-size: 12px; padding: 8px;">
+                        <i class="fa-solid fa-trash" style="margin-right: 6px;"></i> Delete
+                    </button>
+                </div>
             </div>
         `;
 
@@ -2840,6 +2930,33 @@ class YenzeBuilder {
                 this.updateHTML('Update ID');
             });
         }
+
+        // Hover color pickers sync with text inputs
+        const hoverBgPicker = document.getElementById('propHoverBg');
+        const hoverBgText = document.getElementById('propHoverBgText');
+        if (hoverBgPicker && hoverBgText) {
+            hoverBgPicker.addEventListener('input', (e) => {
+                hoverBgText.value = e.target.value;
+            });
+            hoverBgText.addEventListener('input', (e) => {
+                if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                    hoverBgPicker.value = e.target.value;
+                }
+            });
+        }
+
+        const hoverColorPicker = document.getElementById('propHoverColor');
+        const hoverColorText = document.getElementById('propHoverColorText');
+        if (hoverColorPicker && hoverColorText) {
+            hoverColorPicker.addEventListener('input', (e) => {
+                hoverColorText.value = e.target.value;
+            });
+            hoverColorText.addEventListener('input', (e) => {
+                if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                    hoverColorPicker.value = e.target.value;
+                }
+            });
+        }
     }
 
     applyFontFamily(element, fontName) {
@@ -2940,6 +3057,116 @@ class YenzeBuilder {
         this.deleteElement(this.selectedElement);
 
         console.log('🗑️ Deleted element:', elementName);
+    }
+
+    duplicateSelectedElement() {
+        if (!this.selectedElement) {
+            this.showToast('⚠️ No element selected', 'error');
+            return;
+        }
+
+        // Don't allow duplicating the body element
+        if (this.selectedElement.tagName === 'BODY') {
+            this.showToast('❌ Cannot duplicate body element', 'error');
+            return;
+        }
+
+        try {
+            // Clone the element with all its children
+            const clone = this.selectedElement.cloneNode(true);
+
+            // Remove any data-yenze-id to avoid conflicts
+            clone.removeAttribute('data-yenze-id');
+            clone.querySelectorAll('[data-yenze-id]').forEach(el => el.removeAttribute('data-yenze-id'));
+
+            // Insert the clone after the original element
+            this.selectedElement.parentNode.insertBefore(clone, this.selectedElement.nextSibling);
+
+            // Select the new element
+            this.selectElement(clone);
+
+            // Update HTML and history
+            this.updateHTML('Duplicate element');
+
+            const elementName = clone.tagName.toLowerCase();
+            this.showToast(`📋 Duplicated <${elementName}>`, 'success');
+
+            console.log('📋 Duplicated element:', elementName);
+        } catch (error) {
+            console.error('Duplicate error:', error);
+            this.showToast('❌ Failed to duplicate element', 'error');
+        }
+    }
+
+    applyHoverStyles() {
+        if (!this.selectedElement) {
+            this.showToast('⚠️ No element selected', 'error');
+            return;
+        }
+
+        const element = this.selectedElement;
+
+        // Get values from inputs
+        const hoverBg = document.getElementById('propHoverBgText')?.value || '';
+        const hoverColor = document.getElementById('propHoverColorText')?.value || '';
+        const hoverTransform = document.getElementById('propHoverTransform')?.value || '';
+
+        // Store the original styles
+        const originalBg = element.style.background || element.style.backgroundColor || '';
+        const originalColor = element.style.color || '';
+        const originalTransform = element.style.transform || '';
+
+        // Store hover values as data attributes for persistence
+        if (hoverBg) element.setAttribute('data-hover-bg', hoverBg);
+        else element.removeAttribute('data-hover-bg');
+
+        if (hoverColor) element.setAttribute('data-hover-color', hoverColor);
+        else element.removeAttribute('data-hover-color');
+
+        if (hoverTransform) element.setAttribute('data-hover-transform', hoverTransform);
+        else element.removeAttribute('data-hover-transform');
+
+        // Build the hover/mouseout handlers
+        let mouseoverCode = '';
+        let mouseoutCode = '';
+
+        if (hoverBg) {
+            mouseoverCode += `this.style.background='${hoverBg}';`;
+            mouseoutCode += `this.style.background='${originalBg}';`;
+        }
+
+        if (hoverColor) {
+            mouseoverCode += `this.style.color='${hoverColor}';`;
+            mouseoutCode += `this.style.color='${originalColor}';`;
+        }
+
+        if (hoverTransform) {
+            mouseoverCode += `this.style.transform='${hoverTransform}';`;
+            mouseoutCode += `this.style.transform='${originalTransform}';`;
+        }
+
+        // Apply or remove handlers
+        if (mouseoverCode) {
+            element.setAttribute('onmouseover', mouseoverCode);
+            element.setAttribute('onmouseout', mouseoutCode);
+
+            // Ensure transition is set for smooth effect
+            if (!element.style.transition) {
+                element.style.transition = 'all 0.2s ease';
+            }
+
+            this.showToast('✨ Hover effect applied!', 'success');
+        } else {
+            // Remove hover handlers if no effects
+            element.removeAttribute('onmouseover');
+            element.removeAttribute('onmouseout');
+            this.showToast('Hover effects removed', 'info');
+        }
+
+        // Update HTML
+        this.updateHTML('Apply hover styles');
+
+        console.log('🎨 Hover styles applied:', { hoverBg, hoverColor, hoverTransform });
     }
 
     // Helper to get an icon for the element type
@@ -4457,9 +4684,20 @@ if (validationForm) {
 
         // Use email gate first
         if (window.emailGate && !window.emailGate.hasEmail()) {
-            window.emailGate.gate('publish', () => this.showPublishModal());
+            window.emailGate.gate('publish', () => {
+                if (window.deployModal) {
+                    window.deployModal.show();
+                } else {
+                    this.showPublishModal();
+                }
+            });
         } else {
-            this.showPublishModal();
+            // Show enhanced deploy modal if available
+            if (window.deployModal) {
+                window.deployModal.show();
+            } else {
+                this.showPublishModal();
+            }
         }
     }
 
@@ -5507,6 +5745,22 @@ if (validationForm) {
 
     saveProject() {
         localStorage.setItem('yenzeProject', JSON.stringify(this.projectData));
+        this.updateAnalyticsButtonVisibility();
+    }
+
+    updateAnalyticsButtonVisibility() {
+        const analyticsBtn = document.getElementById('analyticsBtn');
+        const mobileAnalyticsBtn = document.getElementById('mobileAnalyticsBtn');
+
+        // Show analytics button if project is published and has an ID
+        const shouldShow = !!(this.projectData.publishedUrl || this.projectData.id);
+
+        if (analyticsBtn) {
+            analyticsBtn.style.display = shouldShow ? 'inline-flex' : 'none';
+        }
+        if (mobileAnalyticsBtn) {
+            mobileAnalyticsBtn.style.display = shouldShow ? 'flex' : 'none';
+        }
     }
 
     async loadProject() {

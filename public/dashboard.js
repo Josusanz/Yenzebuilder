@@ -44,7 +44,15 @@ class DashboardApp {
 
         } catch (error) {
             console.error('Dashboard initialization error:', error);
-            alert('Error al cargar el dashboard: ' + error.message);
+            console.error('Init error details:', {
+                message: error.message,
+                stack: error.stack,
+                supabaseInitialized: !!window.supabaseClient,
+                currentUser: this.currentUser
+            });
+
+            const errorMessage = `Error al cargar el dashboard:\n\n${error.message}\n\nPor favor:\n1. Verifica que estés logueado\n2. Revisa la consola del navegador\n3. Intenta recargar la página`;
+            alert(errorMessage);
         }
     }
 
@@ -2644,10 +2652,23 @@ ${result.robotsTxt}
 
         } catch (error) {
             console.error('Error loading projects:', error);
+            console.error('Error details:', {
+                message: error.message,
+                code: error.code,
+                details: error.details,
+                hint: error.hint,
+                currentUser: this.currentUser
+            });
             grid.innerHTML = `
                 <div class="empty-state">
                     <h3>Error loading projects</h3>
-                    <p>${error.message}</p>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                        ${error.hint || 'Check console for more details'}
+                    </p>
+                    <button class="btn-primary" onclick="dashboardApp.loadProjects()" style="margin-top: 16px;">
+                        Retry
+                    </button>
                 </div>
             `;
         }
