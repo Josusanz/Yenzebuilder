@@ -35,6 +35,12 @@ class SupabaseClient {
                 }
 
                 // Initialize Supabase client using CDN
+                console.log('[Supabase] Creating client with URL:', config.url);
+
+                // Check localStorage for existing session
+                const storageKeys = Object.keys(localStorage).filter(k => k.includes('supabase'));
+                console.log('[Supabase] LocalStorage keys:', storageKeys);
+
                 this.client = supabase.createClient(
                     config.url,
                     config.anonKey
@@ -51,10 +57,18 @@ class SupabaseClient {
                 }
 
                 // Check if user is already logged in
-                const { data: { session } } = await this.client.auth.getSession();
+                console.log('[Supabase] Getting session...');
+                const { data: { session }, error: sessionError } = await this.client.auth.getSession();
+                console.log('[Supabase] Session result:', {
+                    hasSession: !!session,
+                    hasUser: !!session?.user,
+                    userEmail: session?.user?.email,
+                    error: sessionError
+                });
+
                 if (session) {
                     this.currentUser = session.user;
-                    console.log('User session loaded:', session.user.email);
+                    console.log('[Supabase] User session loaded:', session.user.email);
 
                     // If we just processed OAuth, clean the URL
                     if (hasOAuthHash) {
