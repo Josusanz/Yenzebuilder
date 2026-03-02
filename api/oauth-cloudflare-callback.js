@@ -47,6 +47,7 @@ module.exports = async (req, res) => {
         }
 
         const userId = stateRecord.user_id;
+        const isAnonymous = userId === 'anonymous';
 
         // Delete used state
         await supabase.from('oauth_states').delete().eq('state', state);
@@ -93,23 +94,36 @@ module.exports = async (req, res) => {
             return res.redirect('/builder?error=no_account_found');
         }
 
-        // Store tokens in database (encrypted)
-        await supabase
-            .from('oauth_integrations')
-            .upsert({
-                user_id: userId,
+        // Store tokens based on user type
+        if (isAnonymous) {
+            // For anonymous users, send tokens via URL to be stored in localStorage
+            const tokenData = encodeURIComponent(JSON.stringify({
                 provider: 'cloudflare',
                 access_token,
                 refresh_token,
                 account_id: accountId,
-                expires_at: new Date(Date.now() + expires_in * 1000).toISOString(),
-                updated_at: new Date().toISOString()
-            }, {
-                onConflict: 'user_id,provider'
-            });
+                expires_at: new Date(Date.now() + expires_in * 1000).toISOString()
+            }));
+            res.redirect(`/builder?cloudflare_token=${tokenData}`);
+        } else {
+            // For logged-in users, store in database
+            await supabase
+                .from('oauth_integrations')
+                .upsert({
+                    user_id: userId,
+                    provider: 'cloudflare',
+                    access_token,
+                    refresh_token,
+                    account_id: accountId,
+                    expires_at: new Date(Date.now() + expires_in * 1000).toISOString(),
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,provider'
+                });
 
-        // Redirect back to builder with success
-        res.redirect('/builder?cloudflare_connected=true');
+            // Redirect back to builder with success
+            res.redirect('/builder?cloudflare_connected=true');
+        }
 
     } catch (error) {
         console.error('OAuth callback error:', error);

@@ -45,6 +45,7 @@ module.exports = async (req, res) => {
         }
 
         const userId = stateRecord.user_id;
+        const isAnonymous = userId === 'anonymous';
 
         // Delete used state
         await supabase.from('oauth_states').delete().eq('state', state);
@@ -72,22 +73,34 @@ module.exports = async (req, res) => {
         const tokenData = await tokenResponse.json();
         const { access_token, team_id, user_id: vercelUserId } = tokenData;
 
-        // Store token in database
-        await supabase
-            .from('oauth_integrations')
-            .upsert({
-                user_id: userId,
+        // Store tokens based on user type
+        if (isAnonymous) {
+            // For anonymous users, send tokens via URL to be stored in localStorage
+            const token = encodeURIComponent(JSON.stringify({
                 provider: 'vercel',
                 access_token,
                 account_id: team_id || vercelUserId,
-                metadata: { vercel_user_id: vercelUserId, team_id },
-                updated_at: new Date().toISOString()
-            }, {
-                onConflict: 'user_id,provider'
-            });
+                metadata: { vercel_user_id: vercelUserId, team_id }
+            }));
+            res.redirect(`/builder?vercel_token=${token}`);
+        } else {
+            // For logged-in users, store in database
+            await supabase
+                .from('oauth_integrations')
+                .upsert({
+                    user_id: userId,
+                    provider: 'vercel',
+                    access_token,
+                    account_id: team_id || vercelUserId,
+                    metadata: { vercel_user_id: vercelUserId, team_id },
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,provider'
+                });
 
-        // Redirect back to builder with success
-        res.redirect('/builder?vercel_connected=true');
+            // Redirect back to builder with success
+            res.redirect('/builder?vercel_connected=true');
+        }
 
     } catch (error) {
         console.error('OAuth callback error:', error);

@@ -5041,6 +5041,49 @@
             }
         }
     </script>
+    <!-- Handle OAuth tokens from URL (anonymous users) -->
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Handle Cloudflare token
+            const cloudflareToken = params.get('cloudflare_token');
+            if (cloudflareToken) {
+                try {
+                    const tokenData = JSON.parse(decodeURIComponent(cloudflareToken));
+                    localStorage.setItem('cloudflare_oauth_token', JSON.stringify(tokenData));
+                    console.log('[OAuth] Cloudflare token saved to localStorage');
+
+                    // Clean URL and show success message
+                    window.history.replaceState({}, document.title, '/builder.html');
+                    setTimeout(() => {
+                        if (window.app) window.app.showToast('✅ Cloudflare connected!', 'success');
+                    }, 500);
+                } catch (e) {
+                    console.error('Failed to parse Cloudflare token:', e);
+                }
+            }
+
+            // Handle Vercel token
+            const vercelToken = params.get('vercel_token');
+            if (vercelToken) {
+                try {
+                    const tokenData = JSON.parse(decodeURIComponent(vercelToken));
+                    localStorage.setItem('vercel_oauth_token', JSON.stringify(tokenData));
+                    console.log('[OAuth] Vercel token saved to localStorage');
+
+                    // Clean URL and show success message
+                    window.history.replaceState({}, document.title, '/builder.html');
+                    setTimeout(() => {
+                        if (window.app) window.app.showToast('✅ Vercel connected!', 'success');
+                    }, 500);
+                } catch (e) {
+                    console.error('Failed to parse Vercel token:', e);
+                }
+            }
+        })();
+    </script>
+
 </body>
 
 </html>

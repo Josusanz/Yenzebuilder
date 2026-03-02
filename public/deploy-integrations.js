@@ -1,9 +1,34 @@
 // Deploy Integrations - Cloudflare Pages & Vercel
 class DeployIntegrations {
     constructor() {
+        // Check for manual tokens (legacy)
         this.cloudflareToken = localStorage.getItem('cloudflare_token');
         this.vercelToken = localStorage.getItem('vercel_token');
         this.cloudflareAccountId = localStorage.getItem('cloudflare_account_id');
+
+        // Check for OAuth tokens (new - works without login)
+        const cloudflareOAuth = localStorage.getItem('cloudflare_oauth_token');
+        if (cloudflareOAuth) {
+            try {
+                const tokenData = JSON.parse(cloudflareOAuth);
+                this.cloudflareToken = tokenData.access_token;
+                this.cloudflareAccountId = tokenData.account_id;
+                console.log('[DeployIntegrations] Loaded Cloudflare OAuth token from localStorage');
+            } catch (e) {
+                console.error('Failed to parse Cloudflare OAuth token:', e);
+            }
+        }
+
+        const vercelOAuth = localStorage.getItem('vercel_oauth_token');
+        if (vercelOAuth) {
+            try {
+                const tokenData = JSON.parse(vercelOAuth);
+                this.vercelToken = tokenData.access_token;
+                console.log('[DeployIntegrations] Loaded Vercel OAuth token from localStorage');
+            } catch (e) {
+                console.error('Failed to parse Vercel OAuth token:', e);
+            }
+        }
     }
 
     // ==================== CLOUDFLARE PAGES ====================
@@ -211,6 +236,7 @@ class DeployIntegrations {
     disconnectCloudflare() {
         localStorage.removeItem('cloudflare_token');
         localStorage.removeItem('cloudflare_account_id');
+        localStorage.removeItem('cloudflare_oauth_token'); // Remove OAuth token too
         this.cloudflareToken = null;
         this.cloudflareAccountId = null;
     }
@@ -316,6 +342,7 @@ class DeployIntegrations {
     disconnectVercel() {
         localStorage.removeItem('vercel_token');
         localStorage.removeItem('vercel_user');
+        localStorage.removeItem('vercel_oauth_token'); // Remove OAuth token too
         this.vercelToken = null;
     }
 

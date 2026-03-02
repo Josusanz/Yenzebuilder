@@ -294,42 +294,24 @@ class DeployModal {
         document.body.insertAdjacentHTML('beforeend', setupHTML);
     }
 
-    // OAuth connection (new, recommended)
+    // OAuth connection (works without login)
     async connectCloudflareOAuth() {
         try {
             console.log('[OAuth] Cloudflare - Starting connection');
-            console.log('[OAuth] supabaseClient exists:', !!window.supabaseClient);
 
-            // Ensure Supabase client is initialized
+            // Check if user is logged in (optional - for saving to database)
+            let userId = 'anonymous';
             if (window.supabaseClient) {
-                console.log('[OAuth] Initializing supabaseClient...');
                 await window.supabaseClient.init();
-                console.log('[OAuth] After init - currentUser:', window.supabaseClient.currentUser);
-                console.log('[OAuth] After init - isAuthenticated:', window.supabaseClient.isAuthenticated());
-            }
-
-            if (!window.supabaseClient || !window.supabaseClient.currentUser) {
-                console.error('[OAuth] Auth check failed:', {
-                    hasClient: !!window.supabaseClient,
-                    hasCurrentUser: !!window.supabaseClient?.currentUser,
-                    isAuthenticated: window.supabaseClient?.isAuthenticated()
-                });
-
-                // Close deploy modal and show auth modal
-                this.close();
-                if (window.authUI) {
-                    window.authUI.showAuthModal('login');
-                    window.authUI.showAuthMessage('Please log in to connect with Cloudflare/Vercel', 'info');
+                if (window.supabaseClient.currentUser) {
+                    userId = window.supabaseClient.currentUser.id;
+                    console.log('[OAuth] User logged in - tokens will be saved to database');
                 } else {
-                    alert('Please log in first');
+                    console.log('[OAuth] Anonymous - tokens will be saved to localStorage');
                 }
-                return;
             }
 
-            const userId = window.supabaseClient.currentUser.id;
-            console.log('[OAuth] Redirecting with userId:', userId);
-
-            // Redirect to OAuth endpoint
+            // Redirect to OAuth endpoint (works with or without userId)
             window.location.href = `/api/oauth-cloudflare?userId=${userId}`;
         } catch (error) {
             console.error('OAuth initiation failed:', error);
@@ -359,42 +341,24 @@ class DeployModal {
         }
     }
 
-    // OAuth connection (new, recommended)
+    // OAuth connection (works without login)
     async connectVercelOAuth() {
         try {
             console.log('[OAuth] Vercel - Starting connection');
-            console.log('[OAuth] supabaseClient exists:', !!window.supabaseClient);
 
-            // Ensure Supabase client is initialized
+            // Check if user is logged in (optional - for saving to database)
+            let userId = 'anonymous';
             if (window.supabaseClient) {
-                console.log('[OAuth] Initializing supabaseClient...');
                 await window.supabaseClient.init();
-                console.log('[OAuth] After init - currentUser:', window.supabaseClient.currentUser);
-                console.log('[OAuth] After init - isAuthenticated:', window.supabaseClient.isAuthenticated());
-            }
-
-            if (!window.supabaseClient || !window.supabaseClient.currentUser) {
-                console.error('[OAuth] Auth check failed:', {
-                    hasClient: !!window.supabaseClient,
-                    hasCurrentUser: !!window.supabaseClient?.currentUser,
-                    isAuthenticated: window.supabaseClient?.isAuthenticated()
-                });
-
-                // Close deploy modal and show auth modal
-                this.close();
-                if (window.authUI) {
-                    window.authUI.showAuthModal('login');
-                    window.authUI.showAuthMessage('Please log in to connect with Cloudflare/Vercel', 'info');
+                if (window.supabaseClient.currentUser) {
+                    userId = window.supabaseClient.currentUser.id;
+                    console.log('[OAuth] User logged in - tokens will be saved to database');
                 } else {
-                    alert('Please log in first');
+                    console.log('[OAuth] Anonymous - tokens will be saved to localStorage');
                 }
-                return;
             }
 
-            const userId = window.supabaseClient.currentUser.id;
-            console.log('[OAuth] Redirecting with userId:', userId);
-
-            // Redirect to OAuth endpoint
+            // Redirect to OAuth endpoint (works with or without userId)
             window.location.href = `/api/oauth-vercel?userId=${userId}`;
         } catch (error) {
             console.error('OAuth initiation failed:', error);
