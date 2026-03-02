@@ -314,7 +314,15 @@ class DeployModal {
                     hasCurrentUser: !!window.supabaseClient?.currentUser,
                     isAuthenticated: window.supabaseClient?.isAuthenticated()
                 });
-                alert('Please log in first');
+
+                // Close deploy modal and show auth modal
+                this.close();
+                if (window.authUI) {
+                    window.authUI.showAuthModal('login');
+                    window.authUI.showAuthMessage('Please log in to connect with Cloudflare/Vercel', 'info');
+                } else {
+                    alert('Please log in first');
+                }
                 return;
             }
 
@@ -371,7 +379,15 @@ class DeployModal {
                     hasCurrentUser: !!window.supabaseClient?.currentUser,
                     isAuthenticated: window.supabaseClient?.isAuthenticated()
                 });
-                alert('Please log in first');
+
+                // Close deploy modal and show auth modal
+                this.close();
+                if (window.authUI) {
+                    window.authUI.showAuthModal('login');
+                    window.authUI.showAuthMessage('Please log in to connect with Cloudflare/Vercel', 'info');
+                } else {
+                    alert('Please log in first');
+                }
                 return;
             }
 
