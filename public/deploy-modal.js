@@ -159,37 +159,59 @@ class DeployModal {
                     <h2 style="margin: 0 0 8px; font-size: 24px; font-weight: 700; color: #111827;">Connect Cloudflare Pages</h2>
                     <p style="margin: 0 0 24px; font-size: 14px; color: #6b7280;">Deploy your site to Cloudflare's global network</p>
 
-                    <!-- Instructions -->
-                    <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                        <h3 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #92400e;">Quick Setup:</h3>
-                        <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #92400e; line-height: 1.6;">
-                            <li>Go to <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" style="color: #f97316; text-decoration: underline;">Cloudflare API Tokens</a></li>
-                            <li>Click "Create Token" → "Edit Cloudflare Workers" template</li>
-                            <li>Add permission: <strong>Cloudflare Pages - Edit</strong></li>
-                            <li>Copy your <strong>Account ID</strong> from the dashboard</li>
-                        </ol>
-                    </div>
-
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">API Token</label>
-                        <input id="cloudflareToken" type="password" placeholder="Enter your Cloudflare API Token" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
-                        <p style="margin: 8px 0 0; font-size: 12px; color: #6b7280;">
-                            Your token is stored locally and never sent to our servers
-                        </p>
-                    </div>
-
-                    <div style="margin-bottom: 24px;">
-                        <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">Account ID</label>
-                        <input id="cloudflareAccountId" type="text" placeholder="32-character Account ID" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
-                        <p style="margin: 8px 0 0; font-size: 12px; color: #6b7280;">Found in your Cloudflare dashboard sidebar</p>
-                    </div>
-
-                    <div style="display: flex; gap: 12px;">
-                        <button onclick="document.getElementById('cloudflareSetupModal').remove()" style="flex: 1; padding: 12px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Cancel
+                    <!-- OAuth Method (Recommended) -->
+                    <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px solid #0ea5e9; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #0c4a6e;">Secure OAuth Connection (Recommended)</h3>
+                        </div>
+                        <p style="margin: 0 0 16px; font-size: 13px; color: #0c4a6e;">Connect with one click - no API tokens needed!</p>
+                        <button onclick="window.deployModal.connectCloudflareOAuth()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                            Connect with Cloudflare
                         </button>
-                        <button onclick="window.deployModal.connectCloudflare()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Connect
+                    </div>
+
+                    <div style="text-align: center; margin: 20px 0; color: #9ca3af; font-size: 13px;">or use manual setup</div>
+
+                    <!-- Manual Method (Advanced) -->
+                    <details style="cursor: pointer;">
+                        <summary style="padding: 12px; background: #f9fafb; border-radius: 8px; font-weight: 600; color: #6b7280; font-size: 14px;">Advanced: Manual API Token Setup</summary>
+                        <div style="margin-top: 16px;">
+                            <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                                <h3 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #92400e;">Manual Setup:</h3>
+                                <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #92400e; line-height: 1.6;">
+                                    <li>Go to <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" style="color: #f97316; text-decoration: underline;">Cloudflare API Tokens</a></li>
+                                    <li>Click "Create Token" → "Edit Cloudflare Workers" template</li>
+                                    <li>Add permission: <strong>Cloudflare Pages - Edit</strong></li>
+                                    <li>Copy your <strong>Account ID</strong> from the dashboard</li>
+                                </ol>
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">API Token</label>
+                                <input id="cloudflareToken" type="password" placeholder="Enter your Cloudflare API Token" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">Account ID</label>
+                                <input id="cloudflareAccountId" type="text" placeholder="32-character Account ID" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
+                            </div>
+
+                            <button onclick="window.deployModal.connectCloudflareManual()" style="width: 100%; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                Connect Manually
+                            </button>
+                        </div>
+                    </details>
+
+                    <div style="margin-top: 20px;">
+                        <button onclick="document.getElementById('cloudflareSetupModal').remove()" style="width: 100%; padding: 12px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Cancel
                         </button>
                     </div>
                 </div>
@@ -205,32 +227,54 @@ class DeployModal {
                     <h2 style="margin: 0 0 8px; font-size: 24px; font-weight: 700; color: #111827;">Connect Vercel</h2>
                     <p style="margin: 0 0 24px; font-size: 14px; color: #6b7280;">Deploy your site to Vercel's edge network</p>
 
-                    <!-- Instructions -->
-                    <div style="background: #f0f0f0; border: 1px solid #d4d4d4; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                        <h3 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #171717;">Quick Setup:</h3>
-                        <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #404040; line-height: 1.6;">
-                            <li>Go to <a href="https://vercel.com/account/tokens" target="_blank" style="color: #000; text-decoration: underline;">Vercel Account Tokens</a></li>
-                            <li>Click "Create" to generate a new token</li>
-                            <li>Give it a name (e.g., "YENZE Builder")</li>
-                            <li>Select scope: <strong>Full Account</strong></li>
-                            <li>Copy the token and paste it below</li>
-                        </ol>
-                    </div>
-
-                    <div style="margin-bottom: 24px;">
-                        <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">API Token</label>
-                        <input id="vercelToken" type="password" placeholder="Enter your Vercel API Token" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
-                        <p style="margin: 8px 0 0; font-size: 12px; color: #6b7280;">
-                            Your token is stored locally and never sent to our servers
-                        </p>
-                    </div>
-
-                    <div style="display: flex; gap: 12px;">
-                        <button onclick="document.getElementById('vercelSetupModal').remove()" style="flex: 1; padding: 12px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Cancel
+                    <!-- OAuth Method (Recommended) -->
+                    <div style="background: linear-gradient(135deg, #fafafa, #f4f4f5); border: 2px solid #18181b; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                            <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #18181b;">Secure OAuth Connection (Recommended)</h3>
+                        </div>
+                        <p style="margin: 0 0 16px; font-size: 13px; color: #3f3f46;">Connect with one click - no API tokens needed!</p>
+                        <button onclick="window.deployModal.connectVercelOAuth()" style="width: 100%; padding: 14px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                <path d="M12 2L2 22h20L12 2z"/>
+                            </svg>
+                            Connect with Vercel
                         </button>
-                        <button onclick="window.deployModal.connectVercel()" style="flex: 1; padding: 12px; background: #000; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            Connect
+                    </div>
+
+                    <div style="text-align: center; margin: 20px 0; color: #9ca3af; font-size: 13px;">or use manual setup</div>
+
+                    <!-- Manual Method (Advanced) -->
+                    <details style="cursor: pointer;">
+                        <summary style="padding: 12px; background: #f9fafb; border-radius: 8px; font-weight: 600; color: #6b7280; font-size: 14px;">Advanced: Manual API Token Setup</summary>
+                        <div style="margin-top: 16px;">
+                            <div style="background: #f0f0f0; border: 1px solid #d4d4d4; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                                <h3 style="margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #171717;">Manual Setup:</h3>
+                                <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: #404040; line-height: 1.6;">
+                                    <li>Go to <a href="https://vercel.com/account/tokens" target="_blank" style="color: #000; text-decoration: underline;">Vercel Account Tokens</a></li>
+                                    <li>Click "Create" to generate a new token</li>
+                                    <li>Give it a name (e.g., "YENZE Builder")</li>
+                                    <li>Select scope: <strong>Full Account</strong></li>
+                                    <li>Copy the token and paste it below</li>
+                                </ol>
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #374151;">API Token</label>
+                                <input id="vercelToken" type="password" placeholder="Enter your Vercel API Token" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: monospace;">
+                            </div>
+
+                            <button onclick="window.deployModal.connectVercelManual()" style="width: 100%; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                Connect Manually
+                            </button>
+                        </div>
+                    </details>
+
+                    <div style="margin-top: 20px;">
+                        <button onclick="document.getElementById('vercelSetupModal').remove()" style="width: 100%; padding: 12px; background: #f3f4f6; color: #374151; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            Cancel
                         </button>
                     </div>
                 </div>
@@ -239,7 +283,26 @@ class DeployModal {
         document.body.insertAdjacentHTML('beforeend', setupHTML);
     }
 
-    async connectCloudflare() {
+    // OAuth connection (new, recommended)
+    async connectCloudflareOAuth() {
+        try {
+            if (!window.supabaseClient || !window.supabaseClient.currentUser) {
+                alert('Please log in first');
+                return;
+            }
+
+            const userId = window.supabaseClient.currentUser.id;
+
+            // Redirect to OAuth endpoint
+            window.location.href = `/api/oauth-cloudflare?userId=${userId}`;
+        } catch (error) {
+            console.error('OAuth initiation failed:', error);
+            alert('Failed to start OAuth flow');
+        }
+    }
+
+    // Manual connection (legacy, for advanced users)
+    async connectCloudflareManual() {
         const token = document.getElementById('cloudflareToken').value.trim();
         const accountId = document.getElementById('cloudflareAccountId').value.trim();
 
@@ -260,7 +323,26 @@ class DeployModal {
         }
     }
 
-    async connectVercel() {
+    // OAuth connection (new, recommended)
+    async connectVercelOAuth() {
+        try {
+            if (!window.supabaseClient || !window.supabaseClient.currentUser) {
+                alert('Please log in first');
+                return;
+            }
+
+            const userId = window.supabaseClient.currentUser.id;
+
+            // Redirect to OAuth endpoint
+            window.location.href = `/api/oauth-vercel?userId=${userId}`;
+        } catch (error) {
+            console.error('OAuth initiation failed:', error);
+            alert('Failed to start OAuth flow');
+        }
+    }
+
+    // Manual connection (legacy, for advanced users)
+    async connectVercelManual() {
         const token = document.getElementById('vercelToken').value.trim();
 
         if (!token) {
