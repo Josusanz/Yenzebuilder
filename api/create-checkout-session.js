@@ -18,29 +18,49 @@ const PRICE_IDS = {
 };
 
 module.exports = async function handler(req, res) {
+    // CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     // Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
-        const { plan, userId, email } = req.body;
+        const { plan, priceId, userId, email, successUrl, cancelUrl } = req.body;
 
-        console.log('[Checkout] Request received:', { plan, userId, email });
+        console.log('[Checkout] Request received:', { plan, priceId, userId, email });
 
-        // Validate input
-        if (!plan || !userId || !email) {
-            console.error('[Checkout] Missing required fields:', { plan, userId, email });
-            return res.status(400).json({ error: 'Missing required fields' });
+        // Validate input - email is required, userId is optional for anonymous users
+        if (!email) {
+            console.error('[Checkout] Missing email');
+            return res.status(400).json({ error: 'Email is required' });
         }
 
-        console.log('[Checkout] Available price IDs:', PRICE_IDS);
-        console.log('[Checkout] Looking for plan:', plan);
+        // Determine the price ID - accept direct priceId or look up by plan name
+        let finalPriceId = priceId;
+        let planName = plan;
 
-        if (!PRICE_IDS[plan]) {
-            console.error('[Checkout] Invalid plan:', plan);
+        if (!finalPriceId && plan) {
+            finalPriceId = PRICE_IDS[plan];
+            console.log('[Checkout] Looking up price for plan:', plan, '->', finalPriceId);
+        }
+
+        // If priceId was provided directly, find the plan name
+        if (priceId && !plan) {
+            planName = Object.keys(PRICE_IDS).find(key => PRICE_IDS[key] === priceId) || 'unknown';
+        }
+
+        if (!finalPriceId) {
+            console.error('[Checkout] Invalid plan or priceId:', { plan, priceId });
             return res.status(400).json({
-                error: 'Invalid plan',
+                error: 'Invalid plan or priceId',
                 availablePlans: Object.keys(PRICE_IDS),
                 requestedPlan: plan
             });
@@ -48,29 +68,39 @@ module.exports = async function handler(req, res) {
 
         // Create or retrieve Stripe customer
         let customerId;
-        const { data: existingCustomer } = await supabase
-            .from('subscriptions')
-            .select('stripe_customer_id')
-            .eq('user_id', userId)
-            .single();
 
-        if (existingCustomer?.stripe_customer_id) {
-            customerId = existingCustomer.stripe_customer_id;
+        // First check by email in Stripe
+        const existingCustomers = await stripe.customers.list({
+            email: email,
+            limit: 1
+        });
+
+        if (existingCustomers.data.length > 0) {
+            customerId = existingCustomers.data[0].id;
+            console.log('[Checkout] Found existing Stripe customer:', customerId);
         } else {
+            // Create new customer
             const customer = await stripe.customers.create({
                 email: email,
                 metadata: {
-                    supabase_user_id: userId
+                    supabase_user_id: userId || 'anonymous',
+                    source: 'yenze_dashboard'
                 }
             });
             customerId = customer.id;
+            console.log('[Checkout] Created new Stripe customer:', customerId);
         }
+
+        // Determine URLs
+        const baseUrl = 'https://yenze.io';
+        const finalSuccessUrl = successUrl || `${baseUrl}/my-sites?success=true&session_id={CHECKOUT_SESSION_ID}`;
+        const finalCancelUrl = cancelUrl || `${baseUrl}/my-sites?canceled=true`;
 
         // Create checkout session
         console.log('[Checkout] Creating Stripe session with:', {
             customerId,
-            priceId: PRICE_IDS[plan],
-            plan
+            priceId: finalPriceId,
+            plan: planName
         });
 
         const session = await stripe.checkout.sessions.create({
@@ -78,22 +108,26 @@ module.exports = async function handler(req, res) {
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price: PRICE_IDS[plan],
+                    price: finalPriceId,
                     quantity: 1,
                 },
             ],
             mode: 'subscription',
-            success_url: `https://builder.yenze.io/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `https://builder.yenze.io/dashboard?canceled=true`,
+            success_url: finalSuccessUrl,
+            cancel_url: finalCancelUrl,
             metadata: {
-                user_id: userId,
-                plan: plan
+                user_id: userId || 'anonymous',
+                email: email,
+                plan: planName
             },
             allow_promotion_codes: true,
         });
 
         console.log('[Checkout] Session created successfully:', session.id);
-        res.status(200).json({ sessionId: session.id });
+        res.status(200).json({
+            sessionId: session.id,
+            url: session.url
+        });
 
     } catch (error) {
         console.error('Stripe checkout error:', error);

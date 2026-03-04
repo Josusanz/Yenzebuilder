@@ -14,42 +14,86 @@ const supabase = createClient(
 // Helper functions for handling events
 async function handleCheckoutCompleted(session) {
     const userId = session.metadata.user_id;
+    const email = session.metadata.email || session.customer_email;
     const plan = session.metadata.plan;
     const customerId = session.customer;
 
-    console.log('Checkout completed:', { userId, plan, customerId });
+    console.log('Checkout completed:', { userId, email, plan, customerId });
+
+    // Determine if this is an anonymous user (email-based)
+    const isAnonymous = !userId || userId === 'anonymous';
+
+    // Build the subscription record
+    const subscriptionRecord = {
+        stripe_customer_id: customerId,
+        plan: plan,
+        status: 'active',
+        email: email, // Always store email
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    };
+
+    // Add user_id only if not anonymous
+    if (!isAnonymous) {
+        subscriptionRecord.user_id = userId;
+    }
 
     // For one-time payments
     if (session.mode === 'payment') {
-        await supabase
+        // Check if subscription exists for this email
+        const { data: existing } = await supabase
             .from('subscriptions')
-            .upsert({
-                user_id: userId,
-                stripe_customer_id: customerId,
-                plan: plan,
-                status: 'active',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            });
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existing) {
+            await supabase
+                .from('subscriptions')
+                .update(subscriptionRecord)
+                .eq('email', email);
+        } else {
+            await supabase
+                .from('subscriptions')
+                .insert(subscriptionRecord);
+        }
     }
     // For subscriptions
     else if (session.mode === 'subscription') {
         const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
-        await supabase
+        subscriptionRecord.stripe_subscription_id = subscription.id;
+        subscriptionRecord.status = subscription.status;
+        subscriptionRecord.current_period_start = new Date(subscription.current_period_start * 1000).toISOString();
+        subscriptionRecord.current_period_end = new Date(subscription.current_period_end * 1000).toISOString();
+        subscriptionRecord.cancel_at_period_end = subscription.cancel_at_period_end;
+
+        // Check if subscription exists for this email
+        const { data: existing } = await supabase
             .from('subscriptions')
-            .upsert({
-                user_id: userId,
-                stripe_customer_id: customerId,
-                stripe_subscription_id: subscription.id,
-                plan: plan,
-                status: subscription.status,
-                current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-                current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                cancel_at_period_end: subscription.cancel_at_period_end,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            });
+            .select('id')
+            .eq('email', email)
+            .single();
+
+        if (existing) {
+            await supabase
+                .from('subscriptions')
+                .update(subscriptionRecord)
+                .eq('email', email);
+        } else {
+            await supabase
+                .from('subscriptions')
+                .insert(subscriptionRecord);
+        }
+    }
+
+    // Also update user's projects to reflect the new plan
+    if (email) {
+        await supabase
+            .from('projects')
+            .update({ plan: plan })
+            .eq('owner_email', email);
+        console.log('Updated projects plan for:', email);
     }
 }
 
