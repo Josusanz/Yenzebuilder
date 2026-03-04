@@ -1,10 +1,10 @@
 // API Route for viewing published websites via subdomain (e.g., prueba1.yenze.io)
 // This serves the website content for PAID plan users
 
-import { createClient } from '@supabase/supabase-js';
-import { serveProject, sendError } from './_utils/response-helper.js';
+const { createClient } = require('@supabase/supabase-js');
+const { serveProject, sendError } = require('./_utils/response-helper.js');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Get the hostname from the request
     const hostname = req.headers.host;

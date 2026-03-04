@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -6,7 +6,7 @@ const supabase = createClient(
 );
 
 // Serve an A/B test variant for a project
-export default async function handler(req, res) {
+async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
 }
 
 // Track conversion for a variant
-export async function trackConversion(req, res) {
+async function trackConversion(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -159,3 +159,6 @@ function hashString(str) {
     }
     return Math.abs(hash);
 }
+
+module.exports = handler;
+module.exports.trackConversion = trackConversion;

@@ -1,15 +1,15 @@
 // API endpoint to serve project HTML for custom domains
 // Called by middleware when a custom domain is detected
 
-import { createClient } from '@supabase/supabase-js';
-import { serveProject, sendError } from './_utils/response-helper.js';
+const { createClient } = require('@supabase/supabase-js');
+const { serveProject, sendError } = require('./_utils/response-helper.js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     const domain = req.query.domain;
     const path = req.query.path || '/';

@@ -1,12 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto';
+const { createClient } = require('@supabase/supabase-js');
+const crypto = require('crypto');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY
 );
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -194,8 +194,8 @@ export default async function handler(req, res) {
     }
 }
 
-// Helper function to trigger webhooks (exported for use in submit-form.js)
-export async function triggerWebhooks(projectId, eventType, payload) {
+// Helper function to trigger webhooks
+async function triggerWebhooks(projectId, eventType, payload) {
     try {
         // Get active webhooks for this project
         const { data: webhooks } = await supabase
@@ -255,3 +255,6 @@ export async function triggerWebhooks(projectId, eventType, payload) {
         console.error('Error triggering webhooks:', error);
     }
 }
+
+module.exports = handler;
+module.exports.triggerWebhooks = triggerWebhooks;

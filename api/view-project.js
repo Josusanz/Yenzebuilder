@@ -1,10 +1,10 @@
 // API Route for serving FREE tier content via /s/:slug
 // This handles requests to yenze.io/s/slug and serves the corresponding project
 
-import { createClient } from '@supabase/supabase-js';
-import { serveProject, sendError } from './_utils/response-helper.js';
+const { createClient } = require('@supabase/supabase-js');
+const { serveProject, sendError } = require('./_utils/response-helper.js');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Get slug from query parameter
     const slug = req.query.slug;

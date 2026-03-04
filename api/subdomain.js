@@ -1,15 +1,15 @@
 // API Route for serving content via subdomain
 // This handles requests to *.yenze.io and serves the corresponding project
 
-import { createClient } from '@supabase/supabase-js';
-import { serveProject, sendError } from './_utils/response-helper.js';
+const { createClient } = require('@supabase/supabase-js');
+const { serveProject, sendError } = require('./_utils/response-helper.js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   try {
     // Get the host from request headers
     const host = req.headers.host || '';
